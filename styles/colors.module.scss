@@ -1,0 +1,20 @@
+// Light Colors
+$primary-color: #00ba4f;
+$secondary-color: #6b6bff;
+
+// Light backgrounds
+$background-primary-color: #ffffff;
+$background-secondary-color: #f5f5f5;
+
+// Font Colors
+$title-color: #202223;
+$paragraph-color: #747474;
+
+:export {
+  primaryColor: $primary-color;
+  secondaryColor: $secondary-color;
+  backgroundPrimaryColor: $background-primary-color;
+  backgroundSecondaryColor: $background-secondary-color;
+  titleColor: $title-color;
+  paragraphColor: $paragraph-color;
+}
