@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 
 const Index = (props) => {
-  return <LayoutFixedSidebar></LayoutFixedSidebar>;
+    return <LayoutFixedSidebar></LayoutFixedSidebar>;
 };
 
 Index.propTypes = {};

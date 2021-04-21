@@ -10,43 +10,43 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 // import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    color: theme.palette.fourthColor,
-    minWidth: "40px",
-  },
-  selected: {
-    color: "green",
-  },
+    icon: {
+        color: theme.palette.fourthColor,
+        minWidth: "40px",
+    },
+    selected: {
+        color: "green",
+    },
 }));
 
 const ItemListWIthIcon = (props) => {
-  // const location = useLocation();
-  const classes = useStyles();
-  const { palette } = useTheme();
+    // const location = useLocation();
+    const classes = useStyles();
+    const { palette } = useTheme();
 
-  const isItemSelected = () => {
-    // return location.pathname === props.path;
-    return false;
-  };
+    const isItemSelected = () => {
+        // return location.pathname === props.path;
+        return false;
+    };
 
-  return (
-    <ListItem button key={props.text} onClick={props.handleOptionClick}>
-      <CssBaseline />
-      {/* <Icon className={classes.icon} style={{ color: isItemSelected() ? palette.fifthColor : palette.fourthColor }}>
+    return (
+        <ListItem button key={props.text} onClick={props.handleOptionClick}>
+            <CssBaseline />
+            {/* <Icon className={classes.icon} style={{ color: isItemSelected() ? palette.fifthColor : palette.fourthColor }}>
           {props.icon}
         </Icon> */}
-      <DashboardIcon className={classes.icon} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
-      <ListItemText primary={props.text} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
-    </ListItem>
-  );
+            <DashboardIcon className={classes.icon} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
+            <ListItemText primary={props.text} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
+        </ListItem>
+    );
 };
 
 ItemListWIthIcon.propTypes = {
-  text: PropTypes.string,
-  index: PropTypes.number,
-  icon: PropTypes.func,
-  handleOptionClick: PropTypes.func.isRequired,
-  selectedIndex: PropTypes.number,
+    text: PropTypes.string,
+    index: PropTypes.number,
+    icon: PropTypes.func,
+    handleOptionClick: PropTypes.func.isRequired,
+    selectedIndex: PropTypes.number,
 };
 
 export default ItemListWIthIcon;

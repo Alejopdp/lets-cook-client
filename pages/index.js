@@ -1,19 +1,18 @@
-import React from 'react'
-import LoginForm from '../components/loginForm';
+import React from "react";
+import LoginForm from "../components/loginForm";
 
 const Login = (props) => {
+    // useEffect(() => {
+    //   if (!props.isTokenOk) {
+    //   }
+    // }, [])
 
-  // useEffect(() => {
-  //   if (!props.isTokenOk) {
-  //   }
-  // }, [])
-
-  return (
-    <div>
-      <LoginForm />
-    </div>
-  )
-}
+    return (
+        <div>
+            <LoginForm />
+        </div>
+    );
+};
 
 export default Login;
 

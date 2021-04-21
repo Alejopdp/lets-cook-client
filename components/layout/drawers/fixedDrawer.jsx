@@ -14,61 +14,61 @@ import ItemListWithIcon from "../../molecules/itemListWithIcon/itemListWIthIcon"
 const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.fourthColor,
-  },
-  appBarSpacer: theme.mixins.toolbar,
+    root: {
+        display: "flex",
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.fourthColor,
+    },
+    appBarSpacer: theme.mixins.toolbar,
 }));
 
 const FixedDrawer = (props) => {
-  const classes = useStyles();
-  const [selectedIndex, setselectedIndex] = useState(0);
+    const classes = useStyles();
+    const [selectedIndex, setselectedIndex] = useState(0);
 
-  const handleOptionClick = (path) => {
-    // history.push(path);
-  };
+    const handleOptionClick = (path) => {
+        // history.push(path);
+    };
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        anchor="left"
-      >
-        <div className={classes.appBarSpacer} />
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <Drawer
+                className={classes.drawer}
+                variant="permanent"
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+                anchor="left"
+            >
+                <div className={classes.appBarSpacer} />
 
-        <List>
-          {props.sidebarOptions.map((item, index) => (
-            <ItemListWithIcon
-              text={item.text}
-              key={index}
-              path={item.path}
-              index={index}
-              icon={item.icon}
-              handleOptionClick={() => handleOptionClick(item.path)}
-            />
-          ))}
-        </List>
-      </Drawer>
-    </div>
-  );
+                <List>
+                    {props.sidebarOptions.map((item, index) => (
+                        <ItemListWithIcon
+                            text={item.text}
+                            key={index}
+                            path={item.path}
+                            index={index}
+                            icon={item.icon}
+                            handleOptionClick={() => handleOptionClick(item.path)}
+                        />
+                    ))}
+                </List>
+            </Drawer>
+        </div>
+    );
 };
 
 FixedDrawer.propTypes = {
-  sidebarOptions: PropTypes.array.isRequired,
+    sidebarOptions: PropTypes.array.isRequired,
 };
 
 export default FixedDrawer;
