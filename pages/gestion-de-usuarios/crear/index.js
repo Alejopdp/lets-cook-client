@@ -1,17 +1,50 @@
-import React from 'react'
-import Navbar from '../../../components/layout/navbar/navbar';
+// Utils & config
+import React from 'react';
+import { makeStyles } from "@material-ui/core/styles";
 import CreateUser from '../../../components/createUser';
 
-const Crear = () => {
-  return (
-    <div>
-      {/* <Navbar
-        handleOpenDrawer={handleOpenDrawer}
-        opened={open}
-      /> */}
+// External components
+import Typography from "@material-ui/core/Typography";
 
-      <CreateUser />
-    </div>
+// Internal components
+import LayoutFixedSidebar from "../../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
+
+// Icons & Images
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+const useStyles = makeStyles((theme) => ({
+  backBtn: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "",
+    paddingLeft: theme.spacing(35),
+    paddingTop: theme.spacing(10),
+    '@media (max-width: 780px)' : {
+      border: "1px solid red",
+      paddingLeft: theme.spacing(0),
+    }
+  },
+}));
+
+const Crear = () => {
+  const classes = useStyles();
+
+  return (
+    <>
+      <div className={classes.backBtn}>
+        <ArrowBackIcon />
+
+        <Typography variant="h5">
+          Crear usuario
+        </Typography>
+      </div>
+
+
+      <LayoutFixedSidebar>
+        <CreateUser />
+      </LayoutFixedSidebar>
+    </>
   )
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '../../components/layout/navbar/navbar';
-import RecoverForm from '../../components/recoverForm';
+import NewPassword from '../../components/recoverPassword/newPassword';
 
 const Recover = () => {
   return (
@@ -10,7 +10,7 @@ const Recover = () => {
         // opened={open}
       /> */}
 
-      <RecoverForm />
+      <NewPassword />
     </div>
   )
 }

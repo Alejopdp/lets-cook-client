@@ -3,10 +3,7 @@ import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from 'clsx';
 
-import { login } from "../../helpers/serverRequest/user";
-
 // External components
-import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,10 +11,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Typography from "@material-ui/core/Typography";
-import Link from 'next/link';
 
 // Internal components
-import { emailRegex, pswRegex } from '../../helpers/regex';
+import { pswRegex } from '../../helpers/regex';
 
 // Icons & Images
 import Image from 'next/image';
@@ -35,51 +31,45 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     margin: "0 auto",
-    alignItems: "center"
   },
   paper: {
+    width: "384px",
     background: theme.palette.background.paper,
     padding: theme.spacing(4)
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    width: "384px"
+    // alignItems: "center",
+    paddingTop: theme.spacing(2),
   },
   btnDiv: {
     display: "flex",
     justifyContent: "flex-end",
-    flexWrap: "wrap",
-    marginTop: theme.spacing(1)
   },
   btn: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.background.default,
   },
   margin: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
+  },
+  marginTop: {
+    paddingTop: theme.spacing(1),
   },
   textField: {
     width: '100%',
   },
 }));
 
-
-const LoginForm = () => {
+const NewPassword = () => {
   const classes = useStyles();
 
   const [values, setValues] = React.useState({
-    email: '',
     password: '',
     showPassword: false,
   });
 
-  const [clientErrors, setclientErrors] = React.useState({})
-
-  const [serverError, setserverError] = React.useState(false)
-
-  const isEmail = emailRegex.test(values.email);
   const isPassword = pswRegex.test(values.password);
 
   const handleChange = (prop) => (event) => {
@@ -95,30 +85,6 @@ const LoginForm = () => {
     event.preventDefault();
   };
 
-  const isEmailInValid = () => {
-    return !isEmail && values.email !== ""
-  }
-
-  const handleSubmit = async () => {
-    const res = await login(values.email, values.password)
-
-    if (res.status === 200) {
-      alert("Login exitoso")
-
-    }
-    else if (res.status === 400) {
-      setclientErrors(res.data)
-      // {
-      //   email: "El mensaje de error",
-      //   nombre: "El mensaje de error"
-      // }
-    }
-    else {
-      alert("Falló el login papaa")
-      //setservererror(true)
-    }
-  }
-
   return (
     <>
       <div className={classes.image}>
@@ -133,26 +99,12 @@ const LoginForm = () => {
         <div className={classes.root}>
           <div className={classes.paper}>
             <Typography variant="subtitle1" color="textSecondary">
-              Iniciar sesión
-            </Typography>
+              Recuperar contraseña
+          </Typography>
 
             <form className={classes.form}>
               <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                <TextField
-                  id="outlined-basic"
-                  label="Correo electrónico"
-                  variant="outlined"
-                  type="email"
-                  onChange={handleChange('email')}
-
-                  // error={isEmail ? false : true}
-                  error={isEmailInValid() ? true : clientErrors.email ? true : false}
-                // helperText={isEmail ? null : "Insert valid email"}
-                />
-              </FormControl>
-
-              <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Contraseña</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password">Nueva contraseña</InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-password"
                   type={values.showPassword ? 'text' : 'password'}
@@ -171,29 +123,23 @@ const LoginForm = () => {
                       </IconButton>
                     </InputAdornment>
                   }
-                  labelWidth={85}
+                  labelWidth={137}
                 />
+                <Typography variant="body2" className={classes.marginTop}>La contraseña deberá tener al menos 8 caracteres en total, una mayúscula y al menos 1 número.</Typography>
               </FormControl>
-
-              <Typography variant="body2" color="primary">
-                <Link href="/recupero-de-contrasena">
-                  Olvidé mi contraseña
-                </Link>
-              </Typography>
 
               <div className={classes.btnDiv}>
                 <Button
                   variant="contained"
                   size="large"
                   className={classes.btn}
-                  disabled={isEmail && isPassword ? false : true}
+                  disabled={isPassword ? false : true}
                 // onSubmit={}
                 >
-                    Ingresar
+                  Recuperar contraseña
               </Button>
               </div>
             </form>
-
           </div>
         </div>
       </div>
@@ -201,4 +147,4 @@ const LoginForm = () => {
   )
 };
 
-export default LoginForm;
+export default NewPassword;
