@@ -68,9 +68,11 @@ const NewPassword = (props) => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title="Recuperar contraseña">
+                <PaperWithTitleContainer title={props.isTokenValid ? "Recuperar contraseña" : "Link vencido"}>
                     {success ? (
                         <Success />
+                    ) : !props.isTokenValid ? (
+                        <></>
                     ) : (
                         <NewPasswordForm
                             handleChange={handleChange}
@@ -90,6 +92,7 @@ const NewPassword = (props) => {
 
 NewPassword.propTypes = {
     token: PropTypes.string.isRequired,
+    isTokenValid: PropTypes.bool.isRequired,
     email: PropTypes.string.isRequired,
 };
 

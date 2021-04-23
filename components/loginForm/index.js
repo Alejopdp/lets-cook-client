@@ -144,7 +144,7 @@ const LoginForm = () => {
                         </Typography>
 
                         <div className={classes.btnDiv}>
-                            <Button variant="contained" size="large" disabled={isEmail && isPassword ? false : true} onClick={handleSubmit}>
+                            <Button variant="contained" size="large" disabled={!isEmail || !isPassword} onClick={handleSubmit}>
                                 Ingresar
                             </Button>
                         </div>

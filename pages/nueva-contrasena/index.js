@@ -6,15 +6,9 @@ import { getDataForGeneratingNewPassword, verifyToken } from "../../helpers/serv
 import NewPassword from "../../components/recoverPassword/newPassword";
 
 const Recover = (props) => {
-    useEffect(() => {
-        if (!props.isTokenValid) {
-            alert("Token invalido");
-        }
-    }, []);
-
     return (
         <div>
-            <NewPassword token={props.token} email={props.email} />
+            <NewPassword isTokenValid={props.isTokenValid} token={props.token} email={props.email} />
         </div>
     );
 };
@@ -22,14 +16,23 @@ const Recover = (props) => {
 export default Recover;
 
 export async function getServerSideProps(context) {
-    console.log(context.query);
-    const res = await getDataForGeneratingNewPassword(context.query.token);
+    if (context.query.token) {
+        const res = await getDataForGeneratingNewPassword(context.query.token);
 
-    return {
-        props: {
-            isTokenValid: res.status === 200,
-            email: res.data.email,
-            token: context.query.token,
-        },
-    };
+        return {
+            props: {
+                isTokenValid: !!res && res.status === 200,
+                email: res && res.data.email ? res.data.email : null,
+                token: res ? context.query.token : null,
+            },
+        };
+    } else {
+        return {
+            props: {
+                isTokenValid: false,
+                email: null,
+                token: null,
+            },
+        };
+    }
 }
