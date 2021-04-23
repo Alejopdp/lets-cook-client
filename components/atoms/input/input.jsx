@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -24,7 +24,14 @@ const Input = (props) => {
     const classes = useStyles();
     return (
         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-            <TextField label={props.label} variant="outlined" type={props.type} onChange={props.handleChange} />
+            <TextField
+                name={props.name}
+                label={props.label}
+                variant="outlined"
+                type={props.type}
+                onChange={props.handleChange}
+                value={props.value}
+            />
         </FormControl>
     );
 };
@@ -33,6 +40,7 @@ Input.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
     handleChange: PropTypes.handleChange,
+    value: PropTypes.any.isRequired,
 };
 
 export default Input;
