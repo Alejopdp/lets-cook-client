@@ -63,7 +63,7 @@ export default function LayoutFixedSidebar(props) {
                 <MobileDrawer open={open} onClose={() => setOpen(false)} sidebarOptions={sidebarOptions} />
             </Hidden>
 
-            {props.children}
+            <div style={{ paddingTop: 100, width: "100%" }}>{props.children}</div>
         </div>
     );
 }
