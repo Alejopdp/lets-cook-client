@@ -28,7 +28,7 @@ const PaperWithTitleContainer = (props) => {
     const theme = useTheme();
 
     return (
-        <Box className={classes.root} width={props.width || 384}>
+        <Box className={classes.root} width={props.fullWidth ? "100%" : props.width || 384}>
             <div className={classes.paper}>
                 <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: theme.spacing(3) }}>
                     {props.title}
@@ -42,6 +42,7 @@ const PaperWithTitleContainer = (props) => {
 PaperWithTitleContainer.propTypes = {
     title: PropTypes.string.isRequired,
     width: PropTypes.number,
+    fullWidth: PropTypes.bool,
 };
 
 export default PaperWithTitleContainer;
