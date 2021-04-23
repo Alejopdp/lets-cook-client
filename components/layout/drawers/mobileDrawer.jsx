@@ -19,60 +19,66 @@ import ItemListWithIcon from "../../molecules/itemListWithIcon/itemListWIthIcon"
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.fourthColor,
-  },
-  appBarSpacer: theme.mixins.toolbar,
+    root: {
+        display: "flex",
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.fourthColor,
+    },
+    appBarSpacer: theme.mixins.toolbar,
 }));
 
 const MobileDrawer = (props) => {
-  const classes = useStyles();
-  // const history = useHistory();
+    const classes = useStyles();
+    // const history = useHistory();
 
-  const handleOptionClick = (path) => {
-    props.onClose();
-    // history.push(path);
-  };
+    const handleOptionClick = (path) => {
+        props.onClose();
+        // history.push(path);
+    };
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Drawer
-        className={classes.drawer}
-        variant="temporary"
-        open={props.open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        anchor="left"
-        onClose={props.onClose}
-      >
-        {/* <div className={classes.appBarSpacer} /> */}
-        <Box display="flex" justifyContent="center" alignItems="center" paddingTop={2}>
-          <Image src="/logo.png" alt="logo" width={82} height={28} style={{ margin: "auto" }} layout="fixed" />
-        </Box>
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <Drawer
+                className={classes.drawer}
+                variant="temporary"
+                open={props.open}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+                anchor="left"
+                onClose={props.onClose}
+            >
+                {/* <div className={classes.appBarSpacer} /> */}
+                <Box display="flex" justifyContent="center" alignItems="center" paddingTop={2}>
+                    <Image src="/logo.png" alt="logo" width={82} height={28} style={{ margin: "auto" }} layout="fixed" />
+                </Box>
 
-        <List>
-          {props.sidebarOptions.map((item, index) => (
-            <ItemListWithIcon text={item.text} key={index} index={index} icon={item.icon} handleOptionClick={() => handleOptionClick(item.path)} />
-          ))}
-        </List>
-      </Drawer>
-    </div>
-  );
+                <List>
+                    {props.sidebarOptions.map((item, index) => (
+                        <ItemListWithIcon
+                            text={item.text}
+                            key={index}
+                            index={index}
+                            icon={item.icon}
+                            handleOptionClick={() => handleOptionClick(item.path)}
+                        />
+                    ))}
+                </List>
+            </Drawer>
+        </div>
+    );
 };
 
 MobileDrawer.propTypes = {
-  sidebarOptions: PropTypes.array.isRequired,
+    sidebarOptions: PropTypes.array.isRequired,
 };
 
 export default MobileDrawer;

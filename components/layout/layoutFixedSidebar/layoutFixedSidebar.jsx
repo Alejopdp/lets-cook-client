@@ -16,54 +16,54 @@ import MobileDrawer from "../drawers/mobileDrawer";
 // import AuthContext from "../../contexts/auth/authContext";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  title: {
-    flexGrow: 1,
-  },
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-  },
-  fixedHeight: {
-    height: 240,
-  },
-  appBarSpacer: theme.mixins.toolbar,
+    root: {
+        display: "flex",
+    },
+    title: {
+        flexGrow: 1,
+    },
+    content: {
+        flexGrow: 1,
+        height: "100vh",
+        overflow: "auto",
+    },
+    container: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        display: "flex",
+        overflow: "auto",
+        flexDirection: "column",
+    },
+    fixedHeight: {
+        height: 240,
+    },
+    appBarSpacer: theme.mixins.toolbar,
 }));
 
 export default function LayoutFixedSidebar(props) {
-  const classes = useStyles();
-  // const [token, settoken, isLoading, userInfo] = useContext(AuthContext);
-  const [open, setOpen] = React.useState(false);
+    const classes = useStyles();
+    // const [token, settoken, isLoading, userInfo] = useContext(AuthContext);
+    const [open, setOpen] = React.useState(false);
 
-  const handleOpenDrawer = () => {
-    setOpen(!open);
-  };
+    const handleOpenDrawer = () => {
+        setOpen(!open);
+    };
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Navbar handleOpenDrawer={handleOpenDrawer} opened={open} />
-      <Hidden smDown>
-        <FixedDrawer sidebarOptions={sidebarOptions} />
-      </Hidden>
-      <Hidden mdUp>
-        <MobileDrawer open={open} onClose={() => setOpen(false)} sidebarOptions={sidebarOptions} />
-      </Hidden>
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <Navbar handleOpenDrawer={handleOpenDrawer} opened={open} />
+            <Hidden smDown>
+                <FixedDrawer sidebarOptions={sidebarOptions} />
+            </Hidden>
+            <Hidden mdUp>
+                <MobileDrawer open={open} onClose={() => setOpen(false)} sidebarOptions={sidebarOptions} />
+            </Hidden>
 
-      {props.children}
-    </div>
-  );
+            {props.children}
+        </div>
+    );
 }
