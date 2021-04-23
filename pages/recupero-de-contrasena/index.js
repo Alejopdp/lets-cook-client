@@ -5,11 +5,6 @@ import RecoverPassword from "../../components/recoverPassword/recoverPassword";
 const Recover = () => {
     return (
         <div>
-            {/* <Navbar
-        // handleOpenDrawer={handleOpenDrawer}
-        // opened={open}
-      /> */}
-
             <RecoverPassword />
         </div>
     );

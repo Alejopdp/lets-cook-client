@@ -1,18 +1,35 @@
-import React from "react";
-import Navbar from "../../components/layout/navbar/navbar";
+// Utils & config
+import React, { useEffect } from "react";
+import { getDataForGeneratingNewPassword, verifyToken } from "../../helpers/serverRequests/user";
+
+// Internal components
 import NewPassword from "../../components/recoverPassword/newPassword";
 
-const Recover = () => {
+const Recover = (props) => {
+    useEffect(() => {
+        if (!props.isTokenValid) {
+            alert("Token invalido");
+        }
+    }, []);
+
     return (
         <div>
-            {/* <Navbar
-        // handleOpenDrawer={handleOpenDrawer}
-        // opened={open}
-      /> */}
-
-            <NewPassword />
+            <NewPassword token={props.token} email={props.email} />
         </div>
     );
 };
 
 export default Recover;
+
+export async function getServerSideProps(context) {
+    console.log(context.query);
+    const res = await getDataForGeneratingNewPassword(context.query.token);
+
+    return {
+        props: {
+            isTokenValid: res.status === 200,
+            email: res.data.email,
+            token: context.query.token,
+        },
+    };
+}

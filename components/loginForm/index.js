@@ -1,9 +1,9 @@
 // Utils & config
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 
-import { login } from "../../helpers/serverRequest/user";
+import { login } from "../../helpers/serverRequests/user";
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -12,12 +12,13 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
 
 // Internal components
 import { emailRegex, pswRegex } from "../../helpers/regex";
+import Button from "../atoms/button/button";
+import PaperWithTitleContainer from "../molecules/paperWithTitleContainer/paperWithTitleContainer";
 
 // Icons & Images
 import Image from "next/image";
@@ -33,28 +34,16 @@ const useStyles = makeStyles((theme) => ({
         placeItems: "center",
         minHeight: "75vh",
     },
-    root: {
-        margin: "0 auto",
-        alignItems: "center",
-    },
-    paper: {
-        background: theme.palette.background.paper,
-        padding: theme.spacing(4),
-    },
+
     form: {
         display: "flex",
         flexDirection: "column",
-        width: "384px",
     },
     btnDiv: {
         display: "flex",
         justifyContent: "flex-end",
         flexWrap: "wrap",
-        marginTop: theme.spacing(1),
-    },
-    btn: {
-        backgroundColor: theme.palette.primary.main,
-        color: theme.palette.background.default,
+        marginTop: theme.spacing(3),
     },
     margin: {
         marginBottom: theme.spacing(1),
@@ -67,23 +56,20 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginForm = () => {
     const classes = useStyles();
+    const theme = useTheme();
 
-    const [values, setValues] = React.useState({
+    const [values, setValues] = useState({
         email: "",
         password: "",
         showPassword: false,
     });
-
-    const [clientErrors, setclientErrors] = React.useState({});
-
-    const [serverError, setserverError] = React.useState(false);
+    const [serverError, setserverError] = useState(false);
 
     const isEmail = emailRegex.test(values.email);
     const isPassword = pswRegex.test(values.password);
 
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
-        console.log(values);
     };
 
     const handleClickShowPassword = () => {
@@ -94,24 +80,14 @@ const LoginForm = () => {
         event.preventDefault();
     };
 
-    const isEmailInValid = () => {
-        return !isEmail && values.email !== "";
-    };
-
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         const res = await login(values.email, values.password);
 
         if (res.status === 200) {
             alert("Login exitoso");
-        } else if (res.status === 400) {
-            setclientErrors(res.data);
-            // {
-            //   email: "El mensaje de error",
-            //   nombre: "El mensaje de error"
-            // }
         } else {
-            alert("Falló el login papaa");
-            //setservererror(true)
+            setserverError(res.data.message);
         }
     };
 
@@ -122,68 +98,58 @@ const LoginForm = () => {
             </div>
 
             <div className={classes.center}>
-                <div className={classes.root}>
-                    <div className={classes.paper}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Iniciar sesión
+                <PaperWithTitleContainer title="Iniciar sesión">
+                    <form className={classes.form} onSubmit={handleSubmit}>
+                        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                            <TextField
+                                id="outlined-basic"
+                                label="Correo electrónico"
+                                variant="outlined"
+                                type="email"
+                                onChange={handleChange("email")}
+                            />
+                        </FormControl>
+
+                        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Contraseña</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={values.showPassword ? "text" : "password"}
+                                value={values.password}
+                                onChange={handleChange("password")}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                labelWidth={85}
+                            />
+                        </FormControl>
+
+                        {serverError && (
+                            <Typography variant="body2" color="error" style={{ fontSize: 12 }}>
+                                {serverError}
+                            </Typography>
+                        )}
+
+                        <Typography variant="body2" color="primary" style={{ marginTop: theme.spacing(2) }}>
+                            <Link href="/recupero-de-contrasena">Olvidé mi contraseña</Link>
                         </Typography>
 
-                        <form className={classes.form}>
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <TextField
-                                    id="outlined-basic"
-                                    label="Correo electrónico"
-                                    variant="outlined"
-                                    type="email"
-                                    onChange={handleChange("email")}
-                                    // error={isEmail ? false : true}
-                                    error={isEmailInValid() ? true : clientErrors.email ? true : false}
-                                    // helperText={isEmail ? null : "Insert valid email"}
-                                />
-                            </FormControl>
-
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-password">Contraseña</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-password"
-                                    type={values.showPassword ? "text" : "password"}
-                                    value={values.password}
-                                    onChange={handleChange("password")}
-                                    // error={isPassword ? false : true}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    labelWidth={85}
-                                />
-                            </FormControl>
-
-                            <Typography variant="body2" color="primary">
-                                <Link href="/recupero-de-contrasena">Olvidé mi contraseña</Link>
-                            </Typography>
-
-                            <div className={classes.btnDiv}>
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    className={classes.btn}
-                                    disabled={isEmail && isPassword ? false : true}
-                                    // onSubmit={}
-                                >
-                                    Ingresar
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                        <div className={classes.btnDiv}>
+                            <Button variant="contained" size="large" disabled={isEmail && isPassword ? false : true} onClick={handleSubmit}>
+                                Ingresar
+                            </Button>
+                        </div>
+                    </form>
+                </PaperWithTitleContainer>
             </div>
         </>
     );
