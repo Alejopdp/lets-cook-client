@@ -1,37 +1,10 @@
 import React from "react";
-import {
-    Button,
-    ClickAwayListener,
-    Grow,
-    MenuItem,
-    MenuList,
-    Paper,
-    Popper,
-} from "@material-ui/core";
+import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 import { List as ListIcon } from "@material-ui/icons";
 
 import PropTypes from "prop-types";
 
-const SortDropdownMenu = ({ label, options, handlerOnSelect }) => {
-    const _options = [
-        {
-            label: "Ordenar por nombre: A-Z",
-            code: "sortByNameASC"
-        }, 
-        {
-            label: "Ordenar por nombre: Z-A",
-            code: "sortByNameDESC"
-        }, 
-        {
-            label: "Fecha de publicación: ASC",
-            code: "sortByDateASC"
-        }, 
-        {
-            label: "Fecha de publicación: DESC",
-            code: "sortByDateASC"
-        },
-    ];
-
+const ButtonDropdownMenu = ({ label, options=[], handlerOnSelect }) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -87,29 +60,16 @@ const SortDropdownMenu = ({ label, options, handlerOnSelect }) => {
                         <Paper>
                             <ClickAwayListener onClickAway={_handleClose}>
                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    {options &&
-                                        options.map((item) => {
-                                            <MenuItem
-                                                onClick={(e) => {
-                                                    _handleClose(e);
-                                                    handlerOnSelect && handlerOnSelect(item.code);
-                                                }}
-                                            >
-                                                item.label
-                                            </MenuItem>;
-                                        })}
-
-                                    { !options &&
-                                        _options.map((item) => 
-                                            <MenuItem
-                                                onClick={(e) => {
-                                                    _handleClose(e);
-                                                    handlerOnSelect && handlerOnSelect(item);
-                                                }}
-                                            >
-                                                {item.label}
-                                            </MenuItem>
-                                        )}
+                                    {options.map((item) => (
+                                        <MenuItem
+                                            onClick={(e) => {
+                                                _handleClose(e);
+                                                handlerOnSelect && handlerOnSelect(item);
+                                            }}
+                                        >
+                                            {item.label}
+                                        </MenuItem>
+                                    ))}
                                 </MenuList>
                             </ClickAwayListener>
                         </Paper>
@@ -120,7 +80,7 @@ const SortDropdownMenu = ({ label, options, handlerOnSelect }) => {
     );
 };
 
-SortDropdownMenu.propTypes = {
+ButtonDropdownMenu.propTypes = {
     handlerOnSelect: PropTypes.func,
     label: PropTypes.string,
     options: PropTypes.arrayOf(
@@ -128,7 +88,7 @@ SortDropdownMenu.propTypes = {
             label: PropTypes.string,
             code: PropTypes.string,
         })
-    ),
+    ).isRequired,
 };
 
-export default SortDropdownMenu;
+export default ButtonDropdownMenu;
