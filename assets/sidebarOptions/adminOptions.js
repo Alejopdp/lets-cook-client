@@ -18,7 +18,7 @@ export default [
     {
         icon: "dashboard",
         text: "Clientes",
-        path: "/",
+        path: "/gestion-de-usuarios",
     },
     {
         icon: "dashboard",
@@ -29,7 +29,7 @@ export default [
     {
         icon: "dashboard",
         text: "Recetas",
-        path: "/",
+        path: "/recetas",
     },
     {
         icon: "dashboard",

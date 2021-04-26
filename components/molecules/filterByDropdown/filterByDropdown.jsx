@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm = () => {} }) => {
+const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm = () => {}, lang }) => {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
@@ -120,7 +120,7 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                                             color="default"
                                             label
                                         >
-                                            VOLVER
+                                            {lang["buttonBack"]}
                                         </Button>
                                     </Grid>
                                     <Grid item>
@@ -132,7 +132,7 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                                             color="primary"
                                             label
                                         >
-                                            APLICAR FILTROS
+                                           {lang["buttonConfirm"]}
                                         </Button>
                                     </Grid>
                                 </Grid>

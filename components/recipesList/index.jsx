@@ -1,22 +1,27 @@
 import React, { useState } from "react";
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
-import { Add as AddIcon, PhotoCamera } from "@material-ui/icons";
+import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Add as AddIcon } from "@material-ui/icons";
 import SeacrhInputField from "../atoms/searchInputField/searchInputField";
 import ButtonDropdownMenu from "../atoms/buttonDropdownMenu/ButtonDropdownMenu";
 import FilterByDropdown from "../molecules/filterByDropdown/filterByDropdown";
 import EmptyImage from "../atoms/emptyImage/emptyImage";
 import CardItemList from "../molecules/cardItemList/cardItemList";
+import { useLangStore } from "../../stores/lang";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
         minHeight: "100%",
     },
-    paddingBottom2:{
-        paddingBottom: theme.spacing(2)
-    }
+    paddingBottom2: {
+        paddingBottom: theme.spacing(2),
+    },
 }));
 
-export const RecipesList = () => {
+export const RecipesList = ({ 
+    lang:i18, // Recover Langs passed by main layout component and change variable name for i18 name
+    ...props 
+}) => {
+
     const _recipesItems = [
         {
             sku: "REF021",
@@ -155,8 +160,14 @@ export const RecipesList = () => {
 
     const classes = useStyles();
     const [filtersBy, setFilters] = useState([]);
+    
+    // Recover from store languge iso value and handler for choose lang
+    const [langSelected, changeLang] = useLangStore(({lang, changeLang}) => [lang, changeLang]); 
+    const lang = i18["recipesList"][langSelected];
 
-    const _handlerCreateReceipe = () => {};
+    // TODO: Demo to change de language
+    // IMPORTANT!!! REMOVE  AFTER THE DEMO.
+    const _handlerCreateReceipe = () => { changeLang( langSelected === "es" ? "en" : "es" ) };
     const _handlerSearchText = (text) => {};
     const _handlerSortListBy = (by) => {};
     const _handlerAppllyFilterBy = (filters = []) => setFilters(filters);
@@ -178,7 +189,7 @@ export const RecipesList = () => {
         <Grid container direction="column" spacing={5} className={classes.height100}>
             <Grid item container>
                 <Grid item xs>
-                    <Typography variant="h5">Recetas</Typography>
+                    <Typography variant="h5">{lang["sectionTitle"]}</Typography>
                 </Grid>
                 <Grid item>
                     <Button
@@ -188,21 +199,21 @@ export const RecipesList = () => {
                         startIcon={<AddIcon></AddIcon>}
                         onClick={_handlerCreateReceipe}
                     >
-                        CREAR RECETA
+                        {lang["buttonCreate"]}
                     </Button>
                 </Grid>
             </Grid>
 
             {_recipesItems.length === 0 && (
                 <Grid item xs container justify="center" alignItems="center">
-                    <EmptyImage label={"Aun no se encuentran recetas"} />
+                    <EmptyImage label={lang["labelEmptyList"]} />
                 </Grid>
             )}
 
             {_recipesItems.length > 0 && (
                 <Grid item container spacing={3} justify="center">
                     <Grid item>
-                        <FilterByDropdown handlerOnConfirm={_handlerAppllyFilterBy} optionsSelected={filtersBy} options={_filterOptions} />
+                        <FilterByDropdown lang={i18["filterByDropdown"][langSelected]} handlerOnConfirm={_handlerAppllyFilterBy} optionsSelected={filtersBy} options={_filterOptions} />
                     </Grid>
                     <Grid item xs>
                         <SeacrhInputField handlerOnChange={_handlerSearchText} />

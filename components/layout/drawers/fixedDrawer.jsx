@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { useRouter } from "next/router";
+
 // External components
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -31,10 +33,12 @@ const useStyles = makeStyles((theme) => ({
 
 const FixedDrawer = (props) => {
     const classes = useStyles();
+    const routes = useRouter();
     const [selectedIndex, setselectedIndex] = useState(0);
 
     const handleOptionClick = (path) => {
         // history.push(path);
+        routes.push(path);
     };
 
     return (
