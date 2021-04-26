@@ -11,7 +11,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 const CustomCheckbox = (props) => {
     return (
         <FormControlLabel
-            control={<Checkbox checked={props.checked} onChange={props.handleChange} color="primary" />}
+            control={<Checkbox checked={props.checked} value={props.value} onChange={props.handleChange} color="primary" />}
             label={props.label}
         />
     );
@@ -21,6 +21,7 @@ CustomCheckbox.propTypes = {
     checked: PropTypes.bool.isRequired,
     handleChange: PropTypes.func.isRequired,
     label: PropTypes.string,
+    value: PropTypes.bool.isRequired,
 };
 
 export default CustomCheckbox;

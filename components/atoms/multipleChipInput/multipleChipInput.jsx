@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     textField: {
         width: "100%",
     },
+    deleteIconColorPrimary: {
+        color: theme.palette.text.secondary,
+    },
 }));
 
 const Input = (props) => {
@@ -41,7 +44,9 @@ const Input = (props) => {
                     value.map((option, index) => (
                         <Chip
                             variant="default"
-                            style={{ backgroundColor: theme.palette.primary }}
+                            style={{ color: "#fff" }}
+                            classes={{ deleteIconColorPrimary: classes.deleteIconColorPrimary }}
+                            color="primary"
                             label={option}
                             {...getTagProps({ index })}
                             onDelete={() => props.handleRemoveValue(option)}

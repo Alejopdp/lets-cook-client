@@ -14,6 +14,7 @@ export default function CustomAutocomplete(props) {
             renderInput={(params) => <TextField {...params} label={props.label} variant="outlined" />}
             fullWidth={props.fullWidth}
             value={props.value}
+            onChange={props.onChange}
         />
     );
 }
@@ -23,4 +24,5 @@ CustomAutocomplete.propTypes = {
     fullWidth: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
 };

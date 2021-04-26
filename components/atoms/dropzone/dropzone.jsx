@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core";
 
 // External components
-import Dropzone from "react-dropzone";
+import Dropzone, { useDropzone } from "react-dropzone";
 import Typography from "@material-ui/core/Typography";
 
 // Internal components
@@ -14,6 +14,7 @@ import Backup from "@material-ui/icons/Backup";
 
 const CustomDropzone = (props) => {
     const theme = useTheme();
+    const { isDragActive } = useDropzone();
 
     return (
         <Dropzone>
@@ -21,7 +22,7 @@ const CustomDropzone = (props) => {
                 <section
                     style={{
                         height: 112,
-                        border: `dashed 2px #BABABA`,
+                        border: `dashed 2px ${isDragActive ? theme.palette.primary.main : "#BABABA"}`,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",

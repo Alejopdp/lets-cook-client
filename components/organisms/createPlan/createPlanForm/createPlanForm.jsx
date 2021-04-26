@@ -38,6 +38,9 @@ const CreatePlanForm = (props) => {
     const handleOtherData = (e) => {
         e.preventDefault();
 
+        console.log("Prop: ", e.target.name);
+        console.log("Value: ", e.target.value);
+
         setotherData({
             ...otherData,
             [e.target.name]: e.target.value,
