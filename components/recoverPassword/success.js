@@ -11,42 +11,42 @@ import Link from "next/link";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 const useStyles = makeStyles((theme) => ({
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        paddingTop: theme.spacing(6),
-    },
-    success: {
-        textAlign: "center",
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(2),
-    },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    paddingTop: theme.spacing(6),
+  },
+  success: {
+    textAlign: "center",
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(2),
+  },
 }));
 
 const Success = () => {
-    const classes = useStyles();
+  const classes = useStyles();
 
-    return (
-        <>
-            <div className={classes.success}>
-                <CheckCircleIcon color="primary" style={{ fontSize: 70 }} />
+  return (
+    <>
+      <div className={classes.success}>
+        <CheckCircleIcon color="primary" style={{ fontSize: 70 }} />
 
-                <Typography variant="subtitle2" color="textSecondary">
-                    Solicitud de recupero exitosa
+        <Typography variant="subtitle2" color="textSecondary">
+          Solicitud de recupero exitosa
                 </Typography>
-            </div>
+      </div>
 
-            <Typography variant="body2">
-                Hemos enviado un email al correo electrónico ingresado para que puedas ingresar tu nueva contraseña.
+      <Typography variant="body2">
+        Hemos enviado un email al correo electrónico ingresado para que puedas ingresar tu nueva contraseña.
             </Typography>
 
-            <form className={classes.form}>
-                <Typography variant="body2" color="primary">
-                    <Link href="/">Volver a Iniciar sesión</Link>
-                </Typography>
-            </form>
-        </>
-    );
+      <form className={classes.form}>
+        <Typography variant="body2" color="primary">
+          <Link href="/">Volver a Iniciar sesión</Link>
+        </Typography>
+      </form>
+    </>
+  );
 };
 
 export default Success;

@@ -28,6 +28,7 @@ const CustomButton = (props) => {
             disabled={props.disabled}
             onClick={props.onClick}
             fullWidth={props.fullWidth}
+            startIcon={props.startIcon}
         >
             {props.children}
         </Button>

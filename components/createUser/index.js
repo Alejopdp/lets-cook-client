@@ -93,7 +93,7 @@ const CreateUser = () => {
         setValues({ ...values, [prop]: event.target.value });
     };
 
-    const handleDisable = () => {};
+    const handleDisable = () => { };
 
     return (
         <>
