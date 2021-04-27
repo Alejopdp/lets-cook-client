@@ -39,7 +39,6 @@ const Input = (props) => {
                 value={props.values}
                 freeSolo={props.freeSolo}
                 onChange={props.onChange}
-                on
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                         <Chip

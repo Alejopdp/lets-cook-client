@@ -1,5 +1,5 @@
 // Utils & config
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core";
 
@@ -12,47 +12,70 @@ import Typography from "@material-ui/core/Typography";
 // Icons & images
 import Backup from "@material-ui/icons/Backup";
 
+const baseStyle = {
+    flex: 1,
+    height: 112,
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: "#eeeeee",
+    borderStyle: "dashed",
+    backgroundColor: "#fafafa",
+    color: "#bdbdbd",
+    outline: "none",
+    transition: "border .24s ease-in-out",
+};
+
+const activeStyle = {
+    borderColor: "#2196f3",
+};
+
+const acceptStyle = {
+    borderColor: "#00e676",
+};
+
+const rejectStyle = {
+    borderColor: "#ff1744",
+};
+
 const CustomDropzone = (props) => {
-    const theme = useTheme();
-    const { isDragActive } = useDropzone();
+    const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+        accept: "image/*",
+        maxFiles: props.maxFiles,
+        onDropAccepted: props.handleDropFile,
+    });
+
+    const style = useMemo(
+        () => ({
+            ...baseStyle,
+            ...(isDragActive ? activeStyle : {}),
+            ...(isDragAccept ? acceptStyle : {}),
+            ...(isDragReject ? rejectStyle : {}),
+        }),
+        [isDragActive, isDragReject, isDragAccept]
+    );
 
     return (
-        <Dropzone>
-            {({ getRootProps, getInputProps }) => (
-                <section
-                    style={{
-                        height: 112,
-                        border: `dashed 2px ${isDragActive ? theme.palette.primary.main : "#BABABA"}`,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "#F2F2F2",
-                    }}
-                >
-                    <div
-                        {...getRootProps()}
-                        style={{
-                            height: "100%",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                        }}
-                    >
-                        <input {...getInputProps()} />
-                        <Backup color="primary" fontSize="32px" />
-                        <Typography variant="body1" color="textSecondary" style={{ fontSize: 14, fontWeight: "Medium" }}>
-                            Arrastra una imagen aquí o clickea
-                        </Typography>
-                    </div>
-                </section>
-            )}
-        </Dropzone>
+        <div className="container">
+            <div {...getRootProps({ style })}>
+                <input {...getInputProps()} />
+                <Backup color="primary" fontSize="32px" />
+                <Typography variant="body1" color="textSecondary" style={{ fontSize: 14, fontWeight: "Medium" }}>
+                    Arrastra una imagen aquí o clickea
+                </Typography>
+            </div>
+        </div>
     );
 };
 
-CustomDropzone.propTypes = {};
+CustomDropzone.propTypes = {
+    handleDropFile: PropTypes.func.isRequired,
+    maxFiles: PropTypes.number.isRequired,
+};
 
 export default CustomDropzone;

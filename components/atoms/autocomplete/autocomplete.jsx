@@ -11,15 +11,15 @@ export default function CustomAutocomplete(props) {
         <Autocomplete
             options={props.options}
             getOptionLabel={(option) => option.title}
-            renderInput={(params) => <TextField {...params} label={props.label} variant="outlined" />}
+            renderInput={(params) => <TextField name={props.name} {...params} label={props.label} variant="outlined" />}
             fullWidth={props.fullWidth}
-            value={props.value}
-            onChange={props.onChange}
+            onChange={(e, newValue) => props.onChange(props.name, newValue.value)}
         />
     );
 }
 
 CustomAutocomplete.propTypes = {
+    name: PropTypes.string.isRequired,
     options: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string, value: PropTypes.string })),
     fullWidth: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired,

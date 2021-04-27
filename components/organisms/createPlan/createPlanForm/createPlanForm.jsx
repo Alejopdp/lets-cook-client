@@ -15,16 +15,17 @@ const CreatePlanForm = (props) => {
         name: "",
         description: "",
         sku: "",
-        image: "",
+        image: [],
     });
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
     const [otherData, setotherData] = useState({
-        isActive: true,
+        isActive: "Activo",
         planType: "",
-        frequency: [],
         hasRecipes: false,
     });
+    const [frequency, setfrequency] = useState([]);
+    const [additionalPlans, setadditionalPlans] = useState([]);
 
     const handleGeneralData = (e) => {
         e.preventDefault();
@@ -35,15 +36,10 @@ const CreatePlanForm = (props) => {
         });
     };
 
-    const handleOtherData = (e) => {
-        e.preventDefault();
-
-        console.log("Prop: ", e.target.name);
-        console.log("Value: ", e.target.value);
-
+    const handleOtherData = (propName, newValue) => {
         setotherData({
             ...otherData,
-            [e.target.name]: e.target.value,
+            [propName]: newValue,
         });
     };
 
@@ -74,11 +70,11 @@ const CreatePlanForm = (props) => {
     };
 
     const handleAttributeValuesChange = (index, e) => {
-        if (!e.target.value) return; // Prevents undefined value when removing a chip
-
-        const updatedAttribute = [...attributes[index]];
-
-        if (updatedAttribute[1].every((value) => value !== e.target.value)) {
+        var updatedAttribute = [...attributes[index]];
+        if (!e.target.value) {
+            updatedAttribute[1] = [];
+            updateAttributes(updatedAttribute, index);
+        } else if (updatedAttribute[1].every((value) => value !== e.target.value)) {
             updatedAttribute[1] = [...updatedAttribute[1], e.target.value];
             updateAttributes(updatedAttribute, index);
         } else {
@@ -91,6 +87,16 @@ const CreatePlanForm = (props) => {
 
         updatedAttribute[1] = updatedAttribute[1].filter((val) => val !== value);
         updateAttributes(updatedAttribute, index);
+    };
+
+    const handleFrequencyChange = (e, newValue) => {
+        if (newValue.length === 0) setfrequency(newValue);
+        else if (newValue.every((newFreq) => frequency.some((stateFreq) => newFreq === stateFreq))) return;
+        else setfrequency(newValue);
+    };
+
+    const handleRemoveFrequency = (freqToRemove) => {
+        setfrequency(frequency.filter((freq) => freq !== freqToRemove));
     };
 
     const updateAttributes = (attribute, index) => {
@@ -108,11 +114,57 @@ const CreatePlanForm = (props) => {
         setattributes(newAttributes);
     };
 
+    const handleAdditionalPlansChange = (e) => {
+        if (additionalPlans.every((plan) => plan !== e.target.value)) {
+            setadditionalPlans([...additionalPlans, e.target.value]);
+        } else {
+            setadditionalPlans(additionalPlans.filter((plan) => plan !== e.target.value));
+        }
+    };
+
+    const handleHasRecipes = () => {
+        setotherData({
+            ...otherData,
+            hasRecipes: !otherData.hasRecipes,
+        });
+    };
+
+    const handleDropFile = (files) => {
+        setgeneralData({
+            ...generalData,
+            image: files,
+        });
+    };
+
+    const cartesianProduct = (...array) => {
+        const processedArray = array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat())));
+
+        return processedArray;
+    };
+
+    const getGridRows = () => {
+        const cartesian = cartesianProduct(...attributes.map((attr) => attr[1]));
+        var rows = [];
+        var attributesWithFixedFields = [...attributes, ["Precio lista", []], ["Precio oferta", []], ["SKU", []]];
+
+        for (let i = 0; i < cartesian.length; i++) {
+            var row = {};
+
+            for (let j = 0; j < attributesWithFixedFields.length; j++) {
+                row[attributesWithFixedFields[j][0]] = cartesian[i][j];
+                row["id"] = `${i.toString()}${j.toString()}`; // Obligatorio para data-grid
+            }
+            rows.push(row);
+        }
+
+        return rows;
+    };
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} />
+                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
@@ -121,11 +173,29 @@ const CreatePlanForm = (props) => {
                         handleKeyChange={handleAttributeKeyChange}
                         handleValuesChange={handleAttributeValuesChange}
                         handleRemoveAttributeValue={handleRemoveAttributeValue}
+                        variantsColumns={[
+                            ...attributes.map((attr) => {
+                                return { field: attr[0], headerName: attr[0] };
+                            }),
+                            { field: "Precio lista", headerName: "Precio lista", editable: true },
+                            { field: "Precio oferta", headerName: "Precio oferta", editable: true },
+                            { field: "SKU", headerName: "SKU", editable: true },
+                        ]}
+                        variantsRows={attributes.length > 0 ? getGridRows() : []}
                     />
                 </Grid>
             </Grid>
             <Grid item xs={4} spacing={2}>
-                <Others data={otherData} handleChange={handleOtherData} />
+                <Others
+                    data={otherData}
+                    frequency={frequency}
+                    handleFrequencyChange={handleFrequencyChange}
+                    handleRemoveFrequency={handleRemoveFrequency}
+                    handleChange={handleOtherData}
+                    additionalPlans={additionalPlans}
+                    handleAdditionalPlansChange={handleAdditionalPlansChange}
+                    handleHasRecipes={handleHasRecipes}
+                />
             </Grid>
         </Grid>
     );
