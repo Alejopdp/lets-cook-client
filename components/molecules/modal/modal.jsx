@@ -1,44 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import { Button, Typography } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+export default function Modal(props) {
+  const [open, setOpen] = React.useState(props.setOpen);
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-  spacing: {
-    padding: theme.spacing(1)
-  }
-}));
-
-export default function SimpleModal() {
-  const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
-
-  const handleOpen = () => {
+  const handleClickOpen = () => {
     setOpen(true);
   };
 
@@ -46,30 +17,29 @@ export default function SimpleModal() {
     setOpen(false);
   };
 
-  const body = (
-    <div style={modalStyle} className={classes.paper}>
-        <Typography variant="h6">Eliminar usuario</Typography>
-
-        <Typography variant="body2" className={classes.spacing}>¿Eliminar usuario?</Typography>
-
-        <Button variant="contained" color="primary">Eliminar</Button>
-        <Button variant="contained" color="secondary">Cancelar</Button>
-    </div>
-  );
-
   return (
     <div>
-      <button type="button" onClick={handleOpen}>
-        Open Modal
-      </button>
-      <Modal
-        open={open}
+      <Dialog
+        open={props.open}
         onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        {body}
-      </Modal>
+        <DialogTitle id="alert-dialog-title">{"¿Eliminar usuario?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Esta acción es permanente!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Eliminar usuario
+          </Button>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

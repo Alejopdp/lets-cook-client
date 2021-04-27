@@ -25,7 +25,7 @@ import Grid from '@material-ui/core/Grid'
 import Link from "next/link";
 
 // Internal components
-import SimpleModal from '../../molecules/modal/modal';
+import Modal from '../../molecules/modal/modal';
 import CustomButton from "../../../components/atoms/button/button";
 
 // Icons & Images
@@ -92,7 +92,7 @@ function createData(avatar, name, email, rol) {
 
 const rows = [
     createData("S", "Santiago Castiella", "santiago@lestcooknow.es", "Administrador"),
-    createData("S", "Santiago Castiella", "santiago@lestcooknow.es", "Administrador"),
+    createData("C", "Santiago Castiella", "santiago@lestcooknow.es", "Administrador"),
 ]
 
 const useStyles2 = makeStyles((theme) => ({
@@ -119,6 +119,7 @@ export default function CustomPaginationActionsTable() {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [open, setOpen] = React.useState(false);
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -136,12 +137,13 @@ export default function CustomPaginationActionsTable() {
     }
 
     const handleDelete = () => {
-        alert("Delete");
-        // <SimpleModal />
+        // alert("Delete");
+        setOpen(true)
     }
 
     return (
         <>
+            <Modal open={open}/>
             <Grid item container className={classes.subtitle}>
                 <Grid item xs>
                     <Typography variant="h5">Gestión de usuarios</Typography>
@@ -168,7 +170,7 @@ export default function CustomPaginationActionsTable() {
                             <TableCell component="th" scope="row" className={classes.cells}>
                                 <Typography variant="subtitle1">
                                     Nombre completo
-                            </Typography>
+                                </Typography>
                             </TableCell>
                             <TableCell className={classes.cells}>
                                 <Typography variant="subtitle1">
@@ -186,7 +188,7 @@ export default function CustomPaginationActionsTable() {
 
                     <TableBody>
                         {(rowsPerPage > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : rows).map((row) => (
-                            <TableRow key={row.name}>
+                            <TableRow key={row.avatar}>
                                 <TableCell className={classes.cells}>
                                     <div style={{ display: "flex", justifyContent: "center" }} >
                                         <Avatar>{row.avatar}</Avatar>
@@ -230,7 +232,7 @@ export default function CustomPaginationActionsTable() {
                         <TableRow>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                colSpan={1000}
+                                colSpan={5}
                                 // style={{ display: "flex", justifyContent: "center" }}
                                 // style={{ display: "flex", margin: "auto", }}
                                 count={rows.length}

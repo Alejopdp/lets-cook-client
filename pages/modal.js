@@ -1,11 +1,11 @@
 import React from 'react'
 
-import SimpleModal from '../components/molecules/modal/modal';
+import Modal from '../components/molecules/modal/modal';
 
-const Modal = () => {
+const SimpleModal = () => {
   return (
-    <SimpleModal />
+    <Modal />
   )
 }
 
-export default Modal;
+export default SimpleModal;
