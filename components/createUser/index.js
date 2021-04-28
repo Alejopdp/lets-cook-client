@@ -33,27 +33,18 @@ const roles = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-    center: {
-        display: "flex",
-        placeItems: "center",
-        minHeight: "55vh",
-        margin: "0 auto",
-    },
-    root: {
-        margin: "0 auto",
-        alignItems: "center",
-        placeItems: "center",
-    },
     paper: {
         background: theme.palette.background.paper,
         padding: theme.spacing(4),
         placeItems: "center",
+        width: "384px",
+        margin: "0 auto"
     },
     form: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: "364px",
+        width: "100%",
     },
     btnDiv: {
         display: "flex",
@@ -63,11 +54,6 @@ const useStyles = makeStyles((theme) => ({
     btn: {
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.background.default,
-    },
-    backBtn: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
     },
     margin: {
         margin: theme.spacing(1),
@@ -93,56 +79,50 @@ const CreateUser = () => {
         setValues({ ...values, [prop]: event.target.value });
     };
 
-    const handleDisable = () => {};
+    const handleDisable = () => { };
 
     return (
-        <>
-            <div className={classes.center}>
-                <div className={classes.root}>
-                    <div className={classes.paper}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Datos del usuario
-                        </Typography>
+        <div className={classes.paper}>
+            <Typography variant="subtitle1" color="textSecondary">
+                Datos del usuario
+            </Typography>
 
-                        <form className={classes.form}>
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <TextField id="outlined-basic" label="Nombre" variant="outlined" onChange={handleChange("name")} />
-                            </FormControl>
+            <form className={classes.form}>
+                <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                    <TextField id="outlined-basic" label="Nombre" variant="outlined" onChange={handleChange("name")} />
+                </FormControl>
 
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <TextField id="outlined-basic" label="Apellido" variant="outlined" onChange={handleChange("lastName")} />
-                            </FormControl>
+                <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                    <TextField id="outlined-basic" label="Apellido" variant="outlined" onChange={handleChange("lastName")} />
+                </FormControl>
 
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <TextField
-                                    id="outlined-basic"
-                                    label="Correo electrónico"
-                                    variant="outlined"
-                                    type="email"
-                                    onChange={handleChange("email")}
-                                />
-                            </FormControl>
+                <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                    <TextField
+                        id="outlined-basic"
+                        label="Correo electrónico"
+                        variant="outlined"
+                        type="email"
+                        onChange={handleChange("email")}
+                    />
+                </FormControl>
 
-                            <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                                <TextField select label="Rol" value={values.rol} onChange={handleChange("rol")} variant="outlined">
-                                    {roles.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </FormControl>
-                        </form>
+                <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
+                    <TextField select label="Rol" value={values.rol} onChange={handleChange("rol")} variant="outlined">
+                        {roles.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </FormControl>
+            </form>
 
-                        <div className={classes.btnDiv}>
-                            <Button variant="contained" size="large" className={classes.btn} disabled={handleDisable()}>
-                                Crear usuario
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+            <div className={classes.btnDiv}>
+                <Button variant="contained" size="large" className={classes.btn} disabled={handleDisable()}>
+                    Crear usuario
+                </Button>
             </div>
-        </>
+        </div>
     );
 };
 

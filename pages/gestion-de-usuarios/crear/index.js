@@ -5,6 +5,7 @@ import CreateUser from "../../../components/createUser";
 
 // External components
 import Typography from "@material-ui/core/Typography";
+import Link from "next/link";
 
 // Internal components
 import LayoutFixedSidebar from "../../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
@@ -32,11 +33,13 @@ const Crear = () => {
 
     return (
         <>
-            <div className={classes.backBtn}>
-                <ArrowBackIcon />
+            <Link href="/gestion-de-usuarios">
+                <div className={classes.backBtn}>
+                    <ArrowBackIcon />
 
-                <Typography variant="h5">Crear usuario</Typography>
-            </div>
+                    <Typography variant="h5">Crear usuario</Typography>
+                </div>
+            </Link>
 
             <LayoutFixedSidebar>
                 <CreateUser />
