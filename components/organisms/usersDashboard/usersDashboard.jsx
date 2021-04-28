@@ -14,13 +14,15 @@ const UsersDashboard = (props) => {
         <Container>
             <Grid container>
                 <Grid item xs={12}>
-                    <UsersTable />
+                    <UsersTable rows={props.users} />
                 </Grid>
             </Grid>
         </Container>
     );
 };
 
-UsersDashboard.propTypes = {};
+UsersDashboard.propTypes = {
+    users: PropTypes.array,
+};
 
 export default UsersDashboard;

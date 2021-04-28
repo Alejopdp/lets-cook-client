@@ -80,3 +80,19 @@ export const generateNewPassword = async (email, password, token) => {
         return error.response;
     }
 };
+
+export const getUserList = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            // headers: {
+            //     Authorization: token,
+            // },
+            url: `${serverUrl}/api/v1/user`,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};

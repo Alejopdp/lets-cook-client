@@ -7,11 +7,12 @@ import PropTypes from "prop-types";
 // Internal components
 import Layout from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
+import { getUserList } from "../../helpers/serverRequests/user";
 
 const UsersPage = (props) => {
     return (
         <Layout>
-            <UsersDashboard />
+            <UsersDashboard users={props.users} />
         </Layout>
     );
 };
@@ -19,3 +20,11 @@ const UsersPage = (props) => {
 UsersPage.propTypes = {};
 
 export default UsersPage;
+
+export async function getServerSideProps(context) {
+    const res = await getUserList();
+
+    return {
+        props: { users: res.data ? res.data : []},
+    };
+}
