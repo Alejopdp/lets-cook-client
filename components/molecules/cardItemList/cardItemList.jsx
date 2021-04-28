@@ -9,15 +9,22 @@ const useStyles = makeStyles((theme) => ({
     },
     width220: {
         maxWidth: 300,
-        width:"100%"
+        width: "100%",
     },
 }));
 
-const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, handlerScheduler = () => {} }) => {
+const CardItemList = ({ 
+    item, 
+    handlerEdit = () => {}, 
+    handlerDelete = () => {}, 
+    handlerScheduler = () => {} 
+}) => {
     const classes = useStyles();
+    const defaultImage = "/static/images/placeholder-image.png";
+    const image = Boolean(item.imageUrl) ? item.imageUrl : defaultImage;
     return (
         <Card className={classes.width220}>
-            <CardMedia className={classes.height140} image="/static/images/placeholder-image.png" title="Contemplative Reptile" />
+            <CardMedia className={classes.height140} image={image} title="Contemplative Reptile" />
             <CardContent>
                 <Typography color="textSecondary" variant="overline">
                     SKU: {item.sku}
@@ -26,12 +33,13 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
                     {item.name}
                 </Typography>
                 <Typography color="textSecondary" variant="body1" paragraph={true} gutterBottom>
-                    {item.description}
+                    {item.shortDescription}
                 </Typography>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <TimeIcon color="primary" fontSize="small" />
                     <Typography color="textSecondary" noWrap={true}>
-                        <i>{item.schedule.join(", ")}</i>
+                        {/* TODO: Add schedule */}
+                        <i>{["10-17 Abril", "18-25 Abril", "26-03 Mayo"].join(", ")}</i>
                     </Typography>
                 </div>
             </CardContent>
@@ -75,11 +83,18 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
 };
 
 CardItemList.propTypes = {
-    item: PropTypes.exact({
-        sku: PropTypes.string,
+    item: PropTypes.shape({
+        id: PropTypes.number,
         name: PropTypes.string,
-        description: PropTypes.string,
-        schedule: PropTypes.arrayOf(PropTypes.string),
+        sku: PropTypes.string,
+        shortDescription: PropTypes.string,
+        longDescription: PropTypes.string,
+        cookDuration: PropTypes.string,
+        difficultyLevel: PropTypes.string,
+        imageUrl: PropTypes.string,
+        weight: PropTypes.string,
+        backOfficeTags: PropTypes.arrayOf(PropTypes.string),
+        imageTags: PropTypes.arrayOf(PropTypes.string),
     }),
     handlerEdit: PropTypes.func,
     handlerDelete: PropTypes.func,

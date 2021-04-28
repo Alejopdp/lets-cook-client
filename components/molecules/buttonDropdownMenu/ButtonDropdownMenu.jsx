@@ -60,8 +60,9 @@ const ButtonDropdownMenu = ({ label, options=[], handlerOnSelect }) => {
                         <Paper>
                             <ClickAwayListener onClickAway={_handleClose}>
                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    {options.map((item) => (
+                                    {options.map((item, key) => (
                                         <MenuItem
+                                            key={key}
                                             onClick={(e) => {
                                                 _handleClose(e);
                                                 handlerOnSelect && handlerOnSelect(item);

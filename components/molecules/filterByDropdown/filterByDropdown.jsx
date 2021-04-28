@@ -88,8 +88,8 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                                             <Grid item container>
                                                 <FormGroup autoFocusItem={open} row>
                                                     <Grid item container direction="column">
-                                                        {column.items.map((item) => (
-                                                            <Grid item xs>
+                                                        {column.items.map((item, key) => (
+                                                            <Grid item xs key={key}>
                                                                 <FormControlLabel
                                                                     autoFocusItem={open}
                                                                     control={
