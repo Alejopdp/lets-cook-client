@@ -59,6 +59,9 @@ const Index = (props) => {
             case "gestion-de-usuarios/modificar":
                 return <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} />;
 
+            case "planes":
+                return <></>;
+
             default:
                 return (
                     <Box width="100%" height="100vh" className={classes.root}>
