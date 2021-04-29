@@ -161,6 +161,7 @@ const CreateUser = (props) => {
 CreateUser.propTypes = {
     buttonText: PropTypes.string.isRequired,
     creation: PropTypes.bool.isRequired,
+    roles: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default CreateUser;

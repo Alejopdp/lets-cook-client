@@ -33,8 +33,8 @@ const ItemListWIthIcon = (props) => {
         <ListItem button key={props.text} onClick={props.handleOptionClick}>
             <CssBaseline />
             {/* <Icon className={classes.icon} style={{ color: isItemSelected() ? palette.fifthColor : palette.fourthColor }}>
-          {props.icon}
-        </Icon> */}
+                {props.icon}
+            </Icon> */}
             <DashboardIcon className={classes.icon} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
             <ListItemText primary={props.text} style={{ color: isItemSelected() ? palette.primaryColor : palette.text.secondary }} />
         </ListItem>
