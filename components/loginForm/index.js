@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
-
 import { login } from "../../helpers/serverRequests/user";
+import { useRouter } from "next/router";
+import { setItemInLocalStorage } from "../../helpers/localStorage/localStorage";
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const LoginForm = () => {
     const classes = useStyles();
     const theme = useTheme();
-
+    const router = useRouter();
     const [values, setValues] = useState({
         email: "",
         password: "",
@@ -85,7 +86,8 @@ const LoginForm = () => {
         const res = await login(values.email, values.password);
 
         if (res.status === 200) {
-            alert("Login exitoso");
+            setItemInLocalStorage("token", res.data.token);
+            router.push("/dashboard");
         } else {
             setserverError(res.data.message);
         }

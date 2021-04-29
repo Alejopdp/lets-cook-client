@@ -5,9 +5,12 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../theme";
+import { isAuthenticated } from "../helpers/auth/auth";
+import { useRouter } from "next/router";
 
 export default function MyApp(props) {
     const { Component, pageProps } = props;
+    const router = useRouter();
 
     React.useEffect(() => {
         // Remove the server-side injected CSS.
@@ -15,6 +18,14 @@ export default function MyApp(props) {
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
         }
+
+        const isUserAuthenticated = async () => {
+            const hasAuth = await isAuthenticated();
+
+            if (!hasAuth) router.push("/");
+        };
+
+        isUserAuthenticated();
     }, []);
 
     return (

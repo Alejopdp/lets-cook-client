@@ -1,13 +1,14 @@
 // Utils & config
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import CreateUser from "../../../components/createUser";
+import { getRoleList } from "../../../helpers/serverRequests/role";
 
 // External components
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
 
 // Internal components
+import CreateUser from "../../../components/createUser";
 import LayoutFixedSidebar from "../../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 
 // Icons & Images
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Crear = () => {
+const Crear = (props) => {
     const classes = useStyles();
 
     return (
@@ -36,16 +37,25 @@ const Crear = () => {
             <Link href="/gestion-de-usuarios">
                 <div className={classes.backBtn}>
                     <ArrowBackIcon />
-
                     <Typography variant="h5">Crear usuario</Typography>
                 </div>
             </Link>
 
             <LayoutFixedSidebar>
-                <CreateUser />
+                <CreateUser buttonText="Crear usuario" roles={props.roles} creation={true} user={{}} />
             </LayoutFixedSidebar>
         </>
     );
 };
+
+export async function getServerSideProps(context) {
+    const res = await getRoleList();
+
+    return {
+        props: {
+            roles: res.data ? res.data : [],
+        },
+    };
+}
 
 export default Crear;
