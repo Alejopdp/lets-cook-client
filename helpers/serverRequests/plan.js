@@ -9,7 +9,7 @@ export const getPlanList = async () => {
             url: `${serverUrl}/plan`,
         });
 
-        return res.data;
+        return res;
     } catch (error) {
         return error.response;
     }

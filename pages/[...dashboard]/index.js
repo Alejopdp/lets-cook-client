@@ -1,18 +1,18 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
+import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 // Internal components
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import RecipesList from "../../components/recipesList";
 import CreateUser from "../../components/createUser";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
-import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
+import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,7 +60,7 @@ const Index = (props) => {
                 return <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} />;
 
             case "planes":
-                return <></>;
+                return <PlansDashboard plans={props.plans} />;
 
             default:
                 return (
@@ -78,6 +78,8 @@ Index.propTypes = {};
 export async function getServerSideProps(context) {
     const langs = require("../../lang");
     const props = await pagesPropsGetter(context.params, context.locale);
+
+    console.log("PROPS: ", props);
 
     return {
         props: { ...props, langs: { ...langs } },
