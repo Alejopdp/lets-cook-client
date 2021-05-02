@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
 import { Add as AddIcon } from "@material-ui/icons";
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 import SeacrhInputField from "../molecules/searchInputField/searchInputField";
 import ButtonDropdownMenu from "../molecules/buttonDropdownMenu/ButtonDropdownMenu";
 import FilterByDropdown from "../molecules/filterByDropdown/filterByDropdown";
 import EmptyImage from "../molecules/emptyImage/emptyImage";
 import CardItemList from "../molecules/cardItemList/cardItemList";
-import SimpleModal from "../molecules/simpleModal/simpleModal";
 import ListCheckboxModal from "../molecules/listCheckboxModal/listCheckboxModal";
-import { useSnackbar } from 'notistack';
+import SimpleModal from "../molecules/simpleModal/simpleModal";
+import RefreshButton from "../atoms/refresh-button/refreshButton";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const RecipesList = ({recipesList = [] }) => {
+export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRequestError }) => {
     const _sortOptions = [
         {
             label: "Ordenar por nombre: A-Z",
@@ -43,89 +45,68 @@ export const RecipesList = ({recipesList = [] }) => {
     const _filterOptions = [
         {
             columnLabel: "Calendario",
-            items: [
-                {
-                    label: "Sin programar",
-                    code: "calendar:none",
-                },
-                {
-                    label: "10-17 Abril",
-                    code: "calendar:april:10:17",
-                },
-                {
-                    label: "18-25 Abril",
-                    code: "calendar:april:18:25",
-                },
-            ],
+            items: filterList.weeks.map(({ id, label }) => ({
+                id: `${id}:${label}`,
+                label,
+            })),
         },
         {
             columnLabel: "Planes relacionados",
-            items: [
-                {
-                    label: "Plan ahorro",
-                    code: "plan:savings",
-                },
-                {
-                    label: "Plan familiar",
-                    code: "plan:familiar",
-                },
-                {
-                    label: "Plan vegetariano",
-                    code: "plan:vegetarian",
-                },
-            ],
+            items: filterList.plans.map(({ id, description }) => ({
+                id: `${id}:${description}`,
+                label: description,
+            })),
         },
         {
             columnLabel: "Tags",
-            items: [
-                {
-                    label: "Vegano",
-                    code: "tag:vegan",
-                },
-                {
-                    label: "Vegetariano",
-                    code: "tag:vegetarian",
-                },
-                {
-                    label: "Pollo",
-                    code: "tag:chicken",
-                },
-            ],
+            items: filterList.tags.map((tag) => ({
+                id: `${tag}:${tag}`,
+                label: tag,
+            })),
         },
     ];
 
     const defaultRecipeState = { item: null, index: -1 };
 
     const classes = useStyles();
+    const router = useRouter();
     const [filtersBy, setFilters] = useState([]);
     const [recipeSelected, selectRecipe] = useState(defaultRecipeState);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openSchedulerDialog, setOpenSchedulerDialog] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const _handlerCreateReceipe = () => { 
-        enqueueSnackbar('Se ha eliminado la receta correctamente', { 
-            variant: 'success',
-        });
+    const _handlerCreateReceipe = () => {
+        router.push("recetas/crear");
     };
+
     const _handlerSearchText = (text) => {};
     const _handlerSortListBy = (by) => {};
-    const _handlerAppllyFilterBy = (filters = []) => setFilters(filters);
-    const _handlerRemoveFilter = ({ code }) => {
-        const index = filtersBy.findIndex(({ code: _code }) => code === _code);
+    const _handlerApplyFilterBy = (filters = []) => setFilters(filters);
+    const _handlerRemoveFilter = ({ id }) => {
+        const index = filtersBy.findIndex(({ id: _id }) => id === _id);
         if (index < 0) {
             return;
         }
         const newOptions = [...filtersBy];
         newOptions.splice(index, 1);
         setFilters(newOptions);
+        // TODO: put here code for remove filters
     };
 
-    const _handlerEditReceipe = (index, item) => {};
+    const _handlerEditRecipe = (index, item) => {
+        router.push("/recetas/modificar/[id]", `recetas/modificar/${item.id}`);
+    };
 
     const _handlerDeleteReceipe = (index, item) => {
         selectRecipe({ item, index });
         setOpenDeleteDialog(true);
+
+        // TODO: put here code for delete recipe
+
+        enqueueSnackbar('Se ha eliminado la receta correctamente', {
+            variant: 'success',
+        });
     };
 
     const _handlerSchedulerReceipe = (index, item) => {
@@ -153,10 +134,21 @@ export const RecipesList = ({recipesList = [] }) => {
         selectRecipe(defaultRecipeState);
     };
 
+    const _handlerRetryLoadRecipeRequest = () => router.reload();
+
+    useEffect(() => {
+        if (hasRequestError) {
+            enqueueSnackbar("Error de servidor. Intenta nuevamente", {
+                variant: "error",
+                persist: true,
+                action: () => <RefreshButton handleOnclick={_handlerRetryLoadRecipeRequest}/>,
+            });
+        }
+    }, [hasRequestError]);
+
     return (
         <>
             <Grid container direction="column" spacing={5} className={classes.height100}>
-
                 {/* RECIPES TITLE */}
 
                 <Grid item container>
@@ -184,13 +176,13 @@ export const RecipesList = ({recipesList = [] }) => {
                     </Grid>
                 )}
 
-                {/* RECIPE FILTER BUTTON */}
+                {/* RECIPE FILTERS AND SORT */}
 
                 {recipesList.length > 0 && (
                     <Grid item container spacing={3} justify="center">
                         <Grid item>
                             <FilterByDropdown
-                                handlerOnConfirm={_handlerAppllyFilterBy}
+                                handlerOnConfirm={_handlerApplyFilterBy}
                                 optionsSelected={filtersBy}
                                 options={_filterOptions}
                             />
@@ -204,7 +196,7 @@ export const RecipesList = ({recipesList = [] }) => {
                     </Grid>
                 )}
 
-                {/* RECIPE SEARCH INPUT */}
+                {/* RECIPE CHIPS */}
 
                 {filtersBy.length > 0 && (
                     <Grid
@@ -237,13 +229,13 @@ export const RecipesList = ({recipesList = [] }) => {
                         alignItems="flex-start"
                         wrap="wrap"
                     >
-                        {recipesList.map((receipe, index) => (
+                        {recipesList.map((recipe, index) => (
                             <Grid item xs="auto" sm={6} md={3} key={index}>
                                 <CardItemList
-                                    item={receipe}
-                                    handlerDelete={(item) => _handlerDeleteReceipe(index, item)}
-                                    handlerEdit={(item) => _handlerEditReceipe(index, item)}
-                                    handlerScheduler={(item) => _handlerSchedulerReceipe(index, item)}
+                                    item={recipe}
+                                    handlerDelete={() => _handlerDeleteReceipe(index, recipe)}
+                                    handlerEdit={() => _handlerEditRecipe(index, recipe)}
+                                    handlerScheduler={() => _handlerSchedulerReceipe(index, recipe)}
                                 ></CardItemList>
                             </Grid>
                         ))}
@@ -289,7 +281,7 @@ export const RecipesList = ({recipesList = [] }) => {
     );
 };
 
-RecipesList.prototype = {
+RecipesList.protoType = {
     recipesList: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.number,
@@ -303,8 +295,26 @@ RecipesList.prototype = {
             weight: PropTypes.string,
             backOfficeTags: PropTypes.arrayOf(PropTypes.string),
             imageTags: PropTypes.arrayOf(PropTypes.string),
+            availableWeeks: PropTypes.arrayOf(
+                PropTypes.exact({
+                    id: PropTypes.number,
+                    label: PropTypes.string,
+                })
+            ),
+            availableMonths: PropTypes.arrayOf(PropTypes.string),
         })
     ),
+    filterList: PropTypes.exact({
+        plans: PropTypes.exact({
+            id: PropTypes.number,
+            description: PropTypes.string,
+        }),
+        weeks: PropTypes.exact({
+            id: PropTypes.number,
+            label: PropTypes.string,
+        }),
+        tags: PropTypes.arrayOf(PropTypes.string),
+    }),
 };
 
 export default RecipesList;

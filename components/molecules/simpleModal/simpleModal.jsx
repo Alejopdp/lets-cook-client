@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
     Button,
     makeStyles,
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SimpleModal({
+const SimpleModal = ({
     title,
     paragraphs = [],
     cancelButtonText,
@@ -34,7 +35,7 @@ export default function SimpleModal({
     handleCancelButton = () => {},
     open,
     handleClose = () => {},
-}) {
+}) => {
     const classes = useStyles();
 
     return (
@@ -42,7 +43,7 @@ export default function SimpleModal({
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 {paragraphs.map((paragraph, index) => (
-                    <DialogContentText item key={index}>
+                    <DialogContentText key={index}>
                         {paragraph}
                     </DialogContentText>
                 ))}
@@ -58,3 +59,16 @@ export default function SimpleModal({
         </Dialog>
     );
 }
+
+SimpleModal.propTypes = {
+    title: PropTypes.string,
+    paragraphs: PropTypes.arrayOf(PropTypes.string),
+    cancelButtonText: PropTypes.string,
+    confirmButtonText: PropTypes.string,
+    handleConfirmButton: PropTypes.func,
+    handleCancelButton: PropTypes.func,
+    open: PropTypes.bool,
+    handleClose: PropTypes.func,
+};
+
+export default SimpleModal;

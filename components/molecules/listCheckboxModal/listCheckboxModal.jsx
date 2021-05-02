@@ -15,7 +15,7 @@ const ListCheckboxModal = ({
     const [_optionsSelected, setOptionsSelected] = useState(optionsSelected);
 
     const handleChecked = (itemFilter, checked) => {
-        const index = _optionsSelected.findIndex(({ code: _code }) => itemFilter.code === _code);
+        const index = _optionsSelected.findIndex(({ id: _id }) => itemFilter.id === _id);
         if (checked) {
             if (index > -1) {
                 return;
@@ -47,9 +47,9 @@ const ListCheckboxModal = ({
                                     control={
                                         <Checkbox
                                             onChange={(e) => handleChecked(item, e.target.checked)}
-                                            name={item.code}
+                                            name={item.id}
                                             color="primary"
-                                            checked={_optionsSelected.some(({ code }) => item.code === code)}
+                                            checked={_optionsSelected.some(({ id }) => item.id === id)}
                                         />
                                     }
                                     label={item.label}

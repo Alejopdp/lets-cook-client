@@ -2,7 +2,7 @@ import React from "react";
 import { Box, makeStyles } from "@material-ui/core";
 import { RecipesList } from "../../components/recipesList";
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
-import { loadRecipesList } from "../../helpers/serverRequests/recipe";
+import { loadFiltersList, loadRecipesList } from "../../helpers/serverRequests/recipe";
 import { SnackbarProvider } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,30 +12,38 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: theme.spacing(8),
     },
 }));
-const RecipesPage = ({ recipesList = [] }) => {
+const RecipesPage = ({ recipesList = [], filterList = [], hasError }) => {
     const classes = useStyles();
-    
+
     return (
         <LayoutFixedSidebar>
             <Box width="100%" height="100vh" className={classes.root}>
-            {/* https://iamhosseindhv.com/notistack */}
-            <SnackbarProvider preventDuplicate maxSnack={3}>
-                <RecipesList recipesList={recipesList} />
-            </SnackbarProvider>
+                {/* https://iamhosseindhv.com/notistack */}
+                <SnackbarProvider preventDuplicate maxSnack={3}>
+                    <RecipesList 
+                        filterList={filterList} 
+                        recipesList={recipesList}
+                        hasError={hasError} />
+                </SnackbarProvider>
             </Box>
         </LayoutFixedSidebar>
     );
 };
 
 export async function getServerSideProps(context) {
-    const token = context.query.token || "test"; // TODO: REMOVE "test"
+    // TODO: IMPORTANT!!! Remove "test"
+    const token = context.query.token || "test";
     if (token) {
-        const res = await loadRecipesList(token);
+        let hasError = false;
+        const res = await Promise.all([loadRecipesList(token), loadFiltersList(token)]);
+        if(res.status >= 500) { hasError = true; }
         return {
             props: {
-                isTokenValid: !!res && res.status === 200,
-                recipesList: res.data,
+                isTokenValid: !!res[0] && !!res[1] && res.status === 200,
+                recipesList: res[0].data,
+                filterList: res[1].data,
                 token: res ? token : null,
+                hasError
             },
         };
     } else {
