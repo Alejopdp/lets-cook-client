@@ -12,6 +12,7 @@ import CardItemList from "../molecules/cardItemList/cardItemList";
 import ListCheckboxModal from "../molecules/listCheckboxModal/listCheckboxModal";
 import SimpleModal from "../molecules/simpleModal/simpleModal";
 import RefreshButton from "../atoms/refresh-button/refreshButton";
+import { useSortBy } from "../../helpers/sortBy/sortBy";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRequestError }) => {
+export const RecipesList = ({ recipesList: responseRecipesList = [], filterList = [], hasError: hasRequestError }) => {
     const _sortOptions = [
         {
             label: "Ordenar por nombre: A-Z",
@@ -46,52 +47,141 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
         {
             columnLabel: "Calendario",
             items: filterList.weeks.map(({ id, label }) => ({
-                id: `${id}:${label}`,
+                id: `weeks:${id}:${label}`,
                 label,
             })),
         },
         {
             columnLabel: "Planes relacionados",
             items: filterList.plans.map(({ id, description }) => ({
-                id: `${id}:${description}`,
+                id: `plans:${id}:${description}`,
                 label: description,
             })),
         },
         {
             columnLabel: "Tags",
-            items: filterList.tags.map((tag) => ({
-                id: `${tag}:${tag}`,
+            items: filterList.tags.map((tag, index) => ({
+                id: `tags:${index}:${tag}`,
                 label: tag,
             })),
         },
     ];
 
     const defaultRecipeState = { item: null, index: -1 };
+    let handleDebounce;
 
     const classes = useStyles();
     const router = useRouter();
-    const [filtersBy, setFilters] = useState([]);
+    const useSort = useSortBy();
+
+    const [recipesList, setRecipesList] = useState(responseRecipesList);
+    const [filters, setFilters] = useState([]);
+    const [textToFilter, setTextToFilter] = useState("");
+    const [sortBy, setSortBy] = useState(_sortOptions[0]);
     const [recipeSelected, selectRecipe] = useState(defaultRecipeState);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openSchedulerDialog, setOpenSchedulerDialog] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const _handlerCreateReceipe = () => {
+    const _handleCreateReceipe = () => {
         router.push("recetas/crear");
     };
-
-    const _handlerSearchText = (text) => {};
-    const _handlerSortListBy = (by) => {};
-    const _handlerApplyFilterBy = (filters = []) => setFilters(filters);
-    const _handlerRemoveFilter = ({ id }) => {
-        const index = filtersBy.findIndex(({ id: _id }) => id === _id);
+    const _handleSortListBy = (by, array) => {
+        setSortBy(by);
+        _applyFiltersAndSort({
+            textToFilter,
+            sortBy: by,
+            filters
+        });
+    };
+    const _handleSearchText = (text = "") => {
+        clearTimeout(handleDebounce);
+        handleDebounce = setTimeout(() => {
+            setTextToFilter(text);
+            _applyFiltersAndSort({
+                textToFilter: text,
+                sortBy,
+                filters
+            });
+        }, 300);
+    };
+    const _handleApplyFilters = (_filters = []) => {
+        setFilters(_filters);
+        _applyFiltersAndSort({
+            textToFilter,
+            sortBy: by,
+            filters: _filters
+        });
+    };
+    const _handleRemoveFilter = ({ id }) => {
+        const index = filters.findIndex(({ id: _id }) => id === _id);
         if (index < 0) {
             return;
         }
-        const newOptions = [...filtersBy];
+        const newOptions = [...filters];
         newOptions.splice(index, 1);
-        setFilters(newOptions);
-        // TODO: put here code for remove filters
+        _handleApplyFilters(newOptions)
+    };
+
+    const _applyFiltersAndSort = ({ 
+        textToFilter: _textToFilter,
+        filters: _filters,
+        sortBy: _sortBy
+    }) => {
+
+        let sort;
+        let field;
+
+        // Filters
+
+        const recipesFiltered = responseRecipesList.filter((recipe) => {
+            let hasText = false;
+            let hasTags = true;
+
+            // Filter by name or SKU
+            if (recipe.name.includes(_textToFilter) || recipe.sku.includes(_textToFilter)) {
+                hasText = true;
+            }
+            // Filter by tags
+            // TODO: Code here to filter by tags
+
+            return hasText && hasTags;
+        });
+
+        // Sort by Name or Create Date
+
+        switch (_sortBy.code) {
+            case "sortByNameASC":
+                sort = "ASC";
+                field = "name";
+                break;
+            case "sortByNameDESC":
+                sort = "DESC";
+                field = "name";
+                break;
+            case "sortByDateASC":
+                sort = "ASC";
+                // TODO: Add create_dt to model
+                // field = "?";
+                throw "TODO: Sort not implemented yet";
+                break;
+            case "sortByDateASC":
+                sort = "DESC";
+                // TODO: Add create_dt to model
+                // field = "?";
+                throw "TODO: Sort not implemented yet";
+                break;
+        }
+
+        const sorted = useSort({
+            array: recipesFiltered,
+            objKey: field,
+            sortBy: sort,
+        });
+
+        // Set Recipes Sorted and filtered
+
+        setRecipesList(sorted);
     };
 
     const _handlerEditRecipe = (index, item) => {
@@ -101,12 +191,6 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
     const _handlerDeleteReceipe = (index, item) => {
         selectRecipe({ item, index });
         setOpenDeleteDialog(true);
-
-        // TODO: put here code for delete recipe
-
-        enqueueSnackbar('Se ha eliminado la receta correctamente', {
-            variant: 'success',
-        });
     };
 
     const _handlerSchedulerReceipe = (index, item) => {
@@ -131,6 +215,9 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
         setOpenDeleteDialog(false);
         // TODO: put here code for delete recipe
         // console.log(recipeSelected);
+        enqueueSnackbar("Se ha eliminado la receta correctamente", {
+            variant: "success",
+        });
         selectRecipe(defaultRecipeState);
     };
 
@@ -141,7 +228,7 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
             enqueueSnackbar("Error de servidor. Intenta nuevamente", {
                 variant: "error",
                 persist: true,
-                action: () => <RefreshButton handleOnclick={_handlerRetryLoadRecipeRequest}/>,
+                action: () => <RefreshButton handleOnclick={_handlerRetryLoadRecipeRequest} />,
             });
         }
     }, [hasRequestError]);
@@ -161,7 +248,7 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
                             color="primary"
                             size="small"
                             startIcon={<AddIcon></AddIcon>}
-                            onClick={_handlerCreateReceipe}
+                            onClick={_handleCreateReceipe}
                         >
                             CREAR RECETA
                         </Button>
@@ -170,7 +257,7 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
 
                 {/* RECIPES EMPTY IMAGE */}
 
-                {recipesList.length === 0 && (
+                {responseRecipesList.length === 0 && (
                     <Grid item xs container justify="center" alignItems="center">
                         <EmptyImage label={"Aun no se encuentran recetas"} />
                     </Grid>
@@ -178,27 +265,32 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
 
                 {/* RECIPE FILTERS AND SORT */}
 
-                {recipesList.length > 0 && (
+                {responseRecipesList.length > 0 && (
                     <Grid item container spacing={3} justify="center">
                         <Grid item>
                             <FilterByDropdown
-                                handlerOnConfirm={_handlerApplyFilterBy}
-                                optionsSelected={filtersBy}
+                                handlerOnConfirm={_handleApplyFilters}
+                                optionsSelected={filters}
                                 options={_filterOptions}
                             />
                         </Grid>
                         <Grid item xs>
-                            <SeacrhInputField handlerOnChange={_handlerSearchText} />
+                            <SeacrhInputField handlerOnChange={_handleSearchText} />
                         </Grid>
                         <Grid item>
-                            <ButtonDropdownMenu options={_sortOptions} label={_sortOptions[0].label} handlerOnSelect={_handlerSortListBy} />
+                            <ButtonDropdownMenu
+                                options={_sortOptions}
+                                label={sortBy.label}
+                                selected={sortBy.code}
+                                handlerOnSelect={_handleSortListBy}
+                            />
                         </Grid>
                     </Grid>
                 )}
 
                 {/* RECIPE CHIPS */}
 
-                {filtersBy.length > 0 && (
+                {filters.length > 0 && (
                     <Grid
                         container
                         spacing={1}
@@ -209,9 +301,9 @@ export const RecipesList = ({ recipesList = [], filterList = [], hasError: hasRe
                         wrap="wrap"
                         className={classes.paddingBottom2}
                     >
-                        {filtersBy.map((itemFilter, index) => (
+                        {filters.map((itemFilter, index) => (
                             <Grid item key={index}>
-                                <Chip label={itemFilter.label} onDelete={() => _handlerRemoveFilter(itemFilter)} color="primary" />
+                                <Chip label={itemFilter.label} onDelete={() => _handleRemoveFilter(itemFilter)} color="primary" />
                             </Grid>
                         ))}
                     </Grid>
