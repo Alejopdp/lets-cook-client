@@ -19,7 +19,7 @@ import Button from "@material-ui/core/Button";
 // Internal components
 import CreateButton from "../../atoms/createButton/createButton";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
-import SearchInputFIeld from "../../atoms/searchInputField/searchInputField";
+import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
 import PlansGrid from "./plansGrid";
 
 const PlansDashboard = (props) => {
@@ -98,7 +98,6 @@ const PlansDashboard = (props) => {
                         <Box marginRight={2}>
                             <FilterByDropdown
                                 lang="Filtrar"
-                                handlerOnConfirm={() => ""}
                                 options={filterOptions}
                                 optionsSelected={filtersBy}
                                 handlerOnConfirm={handleApplyFilters}
@@ -179,10 +178,12 @@ const filterOptions = [
         columnLabel: "Estado",
         items: [
             {
+                id: "Activo",
                 label: "Activo",
                 code: true,
             },
             {
+                id: "Desactivo",
                 label: "Desactivo",
                 code: false,
             },
@@ -192,10 +193,12 @@ const filterOptions = [
         columnLabel: "Tipo de plan",
         items: [
             {
+                id: "Principal",
                 label: "Principal",
                 code: "Principal",
             },
             {
+                id: "Adicional",
                 label: "Adicional",
                 code: "Adicional",
             },

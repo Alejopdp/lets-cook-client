@@ -7,31 +7,54 @@ const useStyles = makeStyles((theme) => ({
     height140: {
         minHeight: 140,
     },
-    width220: {
-        maxWidth: 300,
-        width:"100%"
+    maxWidth240: {
+        maxWidth: 240,
+        width: "100%",
+    },
+    paragraphTrunc: {
+        display: "box",
+        maxWidth: 194,
+        height: 48,
+        overflow: "hidden",
+        lineClamp: 2,
+        boxOrient: "vertical",
+        marginBottom: theme.spacing(2),
     },
 }));
 
 const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, handlerScheduler = () => {} }) => {
     const classes = useStyles();
+    const defaultImage = "/static/images/placeholder-image.png";
+    const image = Boolean(item.imageUrl) ? item.imageUrl : defaultImage;
+
+    const _getAvailableWeeksTag = () => {
+        if (Boolean(item.availableWeeks)) {
+            if (item.availableWeeks.length > 0) {
+                return item.availableWeeks.reduce( (text, week) => `${text} ${week.label}` , '');
+            } else {
+                return "Sin programar";
+            }
+        }
+    };
+
     return (
         <Card className={classes.width220}>
-            <CardMedia className={classes.height140} image="/static/images/placeholder-image.png" title="Contemplative Reptile" />
+            <CardMedia className={classes.height140} image={image} title="Contemplative Reptile" />
             <CardContent>
                 <Typography color="textSecondary" variant="overline">
                     SKU: {item.sku}
                 </Typography>
-                <Typography color="textSecondary" variant="subtitle1">
+                <Typography noWrap={true} color="textSecondary" variant="subtitle1">
                     {item.name}
                 </Typography>
-                <Typography color="textSecondary" variant="body1" paragraph={true} gutterBottom>
-                    {item.description}
+                <Typography className={classes.paragraphTrunc} color="textSecondary" variant="body1">
+                    {item.shortDescription}
                 </Typography>
+
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <TimeIcon color="primary" fontSize="small" />
                     <Typography color="textSecondary" noWrap={true}>
-                        <i>{item.schedule.join(", ")}</i>
+                        <i>{_getAvailableWeeksTag()}</i>
                     </Typography>
                 </div>
             </CardContent>
@@ -75,11 +98,25 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
 };
 
 CardItemList.propTypes = {
-    item: PropTypes.exact({
-        sku: PropTypes.string,
+    item: PropTypes.shape({
+        id: PropTypes.number,
         name: PropTypes.string,
-        description: PropTypes.string,
-        schedule: PropTypes.arrayOf(PropTypes.string),
+        sku: PropTypes.string,
+        shortDescription: PropTypes.string,
+        longDescription: PropTypes.string,
+        cookDuration: PropTypes.string,
+        difficultyLevel: PropTypes.string,
+        imageUrl: PropTypes.string,
+        weight: PropTypes.string,
+        backOfficeTags: PropTypes.arrayOf(PropTypes.string),
+        imageTags: PropTypes.arrayOf(PropTypes.string),
+        availableWeeks: PropTypes.arrayOf(
+            PropTypes.exact({
+                id: PropTypes.number,
+                label: PropTypes.string,
+            })
+        ),
+        availableMonths: PropTypes.arrayOf(PropTypes.string),
     }),
     handlerEdit: PropTypes.func,
     handlerDelete: PropTypes.func,

@@ -11,17 +11,19 @@ const useStyles = makeStyles((theme) => ({
 
 const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm = () => {}, lang }) => {
     const classes = useStyles();
-
-    const [open, setOpen] = React.useState(false);
     const [_optionsSelected, setOptionsSelected] = React.useState(optionsSelected);
-    const anchorRef = React.useRef(null);
 
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
+    // const anchorRef = React.useRef(null);
+    const [anchorRef, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorRef);
+    const btnId = open ? "transitions-popper" : undefined;
+
+    const handleToggle = (event) => {
+        setAnchorEl(anchorRef ? null : event.currentTarget);
     };
 
     const handleChecked = (itemFilter, checked) => {
-        const index = _optionsSelected.findIndex(({code: _code}) => itemFilter.code === _code);
+        const index = _optionsSelected.findIndex(({ id: _id }) => itemFilter.id === _id);
         if (checked) {
             if (index > -1) {
                 return;
@@ -37,15 +39,19 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
         }
     };
 
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
+    const getCaption = (item) => {
+        if (Boolean(item.label)) {
+            return item.label;
         }
-        prevOpen.current = open;
+        if (Boolean(item.description)) {
+            return item.description;
+        }
+        return "";
+    };
+
+    React.useEffect(() => {
         setOptionsSelected(optionsSelected);
-    }, [open, optionsSelected]);
+    }, [optionsSelected]);
 
     return (
         <>
@@ -53,13 +59,13 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                 variant="contained"
                 size="small"
                 startIcon={<FilterIcon></FilterIcon>}
+                aria-describedby={btnId}
                 ref={anchorRef}
-                aria-haspopup="true"
                 onClick={handleToggle}
             >
                 FILTRAR
             </Button>
-            <Popper open={open} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition disablePortal>
+            <Popper id={btnId} open={open} anchorEl={anchorRef} placement="bottom-start" transition>
                 {({ TransitionProps, placement }) => (
                     <Grow
                         {...TransitionProps}
@@ -69,71 +75,60 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                     >
                         <Paper>
                             <Box p={2}>
-                                <Grid
-                                    container
-                                    spacing={1}
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="flex-start"
-                                    alignContent="stretch"
-                                    wrap="nowrap"
-                                >
-                                    {options.map((column) => (
-                                        <Grid item direction="column" spacing={1}>
-                                            <Grid item>
-                                                <Typography className={classes.paddingBotton1} variant="subtitle2" color="initial">
-                                                    {column.columnLabel}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item container>
-                                                <FormGroup autoFocusItem={open} row>
-                                                    <Grid item container direction="column">
-                                                        {column.items.map((item) => (
-                                                            <Grid item xs>
+                                <Grid container spacing={1}>
+                                    <Grid container spacing={1}>
+                                        {options.map((column, key) => (
+                                            <Grid item xs key={key} container direction="column" spacing={1}>
+                                                <Grid item>
+                                                    <Typography noWrap variant="subtitle2" color="initial">
+                                                        {column.columnLabel}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item container direction="column">
+                                                    {column.items.map((item, key) => (
+                                                        <Grid item key={key}>
+                                                            <FormGroup row style={{ whiteSpace: "nowrap" }}>
                                                                 <FormControlLabel
-                                                                    autoFocusItem={open}
                                                                     control={
                                                                         <Checkbox
                                                                             onChange={(e) => handleChecked(item, e.target.checked)}
-                                                                            name={item.code}
+                                                                            name={item.id}
                                                                             color="primary"
-                                                                            checked={_optionsSelected.some(({code}) => item.code === code)}
+                                                                            checked={_optionsSelected.some(({ id }) => item.id === id)}
                                                                         />
                                                                     }
-                                                                    label={item.label}
+                                                                    label={getCaption(item)}
                                                                 />
-                                                            </Grid>
-                                                        ))}
-                                                    </Grid>
-                                                </FormGroup>
+                                                            </FormGroup>
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <Grid justify="flex-end" container spacing={1}>
-                                    <Grid item>
-                                        <Button
-                                            onClick={() => {
-                                                setOptionsSelected(optionsSelected);
-                                                handleToggle();
-                                            }}
-                                            color="default"
-                                            label
-                                        >
-                                            {lang["buttonBack"]}
-                                        </Button>
+                                        ))}
                                     </Grid>
-                                    <Grid item>
-                                        <Button
-                                            onClick={() => {
-                                                handlerOnConfirm(_optionsSelected);
-                                                handleToggle();
-                                            }}
-                                            color="primary"
-                                            label
-                                        >
-                                           {lang["buttonConfirm"]}
-                                        </Button>
+                                    <Grid justify="flex-end" container spacing={1}>
+                                        <Grid item>
+                                            <Button
+                                                onClick={(e) => {
+                                                    setOptionsSelected(optionsSelected);
+                                                    handleToggle(e);
+                                                }}
+                                                color="default"
+                                            >
+                                                VOLVER
+                                            </Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button
+                                                onClick={(e) => {
+                                                    handlerOnConfirm(_optionsSelected);
+                                                    handleToggle(e);
+                                                }}
+                                                color="primary"
+                                            >
+                                                APLICAR FILTROS
+                                            </Button>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -152,12 +147,17 @@ FilterByDropdown.propTypes = {
             items: PropTypes.arrayOf(
                 PropTypes.exact({
                     label: PropTypes.string,
-                    code: PropTypes.string,
+                    id: PropTypes.string,
                 })
             ),
         })
     ).isRequired,
-    optionsSelected: PropTypes.arrayOf(PropTypes.string),
+    optionsSelected: PropTypes.arrayOf(
+        PropTypes.exact({
+            label: PropTypes.string,
+            id: PropTypes.string,
+        })
+    ),
     handlerOnConfirm: PropTypes.func,
 };
 

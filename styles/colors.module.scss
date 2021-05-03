@@ -9,7 +9,8 @@ $background-secondary-color: #f5f5f5;
 // Font Colors
 $title-color: #707070;
 $paragraph-color: #747474;
-$contrastText: #ffffff;
+$contrast-color: #ffffff;
+$danger-color: #BA0000;
 
 :export {
   primaryColor: $primary-color;
@@ -17,6 +18,7 @@ $contrastText: #ffffff;
   backgroundPrimaryColor: $background-primary-color;
   backgroundSecondaryColor: $background-secondary-color;
   titleColor: $title-color;
-  contrastText: $contrastText;
+  contrastColor: $contrast-color;
+  dangerColor: $danger-color;
   paragraphColor: $paragraph-color;
 }

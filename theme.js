@@ -7,7 +7,7 @@ const theme = createMuiTheme({
     palette: {
         primary: {
             main: colors.primaryColor,
-            contrastText: colors.contrastText,
+            contrastText: colors.contrastColor,
         },
         secondary: {
             main: colors.secondaryColor,
@@ -19,6 +19,7 @@ const theme = createMuiTheme({
         text: {
             primary: colors.titleColor,
             secondary: colors.paragraphColor,
+            danger: colors.dangerColor
         },
     },
 
