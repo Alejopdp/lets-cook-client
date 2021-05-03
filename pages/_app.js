@@ -22,7 +22,7 @@ export default function MyApp(props) {
         const isUserAuthenticated = async () => {
             const hasAuth = await isAuthenticated();
 
-            if (!hasAuth) router.push("/");
+            // if (!hasAuth) router.push("/");
         };
 
         isUserAuthenticated();

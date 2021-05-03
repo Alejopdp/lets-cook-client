@@ -79,8 +79,6 @@ export async function getServerSideProps(context) {
     const langs = require("../../lang");
     const props = await pagesPropsGetter(context.params, context.locale);
 
-    console.log("PROPS: ", props);
-
     return {
         props: { ...props, langs: { ...langs } },
     };

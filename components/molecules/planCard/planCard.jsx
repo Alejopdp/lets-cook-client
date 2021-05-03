@@ -57,7 +57,7 @@ const PlanCard = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, hand
                         </IconButton>
                     </Grid>
                     <Grid xs item style={{ alignItems: "flex-end", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        <Switch checked={item.isActive} onChange={() => handlerSwitch} color="primary" />
+                        <Switch checked={item.isActive} onChange={handlerSwitch} color="primary" />
                     </Grid>
                 </Grid>
             </CardActions>
