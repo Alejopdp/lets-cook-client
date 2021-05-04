@@ -47,8 +47,9 @@ const AttributesAndVariants = (props) => {
                     fullWidth={true}
                     title="Variantes"
                 >
-                    {/* {props.variantsRows.length > 0 && (
+                    {props.variantsRows.length > 0 && (
                         <DataGrid
+                            onEditCellChangeCommitted={(params, e) => props.handleVariantsEdit(params, e)}
                             autoHeight
                             disableColumnMenu
                             disableColumnSelector
@@ -59,7 +60,7 @@ const AttributesAndVariants = (props) => {
                             rows={props.variantsRows}
                             columns={props.variantsColumns}
                         />
-                    )}{" "} */}
+                    )}{" "}
                 </FormPaperWithEmptyState>
             </Grid>
         </>
