@@ -13,6 +13,7 @@ import RecipesList from "../../components/recipesList";
 import CreateUser from "../../components/createUser";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
+import CreatePlan from "../../components/organisms/createPlan/createPlan";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,6 +62,9 @@ const Index = (props) => {
 
             case "planes":
                 return <PlansDashboard plans={props.plans} />;
+
+            case "planes/crear":
+                return <CreatePlan />;
 
             default:
                 return (
