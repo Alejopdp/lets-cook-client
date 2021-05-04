@@ -55,10 +55,12 @@ const Index = (props) => {
                 return <UsersDashboard users={props.users} />;
 
             case "gestion-de-usuarios/crear":
-                return <CreateUser lang={props.langs} creation={true} user={{}} roles={props.roles} />;
+                return <CreateUser lang={props.langs} creation={true} user={{}} roles={props.roles} buttonText="CREAR USUARIO" />;
 
             case "gestion-de-usuarios/modificar":
-                return <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} />;
+                return (
+                    <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} buttonText="MODIFICAR USUARIO" />
+                );
 
             case "planes":
                 return <PlansDashboard plans={props.plans} />;
@@ -81,7 +83,7 @@ Index.propTypes = {};
 
 export async function getServerSideProps(context) {
     const langs = require("../../lang");
-    const props = await pagesPropsGetter(context.params, context.locale);
+    const props = await pagesPropsGetter(context.query, context.locale);
 
     return {
         props: { ...props, langs: { ...langs } },

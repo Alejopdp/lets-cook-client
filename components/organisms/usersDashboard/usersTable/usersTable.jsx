@@ -66,7 +66,8 @@ export default function CustomPaginationActionsTable(props) {
     };
 
     const handleEdit = (userId) => {
-        router.push(`/gestion-de-usuarios/modificar/${userId}`);
+        // router.push(`/gestion-de-usuarios/modificar?id=${userId}`);
+        router.push({ pathname: "/gestion-de-usuarios/modificar", query: { id: userId.toString() } });
     };
 
     const handleOpenDeleteModal = (user) => {
