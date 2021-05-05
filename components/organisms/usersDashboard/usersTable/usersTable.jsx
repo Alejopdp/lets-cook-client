@@ -2,7 +2,9 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
+const langs = require("../../../../lang").usersTable;
 
 // External components
 import Table from "@material-ui/core/Table";
@@ -17,14 +19,10 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import { Typography } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
 
 // Internal components
 import TablePaginationActions from "./tablePaginationActions";
+import SimpleModal from "../../../molecules/simpleModal/simpleModal";
 
 // Icons & Images
 import EditIcon from "@material-ui/icons/Edit";
@@ -50,11 +48,14 @@ export default function CustomPaginationActionsTable(props) {
     const classes = useStyles2();
     const router = useRouter();
     const [page, setPage] = useState(0);
+    const [users, setUsers] = useState([...props.users]);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
     const [selectedUser, setselectedUser] = useState({});
+    var lang = langs[router.locale];
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, users.length - page * rowsPerPage);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -66,7 +67,6 @@ export default function CustomPaginationActionsTable(props) {
     };
 
     const handleEdit = (userId) => {
-        // router.push(`/gestion-de-usuarios/modificar?id=${userId}`);
         router.push({ pathname: "/gestion-de-usuarios/modificar", query: { id: userId.toString() } });
     };
 
@@ -79,10 +79,16 @@ export default function CustomPaginationActionsTable(props) {
         const res = await deleteUser(selectedUser.id);
 
         if (res.status === 200) {
-            alert("Exito"); // TO DO: Use zustand
+            setUsers(users.filter((user) => user.id !== selectedUser.id));
+            enqueueSnackbar("Se ha eliminado el usuario correctamente", {
+                variant: "success",
+            });
+
             setisDeleteModalOpen(false);
         } else {
-            alert("Error");
+            enqueueSnackbar("Error al eliminar el usuario", {
+                variant: "error",
+            });
         }
     };
 
@@ -90,67 +96,63 @@ export default function CustomPaginationActionsTable(props) {
         <>
             {/* TO DO: Cambiar por simpleModal */}
             {isDeleteModalOpen && (
-                <Dialog open={isDeleteModalOpen} onClose={() => setisDeleteModalOpen(false)}>
-                    <DialogTitle>Eliminar usuario</DialogTitle>
-                    <DialogContentText item>Estás que quieres eliminar a este usuario</DialogContentText>
-                    <DialogActions>
-                        <Button onClick={() => setisDeleteModalOpen(false)} color="default" autoFocus>
-                            CANCELAR
-                        </Button>
-                        <Button onClick={handleDelete} className={classes.dangerColor}>
-                            ELIMINAR
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            )}{" "}
+                <SimpleModal
+                    cancelButtonText={lang.deleteModal.cancelButton}
+                    confirmButtonText={lang.deleteModal.confirmButton}
+                    handleCancelButton={() => setisDeleteModalOpen(false)}
+                    handleClose={() => setisDeleteModalOpen(false)}
+                    handleConfirmButton={handleDelete}
+                    open={isDeleteModalOpen}
+                    title={lang.deleteModal.title}
+                    paragraphs={[lang.deleteModal.text]}
+                />
+            )}
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="custom pagination table">
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell component="th" scope="row" className={classes.cells}>
-                                <Typography variant="subtitle1">Nombre completo</Typography>
+                                <Typography variant="subtitle1">{lang.name}</Typography>
                             </TableCell>
                             <TableCell className={classes.cells}>
-                                <Typography variant="subtitle1">Correo electrónico</Typography>
+                                <Typography variant="subtitle1">{lang.email}</Typography>
                             </TableCell>
                             <TableCell className={classes.cells}>
-                                <Typography variant="subtitle1">Rol</Typography>
+                                <Typography variant="subtitle1">{lang.role}</Typography>
                             </TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
-                        {(rowsPerPage > 0 ? props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.rows).map(
-                            (row) => (
-                                <TableRow key={row.avatar}>
-                                    <TableCell className={classes.cells}>
-                                        <div style={{ display: "flex", justifyContent: "center" }}>
-                                            <Avatar>{row.avatar}</Avatar>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className={classes.cells}>
-                                        <Typography variant="body1">{row.fullName}</Typography>
-                                    </TableCell>
-                                    <TableCell className={classes.cells}>
-                                        <Typography variant="body1">{row.email}</Typography>
-                                    </TableCell>
-                                    <TableCell className={classes.cells}>
-                                        <Typography variant="body1">{row.role}</Typography>
-                                    </TableCell>
-                                    <TableCell className={classes.cells}>
-                                        <IconButton onClick={() => handleEdit(row.id)}>
-                                            <EditIcon />
-                                        </IconButton>
+                        {(rowsPerPage > 0 ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users).map((user) => (
+                            <TableRow key={user.avatar}>
+                                <TableCell className={classes.cells}>
+                                    <div style={{ display: "flex", justifyContent: "center" }}>
+                                        <Avatar>{user.avatar}</Avatar>
+                                    </div>
+                                </TableCell>
+                                <TableCell className={classes.cells}>
+                                    <Typography variant="body1">{user.fullName}</Typography>
+                                </TableCell>
+                                <TableCell className={classes.cells}>
+                                    <Typography variant="body1">{user.email}</Typography>
+                                </TableCell>
+                                <TableCell className={classes.cells}>
+                                    <Typography variant="body1">{user.role}</Typography>
+                                </TableCell>
+                                <TableCell className={classes.cells}>
+                                    <IconButton onClick={() => handleEdit(user.id)}>
+                                        <EditIcon />
+                                    </IconButton>
 
-                                        <IconButton onClick={() => handleOpenDeleteModal(row)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        )}
+                                    <IconButton onClick={() => handleOpenDeleteModal(user)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
 
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
@@ -164,16 +166,14 @@ export default function CustomPaginationActionsTable(props) {
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                                 colSpan={5}
-                                // style={{ display: "flex", justifyContent: "center" }}
-                                // style={{ display: "flex", margin: "auto", }}
-                                count={props.rows.length}
+                                count={users.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
                                     inputProps: { "aria-label": "rows per page" },
                                     native: true,
                                 }}
-                                labelRowsPerPage="Filas por página:"
+                                labelRowsPerPage={lang.rowsPerPage}
                                 onChangePage={handleChangePage}
                                 onChangeRowsPerPage={handleChangeRowsPerPage}
                                 ActionsComponent={TablePaginationActions}

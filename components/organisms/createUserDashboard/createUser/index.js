@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { createUser, updateUser } from "../../helpers/serverRequests/user";
+import { createUser, updateUser } from "../../../../helpers/serverRequests/user";
 import PropTypes from "prop-types";
+import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
+const langs = require("../../../../lang").createUser;
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -14,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 
 // Internal components
-import { emailRegex } from "../../helpers/regex";
+import { emailRegex } from "../../../../helpers/regex";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -50,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
 const CreateUser = (props) => {
     const classes = useStyles();
     const router = useRouter();
+    var lang = langs[router.locale];
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const [values, setValues] = useState({
         firstName: props.user.firstName || "",
@@ -76,9 +80,14 @@ const CreateUser = (props) => {
         const res = await createUser(values);
 
         if (res.status === 200) {
-            alert("Usuario creado con éxito");
+            enqueueSnackbar("Se ha creado el usuario correctamente", {
+                variant: "success",
+            });
+            router.push("/gestion-de-usuarios");
         } else {
-            alert(JSON.stringify(res.data));
+            enqueueSnackbar("Error al crear el usuario", {
+                variant: "error",
+            });
         }
     };
 
@@ -86,24 +95,28 @@ const CreateUser = (props) => {
         const res = await updateUser({ ...values, id: props.user.id });
 
         if (res.status === 200) {
-            alert("Usuario modificado con éxito");
+            enqueueSnackbar("Se ha modificado el usuario correctamente", {
+                variant: "success",
+            });
             router.push("/gestion-de-usuarios");
         } else {
-            alert("Error de servidor. Intenta nuevamente");
+            enqueueSnackbar("Error al modificar el usuario", {
+                variant: "error",
+            });
         }
     };
 
     return (
         <div className={classes.paper}>
             <Typography variant="subtitle1" color="textSecondary">
-                Datos del usuario
+                {lang.title}
             </Typography>
 
             <form className={classes.form}>
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                     <TextField
                         id="outlined-basic"
-                        label="Nombre"
+                        label={lang.firstNamePlaceholder}
                         variant="outlined"
                         onChange={handleChange("firstName")}
                         value={values.firstName}
@@ -113,7 +126,7 @@ const CreateUser = (props) => {
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                     <TextField
                         id="outlined-basic"
-                        label="Apellido"
+                        label={lang.lastNamePlaceholder}
                         variant="outlined"
                         onChange={handleChange("lastName")}
                         value={values.lastName}
@@ -123,7 +136,7 @@ const CreateUser = (props) => {
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                     <TextField
                         id="outlined-basic"
-                        label="Correo electrónico"
+                        label={lang.emailPlaceholder}
                         variant="outlined"
                         type="email"
                         disabled={!props.creation}
@@ -133,7 +146,7 @@ const CreateUser = (props) => {
                 </FormControl>
 
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                    <TextField select label="Rol" value={values.role} onChange={handleChange("role")} variant="outlined">
+                    <TextField select label={lang.role} value={values.role} onChange={handleChange("role")} variant="outlined">
                         {props.roles.map((option) => (
                             <MenuItem key={option.title} value={option.title}>
                                 {option.title}

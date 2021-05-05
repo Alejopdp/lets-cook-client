@@ -1,5 +1,6 @@
 // Utils & config
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { login } from "../../helpers/serverRequests/user";
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const LoginForm = () => {
+const LoginForm = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
@@ -100,12 +101,12 @@ const LoginForm = () => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title="Iniciar sesión">
+                <PaperWithTitleContainer title={props.lang.title}>
                     <form className={classes.form} onSubmit={handleSubmit}>
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                             <TextField
                                 id="outlined-basic"
-                                label="Correo electrónico"
+                                label={props.lang.emailPlaceholder}
                                 variant="outlined"
                                 type="email"
                                 onChange={handleChange("email")}
@@ -113,7 +114,7 @@ const LoginForm = () => {
                         </FormControl>
 
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Contraseña</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password">{props.lang.passwordPlaceholder}</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 type={values.showPassword ? "text" : "password"}
@@ -142,12 +143,12 @@ const LoginForm = () => {
                         )}
 
                         <Typography variant="body2" color="primary" style={{ marginTop: theme.spacing(2) }}>
-                            <Link href="/recupero-de-contrasena">Olvidé mi contraseña</Link>
+                            <Link href="/recupero-de-contrasena">{props.lang.forgotPassword}</Link>
                         </Typography>
 
                         <div className={classes.btnDiv}>
                             <Button variant="contained" size="large" disabled={!isEmail || !isPassword} onClick={handleSubmit}>
-                                Ingresar
+                                {props.lang.button}
                             </Button>
                         </div>
                     </form>
@@ -155,6 +156,16 @@ const LoginForm = () => {
             </div>
         </>
     );
+};
+
+LoginForm.propTypes = {
+    lang: PropTypes.exact({
+        title: PropTypes.string.isRequired,
+        button: PropTypes.string.isRequired,
+        mailPlaceholder: PropTypes.string.isRequired,
+        passwordPlaceholder: PropTypes.string.isRequired,
+        forgotPassword: PropTypes.string.isRequired,
+    }),
 };
 
 export default LoginForm;

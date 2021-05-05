@@ -1,6 +1,8 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
+const langs = require("../../../../lang").attributesAndVariants;
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -13,18 +15,20 @@ import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
 
 const AttributesAndVariants = (props) => {
+    const router = useRouter();
+    const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
 
     return (
         <>
             <Grid item xs={12}>
-                <FormPaperWithEmptyState empty={isEmpty} emptyText="Aún no se han elegido atributos" title="Atributos">
+                <FormPaperWithEmptyState empty={isEmpty} emptyText={lang.attributesEmptyText} title={lang.attributesPaperTitle}>
                     {!isEmpty && (
                         <Box marginBottom={2}>
                             {props.attributes.map((attr, index) => (
                                 <KeyValueInput
                                     index={index}
-                                    title={`Opción ${index + 1}`}
+                                    title={`${lang.option} ${index + 1}`}
                                     handleRemoveAttribute={() => props.handleRemoveAttribute(index)}
                                     keyValue={attr[0]}
                                     values={attr[1]}
@@ -36,16 +40,16 @@ const AttributesAndVariants = (props) => {
                         </Box>
                     )}
                     <CreateButton disabled={false} onClick={props.handleAddAttribute}>
-                        AGREGAR ATRIBUTO
+                        {lang.addAttributeButton}
                     </CreateButton>
                 </FormPaperWithEmptyState>
             </Grid>
             <Grid item xs={12}>
                 <FormPaperWithEmptyState
                     empty={props.variantsRows.length === 0}
-                    emptyText="Las variaciones se generaran al agregarse atributos"
+                    emptyText={lang.variantsEmptyText}
                     fullWidth={true}
-                    title="Variantes"
+                    title={lang.variantsPaperTitle}
                 >
                     {/* {props.variantsRows.length > 0 && (
                         <DataGrid

@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
+import { SnackbarProvider } from "notistack";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
@@ -10,10 +11,12 @@ import { Box, makeStyles, Typography } from "@material-ui/core";
 // Internal components
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import RecipesList from "../../components/recipesList";
-import CreateUser from "../../components/createUser";
+import CreateUser from "../../components/organisms/createUserDashboard/createUser";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
+import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
+import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,12 +58,12 @@ const Index = (props) => {
                 return <UsersDashboard users={props.users} />;
 
             case "gestion-de-usuarios/crear":
-                return <CreateUser lang={props.langs} creation={true} user={{}} roles={props.roles} buttonText="CREAR USUARIO" />;
+                return <CreateUserDashboard roles={props.roles} />;
 
             case "gestion-de-usuarios/modificar":
-                return (
-                    <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} buttonText="MODIFICAR USUARIO" />
-                );
+                return <UpdateUserDashboard roles={props.roles} user={props.user} />;
+
+            // <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} buttonText="MODIFICAR USUARIO" />
 
             case "planes":
                 return <PlansDashboard plans={props.plans} />;
@@ -76,7 +79,11 @@ const Index = (props) => {
                 );
         }
     };
-    return <LayoutFixedSidebar lang={props.langs}>{getSectionComponent(route.query.dashboard.join("/"))}</LayoutFixedSidebar>;
+    return (
+        <SnackbarProvider maxSnack={3}>
+            <LayoutFixedSidebar lang={props.langs}>{getSectionComponent(route.query.dashboard.join("/"))}</LayoutFixedSidebar>
+        </SnackbarProvider>
+    );
 };
 
 Index.propTypes = {};

@@ -2,6 +2,8 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core";
+import { useRouter } from "next/router";
+const langs = require("../../../lang").dropZone;
 
 // External components
 import Dropzone, { useDropzone } from "react-dropzone";
@@ -49,6 +51,8 @@ const CustomDropzone = (props) => {
         maxFiles: props.maxFiles,
         onDropAccepted: props.handleDropFile,
     });
+    const router = useRouter();
+    const lang = langs[router.locale];
 
     const style = useMemo(
         () => ({
@@ -66,7 +70,7 @@ const CustomDropzone = (props) => {
                 <input {...getInputProps()} />
                 <Backup color="primary" fontSize="32px" />
                 <Typography variant="body1" color="textSecondary" style={{ fontSize: 14, fontWeight: "Medium" }}>
-                    Arrastra una imagen aquí o clickea
+                    {lang.label}
                 </Typography>
             </div>
         </div>

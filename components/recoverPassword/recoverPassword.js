@@ -1,5 +1,6 @@
 // Utils & config
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { forgotPassword } from "../../helpers/serverRequests/user";
 import { emailRegex } from "../../helpers/regex/index";
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecoverPassword = () => {
+const RecoverPassword = (props) => {
     const classes = useStyles();
 
     const [values, setValues] = useState({
@@ -60,11 +61,16 @@ const RecoverPassword = () => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title="Recuperar contraseña">
+                <PaperWithTitleContainer title={props.lang.title}>
                     {success ? (
-                        <Success />
+                        <Success lang={props.lang.success} />
                     ) : (
-                        <RecoverFormPassword handleChange={handleChange} isEmail={isEmail} handleSubmit={handleSubmit} />
+                        <RecoverFormPassword
+                            lang={props.lang.form}
+                            handleChange={handleChange}
+                            isEmail={isEmail}
+                            handleSubmit={handleSubmit}
+                        />
                     )}
                 </PaperWithTitleContainer>
             </div>
@@ -73,3 +79,20 @@ const RecoverPassword = () => {
 };
 
 export default RecoverPassword;
+
+RecoverPassword.propTypes = {
+    lang: PropTypes.exact({
+        title: PropTypes.string.isRequired,
+        form: PropTypes.exact({
+            text: PropTypes.string.isRequired,
+            emailPlaceholder: PropTypes.string.isRequired,
+            button: PropTypes.string.isRequired,
+            login: PropTypes.string.isRequired,
+        }),
+        success: PropTypes.exact({
+            title: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+            login: PropTypes.string.isRequired,
+        }),
+    }),
+};

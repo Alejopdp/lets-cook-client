@@ -49,7 +49,7 @@ const NewPasswordForm = (props) => {
     return (
         <form className={classes.form} onSubmit={props.handleSubmit}>
             <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Nueva contraseña</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password">{props.lang.passwordPlaceholder}</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
                     type={props.showPassword ? "text" : "password"}
@@ -70,13 +70,13 @@ const NewPasswordForm = (props) => {
                     labelWidth={137}
                 />
                 <Typography variant="body2" className={classes.marginTop}>
-                    La contraseña deberá tener al menos 8 caracteres en total, una mayúscula y al menos 1 número.
+                    {props.lang.passwordRules}
                 </Typography>
             </FormControl>
 
             <div className={classes.btnDiv}>
                 <Button variant="contained" size="large" disabled={props.isPassword ? false : true} onClick={props.handleSubmit}>
-                    Recuperar contraseña
+                    {props.lang.button}
                 </Button>
             </div>
         </form>
@@ -92,6 +92,11 @@ NewPasswordForm.propTypes = {
     handleClickShowPassword: PropTypes.func.isRequired,
     handleChange: PropTypes.func.isRequired,
     password: PropTypes.string.isRequired,
+    lang: PropTypes.exact({
+        passwordPlaceholder: PropTypes.string.isRequired,
+        passwordRules: PropTypes.string.isRequired,
+        button: PropTypes.string.isRequired,
+    }),
 };
 
 export default NewPasswordForm;

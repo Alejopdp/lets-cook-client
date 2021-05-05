@@ -161,7 +161,7 @@ const CreatePlanForm = (props) => {
     };
 
     return (
-        <Grid container spacing={2}>
+        <Grid container item spacing={2}>
             <Grid item xs={8}>
                 <Grid container spacing={2}>
                     <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />

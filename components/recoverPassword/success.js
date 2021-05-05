@@ -1,5 +1,6 @@
 // Utils & config
 import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 
@@ -11,42 +12,48 @@ import Link from "next/link";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 const useStyles = makeStyles((theme) => ({
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    paddingTop: theme.spacing(6),
-  },
-  success: {
-    textAlign: "center",
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(2),
-  },
+    form: {
+        display: "flex",
+        flexDirection: "column",
+        paddingTop: theme.spacing(6),
+    },
+    success: {
+        textAlign: "center",
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(2),
+    },
 }));
 
-const Success = () => {
-  const classes = useStyles();
+const Success = (props) => {
+    const classes = useStyles();
 
-  return (
-    <>
-      <div className={classes.success}>
-        <CheckCircleIcon color="primary" style={{ fontSize: 70 }} />
+    return (
+        <>
+            <div className={classes.success}>
+                <CheckCircleIcon color="primary" style={{ fontSize: 70 }} />
 
-        <Typography variant="subtitle2" color="textSecondary">
-          Solicitud de recupero exitosa
+                <Typography variant="subtitle2" color="textSecondary">
+                    {props.lang.title}
                 </Typography>
-      </div>
+            </div>
 
-      <Typography variant="body2">
-        Hemos enviado un email al correo electrónico ingresado para que puedas ingresar tu nueva contraseña.
-            </Typography>
+            <Typography variant="body2">{props.lang.text}</Typography>
 
-      <form className={classes.form}>
-        <Typography variant="body2" color="primary">
-          <Link href="/">Volver a Iniciar sesión</Link>
-        </Typography>
-      </form>
-    </>
-  );
+            <form className={classes.form}>
+                <Typography variant="body2" color="primary">
+                    <Link href="/">{props.lang.login}</Link>
+                </Typography>
+            </form>
+        </>
+    );
 };
 
 export default Success;
+
+Success.propTypes = {
+    lang: PropTypes.exact({
+        title: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+        login: PropTypes.string.isRequired,
+    }),
+};

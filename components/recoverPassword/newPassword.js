@@ -68,13 +68,14 @@ const NewPassword = (props) => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title={props.isTokenValid ? "Recuperar contraseña" : "Link vencido"}>
+                <PaperWithTitleContainer title={props.isTokenValid ? props.lang.title : "Link vencido"}>
                     {success ? (
-                        <Success />
+                        <Success lang={props.lang.success} />
                     ) : !props.isTokenValid ? (
                         <></>
                     ) : (
                         <NewPasswordForm
+                            lang={props.lang.form}
                             handleChange={handleChange}
                             handleClickShowPassword={handleClickShowPassword}
                             handleMouseDownPassword={handleMouseDownPassword}
@@ -94,6 +95,19 @@ NewPassword.propTypes = {
     token: PropTypes.string.isRequired,
     isTokenValid: PropTypes.bool.isRequired,
     email: PropTypes.string.isRequired,
+    lang: PropTypes.exact({
+        title: PropTypes.string.isRequired,
+        form: PropTypes.exact({
+            passwordPlaceholder: PropTypes.string.isRequired,
+            passwordRules: PropTypes.string.isRequired,
+            button: PropTypes.string.isRequired,
+        }),
+        success: PropTypes.exact({
+            title: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+            login: PropTypes.string.isRequired,
+        }),
+    }),
 };
 
 export default NewPassword;

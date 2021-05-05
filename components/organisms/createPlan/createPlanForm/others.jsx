@@ -1,6 +1,8 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
+const langs = require("../../../../lang").otherPlanData;
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -12,20 +14,23 @@ import Checkbox from "../../../atoms/checkbox/checkbox";
 import MultipleChipInput from "../../../atoms/multipleChipInput/multipleChipInput";
 
 const Others = (props) => {
+    const router = useRouter();
+    const lang = langs[router.locale];
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <PaperWithTitleContainer fullWidth={true} title="Estado">
+                <PaperWithTitleContainer fullWidth={true} title={lang.stateTitle}>
                     <Autocomplete options={stateOptions} value={props.data.isActive} onChange={props.handleChange} name="isActive" />
                 </PaperWithTitleContainer>
             </Grid>
             <Grid item xs={12}>
-                <PaperWithTitleContainer fullWidth={true} title="Tipo de plan">
+                <PaperWithTitleContainer fullWidth={true} title={lang.typeTitle}>
                     <Autocomplete options={typeOptions} value={props.data.planType} onChange={props.handleChange} name="planType" />
                 </PaperWithTitleContainer>
             </Grid>
             <Grid item xs={12}>
-                <PaperWithTitleContainer fullWidth={true} title="Frecuencia">
+                <PaperWithTitleContainer fullWidth={true} title={lang.frequencyTitle}>
                     <MultipleChipInput
                         options={frequencyOptions}
                         values={props.frequency}
@@ -36,12 +41,12 @@ const Others = (props) => {
                 </PaperWithTitleContainer>
             </Grid>
             <Grid item xs={12}>
-                <PaperWithTitleContainer fullWidth={true} title="Recetas">
-                    <Checkbox label="El plan tendrá recetas asociadas" value={props.data.hasRecipes} onChange={props.handleHasRecipes} />
+                <PaperWithTitleContainer fullWidth={true} title={lang.recipesTitle}>
+                    <Checkbox label={lang.hasRecipesText} value={props.data.hasRecipes} onChange={props.handleHasRecipes} />
                 </PaperWithTitleContainer>
             </Grid>
             <Grid item xs={12}>
-                <PaperWithTitleContainer fullWidth={true} title="Planes adicionales">
+                <PaperWithTitleContainer fullWidth={true} title={lang.additionalPlansTitle}>
                     {additionalPlans.map((plan) => (
                         <Checkbox label={plan} onChange={props.handleAdditionalPlansChange} value={plan} />
                     ))}

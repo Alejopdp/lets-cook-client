@@ -6,16 +6,21 @@ import { verifyToken } from "../helpers/serverRequests/user";
 const Login = (props) => {
     return (
         <div>
-            <LoginForm />
+            <LoginForm lang={props.lang} />
         </div>
     );
 };
 
 export default Login;
 
-export async function getInitialProps(context) {
-    const token = getToken();
-    if (!token) return { props: {} };
+export async function getStaticProps(context) {
+    // const token = getToken();
+    const token = "";
+    const langs = require("../lang");
+    const locale = context.locale;
+    console.log("A ver esos langs: ", langs);
+
+    if (!token) return { props: { lang: langs.loginForm[locale] } };
 
     const res = await verifyToken(token);
     const isTokenValid = res.status === 200;

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { togglePlanState, deletePlan } from "../../../helpers/serverRequests/plan";
 import { useRouter } from "next/router";
+const langs = require("../../../lang/components/organisms").planDashboard;
 
 // External components
 import Container from "@material-ui/core/Container";
@@ -21,9 +22,11 @@ import CreateButton from "../../atoms/createButton/createButton";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
 import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
 import PlansGrid from "./plansGrid";
+import SimpleModal from "../../molecules/simpleModal/simpleModal";
 
 const PlansDashboard = (props) => {
     const router = useRouter();
+    const lang = langs[router.locale];
     const [plans, setplans] = useState([...props.plans] || []);
     const [filtersBy, setfiltersBy] = useState([]);
     const [searchValue, setsearchValue] = useState("");
@@ -85,12 +88,12 @@ const PlansDashboard = (props) => {
             : filterPlansBySearchValue();
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h5">Planes</Typography>
-                        <CreateButton onClick={() => router.push("/planes/crear")}>CREAR PLAN</CreateButton>
+                        <Typography variant="h5">{lang.dashboardTitle}</Typography>
+                        <CreateButton onClick={() => router.push("/planes/crear")}>{lang.createButton}</CreateButton>
                     </Box>
                 </Grid>
                 <Grid item xs={12}>
@@ -110,49 +113,29 @@ const PlansDashboard = (props) => {
             </Grid>
 
             {isToggleStateModalOpen && (
-                <Dialog
+                <SimpleModal
+                    cancelButtonText={lang.toggleStateModal.cancelButton}
+                    confirmButtonText={lang.toggleStateModal.confirmButton}
+                    handleCancelButton={() => setisToggleStateModalOpen(false)}
+                    handleClose={() => setisToggleStateModalOpen(false)}
+                    handleConfirmButton={handleToggleState}
                     open={isToggleStateModalOpen}
-                    onClose={() => setisToggleStateModalOpen(false)}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">Cambiar estado</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            ¿Estás seguro que quieres cambiar el estado de este plan?
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleToggleState} color="primary">
-                            CAMBIAR ESTADO
-                        </Button>
-                        <Button onClick={() => setisToggleStateModalOpen(false)} color="primary" autoFocus>
-                            CANCELAR
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    paragraphs={[lang.toggleStateModal.text]}
+                    title={lang.toggleStateModal.title}
+                />
             )}
 
             {isDeleteModalOpen && (
-                <Dialog
+                <SimpleModal
+                    cancelButtonText={lang.deleteModal.cancelButton}
+                    confirmButtonText={lang.deleteModal.confirmButton}
+                    handleCancelButton={() => setisDeleteModalOpen(false)}
+                    handleClose={() => setisDeleteModalOpen(false)}
+                    handleConfirmButton={handleDelete}
                     open={isDeleteModalOpen}
-                    onClose={() => setisDeleteModalOpen(false)}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">Eliminar</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">¿Estás seguro que quieres eliminar este plan?</DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDelete} color="primary">
-                            ELIMINAR
-                        </Button>
-                        <Button onClick={() => setisDeleteModalOpen(false)} color="primary" autoFocus>
-                            CANCELAR
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    paragraphs={[lang.deleteModal.text]}
+                    title={lang.deleteModal.title}
+                />
             )}
         </Container>
     );

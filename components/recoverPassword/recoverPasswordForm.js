@@ -41,16 +41,13 @@ const RecoverPasswordForm = (props) => {
 
     return (
         <>
-            <Typography variant="body2">
-                Ingrese su correo electrónico a continuación y le enviaremos un email con un link para que pueda ingresar su nueva
-                contraseña.
-            </Typography>
+            <Typography variant="body2">{props.lang.text}</Typography>
 
             <form className={classes.form} onSubmit={props.handleSubmit}>
                 <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                     <TextField
                         id="outlined-basic"
-                        label="Correo electrónico"
+                        label={props.lang.emailPlaceholder}
                         variant="outlined"
                         type="email"
                         onChange={props.handleChange("email")}
@@ -59,12 +56,12 @@ const RecoverPasswordForm = (props) => {
 
                 <div className={clsx(classes.btnDiv, classes.margin)}>
                     <Button variant="contained" size="large" disabled={props.isEmail ? false : true} onClick={props.handleSubmit}>
-                        Solicitar recuperación
+                        {props.lang.button}
                     </Button>
                 </div>
 
                 <Typography variant="body2" color="primary">
-                    <Link href="/">Volver a Iniciar sesión</Link>
+                    <Link href="/">{props.lang.login}</Link>
                 </Typography>
             </form>
         </>
@@ -75,6 +72,13 @@ RecoverPasswordForm.propTypes = {
     isEmail: PropTypes.bool.isRequired,
     handleChange: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+    lang: PropTypes.exact({
+        title: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+        emailPlaceholder: PropTypes.string.isRequired,
+        button: PropTypes.string.isRequired,
+        login: PropTypes.string.isRequired,
+    }),
 };
 
 export default RecoverPasswordForm;

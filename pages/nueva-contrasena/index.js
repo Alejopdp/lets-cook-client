@@ -8,7 +8,7 @@ import NewPassword from "../../components/recoverPassword/newPassword";
 const Recover = (props) => {
     return (
         <div>
-            <NewPassword isTokenValid={props.isTokenValid} token={props.token} email={props.email} />
+            <NewPassword isTokenValid={props.isTokenValid} token={props.token} email={props.email} lang={props.lang} />
         </div>
     );
 };
@@ -16,6 +16,8 @@ const Recover = (props) => {
 export default Recover;
 
 export async function getServerSideProps(context) {
+    const langs = require("../../lang");
+    const locale = context.locale;
     if (context.query.token) {
         const res = await getDataForGeneratingNewPassword(context.query.token);
 
@@ -24,6 +26,7 @@ export async function getServerSideProps(context) {
                 isTokenValid: !!res && res.status === 200,
                 email: res && res.data.email ? res.data.email : null,
                 token: res ? context.query.token : null,
+                lang: langs.newPassword[locale],
             },
         };
     } else {
