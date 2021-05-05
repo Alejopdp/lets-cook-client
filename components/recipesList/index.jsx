@@ -91,7 +91,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
         _applyFiltersAndSort({
             textToFilter,
             sortBy: by,
-            filters
+            filters,
         });
     };
     const _handleSearchText = (text = "") => {
@@ -101,7 +101,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
             _applyFiltersAndSort({
                 textToFilter: text,
                 sortBy,
-                filters
+                filters,
             });
         }, 300);
     };
@@ -109,8 +109,8 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
         setFilters(_filters);
         _applyFiltersAndSort({
             textToFilter,
-            sortBy: by,
-            filters: _filters
+            sortBy,
+            filters: _filters,
         });
     };
     const _handleRemoveFilter = ({ id }) => {
@@ -120,31 +120,44 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
         }
         const newOptions = [...filters];
         newOptions.splice(index, 1);
-        _handleApplyFilters(newOptions)
+        _handleApplyFilters(newOptions);
     };
 
-    const _applyFiltersAndSort = ({ 
-        textToFilter: _textToFilter,
-        filters: _filters,
-        sortBy: _sortBy
-    }) => {
-
+    const _applyFiltersAndSort = ({ textToFilter: _textToFilter, filters: _filters = [], sortBy: _sortBy }) => {
         let sort;
         let field;
 
         // Filters
-
         const recipesFiltered = responseRecipesList.filter((recipe) => {
             let hasText = false;
-            let hasTags = true;
+            let hasTags = false;
 
             // Filter by name or SKU
             if (recipe.name.includes(_textToFilter) || recipe.sku.includes(_textToFilter)) {
                 hasText = true;
             }
+            if (_filters.length === 0) {
+                return hasText;
+            }
             // Filter by tags
-            // TODO: Code here to filter by tags
+            hasTags = _filters.some((filter) => {
+                const [tagType, tagId, tagLabel] = filter.id.split(":");
 
+                switch (tagType) {
+                    case "weeks":
+                        return recipe.availableWeeks.some(({ id }) => tagId === `${id}`);
+                        break;
+                    case "plans":
+                        // TODO: Missing key in Recipe response.
+                        throw 'Filter Case not implimented yet';
+                        break;
+                    case "tags":
+                        return recipe.backOfficeTags.some((label) => label === tagLabel);
+                        break;
+                    default:
+                        return false;
+                }
+            });
             return hasText && hasTags;
         });
 
@@ -268,11 +281,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
                 {responseRecipesList.length > 0 && (
                     <Grid item container spacing={3} justify="center">
                         <Grid item>
-                            <FilterByDropdown
-                                handlerOnConfirm={_handleApplyFilters}
-                                optionsSelected={filters}
-                                options={_filterOptions}
-                            />
+                            <FilterByDropdown handlerOnConfirm={_handleApplyFilters} optionsSelected={filters} options={_filterOptions} />
                         </Grid>
                         <Grid item xs>
                             <SeacrhInputField handlerOnChange={_handleSearchText} />
