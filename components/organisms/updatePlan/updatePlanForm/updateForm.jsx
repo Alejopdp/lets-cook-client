@@ -1,19 +1,20 @@
 // Utils & config
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { createPlan } from "../../../../helpers/serverRequests/plan";
+import { updatePlan } from "../../../../helpers/serverRequests/plan";
 
 // External components
 import Grid from "@material-ui/core/Grid";
 
 // Internal components
-import GeneralData from "./generalData";
-import AttributesAndVariants from "./attributesAndVariants";
-import Others from "./others";
+import GeneralData from "../../createPlan/createPlanForm/generalData";
+import AttributesAndVariants from "../../createPlan/createPlanForm/attributesAndVariants";
+import Others from "../../createPlan/createPlanForm/others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 
-const CreatePlanForm = (props) => {
+const UpdatePlanForm = (props) => {
     const [generalData, setgeneralData] = useState({
+        id: "",
         name: "",
         description: "",
         sku: "",
@@ -22,14 +23,39 @@ const CreatePlanForm = (props) => {
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
     const [otherData, setotherData] = useState({
-        isActive: "Activo",
+        isActive: null,
         planType: "",
         hasRecipes: false,
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
+    const isFirstRender = useRef(true);
 
     useEffect(() => {
+        setgeneralData({
+            id: props.plan.id,
+            name: props.plan.name,
+            description: props.plan.description,
+            sku: props.plan.sku,
+            image: [],
+        });
+
+        setotherData({
+            isActive: props.plan.isActive ? "Activo" : "No activo",
+            planType: props.plan.type,
+            hasRecipes: props.plan.hasRecipes,
+        });
+        setfrequency(props.plan.availablePlanFrecuencies);
+
+        setattributes(props.plan.attributes);
+        setvariants(props.plan.variants);
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
         setGridRows();
     }, [attributes]);
 
@@ -144,9 +170,8 @@ const CreatePlanForm = (props) => {
 
     const cartesianProduct = (...array) => {
         if (array.length === 0) return [];
-        const processedArray = array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat())));
 
-        return processedArray;
+        return array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat()))); // [[value1OfKey1, value1OfKey2], [value2OfKey1, value1OfKey2] ]
     };
 
     const setGridRows = () => {
@@ -163,7 +188,6 @@ const CreatePlanForm = (props) => {
 
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
-
                 if (columnName === "price" || columnName === "priceWithOffer" || columnName === "sku") {
                     let variant = variants.find((variant) => variant.id === id);
                     row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
@@ -195,7 +219,7 @@ const CreatePlanForm = (props) => {
         setvariants(newVariants);
     };
 
-    const handleCreate = async () => {
+    const handleUpdate = async () => {
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
@@ -208,7 +232,7 @@ const CreatePlanForm = (props) => {
         formData.append("variants", JSON.stringify(variants)); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
 
-        const res = await createPlan(formData);
+        const res = await updatePlan(formData, generalData.id);
 
         if (res.status === 200) {
             alert("Exito");
@@ -271,8 +295,8 @@ const CreatePlanForm = (props) => {
             <Grid item xs={12}>
                 <BackAndCreateButtons
                     backButtonHandler={() => ""}
-                    createButtonHandler={handleCreate}
-                    createButtonText="CREAR PLAN"
+                    createButtonHandler={handleUpdate}
+                    createButtonText="MODIFICAR PLAN"
                     isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
@@ -280,8 +304,9 @@ const CreatePlanForm = (props) => {
     );
 };
 
-CreatePlanForm.propTypes = {
+UpdatePlanForm.propTypes = {
+    plan: PropTypes.any.isRequired,
     additionalPlans: PropTypes.array.isRequired,
 };
 
-export default CreatePlanForm;
+export default UpdatePlanForm;

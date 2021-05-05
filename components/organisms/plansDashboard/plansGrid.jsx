@@ -37,6 +37,7 @@ PlansGrid.propTypes = {
             isActive: PropTypes.bool.isRequired,
             sku: PropTypes.string.isRequired,
             type: PropTypes.string.isRequired,
+            imageUrl: PropTypes.string.isRequired,
         })
     ),
     handleToggleState: PropTypes.func.isRequired,

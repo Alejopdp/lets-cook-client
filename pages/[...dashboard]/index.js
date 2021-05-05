@@ -14,6 +14,7 @@ import CreateUser from "../../components/createUser";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
+import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -66,7 +67,10 @@ const Index = (props) => {
                 return <PlansDashboard plans={props.plans} />;
 
             case "planes/crear":
-                return <CreatePlan />;
+                return <CreatePlan additionalPlans={props.additionalPlans} />;
+
+            case "planes/modificar":
+                return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
 
             default:
                 return (

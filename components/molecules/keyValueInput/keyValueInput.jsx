@@ -30,7 +30,7 @@ const KeyValueInput = (props) => {
                 <Box minWidth="40%" marginRight={2} alignSelf="flex-start">
                     <FreeSoloAutocomplete
                         options={[]}
-                        label="test"
+                        label=""
                         value={props.keyValue}
                         handleChange={(e) => props.handleKeyChange(props.index, e)}
                     />

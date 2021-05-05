@@ -10,10 +10,13 @@ export default function CustomAutocomplete(props) {
     return (
         <Autocomplete
             options={props.options}
-            getOptionLabel={(option) => option.title}
+            getOptionLabel={(option) => option.title || option}
             renderInput={(params) => <TextField name={props.name} {...params} label={props.label} variant="outlined" />}
             fullWidth={props.fullWidth}
-            onChange={(e, newValue) => props.onChange(props.name, newValue.value)}
+            onChange={(e, option) => props.onChange(props.name, option.value)}
+            disableClearable={props.disableClearable}
+            value={props.value}
+            // inputValue={props.value}
         />
     );
 }
@@ -25,4 +28,5 @@ CustomAutocomplete.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    disableClearable: PropTypes.bool,
 };

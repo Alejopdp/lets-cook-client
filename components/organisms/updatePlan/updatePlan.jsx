@@ -5,19 +5,20 @@ import PropTypes from "prop-types";
 // External components
 import Container from "@material-ui/core/Container";
 
-// Internal components
-import CreatePlanForm from "./createPlanForm/createPlanForm";
+// Internal compontents
+import UpdatePlanForm from "../updatePlan/updatePlanForm/updateForm";
 
-const CreatePlan = (props) => {
+const UpdatePlan = (props) => {
     return (
         <Container maxWidth="md" style={{ margin: "auto" }}>
-            <CreatePlanForm additionalPlans={props.additionalPlans} />
+            <UpdatePlanForm additionalPlans={props.additionalPlans} plan={props.plan} />
         </Container>
     );
 };
 
-CreatePlan.propTypes = {
+UpdatePlan.propTypes = {
+    plan: PropTypes.any.isRequired,
     additionalPlans: PropTypes.array.isRequired,
 };
 
-export default CreatePlan;
+export default UpdatePlan;

@@ -1,6 +1,6 @@
 import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
-import { getPlanList } from "../serverRequests/plan";
+import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 
 export const pagesPropsGetter = async (params, locale) => {
     // Use locale for the API calls
@@ -32,7 +32,15 @@ export const pagesPropsGetter = async (params, locale) => {
             return { plans: res.data || [] };
 
         case "planes/crear":
-            return {};
+            res = await getAdditionalPlans();
+
+            return { additionalPlans: res.data || [] };
+
+        case "planes/modificar":
+            const additonalPlansRes = await getAdditionalPlans();
+            res = await getPlanById(params.id);
+
+            return { additionalPlans: additonalPlansRes.data, plan: res.data };
         default:
             return null;
     }
