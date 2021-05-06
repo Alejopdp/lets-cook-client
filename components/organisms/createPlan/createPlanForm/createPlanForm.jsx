@@ -32,6 +32,7 @@ const CreatePlanForm = (props) => {
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
+    const [isSubmitting, setisSubmitting] = useState(false);
 
     useEffect(() => {
         setGridRows();
@@ -200,6 +201,7 @@ const CreatePlanForm = (props) => {
     };
 
     const handleCreate = async () => {
+        setisSubmitting(true);
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
@@ -221,10 +223,11 @@ const CreatePlanForm = (props) => {
 
             router.push("/planes");
         } else {
-            enqueueSnackbar("Error al crear el plan", {
+            enqueueSnackbar(res.data.message, {
                 variant: "error",
             });
         }
+        setisSubmitting(false);
     };
 
     const isFormOkForCreation = () => {

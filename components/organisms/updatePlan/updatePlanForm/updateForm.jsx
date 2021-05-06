@@ -31,6 +31,7 @@ const UpdatePlanForm = (props) => {
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
+    const [isSubmitting, setisSubmitting] = useState(false);
     const isFirstRender = useRef(true);
 
     useEffect(() => {
@@ -222,6 +223,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleUpdate = async () => {
+        setisSubmitting(true);
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
@@ -241,10 +243,11 @@ const UpdatePlanForm = (props) => {
                 variant: "success",
             });
         } else {
-            enqueueSnackbar("Error al modificar el plan", {
+            enqueueSnackbar(res.data.message, {
                 variant: "error",
             });
         }
+        setisSubmitting(false);
     };
 
     const isFormOkForCreation = () => {
@@ -260,7 +263,7 @@ const UpdatePlanForm = (props) => {
     };
 
     return (
-        <Grid container spacing={2}>
+        <Grid container item spacing={2}>
             <Grid item xs={8}>
                 <Grid container spacing={2}>
                     <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
@@ -302,7 +305,7 @@ const UpdatePlanForm = (props) => {
                     backButtonHandler={() => ""}
                     createButtonHandler={handleUpdate}
                     createButtonText="MODIFICAR PLAN"
-                    isCreateButtonDisabled={!isFormOkForCreation()}
+                    isCreateButtonDisabled={!isFormOkForCreation() || isSubmitting}
                 />
             </Grid>
         </Grid>
