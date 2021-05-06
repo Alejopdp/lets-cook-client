@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { togglePlanState, deletePlan } from "../../../helpers/serverRequests/plan";
+import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 const langs = require("../../../lang/components/organisms").planDashboard;
 
@@ -10,12 +11,6 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
 
 // Internal components
 import CreateButton from "../../atoms/createButton/createButton";
@@ -33,6 +28,7 @@ const PlansDashboard = (props) => {
     const [selectedPlan, setselectedPlan] = useState({});
     const [isToggleStateModalOpen, setisToggleStateModalOpen] = useState(false);
     const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleApplyFilters = (filters = []) => {
         setfiltersBy(filters);
@@ -45,8 +41,13 @@ const PlansDashboard = (props) => {
             setplans(plans.map((plan) => (plan.id === selectedPlan.id ? { ...selectedPlan, isActive: !selectedPlan.isActive } : plan)));
             setselectedPlan({});
             setisToggleStateModalOpen(false);
+            enqueueSnackbar("Se ha cambiado el estado correctamente", {
+                variant: "success",
+            });
         } else {
-            alert("Error");
+            enqueueSnackbar("Error al cambiar el estado", {
+                variant: "error",
+            });
         }
     };
 
@@ -57,8 +58,13 @@ const PlansDashboard = (props) => {
             setplans(plans.filter((plan) => plan.id !== selectedPlan.id));
             setselectedPlan({});
             setisDeleteModalOpen(false);
+            enqueueSnackbar("Se ha eliminado el plan correctamente", {
+                variant: "success",
+            });
         } else {
-            alert("Error");
+            enqueueSnackbar("Error al eliminar el plan", {
+                variant: "error",
+            });
         }
     };
 
