@@ -16,11 +16,11 @@ const DasboardWithBackTitle = (props) => {
     const router = useRouter();
 
     return (
-        <Box display="flex" alignItems="center" onClick={() => router.back()}>
-            <Box display="flex" marginRight={1} style={{ cursor: "pointer" }}>
+        <Box display="inline-flex" alignItems="center" onClick={() => router.back()} style={{ cursor: "pointer" }}>
+            <Box display="flex" marginRight={1}>
                 <ArrowBack fontSize="24px" />
             </Box>
-            <Typography variant="h1" style={{ fontSize: 24, cursor: "pointer" }}>
+            <Typography variant="h1" style={{ fontSize: 24 }}>
                 {props.title}
             </Typography>
         </Box>

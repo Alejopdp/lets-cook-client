@@ -1,7 +1,9 @@
 // Utils & config
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useSnackbar } from "notistack";
 import { createPlan } from "../../../../helpers/serverRequests/plan";
+import { useRouter } from "next/router";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -13,6 +15,8 @@ import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 
 const CreatePlanForm = (props) => {
+    const router = useRouter();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [generalData, setgeneralData] = useState({
         name: "",
         description: "",
@@ -209,10 +213,15 @@ const CreatePlanForm = (props) => {
         const res = await createPlan(formData);
 
         if (res.status === 200) {
-            alert("Exito");
-            // TO DO: Redirect
+            enqueueSnackbar("Se ha creado el plan correctamente", {
+                variant: "success",
+            });
+
+            router.push("/planes");
         } else {
-            alert("Error");
+            enqueueSnackbar("Error al eliminar el plan", {
+                variant: "error",
+            });
         }
     };
 
