@@ -16,6 +16,7 @@ const FreeSoloAutocomplete = (props) => {
         <Autocomplete
             freeSolo
             options={props.options}
+            value={props.value}
             renderInput={(params) => (
                 <TextField
                     {...params}

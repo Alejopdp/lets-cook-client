@@ -22,12 +22,14 @@ const CreatePlan = (props) => {
                 <Grid item xs={12}>
                     <DasbhoardTitle title={lang.title} />
                 </Grid>
-                <CreatePlanForm />
+                <CreatePlanForm additionalPlans={props.additionalPlans} />
             </Grid>
         </Container>
     );
 };
 
-CreatePlan.propTypes = {};
+CreatePlan.propTypes = {
+    additionalPlans: PropTypes.array.isRequired,
+};
 
 export default CreatePlan;

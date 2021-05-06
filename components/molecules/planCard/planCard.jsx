@@ -22,7 +22,11 @@ const PlanCard = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, hand
 
     return (
         <Card className={classes.width220}>
-            <CardMedia className={classes.height140} image="/static/images/placeholder-image.png" title="Contemplative Reptile" />
+            <CardMedia
+                className={classes.height140}
+                image={item.imageUrl || "/static/images/placeholder-image.png"}
+                title="Contemplative Reptile"
+            />
             <CardContent>
                 <Typography color="textSecondary" variant="overline" style={{ fontSize: 12, fontWeight: "Light" }}>
                     SKU: {item.sku}

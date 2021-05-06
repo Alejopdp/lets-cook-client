@@ -15,13 +15,11 @@ export const getPlanList = async () => {
     }
 };
 
-export const createPlan = async (plan) => {
+export const getPlanById = async (planId) => {
     try {
         const res = await Axios({
-            headers: { "Content-Type": "multipart/form-data" },
-            method: "POST",
-            url: `${serverUrl}/plan`,
-            data: plan,
+            method: "GET",
+            url: `${serverUrl}/plan/${planId}`,
         });
 
         return res;
@@ -57,11 +55,41 @@ export const deletePlan = async (planId) => {
     }
 };
 
+export const createPlan = async (plan) => {
+    try {
+        const res = await Axios({
+            headers: { "Content-Type": "multipart/form-data" },
+            method: "POST",
+            url: `${serverUrl}/plan`,
+            data: plan,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error.response);
+        return error.response;
+    }
+};
+
 export const getAdditionalPlans = async () => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${serverUrl}/plan/additionals`,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updatePlan = async (plan, planId) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${serverUrl}/plan/${planId}`,
+            data: plan,
         });
 
         return res;
