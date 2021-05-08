@@ -82,8 +82,8 @@ const UsersDashboard = (props) => {
                 <SimpleModal
                     cancelButtonText={lang.deleteModal.cancelButton}
                     confirmButtonText={lang.deleteModal.confirmButton}
-                    handleCancelButton={() => props.setisDeleteModalOpen(false)}
-                    handleClose={() => props.setisDeleteModalOpen(false)}
+                    handleCancelButton={() => setisDeleteModalOpen(false)}
+                    handleClose={() => setisDeleteModalOpen(false)}
                     handleConfirmButton={handleDelete}
                     open={isDeleteModalOpen}
                     title={lang.deleteModal.title}

@@ -13,6 +13,7 @@ import GeneralData from "./generalData";
 import AttributesAndVariants from "./attributesAndVariants";
 import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
+import { useLogger } from "@material-ui/data-grid";
 
 const CreatePlanForm = (props) => {
     const router = useRouter();
@@ -154,8 +155,13 @@ const CreatePlanForm = (props) => {
         return processedArray;
     };
 
+    const onlyOneAttributeWithValues = () => {
+        return attributes.filter((attr) => attr[1].length > 0).length === 1;
+    };
+
     const setGridRows = () => {
-        const cartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        const baseCartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        const cartesian = onlyOneAttributeWithValues() ? baseCartesian.map((item) => [item]) : baseCartesian;
         var rows = [];
         var attributesWithFixedFields = [...attributes, ["price", 0], ["priceWithOffer", 0], ["sku", ""]];
 
