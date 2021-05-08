@@ -8,39 +8,39 @@ export const pagesPropsGetter = async (params, locale) => {
     switch (params.dashboard.join("/")) {
         case "recetas":
             // TO DO
-            return {};
+            return { recipeList: res.data };
 
         case "gestion-de-usuarios":
             res = await getUserList();
 
-            return { users: res.data || [] };
+            return { users: res.data || [], error: res.data.message || null };
 
         case "gestion-de-usuarios/crear":
             res = await getRoleList();
 
-            return res.data ? { roles: res.data } : null;
+            return { roles: res.data, error: res.data.message || null };
 
         case "gestion-de-usuarios/modificar":
             const userRes = await getUserById(params.id);
             const rolesRes = await getRoleList();
 
-            return { user: userRes.data, roles: rolesRes.data };
+            return { user: userRes.data, roles: rolesRes.data, error: res.data.message || null };
 
         case "planes":
-            res = await getPlanList();
+            res = await getPlanList(locale);
 
-            return { plans: res.data || [] };
+            return { plans: res.data || [], error: res.data.message || null };
 
         case "planes/crear":
-            res = await getAdditionalPlans();
+            res = await getAdditionalPlans(locale);
 
-            return { additionalPlans: res.data || [] };
+            return { additionalPlans: res.data || [], error: res.data.message || null };
 
         case "planes/modificar":
-            const additonalPlansRes = await getAdditionalPlans();
-            res = await getPlanById(params.id);
+            const additonalPlansRes = await getAdditionalPlans(locale);
+            res = await getPlanById(params.id, locale);
 
-            return { additionalPlans: additonalPlansRes.data, plan: res.data };
+            return { additionalPlans: additonalPlansRes.data, plan: res.data, error: res.data.message || null };
         default:
             return null;
     }

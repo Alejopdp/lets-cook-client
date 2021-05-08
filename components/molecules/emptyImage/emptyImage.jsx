@@ -10,7 +10,9 @@ const EmptyImage = ({ label }) => {
                 <Image width="150" height="100" src={`/static/images/blank-paper.png`} alt={label} />
             </Grid>
             <Grid item xs>
-                <Typography variant="body2">{label}</Typography>
+                <Typography variant="body2" style={{ fontWeight: "Medium" }}>
+                    {label}
+                </Typography>
             </Grid>
         </Grid>
     );

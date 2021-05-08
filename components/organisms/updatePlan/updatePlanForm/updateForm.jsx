@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 import { updatePlan } from "../../../../helpers/serverRequests/plan";
+import { useRouter } from "next/router";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -14,6 +15,7 @@ import Others from "../../createPlan/createPlanForm/others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 
 const UpdatePlanForm = (props) => {
+    const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [generalData, setgeneralData] = useState({
         id: "",
@@ -52,7 +54,7 @@ const UpdatePlanForm = (props) => {
 
         setattributes(props.plan.attributes);
         setvariants(props.plan.variants);
-    }, []);
+    }, [props.plan]);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -236,7 +238,7 @@ const UpdatePlanForm = (props) => {
         formData.append("variants", JSON.stringify(variants)); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
 
-        const res = await updatePlan(formData, generalData.id);
+        const res = await updatePlan(formData, generalData.id, router.locale);
 
         if (res.status === 200) {
             enqueueSnackbar("Se ha modificado el plan correctamente", {

@@ -7,20 +7,29 @@ const langs = require("../../../lang").updatePlan;
 // External components
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 // Internal compontents
 import DasbhoardTitle from "../../layout/dashboardTitleWithBackButton";
 import UpdatePlanForm from "../updatePlan/updatePlanForm/updateForm";
+import LanguageButton from "../../molecules/languageButton/languageButton";
 
 const UpdatePlan = (props) => {
     const router = useRouter();
     const lang = langs[router.locale];
 
+    const handleChangeLanguage = (language) => {
+        router.push({ pathname: router.pathname, query: router.query }, router.asPath, { locale: language.value });
+    };
+
     return (
         <Container maxWidth="lg" style={{ margin: "auto" }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <DasbhoardTitle title={lang.title} />
+                    <Box display="flex" alignItems="center" justifyContent="space-between">
+                        <DasbhoardTitle title={lang.title} />
+                        <LanguageButton handleSelectOption={handleChangeLanguage} />
+                    </Box>
                 </Grid>
                 <UpdatePlanForm additionalPlans={props.additionalPlans} plan={props.plan} />
             </Grid>

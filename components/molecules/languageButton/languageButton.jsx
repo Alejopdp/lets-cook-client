@@ -1,12 +1,48 @@
-import React from "react";
-import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
-import { List as ListIcon } from "@material-ui/icons";
-
+// Utils & config
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
 
-const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
+// External components
+import Popper from "@material-ui/core/Popper";
+import Grow from "@material-ui/core/Grow";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Box from "@material-ui/core/Box";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
+
+// Internal components
+
+// Icons
+import Flag from "@material-ui/icons/Flag";
+import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+
+const LanguageButton = ({
+    options = [
+        { value: "es", label: "Español" },
+        { value: "en", label: "English" },
+    ],
+    selected = { value: "es", label: "Español" },
+    handleSelectOption = (option) => "",
+}) => {
+    const router = useRouter();
     const [open, setOpen] = React.useState(false);
+    const [selectedOption, setselectedOption] = useState(selected);
     const anchorRef = React.useRef(null);
+    const prevOpen = React.useRef(open);
+
+    React.useEffect(() => {
+        setselectedOption(options.find((option) => option.value === router.locale));
+    }, []);
+
+    React.useEffect(() => {
+        if (prevOpen.current === true && open === false) {
+            anchorRef.current.focus();
+        }
+        prevOpen.current = open;
+    }, [open]);
 
     const _handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -26,27 +62,27 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
         }
     }
 
+    const _handleSelectOption = (e, option) => {
+        _handleClose(e);
+        setselectedOption(option);
+        handleSelectOption && handleSelectOption(option);
+    };
+
     // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-        }
-        prevOpen.current = open;
-    }, [open]);
 
     return (
         <>
             <Button
                 variant="contained"
                 size="small"
-                startIcon={<ListIcon></ListIcon>}
+                startIcon={<Flag />}
+                endIcon={<KeyboardArrowDown />}
                 ref={anchorRef}
                 aria-controls={open ? "menu-list-grow" : undefined}
                 aria-haspopup="true"
                 onClick={_handleToggle}
             >
-                {label}
+                {selectedOption.label}
             </Button>
 
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
@@ -61,13 +97,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
                             <ClickAwayListener onClickAway={_handleClose}>
                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                     {options.map((item, key) => (
-                                        <MenuItem
-                                            key={key}
-                                            onClick={(e) => {
-                                                _handleClose(e);
-                                                handlerOnSelect && handlerOnSelect(item);
-                                            }}
-                                        >
+                                        <MenuItem key={key} onClick={(e) => _handleSelectOption(e, item)}>
                                             {item.label}
                                         </MenuItem>
                                     ))}
@@ -81,15 +111,8 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
     );
 };
 
-ButtonDropdownMenu.propTypes = {
-    handlerOnSelect: PropTypes.func,
-    label: PropTypes.string,
-    options: PropTypes.arrayOf(
-        PropTypes.exact({
-            label: PropTypes.string,
-            code: PropTypes.string,
-        })
-    ).isRequired,
+LanguageButton.propTypes = {
+    handleSelectOption: PropTypes.func.isRequired,
 };
 
-export default ButtonDropdownMenu;
+export default LanguageButton;

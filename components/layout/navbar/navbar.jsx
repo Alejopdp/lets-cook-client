@@ -13,6 +13,10 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import Hidden from "@material-ui/core/Hidden";
 import Image from "next/image";
+import Box from "@material-ui/core/Box";
+
+// Internal components
+import UserBox from "./userBox";
 
 const useStyles = makeStyles((theme) => ({
     toolbar: {
@@ -66,9 +70,12 @@ const Navbar = (props) => {
                     </IconButton>
                 </Hidden>
                 <Image src="/logo.png" alt="logo" width={82} height={28} style={{ justifySelf: "center" }} />
-                <IconButton style={{ color: "transparent" }}>
-                    <NotificationsIcon style={{ color: "transparent" }} />
-                </IconButton>
+                <Box display="flex" alignItems="center">
+                    <IconButton>
+                        <NotificationsIcon />
+                    </IconButton>
+                    <UserBox />
+                </Box>
             </Toolbar>
         </AppBar>
     );

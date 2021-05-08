@@ -38,11 +38,9 @@ const useStyles = makeStyles((theme) => ({
 
 const MobileDrawer = (props) => {
     const classes = useStyles();
-    // const history = useHistory();
     const routes = useRouter();
     const handleOptionClick = (path) => {
         props.onClose();
-        // history.push(path);
         routes.push(path);
     };
 
@@ -72,6 +70,7 @@ const MobileDrawer = (props) => {
                             index={index}
                             icon={item.icon}
                             handleOptionClick={() => handleOptionClick(item.path)}
+                            path={item.path}
                         />
                     ))}
                 </List>

@@ -2,43 +2,43 @@ export default [
     {
         icon: "dashboard",
         text: "Dashboard",
-        path: "/",
+        path: "/dashboard",
     },
     {
-        icon: "dashboard",
+        icon: "assignment_turned_in",
         text: "Pedidos",
-        path: "/",
+        path: "/pedidos",
     },
 
     {
-        icon: "dashboard",
+        icon: "cached",
         text: "Suscripciones",
-        path: "/",
+        path: "/suscripciones",
     },
     {
-        icon: "dashboard",
+        icon: "account_circle",
         text: "Clientes",
-        path: "/gestion-de-usuarios",
+        path: "/clientes",
     },
     {
-        icon: "dashboard",
+        icon: "local_mall",
         text: "Planes",
         path: "/planes",
     },
 
     {
-        icon: "dashboard",
+        icon: "restaurant",
         text: "Recetas",
         path: "/recetas",
     },
     {
-        icon: "dashboard",
+        icon: "local_offer",
         text: "Cupones",
-        path: "/",
+        path: "/cupones",
     },
     {
-        icon: "dashboard",
+        icon: "book",
         text: "Blog",
-        path: "/",
+        path: "/blog",
     },
 ];

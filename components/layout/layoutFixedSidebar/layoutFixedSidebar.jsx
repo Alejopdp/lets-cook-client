@@ -12,6 +12,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Navbar from "../navbar/navbar";
 import FixedDrawer from "../drawers/fixedDrawer";
 import MobileDrawer from "../drawers/mobileDrawer";
+import DashboardContainer from "../dashboardContainer/dashboardContainer";
 //
 // import AuthContext from "../../contexts/auth/authContext";
 
@@ -63,7 +64,7 @@ export default function LayoutFixedSidebar(props) {
                 <MobileDrawer open={open} onClose={() => setOpen(false)} sidebarOptions={sidebarOptions} />
             </Hidden>
 
-            <div style={{ paddingTop: 100, width: "100%" }}>{props.children}</div>
+            <DashboardContainer>{props.children}</DashboardContainer>
         </div>
     );
 }

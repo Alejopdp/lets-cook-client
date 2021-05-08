@@ -11,7 +11,6 @@ import { Box, makeStyles, Typography } from "@material-ui/core";
 // Internal components
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import RecipesList from "../../components/recipesList";
-import CreateUser from "../../components/organisms/createUserDashboard/createUser";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
@@ -47,6 +46,15 @@ const Index = (props) => {
         /* TODO: IMPORTANT!!! 
             optimize the cases for return componet dynamically
         **/
+
+        if (!!props.error) {
+            return (
+                <Box width="100%" height="100vh" className={classes.root}>
+                    <Typography variant="h1">No yet / show here 404 page</Typography>
+                </Box>
+            );
+        }
+
         switch (path) {
             case "recetas":
                 return (
@@ -63,8 +71,6 @@ const Index = (props) => {
 
             case "gestion-de-usuarios/modificar":
                 return <UpdateUserDashboard roles={props.roles} user={props.user} />;
-
-            // <CreateUser lang={props.langs} creation={false} user={props.user} roles={props.roles} buttonText="MODIFICAR USUARIO" />
 
             case "planes":
                 return <PlansDashboard plans={props.plans} />;

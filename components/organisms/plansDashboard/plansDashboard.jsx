@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 const langs = require("../../../lang/components/organisms").planDashboard;
 
 // External components
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -18,6 +17,7 @@ import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown"
 import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
 import PlansGrid from "./plansGrid";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
+import EmptyImage from "../../molecules/emptyImage/emptyImage";
 
 const PlansDashboard = (props) => {
     const router = useRouter();
@@ -94,29 +94,37 @@ const PlansDashboard = (props) => {
             : filterPlansBySearchValue();
 
     return (
-        <Container maxWidth="lg">
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h5">{lang.dashboardTitle}</Typography>
-                        <CreateButton onClick={() => router.push("/planes/crear")}>{lang.createButton}</CreateButton>
-                    </Box>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box display="flex" alignItems="center">
-                        <Box marginRight={2}>
-                            <FilterByDropdown
-                                lang="Filtrar"
-                                options={filterOptions}
-                                optionsSelected={filtersBy}
-                                handlerOnConfirm={handleApplyFilters}
-                            />
-                        </Box>
-                        <SearchInputFIeld handlerOnChange={setsearchValue} />
-                    </Box>
-                </Grid>
-                <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
+        <>
+            <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h5">{lang.dashboardTitle}</Typography>
+                    <CreateButton onClick={() => router.push("/planes/crear")}>{lang.createButton}</CreateButton>
+                </Box>
             </Grid>
+            <Grid item xs={12}>
+                <Box display="flex" alignItems="center">
+                    <Box marginRight={2}>
+                        <FilterByDropdown
+                            lang="Filtrar"
+                            options={filterOptions}
+                            optionsSelected={filtersBy}
+                            handlerOnConfirm={handleApplyFilters}
+                        />
+                    </Box>
+                    <SearchInputFIeld handlerOnChange={setsearchValue} />
+                </Box>
+            </Grid>
+            {filteredPlans.length > 0 ? (
+                <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
+            ) : (
+                <EmptyImage
+                    label={
+                        filtersBy.length > 0 || !!searchValue
+                            ? "No se han encontrado planes que coincidan con los términos de búsqueda"
+                            : "Aún no se crearon planes"
+                    }
+                />
+            )}
 
             {isToggleStateModalOpen && (
                 <SimpleModal
@@ -143,7 +151,7 @@ const PlansDashboard = (props) => {
                     title={lang.deleteModal.title}
                 />
             )}
-        </Container>
+        </>
     );
 };
 

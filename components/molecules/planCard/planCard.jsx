@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // External components
 import { Card, CardActions, CardContent, CardMedia, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
-import { Create as EditIcon, Delete as DeleteIcon, AccessTime as TimeIcon } from "@material-ui/icons";
+import { Create as EditIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import Switch from "@material-ui/core/Switch";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +41,7 @@ const PlanCard = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, hand
             <CardActions>
                 <Grid container spacing={1}>
                     <Grid item>
-                        <IconButton
-                            color="default"
-                            component="span"
-                            onClick={() => {
-                                handlerEdit(item);
-                            }}
-                        >
+                        <IconButton color="default" component="span" onClick={handlerEdit}>
                             <EditIcon />
                         </IconButton>
                         <IconButton

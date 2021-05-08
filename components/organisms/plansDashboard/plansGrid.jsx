@@ -20,7 +20,7 @@ const PlansGrid = (props) => {
                         item={plan}
                         handlerSwitch={() => props.handleToggleState(plan)}
                         handlerDelete={() => props.handleDelete(plan)}
-                        handlerEdit={() => router.push({ pathname: "/planes/modificar", query: { id: plan.id.toString() } })}
+                        handlerEdit={() => router.push({ pathname: "/planes/modificar", query: { id: plan.id } })}
                     />
                 </Grid>
             ))}

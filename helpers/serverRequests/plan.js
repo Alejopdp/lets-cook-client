@@ -2,29 +2,36 @@ import Axios from "axios";
 
 const serverUrl = "http://localhost:3001/api/v1";
 
-export const getPlanList = async () => {
+export const getPlanList = async (locale) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${serverUrl}/plan`,
+            params: {
+                locale,
+            },
         });
 
         return res;
     } catch (error) {
+        console.log(error);
         return error.response;
     }
 };
 
-export const getPlanById = async (planId) => {
+export const getPlanById = async (planId, locale) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${serverUrl}/plan/${planId}`,
+            params: {
+                locale,
+            },
         });
 
         return res;
     } catch (error) {
-        console.log(error.response);
+        console.log(error);
         return error.response;
     }
 };
@@ -66,16 +73,19 @@ export const createPlan = async (plan) => {
 
         return res;
     } catch (error) {
-        console.log(error.response);
+        console.log(error);
         return error.response;
     }
 };
 
-export const getAdditionalPlans = async () => {
+export const getAdditionalPlans = async (locale) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${serverUrl}/plan/additionals`,
+            params: {
+                locale,
+            },
         });
 
         return res;
@@ -84,12 +94,15 @@ export const getAdditionalPlans = async () => {
     }
 };
 
-export const updatePlan = async (plan, planId) => {
+export const updatePlan = async (plan, planId, locale) => {
     try {
         const res = await Axios({
             method: "PUT",
             url: `${serverUrl}/plan/${planId}`,
             data: plan,
+            params: {
+                locale,
+            },
         });
 
         return res;
