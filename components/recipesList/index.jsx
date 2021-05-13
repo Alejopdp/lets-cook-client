@@ -13,6 +13,7 @@ import ListCheckboxModal from "../molecules/listCheckboxModal/listCheckboxModal"
 import SimpleModal from "../molecules/simpleModal/simpleModal";
 import RefreshButton from "../atoms/refresh-button/refreshButton";
 import { useSortBy } from "../../helpers/sortBy/sortBy";
+import { deleteRecipesList } from "../../helpers/serverRequests/recipe";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const RecipesList = ({ recipesList: responseRecipesList = [], filterList = [], hasError: hasRequestError }) => {
+export const RecipesList = ({ recipesList: responseRecipesList = [], filterList = [], hasError: hasRequestError, token }) => {
     const _sortOptions = [
         {
             label: "Ordenar por nombre: A-Z",
@@ -74,7 +75,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
     const router = useRouter();
     const useSort = useSortBy();
 
-    const [recipesList, setRecipesList] = useState(responseRecipesList);
+    const [recipesList, setRecipesList] = useState([]);
     const [filters, setFilters] = useState([]);
     const [textToFilter, setTextToFilter] = useState("");
     const [sortBy, setSortBy] = useState(_sortOptions[0]);
@@ -149,7 +150,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
                         break;
                     case "plans":
                         // TODO: Missing key in Recipe response.
-                        throw 'Filter Case not implimented yet';
+                        throw "Filter Case not implimented yet";
                         break;
                     case "tags":
                         return recipe.backOfficeTags.some((label) => label === tagLabel);
@@ -224,14 +225,31 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
         selectRecipe(defaultRecipeState);
     };
 
-    const _handlerConfirmDelete = () => {
-        setOpenDeleteDialog(false);
-        // TODO: put here code for delete recipe
-        // console.log(recipeSelected);
-        enqueueSnackbar("Se ha eliminado la receta correctamente", {
-            variant: "success",
-        });
-        selectRecipe(defaultRecipeState);
+    const _handlerConfirmDelete = async () => {
+        try {
+            setOpenDeleteDialog(false);
+
+            // // Real delete.
+            const res = await deleteRecipesList(token, recipeSelected.item.id);
+
+            if (res.status >= 400) throw res.statusText;
+
+            // // Virtual delete.
+            const newStateToRecipeList = recipesList.reduce((recipes, recipe) => {
+                if (`${recipe.id}` === `${recipeSelected.item.id}`) return recipes;
+                return [...recipes, recipe];
+            }, []);
+            setRecipesList(newStateToRecipeList);
+
+            selectRecipe(defaultRecipeState);
+
+            enqueueSnackbar("Se ha eliminado la receta correctamente", {
+                variant: "success",
+            });
+        } catch (error) {
+            console.log("***-> Error: ", error);
+            enqueueSnackbar("No se pudo eliminar la receta.", { variant: "error" });
+        }
     };
 
     const _handlerRetryLoadRecipeRequest = () => router.reload();
@@ -244,7 +262,8 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
                 action: () => <RefreshButton handleOnclick={_handlerRetryLoadRecipeRequest} />,
             });
         }
-    }, [hasRequestError]);
+        setRecipesList(responseRecipesList);
+    }, [hasRequestError, responseRecipesList]);
 
     return (
         <>
@@ -270,7 +289,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
 
                 {/* RECIPES EMPTY IMAGE */}
 
-                {responseRecipesList.length === 0 && (
+                {recipesList.length === 0 && (
                     <Grid item xs container justify="center" alignItems="center">
                         <EmptyImage label={"Aun no se encuentran recetas"} />
                     </Grid>
@@ -278,7 +297,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
 
                 {/* RECIPE FILTERS AND SORT */}
 
-                {responseRecipesList.length > 0 && (
+                {recipesList.length > 0 && (
                     <Grid item container spacing={3} justify="center">
                         <Grid item>
                             <FilterByDropdown handlerOnConfirm={_handleApplyFilters} optionsSelected={filters} options={_filterOptions} />
@@ -319,7 +338,6 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
                 )}
 
                 {/* RECIPE LIST */}
-
                 {recipesList.length > 0 && (
                     <Grid
                         container
