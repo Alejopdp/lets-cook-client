@@ -1,5 +1,5 @@
 // Utils & config
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
@@ -17,6 +17,8 @@ import CreatePlan from "../../components/organisms/createPlan/createPlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
 import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
+import { verifyToken } from "../../helpers/serverRequests/user";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,6 +43,25 @@ const useStyles = makeStyles((theme) => ({
 const Index = (props) => {
     const route = useRouter();
     const classes = useStyles();
+
+    useEffect(() => {
+        const verifyTheToken = async () => {
+            const token = getToken();
+
+            if (!token) return route.replace("/", "/");
+
+            const res = await verifyToken(token);
+
+            if (res.status === 200) {
+                return;
+            } else {
+                clearLocalStorage();
+                route.replace("/", "/");
+            }
+        };
+
+        verifyTheToken();
+    }, [route.asPath]);
 
     const getSectionComponent = (path) => {
         /* TODO: IMPORTANT!!! 

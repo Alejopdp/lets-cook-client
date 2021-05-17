@@ -284,6 +284,7 @@ const CreatePlanForm = (props) => {
                     additionalPlans={props.additionalPlans}
                     handleAdditionalPlansChange={handleAdditionalPlansChange}
                     handleHasRecipes={handleHasRecipes}
+                    selectedAdditionalPlansIds={additionalPlans}
                 />
             </Grid>
             <Grid item xs={12}>

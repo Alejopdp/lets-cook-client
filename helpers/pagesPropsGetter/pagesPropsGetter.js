@@ -1,6 +1,7 @@
 import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
+import { getToken } from "../localStorage/localStorage";
 
 export const pagesPropsGetter = async (params, locale) => {
     // Use locale for the API calls

@@ -16,11 +16,15 @@ const CreatePlan = (props) => {
     const router = useRouter();
     const lang = langs[router.locale];
 
+    const goBackHandler = () => {
+        router.replace("/planes", "/planes", { locale: router.locale });
+    };
+
     return (
         <Container maxWidth="lg" style={{ margin: "auto" }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <DasbhoardTitle title={lang.title} />
+                    <DasbhoardTitle title={lang.title} handleClick={goBackHandler} />
                 </Grid>
                 <CreatePlanForm additionalPlans={props.additionalPlans} />
             </Grid>

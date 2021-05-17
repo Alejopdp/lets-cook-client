@@ -54,6 +54,7 @@ const UpdatePlanForm = (props) => {
 
         setattributes(props.plan.attributes);
         setvariants(props.plan.variants);
+        setadditionalPlans(props.plan.additionalPlans.map((plan) => plan.id));
     }, [props.plan]);
 
     useEffect(() => {
@@ -297,6 +298,7 @@ const UpdatePlanForm = (props) => {
                     handleFrequencyChange={handleFrequencyChange}
                     handleRemoveFrequency={handleRemoveFrequency}
                     handleChange={handleOtherData}
+                    selectedAdditionalPlansIds={additionalPlans}
                     additionalPlans={props.additionalPlans}
                     handleAdditionalPlansChange={handleAdditionalPlansChange}
                     handleHasRecipes={handleHasRecipes}

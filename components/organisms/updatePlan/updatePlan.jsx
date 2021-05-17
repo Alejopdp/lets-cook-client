@@ -19,7 +19,11 @@ const UpdatePlan = (props) => {
     const lang = langs[router.locale];
 
     const handleChangeLanguage = (language) => {
-        router.push({ pathname: router.pathname, query: router.query }, router.asPath, { locale: language.value });
+        router.replace({ pathname: router.pathname, query: router.query }, router.asPath, { locale: language.value });
+    };
+
+    const goBackHandler = () => {
+        router.replace("/planes", "/planes", { locale: router.locale });
     };
 
     return (
@@ -27,7 +31,7 @@ const UpdatePlan = (props) => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
-                        <DasbhoardTitle title={lang.title} />
+                        <DasbhoardTitle title={lang.title} handleClick={goBackHandler} />
                         <LanguageButton handleSelectOption={handleChangeLanguage} />
                     </Box>
                 </Grid>

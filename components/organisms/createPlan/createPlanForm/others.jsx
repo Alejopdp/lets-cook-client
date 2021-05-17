@@ -6,6 +6,7 @@ const langs = require("../../../../lang").otherPlanData;
 
 // External components
 import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
@@ -71,9 +72,16 @@ const Others = (props) => {
                         empty={props.additionalPlans.length === 0}
                         emptyText={lang.additionaPlansEmpty}
                     >
-                        {props.additionalPlans.map((plan) => (
-                            <Checkbox label={plan.name} onChange={props.handleAdditionalPlansChange} value={plan.id} />
-                        ))}
+                        <Box display="flex" flexDirection="column" alignItems="flex-start">
+                            {props.additionalPlans.map((plan) => (
+                                <Checkbox
+                                    label={plan.name}
+                                    onChange={props.handleAdditionalPlansChange}
+                                    checked={props.selectedAdditionalPlansIds.some((id) => id === plan.id)}
+                                    value={plan.id}
+                                />
+                            ))}
+                        </Box>
                     </FormPaperWithEmptyState>
                 </Grid>
             )}
@@ -90,6 +98,7 @@ Others.propTypes = {
     }),
 
     additionalPlans: PropTypes.array.isRequired,
+    selectedAdditionalPlansIds: PropTypes.array.isRequired,
 };
 
 export default Others;

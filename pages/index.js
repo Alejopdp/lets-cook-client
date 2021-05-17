@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LoginForm from "../components/loginForm";
-import { getToken } from "../helpers/localStorage/localStorage";
+import { getToken, clearLocalStorage } from "../helpers/localStorage/localStorage";
 import { verifyToken } from "../helpers/serverRequests/user";
+import { useRouter } from "next/router";
 
 const Login = (props) => {
+    const router = useRouter();
+
+    useEffect(() => {
+        const verifyTheToken = async () => {
+            const token = getToken();
+
+            if (!token) return;
+            const res = await verifyToken(token);
+
+            if (res.status === 200) {
+                router.replace("/dashboard", "/dashboard");
+            } else {
+                clearLocalStorage();
+            }
+            return;
+        };
+
+        verifyTheToken();
+    }, []);
     return (
         <div>
             <LoginForm lang={props.lang} />
@@ -14,26 +34,8 @@ const Login = (props) => {
 export default Login;
 
 export async function getStaticProps(context) {
-    // const token = getToken();
-    const token = "";
     const langs = require("../lang");
     const locale = context.locale;
-    console.log("A ver esos langs: ", langs);
 
-    if (!token) return { props: { lang: langs.loginForm[locale] } };
-
-    const res = await verifyToken(token);
-    const isTokenValid = res.status === 200;
-
-    if (!isTokenValid) {
-        clearLocalStorage();
-        return { props: {} };
-    }
-
-    return {
-        redirect: {
-            permanent: false,
-            destination: "/dashboard",
-        },
-    };
+    return { props: { lang: langs.loginForm[locale] } };
 }

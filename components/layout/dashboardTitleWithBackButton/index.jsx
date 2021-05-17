@@ -16,7 +16,12 @@ const DasboardWithBackTitle = (props) => {
     const router = useRouter();
 
     return (
-        <Box display="inline-flex" alignItems="center" onClick={() => router.back()} style={{ cursor: "pointer" }}>
+        <Box
+            display="inline-flex"
+            alignItems="center"
+            onClick={() => (props.handleClick ? props.handleClick() : router.back())}
+            style={{ cursor: "pointer" }}
+        >
             <Box display="flex" marginRight={1}>
                 <ArrowBack fontSize="24px" />
             </Box>
@@ -28,6 +33,7 @@ const DasboardWithBackTitle = (props) => {
 };
 
 DasboardWithBackTitle.propTypes = {
+    handleClick: PropTypes.func,
     title: PropTypes.string.isRequired,
 };
 
