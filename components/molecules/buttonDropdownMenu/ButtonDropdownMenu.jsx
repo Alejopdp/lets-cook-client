@@ -1,10 +1,9 @@
 import React from "react";
 import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
-import { List as ListIcon } from "@material-ui/icons";
 
 import PropTypes from "prop-types";
 
-const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect, selected }) => {
+const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect, selected, children: Icon }) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -40,7 +39,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect, selected }) 
             <Button
                 variant="contained"
                 size="small"
-                startIcon={<ListIcon></ListIcon>}
+                startIcon={Icon}
                 ref={anchorRef}
                 aria-controls={open ? "menu-list-grow" : undefined}
                 aria-haspopup="true"
@@ -90,7 +89,7 @@ ButtonDropdownMenu.propTypes = {
             label: PropTypes.string,
             code: PropTypes.string,
         })
-    ).isRequired,
+    ).isRequired
 };
 
 export default ButtonDropdownMenu;

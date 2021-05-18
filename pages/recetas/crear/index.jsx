@@ -1,8 +1,11 @@
-import { Box, makeStyles } from "@material-ui/core";
 import { useRouter } from "next/router";
+import { Box, Container, makeStyles } from "@material-ui/core";
+
 import LayoutFixedSidebar from "../../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 
-import Form from "../../../components/recipeForm/recipeForm";
+import { getRecipeFormData } from "../../../helpers/serverRequests/recipe";
+
+import RecipeCreateForm from "../../../components/recipeForm/recipeForm";
 const useStyles = makeStyles((theme) => ({
     root: {
         paddingTop: theme.spacing(10),
@@ -11,20 +14,51 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeForm = () => {
+const RecipeForm = ({ formData }) => {
     const classes = useStyles();
     const router = useRouter();
-    console.log('***-> Router', router.query);
 
     return (
         <LayoutFixedSidebar>
-            <Box width="100%" height="100vh" className={classes.root}>
-                <Form></Form>
-            </Box>
+            {/* <Box width="100%" height="100vh" className={classes.root}> */}
+            <Container maxWidth="md" style={{ margin: "auto" }}>
+                <RecipeCreateForm recipesData={null} formData={formData}></RecipeCreateForm>
+            </Container>
+            {/* </Box> */}
         </LayoutFixedSidebar>
     );
 };
+
 export async function getServerSideProps(context) {
-    return { props: {} };
+    // TODO: IMPORTANT!!! Remove "test"
+    const token = context.query.token || "test";
+
+    if (token) {
+        let hasError = false;
+        const res = await Promise.all([
+            getRecipeFormData(token),
+        ]);
+
+        if (res.status >= 500) {
+            hasError = true;
+        }
+
+        return {
+            props: {
+                isTokenValid: !!res[0] && res.status === 200,
+                formData: res[0].data,
+                token: res ? token : null,
+                hasError,
+            },
+        };
+    } else {
+        return {
+            props: {
+                isTokenValid: false,
+                recipesData: null,
+                token: null,
+            },
+        };
+    }
 }
 export default RecipeForm;

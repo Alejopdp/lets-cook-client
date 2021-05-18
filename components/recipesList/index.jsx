@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, List as ListIcon } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
+
 import SeacrhInputField from "../molecules/searchInputField/searchInputField";
 import ButtonDropdownMenu from "../molecules/buttonDropdownMenu/ButtonDropdownMenu";
 import FilterByDropdown from "../molecules/filterByDropdown/filterByDropdown";
@@ -11,9 +12,11 @@ import EmptyImage from "../molecules/emptyImage/emptyImage";
 import CardItemList from "../molecules/cardItemList/cardItemList";
 import ListCheckboxModal from "../molecules/listCheckboxModal/listCheckboxModal";
 import SimpleModal from "../molecules/simpleModal/simpleModal";
+
 import RefreshButton from "../atoms/refresh-button/refreshButton";
+
 import { useSortBy } from "../../helpers/sortBy/sortBy";
-import { deleteRecipesList } from "../../helpers/serverRequests/recipe";
+import { deleteRecipe } from "../../helpers/serverRequests/recipe";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -230,7 +233,7 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
             setOpenDeleteDialog(false);
 
             // // Real delete.
-            const res = await deleteRecipesList(token, recipeSelected.item.id);
+            const res = await deleteRecipe(token, recipeSelected.item.id);
 
             if (res.status >= 400) throw res.statusText;
 
@@ -311,7 +314,9 @@ export const RecipesList = ({ recipesList: responseRecipesList = [], filterList 
                                 label={sortBy.label}
                                 selected={sortBy.code}
                                 handlerOnSelect={_handleSortListBy}
-                            />
+                            >
+                                <ListIcon/>
+                            </ButtonDropdownMenu>
                         </Grid>
                     </Grid>
                 )}
