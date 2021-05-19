@@ -4,21 +4,22 @@ import PropTypes from "prop-types";
 import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
+import { verifyToken } from "../../helpers/serverRequests/user";
+import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
 
 // Internal components
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
-import RecipesList from "../../components/recipesList";
+import RecipesDashboard from "../../components/organisms/recipesDashboard/";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
-import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
-import { verifyToken } from "../../helpers/serverRequests/user";
+import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,11 +79,10 @@ const Index = (props) => {
 
         switch (path) {
             case "recetas":
-                return (
-                    <Box width="100%" height="100vh" className={classes.root}>
-                        <RecipesList lang={props.langs} />
-                    </Box>
-                );
+                return <RecipesDashboard filterList={props.filterList} recipesList={props.recipesList} hasError={props.hasError} />;
+
+            case "recetas/crear":
+                return <CreateRecipe formData={props.formData} recipeData={props.recipeData} />;
 
             case "gestion-de-usuarios":
                 return <UsersDashboard users={props.users} />;

@@ -1,6 +1,7 @@
 import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
+import { getRecipes, getRecipesFilterOptions, getRecipeFormData } from "../serverRequests/recipe";
 import { getToken } from "../localStorage/localStorage";
 
 export const pagesPropsGetter = async (params, locale) => {
@@ -8,8 +9,19 @@ export const pagesPropsGetter = async (params, locale) => {
     var res;
     switch (params.dashboard.join("/")) {
         case "recetas":
-            // TO DO
-            return { recipeList: res.data };
+            res = await getRecipes("", locale);
+            const filtersRes = await getRecipesFilterOptions("");
+
+            return { recipesList: res.data, filterList: filtersRes.data, hasError: res.status !== 200 || filtersRes.status !== 200 };
+
+        case "recetas/crear":
+            res = await getRecipeFormData("", locale);
+
+            return {
+                formData: res.data,
+                recipeData: null,
+                hasError: res.status !== 200,
+            };
 
         case "gestion-de-usuarios":
             res = await getUserList();

@@ -33,7 +33,6 @@ const Input = (props) => {
         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
             <Autocomplete
                 multiple
-                id="tags-filled"
                 options={props.options}
                 defaultValue={[]}
                 value={props.values}

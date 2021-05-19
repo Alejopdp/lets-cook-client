@@ -13,7 +13,7 @@ export default function CustomAutocomplete(props) {
             getOptionLabel={(option) => option.title || option}
             renderInput={(params) => <TextField name={props.name} {...params} label={props.label} variant="outlined" />}
             fullWidth={props.fullWidth}
-            onChange={(e, option) => props.onChange(props.name, option.value)}
+            onChange={(e, option) => props.onChange(props.name, option ? option.value : "")}
             disableClearable={props.disableClearable}
             value={props.value}
             // inputValue={props.value}

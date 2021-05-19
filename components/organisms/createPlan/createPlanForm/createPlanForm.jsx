@@ -13,7 +13,6 @@ import GeneralData from "./generalData";
 import AttributesAndVariants from "./attributesAndVariants";
 import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
-import { useLogger } from "@material-ui/data-grid";
 
 const CreatePlanForm = (props) => {
     const router = useRouter();

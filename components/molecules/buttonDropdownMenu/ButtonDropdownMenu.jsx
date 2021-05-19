@@ -1,10 +1,9 @@
 import React from "react";
 import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
-import { List as ListIcon } from "@material-ui/icons";
 
 import PropTypes from "prop-types";
 
-const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
+const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect, selected, children: Icon }) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 
@@ -40,7 +39,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
             <Button
                 variant="contained"
                 size="small"
-                startIcon={<ListIcon></ListIcon>}
+                startIcon={Icon}
                 ref={anchorRef}
                 aria-controls={open ? "menu-list-grow" : undefined}
                 aria-haspopup="true"
@@ -48,7 +47,6 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
             >
                 {label}
             </Button>
-
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                     <Grow
@@ -63,6 +61,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
                                     {options.map((item, key) => (
                                         <MenuItem
                                             key={key}
+                                            selected={item.code === selected}
                                             onClick={(e) => {
                                                 _handleClose(e);
                                                 handlerOnSelect && handlerOnSelect(item);
@@ -84,6 +83,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect }) => {
 ButtonDropdownMenu.propTypes = {
     handlerOnSelect: PropTypes.func,
     label: PropTypes.string,
+    selected: PropTypes.string,
     options: PropTypes.arrayOf(
         PropTypes.exact({
             label: PropTypes.string,

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, makeStyles } from "@material-ui/core";
 import { RecipesList } from "../../components/recipesList";
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
-import { loadFiltersList, loadRecipesList } from "../../helpers/serverRequests/recipe";
+import { getRecipesFilterOptions, getRecipes } from "../../helpers/serverRequests/recipe";
 import { SnackbarProvider } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
     const token = context.query.token || "test";
     if (token) {
         let hasError = false;
-        const res = await Promise.all([loadRecipesList(token), loadFiltersList(token)]);
+        const res = await Promise.all([getRecipes(token), getRecipesFilterOptions(token)]);
         if(res.status >= 500) { hasError = true; }
         return {
             props: {
