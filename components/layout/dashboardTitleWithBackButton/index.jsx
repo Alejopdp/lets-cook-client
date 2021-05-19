@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 // External components
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
 // Internal components
 
@@ -16,19 +17,16 @@ const DasboardWithBackTitle = (props) => {
     const router = useRouter();
 
     return (
-        <Box
-            display="inline-flex"
-            alignItems="center"
-            onClick={() => (props.handleClick ? props.handleClick() : router.back())}
-            style={{ cursor: "pointer" }}
-        >
-            <Box display="flex" marginRight={1}>
-                <ArrowBack fontSize="24px" />
+        <Grid item xs={12}>
+            <Box display="inline-flex" alignItems="center" onClick={() => (props.handleClick ? props.handleClick() : router.back())} style={{ cursor: "pointer" }} >
+                <Box display="flex" marginRight={1}>
+                    <ArrowBack fontSize="24px" />
+                </Box>
+                <Typography variant="h5">
+                    {props.title}
+                </Typography>
             </Box>
-            <Typography variant="h1" style={{ fontSize: 24 }}>
-                {props.title}
-            </Typography>
-        </Box>
+        </Grid>
     );
 };
 

@@ -21,14 +21,10 @@ const CreatePlan = (props) => {
     };
 
     return (
-        <Container maxWidth="lg" style={{ margin: "auto" }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <DasbhoardTitle title={lang.title} handleClick={goBackHandler} />
-                </Grid>
-                <CreatePlanForm additionalPlans={props.additionalPlans} />
-            </Grid>
-        </Container>
+        <>
+            <DasbhoardTitle title={lang.title} handleClick={goBackHandler} />
+            <CreatePlanForm additionalPlans={props.additionalPlans} />
+        </>
     );
 };
 

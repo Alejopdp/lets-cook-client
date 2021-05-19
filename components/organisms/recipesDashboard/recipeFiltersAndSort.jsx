@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 
 // Internal components
-import SeacrhInputField from "../../molecules/searchInputField/searchInputField";
+import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import ButtonDropdownMenu from "../../molecules/buttonDropdownMenu/ButtonDropdownMenu";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
 
@@ -16,29 +16,57 @@ import ListIcon from "@material-ui/icons/List";
 
 const RecipeFiltersAndSort = (props) => {
     return props.showFilters ? (
-        <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" marginY={2}>
-            <Box display="flex" alignItems="center">
-                <Box marginRight={2}>
-                    <FilterByDropdown
-                        handlerOnConfirm={props.handlerOnConfirm}
-                        optionsSelected={props.optionsSelected}
-                        options={props.filterOptions}
-                    />
+        // <Grid item xs={12}>
+        //     <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" marginY={2}>
+        //         <Box display="flex" alignItems="center">
+        //             <Box marginRight={2}>
+        //                 <FilterByDropdown
+        //                     handlerOnConfirm={props.handlerOnConfirm}
+        //                     optionsSelected={props.optionsSelected}
+        //                     options={props.filterOptions}
+        //                 />
+        //             </Box>
+        //             <SearchInputField handlerOnChange={props.handlerOnSearchChange} placeholder="Buscar por nombre o SKU..." />
+        //         </Box>
+        //         <ButtonDropdownMenu
+        //             options={props.sortOptions}
+        //             label={props.label}
+        //             selected={props.selected}
+        //             handlerOnSelect={props.handlerOnSortSelect}
+        //         >
+        //             <ListIcon />
+        //         </ButtonDropdownMenu>
+        //     </Box>
+        // </Grid>
+        // <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" marginY={2}>
+        <>
+            <Grid item xs={12} sm={8} style={{ margin: '16px 0px' }}>
+                <Box display="flex" alignItems="center">
+                    <Box marginRight={2}>
+                        <FilterByDropdown
+                            handlerOnConfirm={props.handlerOnConfirm}
+                            optionsSelected={props.optionsSelected}
+                            options={props.filterOptions}
+                        />
+                    </Box>
+                    <SearchInputField handlerOnChange={props.handlerOnSearchChange} placeholder="Buscar por nombre o SKU..." />
                 </Box>
-                <SeacrhInputField handlerOnChange={props.handlerOnSearchChange} />
-            </Box>
-            <ButtonDropdownMenu
-                options={props.sortOptions}
-                label={props.label}
-                selected={props.selected}
-                handlerOnSelect={props.handlerOnSortSelect}
-            >
-                <ListIcon />
-            </ButtonDropdownMenu>
-        </Box>
+            </Grid>
+            <Grid item xs={12} sm={4} style={{ margin: '16px 0px', display: 'flex', justifyContent: 'flex-end' }}>
+                <ButtonDropdownMenu
+                    options={props.sortOptions}
+                    label={props.label}
+                    selected={props.selected}
+                    handlerOnSelect={props.handlerOnSortSelect}
+                >
+                    <ListIcon />
+                </ButtonDropdownMenu>
+            </Grid>
+            {/* </Box> */}
+        </>
     ) : (
-        <></>
-    );
+            <></>
+        );
 };
 
 RecipeFiltersAndSort.propTypes = {

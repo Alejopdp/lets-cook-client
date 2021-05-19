@@ -5,7 +5,7 @@ import { useSortBy } from "../../../helpers/sortBy/sortBy";
 import { deleteRecipe, updateRecipeWeeks } from "../../../helpers/serverRequests/recipe";
 
 // External components
-import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Button, Chip, Grid, makeStyles, Typography, Box } from "@material-ui/core";
 import { Add as AddIcon, List as ListIcon } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
@@ -289,7 +289,6 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     return (
         <>
             {/* RECIPES TITLE */}
-
             <CreateDashboardTitle createButtonText="CREAR RECETA" dashboardTitle="Recetas" handleCreateButton={_handleCreateReceipe} />
 
             {/* RECIPE FILTERS AND SORT */}
@@ -306,44 +305,35 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             />
 
             {/* RECIPE CHIPS */}
-
             {filters.length > 0 && (
-                <Grid
-                    container
-                    spacing={1}
-                    direction="row"
-                    justify="flex-start"
-                    alignItems="flex-start"
-                    alignContent="stretch"
-                    wrap="wrap"
-                    className={classes.paddingBottom2}
-                >
-                    {filters.map((itemFilter, index) => (
-                        <Grid item key={index}>
-                            <Chip label={itemFilter.label} onDelete={() => _handleRemoveFilter(itemFilter)} color="primary" />
-                        </Grid>
-                    ))}
+                <Grid item xs={12}>
+                    <Box display="flex" alignItems="center">
+                        {filters.map((itemFilter, index) => (
+                            <Chip
+                                key={index}
+                                label={itemFilter.label}
+                                onDelete={() => _handleRemoveFilter(itemFilter)}
+                                color="primary"
+                                style={{ marginRight: 8 }}
+                            />
+                        ))}
+                    </Box>
                 </Grid>
             )}
 
             {/* RECIPE LIST */}
-            <RecipesGrid
-                recipesList={recipesList}
-                handleOpenCalendarModal={_handlerSchedulerReceipe}
-                handleOpenDeleteModal={_handlerDeleteReceipe}
-                handleEditRecipe={_handlerEditRecipe}
-            />
-
-            {/* RECIPES EMPTY IMAGE */}
-
-            {recipesList.length === 0 && (
-                <Grid item xs container justify="center" alignItems="center">
-                    <EmptyImage label={"Aun no se encuentran recetas"} />
-                </Grid>
+            {recipesList.length > 0 ? (
+                <RecipesGrid
+                    recipesList={recipesList}
+                    handleOpenCalendarModal={_handlerSchedulerReceipe}
+                    handleOpenDeleteModal={_handlerDeleteReceipe}
+                    handleEditRecipe={_handlerEditRecipe}
+                />
+            ) : (
+                <EmptyImage label="No se han encontrado recetas que coincidan con los términos de búsqueda" />
             )}
 
             {/* RECIPES MODALS */}
-
             <SimpleModal
                 title="Eliminar receta"
                 paragraphs={["¿Estás seguro de que quieres eliminar la receta Burger de Halloumi?"]}

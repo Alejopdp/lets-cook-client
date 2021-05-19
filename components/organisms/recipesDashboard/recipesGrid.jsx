@@ -10,20 +10,18 @@ import CardItemList from "../../molecules/cardItemList/cardItemList";
 
 const RecipesGrid = (props) => {
     return (
-        props.recipesList.length > 0 && (
-            <Grid container spacing={2} direction="row" justify="flex-start" alignContent="flex-start" alignItems="flex-start" wrap="wrap">
-                {props.recipesList.map((recipe, index) => (
-                    <Grid item xs="auto" sm={6} md={3} key={index}>
-                        <CardItemList
-                            item={recipe}
-                            handlerDelete={() => props.handleOpenDeleteModal(index, recipe)}
-                            handlerEdit={() => props.handleEditRecipe(index, recipe)}
-                            handlerScheduler={() => props.handleOpenCalendarModal(index, recipe)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
-        )
+        <Grid item container spacing={2}>
+            {props.recipesList.map((recipe, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                    <CardItemList
+                        item={recipe}
+                        handlerDelete={() => props.handleOpenDeleteModal(index, recipe)}
+                        handlerEdit={() => props.handleEditRecipe(index, recipe)}
+                        handlerScheduler={() => props.handleOpenCalendarModal(index, recipe)}
+                    />
+                </Grid>
+            ))}
+        </Grid>
     );
 };
 

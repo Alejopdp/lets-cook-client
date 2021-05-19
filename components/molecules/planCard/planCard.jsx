@@ -12,16 +12,15 @@ const useStyles = makeStyles((theme) => ({
         minHeight: 140,
     },
     width220: {
-        maxWidth: 300,
         width: "100%",
     },
 }));
 
-const PlanCard = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, handlerSwitch = () => {} }) => {
+const PlanCard = ({ item, handlerEdit = () => { }, handlerDelete = () => { }, handlerSwitch = () => { } }) => {
     const classes = useStyles();
 
     return (
-        <Card className={classes.width220}>
+        <Card className={classes.width220} elevation={2}>
             <CardMedia
                 className={classes.height140}
                 image={item.imageUrl || "/static/images/placeholder-image.png"}

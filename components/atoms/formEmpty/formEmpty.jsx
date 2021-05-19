@@ -14,7 +14,7 @@ import Info from "@material-ui/icons/Info";
 const FormEmpty = (props) => {
     return (
         <Box display="flex" alignItems="center" marginY={2}>
-            <Info style={{ color: "yellow", marginRight: 8 }} />
+            <Info style={{ color: "#E29C00", marginRight: 8 }} />
             <Typography variant="body1">{props.text}</Typography>
         </Box>
     );

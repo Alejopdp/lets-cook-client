@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
         background: theme.palette.background.paper,
         paddingLeft: theme.spacing(3),
         paddingRight: theme.spacing(3),
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        paddingTop: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
     },
 }));
 
@@ -30,7 +30,7 @@ const PaperWithTitleContainer = (props) => {
     return (
         <Box className={classes.root} width={props.fullWidth ? "100%" : props.width || 384}>
             <div className={classes.paper}>
-                <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: theme.spacing(3) }}>
+                <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: theme.spacing(2) }}>
                     {props.title}
                 </Typography>
                 {props.children}
