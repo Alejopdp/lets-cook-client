@@ -21,7 +21,7 @@ export const getRecipes = async (token, locale) => {
     }
 };
 
-export const getRecipeById = async (token, id) => {
+export const getRecipeById = async (token, id, locale) => {
     try {
         const res = await axios({
             method: "GET",
@@ -108,6 +108,23 @@ export const updateRecipeWeeks = async (recipeId, weeksIds) => {
             url: `${apiUrl}/update-weeks/${recipeId}`,
             data: {
                 weeksIds,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateRecipe = async (recipeId, recipe, locale) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/${recipeId}`,
+            data: recipe,
+            params: {
+                locale,
             },
         });
 
