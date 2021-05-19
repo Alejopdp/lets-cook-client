@@ -15,7 +15,7 @@ const UserBox = (props) => {
 
     return (
         <Box display="flex">
-            <Avatar sizes="sm" style={{ marginRight: theme.spacing(2), marginLeft: theme.spacing(2) }} />
+            <Avatar sizes="sm" style={{ marginRight: theme.spacing(1) }} />
             <UserDropdown />
         </Box>
     );

@@ -21,7 +21,7 @@ const FreeSoloAutocomplete = (props) => {
                 <TextField
                     {...params}
                     label={props.label}
-                    style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+                    // style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
                     variant="outlined"
                     value={props.value}
                     onChange={props.handleChange}

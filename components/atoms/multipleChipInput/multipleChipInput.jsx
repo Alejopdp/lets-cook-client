@@ -14,8 +14,8 @@ import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme) => ({
     margin: {
-        marginBottom: theme.spacing(2),
-        marginTop: theme.spacing(2),
+        // marginBottom: theme.spacing(2),
+        // marginTop: theme.spacing(2),
     },
     textField: {
         width: "100%",
@@ -42,7 +42,7 @@ const Input = (props) => {
                     value.map((option, index) => (
                         <Chip
                             variant="default"
-                            style={{ color: "#fff" }}
+                            style={{ color: "#fffff" }}
                             classes={{ deleteIconColorPrimary: classes.deleteIconColorPrimary }}
                             color="primary"
                             label={option}

@@ -84,6 +84,7 @@ const UserDropdown = (props) => {
                 aria-haspopup="true"
                 onClick={handleToggle}
                 endIcon={<KeyboardArrowDown />}
+                style={{ textTransform: 'none' }}
             >
                 {props.title || "Alejo"}
             </Button>

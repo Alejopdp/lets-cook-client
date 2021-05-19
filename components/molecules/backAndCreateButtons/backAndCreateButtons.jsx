@@ -1,7 +1,7 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
-
+import { useTheme } from '@material-ui/core'
 // External components
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
@@ -10,8 +10,9 @@ import Button from "@material-ui/core/Button";
 import CreateButton from "../../atoms/createButton/createButton";
 
 const BackAndCreateButtons = (props) => {
+    const theme = useTheme();
     return (
-        <Box display="flex" justifyContent="flex-end" alignItems="center">
+        <Box display="flex" justifyContent="flex-end" alignItems="center" style={{ marginTop: theme.spacing(4) }}>
             <Box marginRight={2}>
                 <Button onClick={props.backButtonHandler} variant="text">
                     VOLVER

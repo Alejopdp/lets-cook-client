@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 const langs = require("../../../../lang").attributesAndVariants;
+import { useTheme } from "@material-ui/styles";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -15,6 +16,7 @@ import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
 
 const AttributesAndVariants = (props) => {
+    const theme = useTheme()
     const router = useRouter();
     const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
@@ -64,7 +66,7 @@ const AttributesAndVariants = (props) => {
                             rows={props.variantsRows}
                             columns={props.variantsColumns}
                         />
-                    )}{" "}
+                    )}
                 </FormPaperWithEmptyState>
             </Grid>
         </>

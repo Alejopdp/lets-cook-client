@@ -71,9 +71,6 @@ const Navbar = (props) => {
                 </Hidden>
                 <Image src="/logo.png" alt="logo" width={82} height={28} style={{ justifySelf: "center" }} />
                 <Box display="flex" alignItems="center">
-                    <IconButton>
-                        <NotificationsIcon />
-                    </IconButton>
                     <UserBox />
                 </Box>
             </Toolbar>

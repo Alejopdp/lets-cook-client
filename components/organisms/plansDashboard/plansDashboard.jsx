@@ -106,7 +106,7 @@ const PlansDashboard = (props) => {
             />
 
             <Grid item xs={12}>
-                <Box display="flex" alignItems="center">
+                <Box display="flex" alignItems="center" marginY={2}>
                     <Box marginRight={2}>
                         <FilterByDropdown
                             lang="Filtrar"
@@ -128,14 +128,19 @@ const PlansDashboard = (props) => {
                                 label={itemFilter.label}
                                 onDelete={() => handleRemoveFilter(itemFilter)}
                                 color="primary"
-                                style={{ marginRight: 8, marginBottom: 4 }}
+                                style={{ marginRight: 8 }}
                             />
                         ))}
                     </Box>
                 </Grid>
             )}
+
             {filteredPlans.length > 0 ? (
-                <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
+                <PlansGrid
+                    plans={filteredPlans}
+                    handleToggleState={handleOpenToggleStateModal}
+                    handleDelete={handleOpenDeleteModal}
+                />
             ) : (
                     <EmptyImage
                         label={
