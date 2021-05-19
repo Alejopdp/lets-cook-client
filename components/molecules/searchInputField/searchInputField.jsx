@@ -7,9 +7,9 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
         alignItems: "center",
-        width: '40%',
+        width: '50vh',
         [theme.breakpoints.down('sm')]: {
-            width: '100%'
+            width: '100vh'
         },
     },
 }));
