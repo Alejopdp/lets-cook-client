@@ -46,7 +46,7 @@ export const pagesPropsGetter = async (params, locale) => {
             const userRes = await getUserById(params.id);
             const rolesRes = await getRoleList();
 
-            return { user: userRes.data, roles: rolesRes.data, error: res.data.message || null };
+            return { user: userRes.data, roles: rolesRes.data, error: userRes.data.message || rolesRes.data.message || null };
 
         case "planes":
             res = await getPlanList(locale);

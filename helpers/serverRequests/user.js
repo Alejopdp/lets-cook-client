@@ -1,11 +1,11 @@
 import Axios from "axios";
-const serverUrl = "http://localhost:3001";
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/user`;
 
 export const login = async (email, password) => {
     try {
         const res = await Axios({
             method: "POST",
-            url: `${serverUrl}/api/v1/user/login`,
+            url: `${apiUrl}/login`,
             data: { email, password },
         });
 
@@ -15,11 +15,11 @@ export const login = async (email, password) => {
     }
 };
 
-export const forgotPassword = async (id) => {
+export const forgotPassword = async (email) => {
     try {
         const res = await Axios({
             method: "PUT",
-            url: `${serverUrl}/api/v1/user/forgot-password/${id}`,
+            url: `${apiUrl}/forgot-password/${email}`,
         });
 
         return res;
@@ -35,7 +35,7 @@ export const verifyToken = async (token) => {
             headers: {
                 Authorization: token,
             },
-            url: `${serverUrl}/api/v1/user/verify-token`,
+            url: `${apiUrl}/verify-token`,
         });
 
         return res;
@@ -51,7 +51,7 @@ export const getDataForGeneratingNewPassword = async (token) => {
             headers: {
                 Authorization: token,
             },
-            url: `${serverUrl}/api/v1/user/generate-password`,
+            url: `${apiUrl}/generate-password`,
         });
 
         return res;
@@ -67,7 +67,7 @@ export const createUser = async (newUser) => {
             // headers: {
             //     Authorization: token
             // },
-            url: `${serverUrl}/api/v1/user`,
+            url: `${apiUrl}`,
             data: {
                 ...newUser,
             },
@@ -86,7 +86,7 @@ export const generateNewPassword = async (email, password, token) => {
             headers: {
                 Authorization: token,
             },
-            url: `${serverUrl}/api/v1/user/generate-password`,
+            url: `${apiUrl}/generate-password`,
             data: {
                 email,
                 password,
@@ -106,7 +106,7 @@ export const getUserById = async (id) => {
             // headers: {
             //     Authorization: token
             // },
-            url: `${serverUrl}/api/v1/user/${id}`,
+            url: `${apiUrl}/${id}`,
         });
 
         return res;
@@ -122,7 +122,7 @@ export const getUserList = async () => {
             // headers: {
             //     Authorization: token,
             // },
-            url: `${serverUrl}/api/v1/user`,
+            url: `${apiUrl}`,
         });
 
         return res;
@@ -138,7 +138,7 @@ export const updateUser = async (user) => {
             // headers: {
             //     Authorization: token
             // },
-            url: `${serverUrl}/api/v1/user/${user.id}`,
+            url: `${apiUrl}/${user.id}`,
             data: {
                 ...user,
             },
@@ -157,7 +157,7 @@ export const deleteUser = async (id) => {
             // headers: {
             //     Authorization: token
             // },
-            url: `${serverUrl}/api/v1/user/${id}`,
+            url: `${apiUrl}/${id}`,
         });
 
         return res;

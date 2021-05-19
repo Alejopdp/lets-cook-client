@@ -1,10 +1,10 @@
 export const newPassword = {
     en: {
-        title: "Recover password",
+        title: "Enter password",
         form: {
             passwordPlaceholder: "New password",
             passwordRules: "The password must have at least 8 characters in total, a capital letter and at least 1 number.",
-            button: "Recover password",
+            button: "ENTER PASSWORD",
         },
         success: {
             title: "New password generated successfully",
@@ -13,10 +13,10 @@ export const newPassword = {
         },
     },
     es: {
-        title: "Recuperar contraseña",
+        title: "Ingresar contraseña",
         form: {
             passwordPlaceholder: "Nueva contraseña",
-            button: "RECUPERAR CONTRASEÑA",
+            button: "INGRESAR CONTRASEÑA",
             passwordRules: "La contraseña deberá tener al menos 8 caracteres en total, una mayúscula y al menos 1 número.",
         },
         success: {

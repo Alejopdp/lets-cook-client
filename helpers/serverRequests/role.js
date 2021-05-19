@@ -1,12 +1,12 @@
 import Axios from "axios";
 
-const serverUrl = "http://localhost:3001";
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/role`;
 
 export const getRoleList = async () => {
     try {
         const res = await Axios({
             method: "GET",
-            url: `${serverUrl}/api/v1/role`,
+            url: `${apiUrl}/`,
         });
 
         return res;

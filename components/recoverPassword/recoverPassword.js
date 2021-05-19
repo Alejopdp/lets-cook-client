@@ -45,7 +45,7 @@ const RecoverPassword = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await forgotPassword(1);
+        const res = await forgotPassword(values.email);
 
         if (res.status === 200) {
             setsuccess(true);
