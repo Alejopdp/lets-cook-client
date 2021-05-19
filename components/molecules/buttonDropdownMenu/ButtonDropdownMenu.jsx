@@ -39,6 +39,7 @@ const ButtonDropdownMenu = ({ label, options = [], handlerOnSelect, selected, ch
             <Button
                 variant="contained"
                 size="small"
+                style={{backgroundColor:'white'}}
                 startIcon={Icon}
                 ref={anchorRef}
                 aria-controls={open ? "menu-list-grow" : undefined}

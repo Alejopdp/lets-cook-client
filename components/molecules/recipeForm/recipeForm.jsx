@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { createRecipe } from "../../../helpers/serverRequests/recipe";
 
 // External components
-import { Button, IconButton, Grid, makeStyles, Typography, FormControlLabel, Box } from "@material-ui/core";
+import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box } from "@material-ui/core";
 import { Flag as FlagIcon, ArrowBack as BackIcon, Add as AddIcon, Delete } from "@material-ui/icons";
 
 // Internal components
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const RecipeForm = ({ formData, recipeData }) => {
     const classes = useStyles();
+    const theme = useTheme();
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -57,7 +58,7 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
-    const _handleVariantsInputChange = ($event) => {};
+    const _handleVariantsInputChange = ($event) => { };
     const _handleAddVariant = ($event) => {
         const newVariant = { ingredients: [], sku: "", restrictions: [] };
         const newVariants = [...ingredientsVariants, newVariant];
@@ -267,30 +268,11 @@ const RecipeForm = ({ formData, recipeData }) => {
     };
 
     return (
-        <Grid container direction="column" spacing={5} className={classes.height100}>
-            {/* RECIPES TITLE */}
-            <Grid item container>
-                <Grid item container xs alignItems="center">
-                    <Grid item>
-                        <IconButton color="default" onClick={() => router.back()}>
-                            <BackIcon />
-                        </IconButton>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Crear receta</Typography>
-                    </Grid>
-                </Grid>
-                <Grid item>
-                    <ButtonDropdownMenu options={languages} label={lang.label} selected={lang.code} handlerOnSelect={_handleSelectLang}>
-                        <FlagIcon />
-                    </ButtonDropdownMenu>
-                </Grid>
-            </Grid>
-
+        <>
             {/* FORM */}
-            <Grid container spacing={2}>
-                {/* FORM LEFT */}
-                <Grid item xs={8}>
+            {/* FORM LEFT */}
+            <Grid item xs={12} md={8}>
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <FormPaperWithImageDropzone
                             title="Datos generales"
@@ -298,7 +280,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                             handleDropFile={handleDropFile}
                             files={generalData.image}
                             filesTitle="Imagen"
-                            title={lang.paperTitle}
                         >
                             <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
                             <FormInput
@@ -318,7 +299,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                             <FormInput
                                 label="Descripción larga"
                                 name="longDescription"
-                                rows={5}
+                                rows={6}
                                 multiline={true}
                                 value={recipeData && recipeData.largeDescription}
                                 handleChange={handleGeneralDataChange}
@@ -336,7 +317,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 value={difficultyLevel}
                                 onChange={(e, newDifficultyLevel) => setdifficultyLevel(newDifficultyLevel)}
                             />
-
                             <FormInput
                                 label="Peso del plato"
                                 name="weight"
@@ -352,41 +332,38 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 onChange={(e, newValues) => handleAddTool(newValues)}
                                 handleRemoveValue={handleRemoveTool}
                             />
-                            <div className={classes.space}></div>
                         </FormPaperWithImageDropzone>
                     </Grid>
-                    <div className={classes.space}></div>
+
 
                     {/* FORM LEFT BOTTOM, INGREDIENTS */}
 
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Ingredientes">
-                            <Grid item container spacing={3}>
+                            <Grid container spacing={2}>
                                 {ingredientsVariants.map((variant, index) => (
                                     <Grid item xs={12} key={index}>
-                                        <Grid item container alignItems="center">
-                                            <Grid item xs>
-                                                <Typography variant="subtitle1">
+                                        <Grid container>
+                                            <Grid item xs={12} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing(1) }}>
+                                                <Typography variant="subtitle2">
                                                     Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
                                                 </Typography>
-                                            </Grid>
-                                            {index !== 0 && (
-                                                <Grid item>
-                                                    <IconButton onClick={() => _handleDeleteVariant(index)}>
+                                                {index !== 0 && (
+                                                    <IconButton style={{ padding: '4px' }} onClick={() => _handleDeleteVariant(index)}>
                                                         <Delete />
                                                     </IconButton>
-                                                </Grid>
-                                            )}
+                                                )}
+                                            </Grid>
                                         </Grid>
-                                        <Grid item container spacing={2} xs={12}>
-                                            <Grid item xs={3}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={4}>
                                                 <FormInput
                                                     name={`ingredientsVariantsCode:${index}`}
                                                     value={`RE0031-${index}`}
                                                     handleChange={_handleVariantsInputChange}
                                                 />
                                             </Grid>
-                                            <Grid item xs>
+                                            <Grid item xs={8}>
                                                 <MultiChipInput
                                                     options={formData.ingredients}
                                                     values={variant.ingredients}
@@ -398,10 +375,11 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container xs={12}>
-                                            {ingredientsPrograms.map((program, restrictionIndex) => (
-                                                <Grid item xs key={restrictionIndex}>
+                                        <Grid container>
+                                            <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between', flexFlow: 'wrap' }}>
+                                                {ingredientsPrograms.map((program, index) => (
                                                     <FormControlLabel
+                                                        style={{ margin: '0px' }}
                                                         control={
                                                             <Checkbox
                                                                 onChange={(e) =>
@@ -421,24 +399,25 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                         }
                                                         label={program}
                                                     />
-                                                </Grid>
-                                            ))}
+                                                ))}
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 ))}
                             </Grid>
-                            <div className={classes.space}></div>
-                            <div className={classes.space}></div>
-                            <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
-                                Agregar variante
+                            <Grid item xs={12} style={{ marginTop: theme.spacing(3) }}>
+                                <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                                    Agregar variante
                             </Button>
+                            </Grid>
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                 </Grid>
+            </Grid>
 
-                {/* FORM  RIGHT */}
-                <Grid item xs={4} spacing={2}>
+            {/* FORM  RIGHT */}
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Tags en imagen">
                             <MultiChipInput
@@ -450,7 +429,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 handleRemoveValue={handleRemoveImageTag}
                             />
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Información nutricional">
@@ -460,7 +438,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 rows={nutritionalInformation}
                             />
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                     <Grid item xs={12}>
                         <FormPaperWithEmptyState
@@ -481,7 +458,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 ))}
                             </Box>
                         </FormPaperWithEmptyState>
-                        <div className={classes.space}></div>
                     </Grid>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Calendario">
@@ -493,7 +469,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 name="imageTags"
                             />
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Meses de disponibilidad">
@@ -505,7 +480,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 name="months"
                             />
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Tags">
@@ -518,7 +492,6 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 handleRemoveValue={handleRemoveTag}
                             />
                         </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
                     </Grid>
                 </Grid>
             </Grid>
@@ -527,10 +500,10 @@ const RecipeForm = ({ formData, recipeData }) => {
                     backButtonHandler={() => ""}
                     createButtonHandler={handleCreate}
                     createButtonText="CREAR RECETA"
-                    // isCreateButtonDisabled={!isFormOkForCreation()}
+                // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
-        </Grid>
+        </>
     );
 };
 
@@ -590,6 +563,7 @@ const toolsOptions = [
     "Rallador",
     "Minipimer",
 ];
+
 const languages = [
     {
         code: "es",

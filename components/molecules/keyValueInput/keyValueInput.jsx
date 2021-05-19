@@ -19,7 +19,7 @@ const KeyValueInput = (props) => {
     return (
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="body2" style={{ fontWeight: "Medium", fontSize: 14 }}>
+                <Typography variant="subtitle2">
                     {props.title}
                 </Typography>
                 <IconButton style={{ marginRight: -16 }} onClick={props.handleRemoveAttribute}>
