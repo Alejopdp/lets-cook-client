@@ -15,7 +15,7 @@ const PlansGrid = (props) => {
     return (
         <Grid item container spacing={2}>
             {props.plans.map((plan, index) => (
-                <Grid item xs={3} key={index}>
+                <Grid item xs={12} sm={6} md={3} key={index}>
                     <PlanCard
                         item={plan}
                         handlerSwitch={() => props.handleToggleState(plan)}

@@ -248,8 +248,8 @@ const CreatePlanForm = (props) => {
     };
 
     return (
-        <Grid container item spacing={2}>
-            <Grid item xs={8}>
+        <>
+            <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
                     <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
                     <AttributesAndVariants
@@ -273,7 +273,7 @@ const CreatePlanForm = (props) => {
                     />
                 </Grid>
             </Grid>
-            <Grid item xs={4} spacing={2}>
+            <Grid item xs={12} md={4} spacing={2}>
                 <Others
                     data={otherData}
                     frequency={frequency}
@@ -294,7 +294,7 @@ const CreatePlanForm = (props) => {
                     isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
-        </Grid>
+        </>
     );
 };
 

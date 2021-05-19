@@ -72,7 +72,7 @@ const Index = (props) => {
         if (!!props.error) {
             return (
                 <Box width="100%" height="100vh" className={classes.root}>
-                    <Typography variant="h1">No yet / show here 404 page</Typography>
+                    <Typography variant="h4">No yet / show here 404 page</Typography>
                 </Box>
             );
         }

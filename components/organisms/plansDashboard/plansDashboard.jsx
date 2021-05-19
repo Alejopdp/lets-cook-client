@@ -93,8 +93,8 @@ const PlansDashboard = (props) => {
     const filteredPlans =
         filtersBy.length > 0
             ? filterPlansBySearchValue().filter((plan) =>
-                  filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
-              )
+                filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
+            )
             : filterPlansBySearchValue();
 
     return (
@@ -115,7 +115,7 @@ const PlansDashboard = (props) => {
                             handlerOnConfirm={handleApplyFilters}
                         />
                     </Box>
-                    <SearchInputFIeld handlerOnChange={setsearchValue} />
+                    <SearchInputFIeld handlerOnChange={setsearchValue} placeholder="Buscar por nombre o SKU..." />
                 </Box>
             </Grid>
 
@@ -137,14 +137,14 @@ const PlansDashboard = (props) => {
             {filteredPlans.length > 0 ? (
                 <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
             ) : (
-                <EmptyImage
-                    label={
-                        filtersBy.length > 0 || !!searchValue
-                            ? "No se han encontrado planes que coincidan con los términos de búsqueda"
-                            : "Aún no se crearon planes"
-                    }
-                />
-            )}
+                    <EmptyImage
+                        label={
+                            filtersBy.length > 0 || !!searchValue
+                                ? "No se han encontrado planes que coincidan con los términos de búsqueda"
+                                : "Aún no se crearon planes"
+                        }
+                    />
+                )}
 
             {isToggleStateModalOpen && (
                 <SimpleModal

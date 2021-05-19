@@ -63,7 +63,6 @@ export default function LayoutFixedSidebar(props) {
             <Hidden mdUp>
                 <MobileDrawer open={open} onClose={() => setOpen(false)} sidebarOptions={sidebarOptions} />
             </Hidden>
-
             <DashboardContainer>{props.children}</DashboardContainer>
         </div>
     );

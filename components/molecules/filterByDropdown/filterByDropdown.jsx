@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Grow, Paper, Popper, Grid, Typography, Box, FormGroup, FormControlLabel, Checkbox, makeStyles } from "@material-ui/core";
+import { Button, Grow, Paper, Popper, Grid, Typography, Box, FormGroup, FormControlLabel, Checkbox, makeStyles, useTheme } from "@material-ui/core";
 import { FilterList as FilterIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -9,8 +9,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm = () => {}, lang }) => {
+const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm = () => { }, lang }) => {
     const classes = useStyles();
+    const theme = useTheme();
     const [_optionsSelected, setOptionsSelected] = React.useState(optionsSelected);
 
     // const anchorRef = React.useRef(null);
@@ -58,6 +59,7 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
             <Button
                 variant="contained"
                 size="small"
+                style={{backgroundColor:'white'}}
                 startIcon={<FilterIcon></FilterIcon>}
                 aria-describedby={btnId}
                 ref={anchorRef}
@@ -74,9 +76,9 @@ const FilterByDropdown = ({ options = [], optionsSelected = [], handlerOnConfirm
                         }}
                     >
                         <Paper>
-                            <Box p={2}>
+                            <Box paddingY={4} paddingX={3}>
                                 <Grid container spacing={1}>
-                                    <Grid container spacing={1}>
+                                    <Grid container spacing={1} style={{ marginBottom: theme.spacing(1)}}>
                                         {options.map((column, key) => (
                                             <Grid item xs key={key} container direction="column" spacing={1}>
                                                 <Grid item>
