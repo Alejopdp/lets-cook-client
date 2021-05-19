@@ -20,6 +20,8 @@ import CreateUserDashboard from "../../components/organisms/createUserDashboard/
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
 import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
+import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
+import ErrorPage from "../../components/molecules/errorPage/errorPage";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -84,6 +86,9 @@ const Index = (props) => {
             case "recetas/crear":
                 return <CreateRecipe formData={props.formData} recipeData={props.recipeData} />;
 
+            case "recetas/modificar":
+                return <UpdateRecipe formData={props.formData} recipeData={props.recipeData} hasError={props.hasError} />;
+
             case "gestion-de-usuarios":
                 return <UsersDashboard users={props.users} />;
 
@@ -112,7 +117,9 @@ const Index = (props) => {
     };
     return (
         <SnackbarProvider maxSnack={3}>
-            <LayoutFixedSidebar lang={props.langs}>{getSectionComponent(route.query.dashboard.join("/"))}</LayoutFixedSidebar>
+            <LayoutFixedSidebar lang={props.langs}>
+                {props.hasError ? <ErrorPage errorMessage={props.hasError} /> : getSectionComponent(route.query.dashboard.join("/"))}
+            </LayoutFixedSidebar>
         </SnackbarProvider>
     );
 };

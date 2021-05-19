@@ -1,7 +1,7 @@
 import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
-import { getRecipes, getRecipesFilterOptions, getRecipeFormData } from "../serverRequests/recipe";
+import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
 import { getToken } from "../localStorage/localStorage";
 
 export const pagesPropsGetter = async (params, locale) => {
@@ -12,7 +12,7 @@ export const pagesPropsGetter = async (params, locale) => {
             res = await getRecipes("", locale);
             const filtersRes = await getRecipesFilterOptions("");
 
-            return { recipesList: res.data, filterList: filtersRes.data, hasError: res.status !== 200 || filtersRes.status !== 200 };
+            return { recipesList: res.data, filterList: filtersRes.data, hasError: res.data.message || res.data.message || null };
 
         case "recetas/crear":
             res = await getRecipeFormData("", locale);
@@ -20,9 +20,18 @@ export const pagesPropsGetter = async (params, locale) => {
             return {
                 formData: res.data,
                 recipeData: null,
-                hasError: res.status !== 200,
+                hasError: res.data.message || null,
             };
 
+        case "recetas/modificar":
+            res = await getRecipeById("", params.id, locale);
+            const formDataRes = await getRecipeFormData("", locale);
+
+            return {
+                formData: formDataRes.data,
+                recipeData: res.data,
+                hasError: res.data.message || formDataRes.data.message || null,
+            };
         case "gestion-de-usuarios":
             res = await getUserList();
 

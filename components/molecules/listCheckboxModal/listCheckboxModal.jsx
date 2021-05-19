@@ -11,11 +11,11 @@ const ListCheckboxModal = ({
     handleCancelButton = () => {},
     open,
     handleClose = () => {},
-})  => {
+}) => {
     const [_optionsSelected, setOptionsSelected] = useState(optionsSelected);
 
     const handleChecked = (itemFilter, checked) => {
-        const index = _optionsSelected.findIndex(({ id: _id }) => itemFilter.id === _id);
+        const index = _optionsSelected.findIndex(({ id }) => itemFilter.id === id);
         if (checked) {
             if (index > -1) {
                 return;
@@ -29,14 +29,16 @@ const ListCheckboxModal = ({
             newOptions.splice(index, 1);
             setOptionsSelected(newOptions);
         }
+
+        console.log("A ver las options selected: ", _optionsSelected);
     };
 
     useEffect(() => {
         setOptionsSelected(optionsSelected);
-    }, [optionsSelected]);
+    }, []);
 
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} style={{ minWidth: 342 }}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <FormGroup row>
@@ -63,11 +65,12 @@ const ListCheckboxModal = ({
                 <Button onClick={handleCancelButton} color="default" autoFocus>
                     {cancelButtonText}
                 </Button>
-                <Button onClick={() => handleConfirmButton(_optionsSelected)} color="primary">{confirmButtonText}</Button>
+                <Button onClick={() => handleConfirmButton(_optionsSelected)} color="primary">
+                    {confirmButtonText}
+                </Button>
             </DialogActions>
         </Dialog>
     );
-}
-
+};
 
 export default ListCheckboxModal;
