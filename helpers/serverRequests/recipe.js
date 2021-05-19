@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/recipe`;
 
 export const getRecipes = async (token, locale) => {
     try {
@@ -9,7 +9,7 @@ export const getRecipes = async (token, locale) => {
             headers: {
                 Authorization: token,
             },
-            url: `${apiUrl}/recipe`,
+            url: `${apiUrl}/`,
             params: {
                 locale,
             },
@@ -28,7 +28,7 @@ export const getRecipeById = async (token, id) => {
             headers: {
                 Authorization: token,
             },
-            url: `${apiUrl}/recipe/${id}`,
+            url: `${apiUrl}/${id}`,
         });
         return res;
     } catch (error) {
@@ -44,7 +44,7 @@ export const deleteRecipe = async (token, id) => {
             headers: {
                 Authorization: token,
             },
-            url: `${apiUrl}/recipe/${id}`,
+            url: `${apiUrl}/${id}`,
         });
         return res;
     } catch (error) {
@@ -60,7 +60,7 @@ export const getRecipesFilterOptions = async (token) => {
             headers: {
                 Authorization: token,
             },
-            url: `${apiUrl}/recipe/filters`,
+            url: `${apiUrl}/filters`,
         });
         return res;
     } catch (error) {
@@ -75,7 +75,7 @@ export const getRecipeFormData = async (token, locale) => {
             headers: {
                 Authorization: token,
             },
-            url: `${apiUrl}/recipe/get-data-for-creation`,
+            url: `${apiUrl}/get-data-for-creation`,
             params: {
                 locale,
             },
@@ -91,8 +91,24 @@ export const createRecipe = async (recipe) => {
         const res = await axios({
             method: "POST",
             headers: { "Content-Type": "multipart/form-data" },
-            url: `${apiUrl}/recipe`,
+            url: `${apiUrl}/`,
             data: recipe,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const updateRecipeWeeks = async (recipeId, weeksIds) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/update-weeks/${recipeId}`,
+            data: {
+                weeksIds,
+            },
         });
 
         return res;

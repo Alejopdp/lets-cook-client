@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useSortBy } from "../../../helpers/sortBy/sortBy";
-import { deleteRecipe } from "../../../helpers/serverRequests/recipe";
+import { deleteRecipe, updateRecipeWeeks } from "../../../helpers/serverRequests/recipe";
 
 // External components
 import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
@@ -73,7 +73,6 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     ];
 
     const defaultRecipeState = { item: null, index: -1 };
-    let handleDebounce;
 
     const classes = useStyles();
     const router = useRouter();
@@ -100,15 +99,6 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         });
     };
     const _handleSearchText = (text = "") => {
-        // clearTimeout(handleDebounce);
-        // handleDebounce = setTimeout(() => {
-        //     setTextToFilter(text);
-        //     _applyFiltersAndSort({
-        //         textToFilter: text,
-        //         sortBy,
-        //         filters,
-        //     });
-        // }, 300);
         setTextToFilter(text);
         _applyFiltersAndSort({
             textToFilter: text,
@@ -209,7 +199,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     };
 
     const _handlerEditRecipe = (index, item) => {
-        router.push("/recetas/modificar/[id]", `recetas/modificar/${item.id}`);
+        router.push({ pathname: "/recetas/modificar", query: { id: item.id } });
     };
 
     const _handlerDeleteReceipe = (index, item) => {
@@ -217,8 +207,8 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         setOpenDeleteDialog(true);
     };
 
-    const _handlerSchedulerReceipe = (index, item) => {
-        selectRecipe({ item, index });
+    const _handlerSchedulerReceipe = (index, recipe) => {
+        selectRecipe({ recipe, index });
         setOpenSchedulerDialog(true);
     };
 
@@ -228,11 +218,32 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         setOpenSchedulerDialog(false);
     };
 
-    const _handlerConfirmSchedulerChange = (schedules) => {
-        setOpenSchedulerDialog(false);
-        // TODO: put here code for edit schedules recipe
-        // console.log("***-> Schedulers: ", schedules);
-        selectRecipe(defaultRecipeState);
+    const _handlerConfirmSchedulerChange = async (newWeeks) => {
+        const res = await updateRecipeWeeks(
+            recipeSelected.recipe.id,
+            newWeeks.map((week) => week.id)
+        );
+
+        if (res.status === 200) {
+            setRecipesList(
+                recipesList.map((recipe) => {
+                    if (recipe.id === recipeSelected.recipe.id) {
+                        return {
+                            ...recipe,
+                            availableWeeks: newWeeks,
+                        };
+                    }
+
+                    return recipe;
+                })
+            );
+
+            setOpenSchedulerDialog(false);
+            selectRecipe(defaultRecipeState);
+            enqueueSnackbar("La receta se ha actualizado correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar("Error al actualizar la receta", { variant: "error" });
+        }
     };
 
     const _handlerConfirmDelete = async () => {
@@ -344,27 +355,19 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
                 handleClose={() => {}}
             />
 
-            <ListCheckboxModal
-                title="Asignar fecha"
-                confirmButtonText="APLICAR FILTROS"
-                cancelButtonText="VOLVER"
-                items={_filterOptions[0].items}
-                handleConfirmButton={_handlerConfirmSchedulerChange}
-                handleCancelButton={_handlerCloseDialogs}
-                open={openSchedulerDialog}
-                handleClose={() => {}}
-                // TODO: Get data from item selected
-                optionsSelected={[
-                    {
-                        label: "Sin programar",
-                        code: "calendar:none",
-                    },
-                    {
-                        label: "10-17 Abril",
-                        code: "calendar:april:10:17",
-                    },
-                ]}
-            />
+            {openSchedulerDialog && (
+                <ListCheckboxModal
+                    title="Asignar fecha"
+                    confirmButtonText="APLICAR FILTROS"
+                    cancelButtonText="VOLVER"
+                    items={filterList.weeks}
+                    handleConfirmButton={_handlerConfirmSchedulerChange}
+                    handleCancelButton={_handlerCloseDialogs}
+                    open={openSchedulerDialog}
+                    handleClose={() => {}}
+                    optionsSelected={recipeSelected.recipe.availableWeeks}
+                />
+            )}
         </>
     );
 };
