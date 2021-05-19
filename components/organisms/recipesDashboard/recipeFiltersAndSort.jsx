@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 // External components
 import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 // Internal components
 import SeacrhInputField from "../../molecules/searchInputField/searchInputField";
@@ -15,28 +16,26 @@ import ListIcon from "@material-ui/icons/List";
 
 const RecipeFiltersAndSort = (props) => {
     return props.showFilters ? (
-        <Grid item container spacing={3} justify="center">
-            <Grid item>
-                <FilterByDropdown
-                    handlerOnConfirm={props.handlerOnConfirm}
-                    optionsSelected={props.optionsSelected}
-                    options={props.filterOptions}
-                />
-            </Grid>
-            <Grid item xs>
+        <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" marginY={2}>
+            <Box display="flex" alignItems="center">
+                <Box marginRight={2}>
+                    <FilterByDropdown
+                        handlerOnConfirm={props.handlerOnConfirm}
+                        optionsSelected={props.optionsSelected}
+                        options={props.filterOptions}
+                    />
+                </Box>
                 <SeacrhInputField handlerOnChange={props.handlerOnSearchChange} />
-            </Grid>
-            <Grid item>
-                <ButtonDropdownMenu
-                    options={props.sortOptions}
-                    label={props.label}
-                    selected={props.selected}
-                    handlerOnSelect={props.handlerOnSortSelect}
-                >
-                    <ListIcon />
-                </ButtonDropdownMenu>
-            </Grid>
-        </Grid>
+            </Box>
+            <ButtonDropdownMenu
+                options={props.sortOptions}
+                label={props.label}
+                selected={props.selected}
+                handlerOnSelect={props.handlerOnSortSelect}
+            >
+                <ListIcon />
+            </ButtonDropdownMenu>
+        </Box>
     ) : (
         <></>
     );

@@ -1,20 +1,23 @@
+// Utils & config
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useSortBy } from "../../../helpers/sortBy/sortBy";
+import { deleteRecipe } from "../../../helpers/serverRequests/recipe";
+
+// External components
 import { Button, Chip, Grid, makeStyles, Typography } from "@material-ui/core";
 import { Add as AddIcon, List as ListIcon } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 
+// Internal components
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
-import CardItemList from "../../molecules/cardItemList/cardItemList";
 import ListCheckboxModal from "../../molecules/listCheckboxModal/listCheckboxModal";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import RefreshButton from "../../atoms/refresh-button/refreshButton";
 import RecipesGrid from "./recipesGrid";
 import RecipeFiltersAndSort from "./recipeFiltersAndSort";
-
-import { useSortBy } from "../../../helpers/sortBy/sortBy";
-import { deleteRecipe } from "../../../helpers/serverRequests/recipe";
+import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -86,7 +89,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const _handleCreateReceipe = () => {
-        router.push("recetas/crear");
+        router.push("/recetas/crear");
     };
     const _handleSortListBy = (by, array) => {
         setSortBy(by);
@@ -97,20 +100,26 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         });
     };
     const _handleSearchText = (text = "") => {
-        clearTimeout(handleDebounce);
-        handleDebounce = setTimeout(() => {
-            setTextToFilter(text);
-            _applyFiltersAndSort({
-                textToFilter: text,
-                sortBy,
-                filters,
-            });
-        }, 300);
+        // clearTimeout(handleDebounce);
+        // handleDebounce = setTimeout(() => {
+        //     setTextToFilter(text);
+        //     _applyFiltersAndSort({
+        //         textToFilter: text,
+        //         sortBy,
+        //         filters,
+        //     });
+        // }, 300);
+        setTextToFilter(text);
+        _applyFiltersAndSort({
+            textToFilter: text,
+            sortBy,
+            filters,
+        });
     };
     const _handleApplyFilters = (_filters = []) => {
         setFilters(_filters);
         _applyFiltersAndSort({
-            textToFilter,
+            textToFilter: textToFilter.toLowerCase(),
             sortBy,
             filters: _filters,
         });
@@ -135,7 +144,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             let hasTags = false;
 
             // Filter by name or SKU
-            if (recipe.name.includes(_textToFilter) || recipe.sku.includes(_textToFilter)) {
+            if (recipe.name.toLowerCase().includes(_textToFilter) || recipe.sku.toLowerCase().includes(_textToFilter)) {
                 hasText = true;
             }
             if (_filters.length === 0) {
@@ -270,28 +279,11 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         <>
             {/* RECIPES TITLE */}
 
-            <Grid item container>
-                <Grid item xs>
-                    <Typography variant="h5">Recetas</Typography>
-                </Grid>
-                <Grid item>
-                    <Button variant="contained" color="primary" size="small" startIcon={<AddIcon></AddIcon>} onClick={_handleCreateReceipe}>
-                        CREAR RECETA
-                    </Button>
-                </Grid>
-            </Grid>
-
-            {/* RECIPES EMPTY IMAGE */}
-
-            {recipesList.length === 0 && (
-                <Grid item xs container justify="center" alignItems="center">
-                    <EmptyImage label={"Aun no se encuentran recetas"} />
-                </Grid>
-            )}
+            <CreateDashboardTitle createButtonText="CREAR RECETA" dashboardTitle="Recetas" handleCreateButton={_handleCreateReceipe} />
 
             {/* RECIPE FILTERS AND SORT */}
             <RecipeFiltersAndSort
-                showFilters={recipesList.length > 0}
+                showFilters={responseRecipesList.length > 0}
                 filterOptions={_filterOptions}
                 handlerOnConfirm={_handleApplyFilters}
                 handlerOnSearchChange={_handleSearchText}
@@ -324,7 +316,20 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             )}
 
             {/* RECIPE LIST */}
-            <RecipesGrid recipesList={recipesList} />
+            <RecipesGrid
+                recipesList={recipesList}
+                handleOpenCalendarModal={_handlerSchedulerReceipe}
+                handleOpenDeleteModal={_handlerDeleteReceipe}
+                handleEditRecipe={_handlerEditRecipe}
+            />
+
+            {/* RECIPES EMPTY IMAGE */}
+
+            {recipesList.length === 0 && (
+                <Grid item xs container justify="center" alignItems="center">
+                    <EmptyImage label={"Aun no se encuentran recetas"} />
+                </Grid>
+            )}
 
             {/* RECIPES MODALS */}
 

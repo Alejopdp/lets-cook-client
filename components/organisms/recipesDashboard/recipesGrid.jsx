@@ -11,15 +11,15 @@ import CardItemList from "../../molecules/cardItemList/cardItemList";
 const RecipesGrid = (props) => {
     return (
         props.recipesList.length > 0 && (
-            <Grid container spacing={1} direction="row" justify="flex-start" alignContent="flex-start" alignItems="flex-start" wrap="wrap">
+            <Grid container spacing={2} direction="row" justify="flex-start" alignContent="flex-start" alignItems="flex-start" wrap="wrap">
                 {props.recipesList.map((recipe, index) => (
                     <Grid item xs="auto" sm={6} md={3} key={index}>
                         <CardItemList
                             item={recipe}
-                            handlerDelete={() => _handlerDeleteReceipe(index, recipe)}
-                            handlerEdit={() => _handlerEditRecipe(index, recipe)}
-                            handlerScheduler={() => _handlerSchedulerReceipe(index, recipe)}
-                        ></CardItemList>
+                            handlerDelete={() => props.handleOpenDeleteModal(index, recipe)}
+                            handlerEdit={() => props.handleEditRecipe(index, recipe)}
+                            handlerScheduler={() => props.handleOpenCalendarModal(index, recipe)}
+                        />
                     </Grid>
                 ))}
             </Grid>
@@ -50,6 +50,9 @@ RecipesGrid.propTypes = {
             availableMonths: PropTypes.arrayOf(PropTypes.string),
         })
     ),
+    handleOpenCalendarModal: PropTypes.func.isRequired,
+    handleOpenDeleteModal: PropTypes.func.isRequired,
+    handleEditRecipe: PropTypes.func.isRequired,
 };
 
 export default RecipesGrid;

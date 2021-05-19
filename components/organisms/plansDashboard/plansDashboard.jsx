@@ -9,10 +9,10 @@ const langs = require("../../../lang/components/organisms").planDashboard;
 // External components
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
+import Chip from "@material-ui/core/Chip";
 
 // Internal components
-import CreateButton from "../../atoms/createButton/createButton";
+import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
 import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
 import PlansGrid from "./plansGrid";
@@ -32,6 +32,10 @@ const PlansDashboard = (props) => {
 
     const handleApplyFilters = (filters = []) => {
         setfiltersBy(filters);
+    };
+
+    const handleRemoveFilter = (itemFilterToRemove) => {
+        setfiltersBy(filtersBy.filter((itemFilter) => itemFilter.id !== itemFilterToRemove.id));
     };
 
     const handleToggleState = async () => {
@@ -95,12 +99,12 @@ const PlansDashboard = (props) => {
 
     return (
         <>
-            <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h5">{lang.dashboardTitle}</Typography>
-                    <CreateButton onClick={() => router.push("/planes/crear")}>{lang.createButton}</CreateButton>
-                </Box>
-            </Grid>
+            <CreateDashboardTitle
+                createButtonText={lang.createButton}
+                dashboardTitle={lang.dashboardTitle}
+                handleCreateButton={() => router.push("/planes/crear")}
+            />
+
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center">
                     <Box marginRight={2}>
@@ -114,6 +118,22 @@ const PlansDashboard = (props) => {
                     <SearchInputFIeld handlerOnChange={setsearchValue} />
                 </Box>
             </Grid>
+
+            {filtersBy.length > 0 && (
+                <Grid item xs={12}>
+                    <Box display="flex" alignItems="center">
+                        {filtersBy.map((itemFilter, index) => (
+                            <Chip
+                                key={index}
+                                label={itemFilter.label}
+                                onDelete={() => handleRemoveFilter(itemFilter)}
+                                color="primary"
+                                style={{ marginRight: 8, marginBottom: 4 }}
+                            />
+                        ))}
+                    </Box>
+                </Grid>
+            )}
             {filteredPlans.length > 0 ? (
                 <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
             ) : (
