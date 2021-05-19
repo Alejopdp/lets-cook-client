@@ -69,7 +69,11 @@ const RecipeForm = ({ formData, recipeData }) => {
     };
 
     useEffect(() => {
-        setIngredientsVariants(recipeData.recipeVariants);
+        setIngredientsVariants(
+            recipeData.recipeVariants.map((variant) => {
+                return { ...variant, restrictions: variant.restrictions.map((r) => r.value) };
+            })
+        );
         setimageTags(recipeData.imageTags);
         settags(recipeData.backOfficeTags);
         setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
@@ -79,12 +83,12 @@ const RecipeForm = ({ formData, recipeData }) => {
         setdifficultyLevel(recipeData.difficultyLevel);
         setgeneralData({
             name: recipeData.name,
-            cookDuration: recipeData.cookDuration,
+            cookDuration: recipeData.cookDurationNumberValue,
             image: [], // TO DO: Save the file
             longDescription: recipeData.longDescription,
             shortDescription: recipeData.shortDescription,
             sku: recipeData.sku,
-            weight: recipeData.weight,
+            weight: recipeData.weightNumberValue,
         });
     }, []);
     const handleGeneralDataChange = (event) => {
@@ -168,7 +172,7 @@ const RecipeForm = ({ formData, recipeData }) => {
         formDataToCreate.append("shortDescription", generalData.shortDescription);
         formDataToCreate.append("longDescription", generalData.longDescription);
         formDataToCreate.append("cookDuration", generalData.cookDuration);
-        formDataToCreate.append("diffcultyLevel", difficultyLevel);
+        formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
         formDataToCreate.append("weight", generalData.weight);
         formDataToCreate.append("recipeImage", generalData.image[0]);
@@ -291,6 +295,20 @@ const RecipeForm = ({ formData, recipeData }) => {
         settools(tools.filter((tool) => tool !== toolToRemove));
     };
 
+    const handleVariantSkuChange = (variantIndex, newValue) => {
+        setIngredientsVariants(
+            ingredientsVariants.map((variant, index) => {
+                if (index === variantIndex) {
+                    return {
+                        ...variant,
+                        sku: newValue,
+                    };
+                }
+                return variant;
+            })
+        );
+    };
+
     return (
         <Grid container direction="column" spacing={5} className={classes.height100}>
             {/* RECIPES TITLE */}
@@ -407,8 +425,9 @@ const RecipeForm = ({ formData, recipeData }) => {
                                             <Grid item xs={3}>
                                                 <FormInput
                                                     name={`ingredientsVariantsCode:${index}`}
-                                                    value={`RE0031-${index}`}
-                                                    handleChange={_handleVariantsInputChange}
+                                                    value={variant.sku}
+                                                    handleChange={(e) => handleVariantSkuChange(index, e.target.value)}
+                                                    label="SKU"
                                                 />
                                             </Grid>
                                             <Grid item xs>
@@ -424,7 +443,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                             </Grid>
                                         </Grid>
                                         <Grid item container xs={12}>
-                                            {ingredientsPrograms.map((program, restrictionIndex) => (
+                                            {formData.restrictions.map((variantRestriction, restrictionIndex) => (
                                                 <Grid item xs key={restrictionIndex}>
                                                     <FormControlLabel
                                                         control={
@@ -433,18 +452,22 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                                     handleRestrictionsForVariants(
                                                                         index,
                                                                         e.target.name,
-                                                                        variant.restrictions.every((restriction) => restriction !== program)
+                                                                        variant.restrictions.every(
+                                                                            (restriction) => restriction !== variantRestriction.value
+                                                                        )
                                                                     )
                                                                 }
-                                                                name={program}
+                                                                name={variantRestriction.value}
                                                                 color="primary"
-                                                                value={variant.restrictions.some((restriction) => restriction === program)}
+                                                                value={variant.restrictions.some(
+                                                                    (restriction) => restriction === variantRestriction.value
+                                                                )}
                                                                 checked={variant.restrictions.some(
-                                                                    (restriction) => restriction === program
+                                                                    (restriction) => restriction === variantRestriction.value
                                                                 )}
                                                             />
                                                         }
-                                                        label={program}
+                                                        label={variantRestriction.label}
                                                     />
                                                 </Grid>
                                             ))}

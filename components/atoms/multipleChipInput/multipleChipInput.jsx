@@ -51,7 +51,7 @@ const Input = (props) => {
                         />
                     ))
                 }
-                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                renderInput={(params) => <TextField {...params} variant="outlined" label={props.label} />}
             />
         </FormControl>
     );
@@ -62,6 +62,7 @@ Input.propTypes = {
     freeSolo: PropTypes.bool.isRequired,
     values: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
+    placeholder: PropTypes.string.isRequired,
     handleRemoveValue: PropTypes.func.isRequired,
 };
 

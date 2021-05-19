@@ -57,7 +57,6 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
-    const _handleVariantsInputChange = ($event) => {};
     const _handleAddVariant = ($event) => {
         const newVariant = { ingredients: [], sku: "", restrictions: [] };
         const newVariants = [...ingredientsVariants, newVariant];
@@ -266,6 +265,20 @@ const RecipeForm = ({ formData, recipeData }) => {
         settools(tools.filter((tool) => tool !== toolToRemove));
     };
 
+    const handleVariantSkuChange = (variantIndex, newValue) => {
+        setIngredientsVariants(
+            ingredientsVariants.map((variant, index) => {
+                if (index === variantIndex) {
+                    return {
+                        ...variant,
+                        sku: newValue,
+                    };
+                }
+                return variant;
+            })
+        );
+    };
+
     return (
         <Grid container direction="column" spacing={5} className={classes.height100}>
             {/* RECIPES TITLE */}
@@ -382,8 +395,9 @@ const RecipeForm = ({ formData, recipeData }) => {
                                             <Grid item xs={3}>
                                                 <FormInput
                                                     name={`ingredientsVariantsCode:${index}`}
-                                                    value={`RE0031-${index}`}
-                                                    handleChange={_handleVariantsInputChange}
+                                                    value={variant.sku}
+                                                    handleChange={(e) => handleVariantSkuChange(index, e.target.value)}
+                                                    label="SKU"
                                                 />
                                             </Grid>
                                             <Grid item xs>
@@ -392,6 +406,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                     values={variant.ingredients}
                                                     onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
                                                     name={`variant:${index}`}
+                                                    label="Ingredientes"
                                                     handleRemoveValue={(ingredientToRemove) =>
                                                         handleRemoveIngredientFromVariant(index, ingredientToRemove)
                                                     }
@@ -399,7 +414,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                             </Grid>
                                         </Grid>
                                         <Grid item container xs={12}>
-                                            {ingredientsPrograms.map((program, restrictionIndex) => (
+                                            {formData.restrictions.map((program, restrictionIndex) => (
                                                 <Grid item xs key={restrictionIndex}>
                                                     <FormControlLabel
                                                         control={
@@ -408,18 +423,22 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                                     handleRestrictionsForVariants(
                                                                         index,
                                                                         e.target.name,
-                                                                        variant.restrictions.every((restriction) => restriction !== program)
+                                                                        variant.restrictions.every(
+                                                                            (restriction) => restriction !== program.value
+                                                                        )
                                                                     )
                                                                 }
-                                                                name={program}
+                                                                name={program.value}
                                                                 color="primary"
-                                                                value={variant.restrictions.some((restriction) => restriction === program)}
+                                                                value={variant.restrictions.some(
+                                                                    (restriction) => restriction === program.value
+                                                                )}
                                                                 checked={variant.restrictions.some(
-                                                                    (restriction) => restriction === program
+                                                                    (restriction) => restriction === program.value
                                                                 )}
                                                             />
                                                         }
-                                                        label={program}
+                                                        label={program.label}
                                                     />
                                                 </Grid>
                                             ))}
@@ -575,7 +594,12 @@ RecipeForm.propTypes = {
 
 export default RecipeForm;
 
-const ingredientsPrograms = ["Sin glúten", "Sin lactosa", "Apto vegetariano", "Acto vegano"];
+// const ingredientsPrograms = [
+//     { label: "Sin glúten", value: "SinGluten" },
+//     { label: "Sin lactosa", value: "SinLactosa" },
+//     { label: "Apto vegetariano", value: "Vegetariano" },
+//     { label: "Acto vegano", value: "Vegano" },
+// ];
 const difficultyLevelOptions = ["Facil", "Media", "Alta"];
 const toolsOptions = [
     "Cuchillo",
