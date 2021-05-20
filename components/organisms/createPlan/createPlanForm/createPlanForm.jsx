@@ -83,7 +83,8 @@ const CreatePlanForm = (props) => {
     const handleAttributeValuesChange = (index, e) => {
         var updatedAttribute = [...attributes[index]];
         if (!e.target.value) {
-            updatedAttribute[1] = [];
+            updatedAttribute[1] = updatedAttribute[1].slice(0, -1);
+
             updateAttributes(updatedAttribute, index);
         } else if (updatedAttribute[1].every((value) => value !== e.target.value)) {
             updatedAttribute[1] = [...updatedAttribute[1], e.target.value];

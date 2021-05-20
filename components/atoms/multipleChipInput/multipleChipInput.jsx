@@ -32,6 +32,7 @@ const Input = (props) => {
     return (
         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
             <Autocomplete
+                style={{ marginBottom: theme.spacing(2) }}
                 multiple
                 options={props.options}
                 defaultValue={[]}

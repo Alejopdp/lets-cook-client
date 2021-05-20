@@ -1,12 +1,14 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
+import { useTheme } from "@material-ui/core"
 
 // External components
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function CustomAutocomplete(props) {
+    const theme = useTheme();
     return (
         <Autocomplete
             options={props.options}
@@ -16,7 +18,8 @@ export default function CustomAutocomplete(props) {
             onChange={(e, option) => props.onChange(props.name, option ? option.value : "")}
             disableClearable={props.disableClearable}
             value={props.value}
-            // inputValue={props.value}
+            style={{ marginBottom: theme.spacing(2) }}
+        // inputValue={props.value}
         />
     );
 }

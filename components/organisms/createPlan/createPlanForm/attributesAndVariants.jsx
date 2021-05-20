@@ -7,8 +7,10 @@ import { useTheme } from "@material-ui/styles";
 
 // External components
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import { DataGrid } from "@material-ui/data-grid";
 import Box from "@material-ui/core/Box";
+import { Add as AddIcon } from "@material-ui/icons";
 
 // Internal components
 import CreateButton from "../../../atoms/createButton/createButton";
@@ -26,7 +28,7 @@ const AttributesAndVariants = (props) => {
             <Grid item xs={12}>
                 <FormPaperWithEmptyState empty={isEmpty} emptyText={lang.attributesEmptyText} title={lang.attributesPaperTitle}>
                     {!isEmpty && (
-                        <Box marginBottom={2}>
+                        <Box>
                             {props.attributes.map((attr, index) => (
                                 <KeyValueInput
                                     index={index}
@@ -41,9 +43,9 @@ const AttributesAndVariants = (props) => {
                             ))}
                         </Box>
                     )}
-                    <CreateButton disabled={false} onClick={props.handleAddAttribute}>
+                    <Button style={{ marginTop: theme.spacing(2) }} variant="contained" size="small" startIcon={<AddIcon />} onClick={props.handleAddAttribute}>
                         {lang.addAttributeButton}
-                    </CreateButton>
+                    </Button>
                 </FormPaperWithEmptyState>
             </Grid>
             <Grid item xs={12}>

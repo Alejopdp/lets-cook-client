@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 
 // Internal components
 import CreatePlanForm from "./createPlanForm/createPlanForm";
-import DasbhoardTitle from "../../layout/dashboardTitleWithBackButton/";
+import DashboardTitle from "../../layout/dashboardTitleWithBackButton/";
 
 const CreatePlan = (props) => {
     const router = useRouter();
@@ -22,7 +22,7 @@ const CreatePlan = (props) => {
 
     return (
         <>
-            <DasbhoardTitle title={lang.title} handleClick={goBackHandler} />
+            <DashboardTitle title={lang.title} handleClick={goBackHandler} />
             <CreatePlanForm additionalPlans={props.additionalPlans} />
         </>
     );
