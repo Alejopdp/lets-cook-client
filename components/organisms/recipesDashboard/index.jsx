@@ -150,7 +150,8 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
                         break;
                     case "plans":
                         // TODO: Missing key in Recipe response.
-                        throw "Filter Case not implimented yet";
+                        return recipe.relatedPlans.some((id) => tagId === `${id}`);
+                        // throw "Filter Case not implimented yet";
                         break;
                     case "tags":
                         return recipe.backOfficeTags.some((label) => label === tagLabel);
@@ -202,8 +203,8 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         router.push({ pathname: "/recetas/modificar", query: { id: item.id } });
     };
 
-    const _handlerDeleteReceipe = (index, item) => {
-        selectRecipe({ item, index });
+    const _handlerDeleteReceipe = (index, recipe) => {
+        selectRecipe({ recipe, index });
         setOpenDeleteDialog(true);
     };
 
@@ -251,13 +252,13 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             setOpenDeleteDialog(false);
 
             // // Real delete.
-            const res = await deleteRecipe(token, recipeSelected.item.id);
+            const res = await deleteRecipe(token, recipeSelected.recipe.id);
 
             if (res.status >= 400) throw res.statusText;
 
             // // Virtual delete.
             const newStateToRecipeList = recipesList.reduce((recipes, recipe) => {
-                if (`${recipe.id}` === `${recipeSelected.item.id}`) return recipes;
+                if (`${recipe.id}` === `${recipeSelected.recipe.id}`) return recipes;
                 return [...recipes, recipe];
             }, []);
             setRecipesList(newStateToRecipeList);
@@ -334,17 +335,18 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             )}
 
             {/* RECIPES MODALS */}
-            <SimpleModal
-                title="Eliminar receta"
-                paragraphs={["¿Estás seguro de que quieres eliminar la receta Burger de Halloumi?"]}
-                confirmButtonText="ELIMINAR RECETA"
-                cancelButtonText="VOLVER"
-                handleConfirmButton={_handlerConfirmDelete}
-                handleCancelButton={_handlerCloseDialogs}
-                open={openDeleteDialog}
-                handleClose={() => {}}
-            />
-
+            {openDeleteDialog && (
+                <SimpleModal
+                    title="Eliminar receta"
+                    paragraphs={[`¿Estás seguro de que quieres eliminar la receta ${recipeSelected.recipe.name}?`]}
+                    confirmButtonText="ELIMINAR RECETA"
+                    cancelButtonText="VOLVER"
+                    handleConfirmButton={_handlerConfirmDelete}
+                    handleCancelButton={_handlerCloseDialogs}
+                    open={openDeleteDialog}
+                    handleClose={() => {}}
+                />
+            )}
             {openSchedulerDialog && (
                 <ListCheckboxModal
                     title="Asignar fecha"

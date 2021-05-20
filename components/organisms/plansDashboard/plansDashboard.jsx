@@ -90,11 +90,19 @@ const PlansDashboard = (props) => {
         );
     };
 
+    // const filterPlans = (plans) => {
+    //     const filteredPlans = plans.filter(plan => {
+    //         if (filtersBy.some(filterItem => filterItem.label === "Activo" || filterItem.label === "Desactivo")) {
+
+    //         }
+    //     })
+    // }
+
     const filteredPlans =
         filtersBy.length > 0
             ? filterPlansBySearchValue().filter((plan) =>
-                filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
-            )
+                  filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
+              )
             : filterPlansBySearchValue();
 
     return (
@@ -136,24 +144,20 @@ const PlansDashboard = (props) => {
             )}
 
             {filteredPlans.length > 0 ? (
-                <PlansGrid
-                    plans={filteredPlans}
-                    handleToggleState={handleOpenToggleStateModal}
-                    handleDelete={handleOpenDeleteModal}
-                />
+                <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
             ) : (
-                    <EmptyImage
-                        label={
-                            filtersBy.length > 0 || !!searchValue
-                                ? "No se han encontrado planes que coincidan con los términos de búsqueda"
-                                : "Aún no se crearon planes"
-                        }
-                    />
-                )}
+                <EmptyImage
+                    label={
+                        filtersBy.length > 0 || !!searchValue
+                            ? "No se han encontrado planes que coincidan con los términos de búsqueda"
+                            : "Aún no se crearon planes"
+                    }
+                />
+            )}
 
             {isToggleStateModalOpen && (
                 <SimpleModal
-                    cancelButtonText={lang.toggleStateModal.cancelButton}
+                    acancelButtonText={lang.toggleStateModal.cancelButton}
                     confirmButtonText={lang.toggleStateModal.confirmButton}
                     handleCancelButton={() => setisToggleStateModalOpen(false)}
                     handleClose={() => setisToggleStateModalOpen(false)}
