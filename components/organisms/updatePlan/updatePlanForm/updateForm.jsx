@@ -232,7 +232,7 @@ const UpdatePlanForm = (props) => {
         formData.append("description", generalData.description);
         formData.append("sku", generalData.sku);
         formData.append("planImage", generalData.image[0]);
-        formData.append("isActive", JSON.stringify(otherData.isActive === "Active"));
+        formData.append("isActive", JSON.stringify(otherData.isActive === "Activo"));
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
@@ -306,7 +306,7 @@ const UpdatePlanForm = (props) => {
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
-                    backButtonHandler={() => ""}
+                    backButtonHandler={() => router.replace("/planes", "/planes")}
                     createButtonHandler={handleUpdate}
                     createButtonText="MODIFICAR PLAN"
                     isCreateButtonDisabled={!isFormOkForCreation() || isSubmitting}

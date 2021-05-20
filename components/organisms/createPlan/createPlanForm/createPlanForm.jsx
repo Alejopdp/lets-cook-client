@@ -26,7 +26,7 @@ const CreatePlanForm = (props) => {
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
     const [otherData, setotherData] = useState({
-        isActive: "Activo",
+        isActive: "",
         planType: "",
         hasRecipes: false,
     });
@@ -208,12 +208,13 @@ const CreatePlanForm = (props) => {
 
     const handleCreate = async () => {
         setisSubmitting(true);
+        console.log("El stat de isACrive: ", otherData.isActive);
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
         formData.append("sku", generalData.sku);
         formData.append("planImage", generalData.image[0]);
-        formData.append("isActive", JSON.stringify(otherData.isActive === "Active"));
+        formData.append("isActive", JSON.stringify(otherData.isActive === "Activo"));
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
@@ -289,7 +290,7 @@ const CreatePlanForm = (props) => {
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
-                    backButtonHandler={() => ""}
+                    backButtonHandler={() => router.replace("/planes", "/planes")}
                     createButtonHandler={handleCreate}
                     createButtonText="CREAR PLAN"
                     isCreateButtonDisabled={!isFormOkForCreation()}
