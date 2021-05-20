@@ -1,12 +1,13 @@
 import Axios from "axios";
 
-const serverUrl = "http://localhost:3001/api/v1";
+// const serverUrl = "http://localhost:3001/api/v1";
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/plan`;
 
 export const getPlanList = async (locale) => {
     try {
         const res = await Axios({
             method: "GET",
-            url: `${serverUrl}/plan`,
+            url: `${apiUrl}`,
             params: {
                 locale,
             },
@@ -23,7 +24,7 @@ export const getPlanById = async (planId, locale) => {
     try {
         const res = await Axios({
             method: "GET",
-            url: `${serverUrl}/plan/${planId}`,
+            url: `${apiUrl}/${planId}`,
             params: {
                 locale,
             },
@@ -40,7 +41,7 @@ export const togglePlanState = async (planId) => {
     try {
         const res = await Axios({
             method: "PUT",
-            url: `${serverUrl}/plan/toggle-state/${planId}`,
+            url: `${apiUrl}/toggle-state/${planId}`,
         });
 
         return res;
@@ -53,7 +54,7 @@ export const deletePlan = async (planId) => {
     try {
         const res = await Axios({
             method: "DELETE",
-            url: `${serverUrl}/plan/${planId}`,
+            url: `${apiUrl}/${planId}`,
         });
 
         return res;
@@ -67,7 +68,7 @@ export const createPlan = async (plan) => {
         const res = await Axios({
             headers: { "Content-Type": "multipart/form-data" },
             method: "POST",
-            url: `${serverUrl}/plan`,
+            url: `${apiUrl}`,
             data: plan,
         });
 
@@ -82,7 +83,7 @@ export const getAdditionalPlans = async (locale) => {
     try {
         const res = await Axios({
             method: "GET",
-            url: `${serverUrl}/plan/additionals`,
+            url: `${apiUrl}/additionals`,
             params: {
                 locale,
             },
@@ -98,7 +99,7 @@ export const updatePlan = async (plan, planId, locale) => {
     try {
         const res = await Axios({
             method: "PUT",
-            url: `${serverUrl}/plan/${planId}`,
+            url: `${apiUrl}/${planId}`,
             data: plan,
             params: {
                 locale,
