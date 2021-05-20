@@ -37,12 +37,13 @@ const UpdatePlanForm = (props) => {
     const isFirstRender = useRef(true);
 
     useEffect(() => {
+        // console.log("A VER: ", window.URL.createObjectURL(props.plan.imageUrl));
         setgeneralData({
             id: props.plan.id,
             name: props.plan.name,
             description: props.plan.description,
             sku: props.plan.sku,
-            image: [],
+            image: [props.plan.imageUrl],
         });
 
         setotherData({

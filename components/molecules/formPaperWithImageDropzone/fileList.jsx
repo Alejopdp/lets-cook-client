@@ -17,7 +17,7 @@ const FileList = (props) => {
             </Typography>
             <ul>
                 {props.files.map((file) => (
-                    <li>{file.name}</li>
+                    <li>{file.name || props.fileName}</li>
                 ))}
             </ul>
         </Box>

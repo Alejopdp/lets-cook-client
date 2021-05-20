@@ -23,6 +23,7 @@ const GeneralData = (props) => {
                 maxFiles={1}
                 files={props.data.image}
                 filesTitle={lang.filesTitle}
+                fileName={props.data.name}
             >
                 <FormInput label={lang.planName} name="name" value={props.data.name} handleChange={props.handleChange} />
                 <FormInput

@@ -14,7 +14,7 @@ const FormPaperWithImageDropzone = (props) => {
         <Paper title={props.title} fullWidth={true}>
             {props.children}
             <Dropzone handleDropFile={props.handleDropFile} maxFiles={props.maxFiles} />
-            <FileList files={props.files} title={props.filesTitle} />
+            <FileList files={props.files} title={props.filesTitle} fileName={props.fileName} />
         </Paper>
     );
 };

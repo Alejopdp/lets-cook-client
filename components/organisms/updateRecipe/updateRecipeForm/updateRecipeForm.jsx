@@ -8,7 +8,9 @@ import { updateRecipe } from "../../../../helpers/serverRequests/recipe";
 
 // External components
 import { Button, IconButton, Grid, makeStyles, Typography, FormControlLabel, Box } from "@material-ui/core";
-import { Flag as FlagIcon, ArrowBack as BackIcon, Add as AddIcon, Delete } from "@material-ui/icons";
+import { Flag as FlagIcon, ArrowBack, Add as AddIcon, Delete } from "@material-ui/icons";
+
+// Internal components
 
 // Internal components
 import FormInput from "../../../atoms/input/input";
@@ -21,6 +23,7 @@ import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/
 import Checkbox from "../../../atoms/checkbox/checkbox";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 import NutritionalInformationGrid from "../../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
+import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -84,7 +87,7 @@ const RecipeForm = ({ formData, recipeData }) => {
         setgeneralData({
             name: recipeData.name,
             cookDuration: recipeData.cookDurationNumberValue,
-            image: [], // TO DO: Save the file
+            image: [recipeData.imageUrl], // TO DO: Save the file
             longDescription: recipeData.longDescription,
             shortDescription: recipeData.shortDescription,
             sku: recipeData.sku,
@@ -309,26 +312,24 @@ const RecipeForm = ({ formData, recipeData }) => {
         );
     };
 
+    const goBackHandler = () => {
+        router.replace("/recetas", "/recetas", { locale: router.locale });
+    };
+
     return (
         <Grid container direction="column" spacing={5} className={classes.height100}>
             {/* RECIPES TITLE */}
-            <Grid item container>
-                <Grid item container xs alignItems="center">
-                    <Grid item>
-                        <IconButton color="default" onClick={() => router.back()}>
-                            <BackIcon />
-                        </IconButton>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h5">Modificar receta</Typography>
-                    </Grid>
-                </Grid>
-                <Grid item>
-                    <ButtonDropdownMenu options={languages} label={lang.label} selected={lang.code} handlerOnSelect={_handleSelectLang}>
-                        <FlagIcon />
-                    </ButtonDropdownMenu>
+            <Grid container style={{ paddingTop: 20, paddingBottom: 20 }}>
+                <Grid item xs={12}>
+                    <Box display="inline-flex" alignItems="center" onClick={goBackHandler} style={{ cursor: "pointer" }}>
+                        <Box display="flex" marginRight={1}>
+                            <ArrowBack fontSize="24px" />
+                        </Box>
+                        <Typography variant="h5">{"Modificar receta"}</Typography>
+                    </Box>
                 </Grid>
             </Grid>
+            {/* <DashboardTitle title={"Modificar receta"} handleClick={goBackHandler} /> */}
 
             {/* FORM */}
             <Grid container spacing={2}>
@@ -342,6 +343,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                             files={generalData.image}
                             filesTitle="Imagen"
                             title={lang.paperTitle}
+                            fileName={generalData.name}
                         >
                             <FormInput label="SKU" name="sku" value={generalData.sku} handleChange={handleGeneralDataChange} />
                             <FormInput

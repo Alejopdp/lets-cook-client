@@ -17,6 +17,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 // Internal components
 import { emailRegex } from "../../../../helpers/regex";
+import CreateButton from "../../../atoms/createButton/createButton";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -85,7 +86,7 @@ const CreateUser = (props) => {
             });
             router.push("/gestion-de-usuarios");
         } else {
-            enqueueSnackbar("Error al crear el usuario", {
+            enqueueSnackbar(res.data.message, {
                 variant: "error",
             });
         }
@@ -157,7 +158,7 @@ const CreateUser = (props) => {
             </form>
 
             <div className={classes.btnDiv}>
-                <Button
+                <CreateButton
                     variant="contained"
                     size="large"
                     className={classes.btn}
@@ -165,7 +166,7 @@ const CreateUser = (props) => {
                     onClick={props.creation ? handleCreateUser : handleUpdateUser}
                 >
                     {props.buttonText}
-                </Button>
+                </CreateButton>
             </div>
         </div>
     );
