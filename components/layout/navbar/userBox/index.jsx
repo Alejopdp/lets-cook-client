@@ -16,7 +16,7 @@ const UserBox = (props) => {
     return (
         <Box display="flex">
             <Avatar sizes="sm" style={{ marginRight: theme.spacing(1) }} />
-            <UserDropdown />
+            <UserDropdown title="Alejo" />
         </Box>
     );
 };

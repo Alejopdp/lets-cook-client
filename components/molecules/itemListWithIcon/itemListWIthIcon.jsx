@@ -51,7 +51,7 @@ const ItemListWIthIcon = (props) => {
 ItemListWIthIcon.propTypes = {
     text: PropTypes.string,
     index: PropTypes.number,
-    icon: PropTypes.func,
+    icon: PropTypes.string,
     handleOptionClick: PropTypes.func.isRequired,
     selectedIndex: PropTypes.number,
 };

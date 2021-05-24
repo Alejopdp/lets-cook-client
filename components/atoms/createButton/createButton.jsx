@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Button from "../button/button";
 
 // Images & Icons
-import Add from "@material-ui/Icons/Add";
+import AddIcon from "@material-ui/icons/Add";
 
 const CreateButton = (props) => {
     return (
@@ -18,7 +18,7 @@ const CreateButton = (props) => {
             disabled={props.disabled}
             onClick={props.onClick}
             fullWidth={props.fullWidth}
-            startIcon={<Add />}
+            startIcon={<AddIcon />}
         >
             {props.children}
         </Button>
