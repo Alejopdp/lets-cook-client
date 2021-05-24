@@ -19,10 +19,10 @@ const DasboardWithBackTitle = (props) => {
     const theme = useTheme();
 
     return (
-        <Grid item xs={12} style={{ marginBottom: theme.spacing(2) }}>
+        <Grid item xs={12} style={{ marginBottom: theme.spacing(4) }}>
             <Box display="inline-flex" alignItems="center" onClick={() => (props.handleClick ? props.handleClick() : router.back())} style={{ cursor: "pointer" }} >
                 <Box display="flex" marginRight={1}>
-                    <ArrowBack fontSize="24px" />
+                    <ArrowBack fontSize="default" />
                 </Box>
                 <Typography variant="h5">
                     {props.title}

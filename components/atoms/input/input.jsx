@@ -40,7 +40,7 @@ const Input = (props) => {
 Input.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
-    handleChange: PropTypes.handleChange,
+    handleChange: PropTypes.func,
     value: PropTypes.any.isRequired,
     rows: PropTypes.number,
     multiline: PropTypes.bool

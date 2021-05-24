@@ -23,6 +23,7 @@ import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
 import ErrorPage from "../../components/molecules/errorPage/errorPage";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
+import ShippingZoneForm from "../../components/organisms/shippingZoneForm";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,6 +111,9 @@ const Index = (props) => {
 
             case "gestion-de-envios":
                 return <ShippingDashboard />
+
+            case "gestion-de-envios/crear":
+                return <ShippingZoneForm />
 
             default:
                 return (
