@@ -32,6 +32,7 @@ const Input = (props) => {
                 value={props.value}
                 multiline={props.multiline || false}
                 rows={props.rows || 1}
+                style={props.style}
             />
         </FormControl>
     );
@@ -43,7 +44,8 @@ Input.propTypes = {
     handleChange: PropTypes.func,
     value: PropTypes.any.isRequired,
     rows: PropTypes.number,
-    multiline: PropTypes.bool
+    multiline: PropTypes.bool,
+    style: PropTypes.string
 };
 
 export default Input;

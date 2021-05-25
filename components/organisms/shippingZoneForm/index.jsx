@@ -4,21 +4,14 @@ import { useTheme } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 
 // External components
-import { Box, Button, Grid, Typography } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
-import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
+import { Box, Grid, Typography, Container } from '@material-ui/core';
 
 // Internal components
 import DashboardWithBackTitle from "../../../components/layout/dashboardTitleWithBackButton";
 import PaperWithTitleContainer from '../../molecules/paperWithTitleContainer/paperWithTitleContainer';
 import Input from '../../atoms/input/input';
-import CustomButton from '../../atoms/button/button';
-
-// Icons & Images
-import AddIcon from "@material-ui/icons/Add";
+import RoundedCheckbox from '../../atoms/roundedCheckbox/roundedCheckbox';
+import BackAndCreateButtons from '../../molecules/backAndCreateButtons/backAndCreateButtons';
 
 const ShippingZoneForm = () => {
     const theme = useTheme();
@@ -38,29 +31,28 @@ const ShippingZoneForm = () => {
 
                 <Grid item>
                     <PaperWithTitleContainer title="Coste de envío" width={600}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    icon={<CircleUnchecked />}
-                                    checkedIcon={<CircleCheckedFilled />}
-                                    color="primary"
-                                />
-                            }
+                        <RoundedCheckbox
+                            value={""}
+                            name="Free"
                             label="Gratis"
                         />
 
                         <br />
 
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    icon={<CircleUnchecked />}
-                                    checkedIcon={<CircleCheckedFilled />}
-                                    color="primary"
-                                />
-                            }
+                        <RoundedCheckbox
+                            value={""}
+                            name="Pay"
                             label="Pago"
                         />
+
+                        <Grid item container direction="row" alignItems="center" spacing={2}>
+                            <Grid item>
+                                <Input label="Valor" value=""/>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="body1" style={{marginBottom: theme.spacing(2)}}>€</Typography>
+                            </Grid>
+                        </Grid>
                     </PaperWithTitleContainer>
                 </Grid>
 
@@ -79,14 +71,12 @@ const ShippingZoneForm = () => {
                 </Grid>
             </Grid>
 
-            <Box width={600} display="flex" justifyContent="flex-end" margin="0 auto" marginTop={theme.spacing(1)}>
-                <Button onClick={() => (router.back())}>
-                    Volver
-                </Button>
-
-                <CustomButton onClick={() => (router.push("/gestion-de-envios"))} startIcon={<AddIcon />}>
-                    Crear zona de envío
-                </CustomButton>
+            <Box width={600} display="flex" justifyContent="flex-end" margin="0 auto" >
+                <BackAndCreateButtons
+                    backButtonHandler={() => (router.back())}
+                    createButtonHandler={() => (router.push("/gestion-de-envios"))}
+                    createButtonText={"Crear zona de envío"}
+                />
             </Box>
         </Container>
     )
