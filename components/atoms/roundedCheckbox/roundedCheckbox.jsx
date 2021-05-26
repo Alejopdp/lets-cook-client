@@ -1,6 +1,7 @@
 // Utils & config
 import React from "react";
 import PropTypes from "prop-types";
+import { useTheme } from "@material-ui/core/styles";
 
 // External components
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -11,17 +12,17 @@ import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 // Internal components
 
 const RoundedCheckbox = (props) => {
+    const theme = useTheme();
+
     return (
-        <FormControlLabel
+        <FormControlLabel style={{marginBottom: theme.spacing(1)}}
             control={
                 <Checkbox
                     icon={<CircleUnchecked />}
                     checkedIcon={<CircleCheckedFilled />}
-                    checked={props.checked}
-                    value={props.value}
-                    onChange={props.onChange}
                     color="primary"
-                    name={props.name}
+                    checked={props.checked}
+                    onChange={props.onChange}
                 />
             }
             label={props.label}
@@ -31,10 +32,8 @@ const RoundedCheckbox = (props) => {
 
 RoundedCheckbox.propTypes = {
     checked: PropTypes.bool.isRequired,
-    handleChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
-    value: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
 };
 
 export default RoundedCheckbox;

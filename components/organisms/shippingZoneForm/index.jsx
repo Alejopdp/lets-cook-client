@@ -1,5 +1,5 @@
 // Utils & Config
-import React from 'react';
+import React, { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 
@@ -12,10 +12,25 @@ import PaperWithTitleContainer from '../../molecules/paperWithTitleContainer/pap
 import Input from '../../atoms/input/input';
 import RoundedCheckbox from '../../atoms/roundedCheckbox/roundedCheckbox';
 import BackAndCreateButtons from '../../molecules/backAndCreateButtons/backAndCreateButtons';
+import FormPaperWithImageDropzone from '../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone';
 
 const ShippingZoneForm = () => {
     const theme = useTheme();
     const router = useRouter();
+
+    const [values, setValues] = useState({
+        zoneName: "",
+        zoneRef: "",
+        free: false,
+        pay: false,
+        price: "",
+    });
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value || event.target.checked });
+    };
+
+    console.log(values)
 
     return (
         <Container size="lg">
@@ -24,50 +39,72 @@ const ShippingZoneForm = () => {
             <Grid item container spacing={2} justify="center" direction="column">
                 <Grid item>
                     <PaperWithTitleContainer title="Detalles" width={600}>
-                        <Input label="Nombre" value="" />
-                        <Input label="Referencia" value="" />
+                        <Input
+                            label="Nombre"
+                            handleChange={handleChange("zoneName")}
+                            value={values.zoneName}
+                        />
+                        <Input
+                            label="Referencia"
+                            handleChange={handleChange("zoneRef")}
+                            value={values.zoneRef}
+                        />
                     </PaperWithTitleContainer>
                 </Grid>
 
-                <Grid item>
+                <Grid item container direction="column">
                     <PaperWithTitleContainer title="Coste de envío" width={600}>
-                        <RoundedCheckbox
-                            value={""}
-                            name="Free"
-                            label="Gratis"
-                        />
-
-                        <br />
-
-                        <RoundedCheckbox
-                            value={""}
-                            name="Pay"
-                            label="Pago"
-                        />
-
-                        <Grid item container direction="row" alignItems="center" spacing={2}>
-                            <Grid item>
-                                <Input label="Valor" value=""/>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="body1" style={{marginBottom: theme.spacing(2)}}>€</Typography>
-                            </Grid>
+                        <Grid item>
+                            <RoundedCheckbox
+                                label="Gratis"
+                                onChange={handleChange("free")}
+                                checked={values.free}
+                            />
                         </Grid>
+
+                        <Grid item>
+                            <RoundedCheckbox
+                                label="Pago"
+                                onChange={handleChange("pay")}
+                                checked={values.pay}
+                            />
+                        </Grid>
+
+                        {values.pay &&
+                            <Grid item container direction="row" alignItems="center" spacing={2}>
+                                <Grid item>
+                                    <Input
+                                        type="number"
+                                        label="Valor"
+                                        handleChange={handleChange("price")}
+                                        value={values.price}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Typography variant="body1" style={{ marginBottom: theme.spacing(2) }}>€</Typography>
+                                </Grid>
+                            </Grid>
+                        }
                     </PaperWithTitleContainer>
                 </Grid>
 
-                <Grid item>
-                    <PaperWithTitleContainer title="Subir archivo KML" width={600}>
+                <Grid item style={{ width: "618px", margin: "0 auto" }}>
+                    <FormPaperWithImageDropzone
+                        title="Subir archivo KML"
+                        handleDropFile={() => ""}
+                        maxFiles={1}
+                        files={["MLK"]}
+                    >
                         <Typography variant="body1">
                             Puedes utilizar la siguiente herramienta para crear las zonas de envío:
                         </Typography>
 
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle2" paragraph>
                             <a href="https://mapsengine.google.com/map/" target="blank">
                                 https://mapsengine.google.com/map/
                             </a>
                         </Typography>
-                    </PaperWithTitleContainer>
+                    </FormPaperWithImageDropzone>
                 </Grid>
             </Grid>
 
