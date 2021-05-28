@@ -22,6 +22,7 @@ import { clearLocalStorage, getToken } from "../../helpers/localStorage/localSto
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
 import ErrorPage from "../../components/molecules/errorPage/errorPage";
+import CouponsForm from "../../components/organisms/coupons/couponsForm";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -106,6 +107,10 @@ const Index = (props) => {
 
             case "planes/modificar":
                 return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
+            
+            case "cupones": {
+                return <CouponsForm />
+            }
 
             default:
                 return (
