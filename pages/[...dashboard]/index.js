@@ -23,7 +23,8 @@ import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
 import ErrorPage from "../../components/molecules/errorPage/errorPage";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
-import ShippingZoneForm from "../../components/organisms/shippingZoneForm";
+import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
+import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -113,7 +114,11 @@ const Index = (props) => {
                 return <ShippingDashboard />
 
             case "gestion-de-envios/crear":
-                return <ShippingZoneForm />
+                return <CreateShippingZone />
+
+            // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
+            case "gestion-de-envios/editar":
+                return <UpdateShippingZone />
 
             default:
                 return (

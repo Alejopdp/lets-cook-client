@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { Box, Grid, Typography, Container } from '@material-ui/core';
 
 // Internal components
-import DashboardWithBackTitle from "../../../components/layout/dashboardTitleWithBackButton";
 import PaperWithTitleContainer from '../../molecules/paperWithTitleContainer/paperWithTitleContainer';
 import Input from '../../atoms/input/input';
 import RoundedCheckbox from '../../atoms/roundedCheckbox/roundedCheckbox';
@@ -34,8 +33,6 @@ const ShippingZoneForm = () => {
 
     return (
         <Container size="lg">
-            <DashboardWithBackTitle title="Crear zona de envío" />
-
             <Grid item container spacing={2} justify="center" direction="column">
                 <Grid item>
                     <PaperWithTitleContainer title="Detalles" width={600}>
