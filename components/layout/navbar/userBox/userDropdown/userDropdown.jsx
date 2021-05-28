@@ -84,9 +84,9 @@ const UserDropdown = (props) => {
                 aria-haspopup="true"
                 onClick={handleToggle}
                 endIcon={<KeyboardArrowDown />}
-                style={{ textTransform: 'none' }}
+                style={{ textTransform: "none" }}
             >
-                {props.title || "Alejo"}
+                {props.name}
             </Button>
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
@@ -117,7 +117,7 @@ const UserDropdown = (props) => {
 };
 
 UserDropdown.propTypes = {
-    title: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
 };
 
 export default UserDropdown;

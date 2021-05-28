@@ -1,11 +1,12 @@
 // Utils & config
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { login } from "../../helpers/serverRequests/user";
 import { useRouter } from "next/router";
 import { setItemInLocalStorage } from "../../helpers/localStorage/localStorage";
+import { useUserInfoStore } from "../../stores/auth";
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -16,6 +17,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
+import { useStyles } from "./styles";
 
 // Internal components
 import { emailRegex, pswRegex } from "../../helpers/regex";
@@ -27,35 +29,6 @@ import Image from "next/image";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-const useStyles = makeStyles((theme) => ({
-    image: {
-        padding: theme.spacing(2),
-    },
-    center: {
-        display: "flex",
-        placeItems: "center",
-        minHeight: "75vh",
-    },
-
-    form: {
-        display: "flex",
-        flexDirection: "column",
-    },
-    btnDiv: {
-        display: "flex",
-        justifyContent: "flex-end",
-        flexWrap: "wrap",
-        marginTop: theme.spacing(3),
-    },
-    margin: {
-        marginBottom: theme.spacing(1),
-        marginTop: theme.spacing(1),
-    },
-    textField: {
-        width: "100%",
-    },
-}));
-
 const LoginForm = (props) => {
     const classes = useStyles();
     const theme = useTheme();
@@ -66,6 +39,8 @@ const LoginForm = (props) => {
         showPassword: false,
     });
     const [serverError, setserverError] = useState(false);
+    const [isSubmitting, setisSubmitting] = useState(false);
+    const setUserInfo = useUserInfoStore((state) => state.setuserInfo);
 
     const isEmail = emailRegex.test(values.email);
     const isPassword = pswRegex.test(values.password);
@@ -84,14 +59,18 @@ const LoginForm = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setisSubmitting(true);
         const res = await login(values.email, values.password);
 
         if (res.status === 200) {
             setItemInLocalStorage("token", res.data.token);
+            setItemInLocalStorage("userInfo", res.data.userInfo);
+            setUserInfo(res.data.userInfo);
             router.push("/dashboard");
         } else {
             setserverError(res.data.message);
         }
+        setisSubmitting(false);
     };
 
     return (
@@ -147,7 +126,12 @@ const LoginForm = (props) => {
                         </Typography>
 
                         <div className={classes.btnDiv}>
-                            <Button variant="contained" size="large" disabled={!isEmail || !isPassword} onClick={handleSubmit}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                disabled={!isEmail || !isPassword || isSubmitting}
+                                onClick={handleSubmit}
+                            >
                                 {props.lang.button}
                             </Button>
                         </div>
