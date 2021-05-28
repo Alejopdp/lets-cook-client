@@ -2,6 +2,7 @@ import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
+import { getZonesList } from "../serverRequests/shipping";
 import { getToken } from "../localStorage/localStorage";
 
 export const pagesPropsGetter = async (params, locale) => {
@@ -63,6 +64,11 @@ export const pagesPropsGetter = async (params, locale) => {
             res = await getPlanById(params.id, locale);
 
             return { additionalPlans: additonalPlansRes.data, plan: res.data, error: res.data.message || null };
+
+        case "gestion-de-envios":
+            res = await getZonesList();
+
+            return { zones: res.data || [], error: res.data.message || null };
         default:
             return null;
     }
