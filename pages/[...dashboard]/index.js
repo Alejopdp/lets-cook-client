@@ -128,6 +128,7 @@ Index.propTypes = {};
 
 export async function getServerSideProps(context) {
     const langs = require("../../lang");
+    console.log(context.req.headers);
     const props = await pagesPropsGetter(context.query, context.locale);
 
     return {

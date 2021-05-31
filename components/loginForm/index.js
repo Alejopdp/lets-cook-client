@@ -7,6 +7,8 @@ import { login } from "../../helpers/serverRequests/user";
 import { useRouter } from "next/router";
 import { setItemInLocalStorage } from "../../helpers/localStorage/localStorage";
 import { useUserInfoStore } from "../../stores/auth";
+import { useStyles } from "./styles";
+import cookies from "js-cookie";
 
 // External components
 import TextField from "@material-ui/core/TextField";
@@ -17,7 +19,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Link from "next/link";
-import { useStyles } from "./styles";
 
 // Internal components
 import { emailRegex, pswRegex } from "../../helpers/regex";
@@ -66,6 +67,7 @@ const LoginForm = (props) => {
             setItemInLocalStorage("token", res.data.token);
             setItemInLocalStorage("userInfo", res.data.userInfo);
             setUserInfo(res.data.userInfo);
+            // cookies.set("token", )
             router.push("/dashboard");
         } else {
             setserverError(res.data.message);
