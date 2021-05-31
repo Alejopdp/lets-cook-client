@@ -41,4 +41,9 @@ export default [
         text: "Blog",
         path: "/blog",
     },
+    {
+        icon: "book",
+        text: "Zonas de envio",
+        path: "/gestion-de-envios",
+    },
 ];
