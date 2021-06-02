@@ -14,7 +14,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import { Typography } from "@material-ui/core";
-import Switch from '@material-ui/core/Switch';
+import Switch from "@material-ui/core/Switch";
 
 // Icons & Images
 import EditIcon from "@material-ui/icons/Edit";
@@ -31,21 +31,24 @@ const useStyles = makeStyles((theme) => ({
 
 const zones = [
     {
+        id: "1",
         name: "Zona 1 - BCN",
         ref: "Sant Marti, Ciutat Vella, L'Eixample, Sant Andreu",
         price: "Gratis",
     },
     {
+        id: "2",
         name: "Zona 2 - BCN",
         ref: "Sants Montjuic, Les Corts, Sarría-Sant Gervasi",
         price: "5 €",
     },
     {
+        id: "3",
         name: "Zona 3 - BCN",
         ref: "Horta - Guinardo, Nous Barris, Sant Andreu",
         price: "10 €",
     },
-]
+];
 
 const ShippingTable = (props) => {
     const { table, cells } = useStyles();
@@ -64,7 +67,9 @@ const ShippingTable = (props) => {
                             <Typography variant="subtitle1">Referencia</Typography>
                         </TableCell>
                         <TableCell className={cells}>
-                            <Typography variant="subtitle1" style={{textAlign: "right"}}>Coste de envío</Typography>
+                            <Typography variant="subtitle1" style={{ textAlign: "right" }}>
+                                Coste de envío
+                            </Typography>
                         </TableCell>
                         <TableCell />
                         <TableCell />
@@ -82,16 +87,15 @@ const ShippingTable = (props) => {
                                 <Typography variant="body1">{zone.ref}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1" style={{textAlign: "right"}}>{zone.price}</Typography>
+                                <Typography variant="body1" style={{ textAlign: "right" }}>
+                                    {zone.price}
+                                </Typography>
                             </TableCell>
                             <TableCell>
-                                <Switch
-                                    name="checkedB"
-                                    color="primary"
-                                />
+                                <Switch name="checkedB" color="primary" />
                             </TableCell>
                             <TableCell className={cells}>
-                                <IconButton>
+                                <IconButton onClick={() => router.push({ pathname: "/gestion-de-envios/modificar", query: { id: zone.id } })}>
                                     <EditIcon />
                                 </IconButton>
 
@@ -105,7 +109,7 @@ const ShippingTable = (props) => {
             </Table>
         </TableContainer>
     );
-}
+};
 
 export default ShippingTable;
 
