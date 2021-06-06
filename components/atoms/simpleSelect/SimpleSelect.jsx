@@ -1,34 +1,44 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 
-const SimpleSelect = ({ name, title, value, items = [], handleChange = () => { }, ...props }) =>
+const SimpleSelect = ({ name, title, value, values = [], items = [], handleChange = () => {}, ...props }) => (
     <FormControl fullWidth variant="outlined">
-        {title && <InputLabel id="simple-select-label">{title}</InputLabel>}
+        {title && <InputLabel id={`${name}-select-label`}>{title}</InputLabel>}
         <Select
-            labelId={title && "simple-select-label"}
-            // id="simple-select"
+            labelId={title && `${name}-select-label`}
             value={value}
             name={name}
-            onChange={handleChange}
+            onChange={(e) => handleChange({
+                target: { 
+                    name: e.target.name,
+                    value: e.target.value,
+                    type: 'select'
+                } 
+            })}
         >
-            {items.map((item,key) => <MenuItem key={key} value={item}>{item}</MenuItem>)}
+            {items.map((item, key) => (
+                <MenuItem key={key} value={values[key] ? values[key] : item}>
+                    {item}
+                </MenuItem>
+            ))}
         </Select>
     </FormControl>
+);
 
 SimpleSelect.propTypes = {
     title: PropTypes.string,
     value: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.string).isRequired,
     name: PropTypes.string,
-    handleChange: PropTypes.func
-}
+    handleChange: PropTypes.func,
+};
 
 SimpleSelect.defaultValues = {
     title: undefined,
     value: undefined,
     name: undefined,
     items: [],
-    handleChange: () => { }
-}
+    handleChange: () => {},
+};
 
 export default SimpleSelect;

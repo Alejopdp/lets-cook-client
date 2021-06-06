@@ -40,6 +40,7 @@ const Input = (props) => {
 
 Input.propTypes = {
     label: PropTypes.string.isRequired,
+    name: PropTypes.string,
     type: PropTypes.string,
     handleChange: PropTypes.func,
     value: PropTypes.any.isRequired,

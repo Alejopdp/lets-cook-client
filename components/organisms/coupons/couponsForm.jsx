@@ -1,37 +1,23 @@
-import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import {
-    Box,
-    Container,
-    Grid,
-    InputAdornment,
-    Paper,
-    Typography,
-    box,
-    IconButton,
-    Button,
-    FormControlLabel,
-    Checkbox,
-} from "@material-ui/core";
+import { Box, Grid, InputAdornment, Typography, IconButton, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import { Add, Delete } from "@material-ui/icons";
 
-import { useStyles } from "./styles";
-
-import DasboardWithBackTitle from "../../layout/dashboardTitleWithBackButton";
-
-import CreateButton from "../../atoms/createButton/createButton";
-import Autocomplete from "../../atoms/autocomplete/autocomplete";
+import HeaderTitleWithBackButton from "../../layout/dashboardTitleWithBackButton";
+import CardContainerWithTitle from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import FormActionsButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
 import Input from "../../atoms/input/input";
 import SimpleSelect from "../../atoms/simpleSelect/SimpleSelect";
 import RadioButtons from "../../atoms/radioButtons/radioButtons";
-
-import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
-import { Add, Delete } from "@material-ui/icons";
 import DatePicker from "../../atoms/datepicker/datepicker";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
 import ComplexModal from "../../molecules/complexModal/complexModal";
+
+import { useStyles } from "./styles";
+import useCouponsForm from "./useCouponsForm";
+import { useRouter } from "next/router";
+import SimpleTileList from "../../molecules/simpleTileList/simpleTileList";
 
 const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
     <>
@@ -95,115 +81,80 @@ const buildLimitApplicationMoreOfAFeeComponent = () => (
     </Grid>
 );
 
-const buildSpecificProductsComponent = ({
-    products = [],
-    productsSelected = [],
-    handleChangeProductList = () => {},
-    handleDeleteProduct = () => {},
-}) => {
-    const [openDialogAddProducts, setOpenDialogAddProducts] = useState(false);
-
-    const handleOnChange = (e) => {
-        console.log(e);
+const CouponsForm = ({ lang, ...props }) => {
+    const frominitialState = {
+        discountCode: "",
+        discount_type: {
+            type: "fix",
+            value: "",
+        },
+        minimum_requirement: {
+            type: "none",
+            value: "",
+        },
+        apply_to: {
+            type: "all",
+            value: [],
+        },
+        application_limit: [], // [{ "type": "limit_qty | limit_one_customer | first_order",  "value": "double|null" }]
+        coupons_by_subscription: {
+            type: "only_fee", // "only_fee|more_one_fee|all_fee",
+            value: "", //"double|null"
+        },
+        date_rage: {
+            start: "date",
+            expire: "date|null",
+        },
+        state: "active",
     };
 
-    return (
-        <>
-            <Grid container direction="column" spacing={2}>
-                <Grid item>
-                    <Grid container direction="column">
-                        {productsSelected.map((product, index) => (
-                            <Grid item>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <IconButton onClick={() => handleDeleteProduct(product)}>
-                                        <Delete />
-                                    </IconButton>
-                                    <Typography>
-                                        <b>{product.name}</b> {product.type}
-                                    </Typography>
-                                </div>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Grid>
-                <Grid item>
-                    <Button color="default" variant="contained" startIcon={<Add />} onClick={() => setOpenDialogAddProducts(true)}>
-                        Agregar producto
-                    </Button>
-                </Grid>
-            </Grid>
-            <ComplexModal
-                title="Agregar productos"
-                component={
-                    <CheckboxList
-                        handleOnChange={handleOnChange}
-                        items={products.map((product, index) => ({
-                            label: (
-                                <Typography>
-                                    <b>{product.name}</b> {product.type}
-                                </Typography>
-                            ),
-                            name: product.name,
-                        }))}
-                    />
-                }
-                cancelButtonText="volver"
-                confirmButtonText="Agregar Productos"
-                handleConfirmButton={() => setOpenDialogAddProducts(false)}
-                handleCancelButton={() => setOpenDialogAddProducts(false)}
-                open={openDialogAddProducts}
-                handleClose={() => {}}
-            />
-        </>
-    );
-};
+    const { handleOnChange, defaultFillItems, form } = useCouponsForm(frominitialState);
 
-const CouponsForm = ({ lang = {}, ...props }) => {
-    const discountType = ["Precio fijo", "Porcentaje", "Envío gratis"];
-    const minimumRequirement = [
+    const { locale } = useRouter();
+
+    const classes = useStyles();
+    const [showExpireDate, setShowExpireDate] = useState(false);
+
+    const minimumRequirement = useMemo(
+        () => [
+            {
+                label: lang[locale].minimum_requirement_type[0],
+                value: defaultFillItems.minimum_requirement[0],
+            },
+            {
+                label: lang[locale].minimum_requirement_type[1],
+                value: defaultFillItems.minimum_requirement[1],
+            },
+        ],
+        [locale]
+    );
+    const applyTo = useMemo(() => [
         {
-            label: "Ninguno",
-            value: "Ninguno",
+            label: lang[locale].apply_to_type[0],
+            value: defaultFillItems.apply_to[0],
         },
         {
-            label: "Monto minimo de compra",
-            value: "Monto minimo de compra",
-            children: buildMinimumBuyComponent({
-                handleOnChangeInputMinimiunRequirement: (value) => {
-                    console.log("***-> Monto minimo de compra: ", value);
-                },
-            }),
+            label: lang[locale].apply_to_type[1],
+            value: defaultFillItems.apply_to[1],
         },
-    ];
+    ]);
+
     const applyToProducts = [
         {
-            name: "Plan Vegetariano",
-            type: "Principal",
+            label: "Plan Vegetariano",
+            value: "Principal",
         },
         {
-            name: "Plan Ahorro",
-            type: "Principal",
+            label: "Plan Ahorro",
+            value: "Principal",
         },
         {
-            name: "Plan Desayuno",
-            type: "Adicional",
+            label: "Plan Desayuno",
+            value: "Adicional",
         },
     ];
     const applyToSpecificProducts = [applyToProducts[0], applyToProducts[2]];
-    const applyTo = [
-        {
-            label: "Todos los productos",
-            value: "Todos los productos",
-        },
-        {
-            label: "Productos específicos",
-            value: "Productos específicos",
-            children: buildSpecificProductsComponent({
-                products: applyToProducts,
-                productsSelected: applyToSpecificProducts,
-            }),
-        },
-    ];
+
     const limitOfApplication = [
         {
             label: "Limitar la cantidad de veces que se puede aplicar este cupón",
@@ -238,10 +189,6 @@ const CouponsForm = ({ lang = {}, ...props }) => {
         },
     ];
 
-    const classes = useStyles();
-    const formRef = useRef();
-    const [showExpireDate, setShowExpireDate] = useState(false);
-
     const _handleGoBack = () => {};
 
     const _handleChangeLanguage = () => {};
@@ -252,79 +199,144 @@ const CouponsForm = ({ lang = {}, ...props }) => {
 
     return (
         <Grid item xs={12}>
-            <form ref={formRef} className={classes.rootForm}>
+            <form className={classes.rootForm}>
                 <Grid container xs={12} md={9} spacing={2} direction="column">
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" justifyContent="space-between">
-                            <DasboardWithBackTitle title={lang.title || "Cupones"} handleClick={_handleGoBack} />
+                            <HeaderTitleWithBackButton title={lang[locale].title} handleClick={_handleGoBack} />
                         </Box>
                     </Grid>
 
                     {/* DISCOUNT CODE */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth={true} title="Código de decuento">
-                            <Input label="Código de descuento" name="discountCode" />
-                        </PaperWithTitleContainer>
+                        <CardContainerWithTitle fullWidth={true} title={lang[locale].discountCode}>
+                            <Input
+                                label={lang[locale].discountCode}
+                                name="discountCode"
+                                value={form.discountCode}
+                                handleChange={handleOnChange}
+                            />
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* DISCOUNT TYPE */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth={true} title="Tipo de descuento">
+                        <CardContainerWithTitle fullWidth={true} title={lang[locale].discountType}>
                             <Grid container spacing={2} justifyContent="center">
                                 <Grid item xs>
-                                    <SimpleSelect name="discountType" items={discountType} value={discountType[0]} />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Input
-                                        label="Valor"
-                                        name="discountValue"
-                                        customProps={{
-                                            InputProps: {
-                                                endAdornment: <InputAdornment position="end">€</InputAdornment>,
-                                            },
-                                        }}
+                                    <SimpleSelect
+                                        name="discount_type|type"
+                                        items={lang[locale].discount_type}
+                                        values={defaultFillItems.discount_type}
+                                        value={form.discount_type.type}
+                                        handleChange={handleOnChange}
                                     />
                                 </Grid>
+                                {form.discount_type.type !== defaultFillItems.discount_type[2] && (
+                                    <Grid item xs={4}>
+                                        <Input
+                                            label={lang[locale].value}
+                                            name="discount_type|value"
+                                            value={form.discount_type.value}
+                                            handleChange={handleOnChange}
+                                            type="number"
+                                            customProps={{
+                                                InputProps: {
+                                                    endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                                                },
+                                            }}
+                                        />
+                                    </Grid>
+                                )}
                             </Grid>
-                        </PaperWithTitleContainer>
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* MINIMUM REQUIREMENT */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth title="Requerimientos mínimos">
+                        <CardContainerWithTitle fullWidth title={lang[locale].minimumRequirement}>
                             <Grid container spacing={2}>
                                 <Grid item xs>
                                     <RadioButtons
-                                        name="minimumRequirement"
+                                        name="minimum_requirement|type"
                                         items={minimumRequirement}
-                                        handleOnChange={(e) => {
-                                            console.log("***-> Requerimientos minimos: ", e);
-                                        }}
+                                        value={form.minimum_requirement.type}
+                                        handleOnChange={handleOnChange}
                                     />
+                                    {form.minimum_requirement.type === defaultFillItems.minimum_requirement[1] && (
+                                        <div style={{ paddingTop: 16 }}>
+                                            <Grid container>
+                                                <Grid item xs={12} md={6}>
+                                                    <Input
+                                                        label={lang[locale].value}
+                                                        name="minimum_requirement|value"
+                                                        type="number"
+                                                        value={form.minimum_requirement.value}
+                                                        customProps={{
+                                                            InputProps: {
+                                                                endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
+                                                            },
+                                                        }}
+                                                        handleChange={handleOnChange}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                            <Alert severity="info" color="success">
+                                                {lang[locale].minimumRequirementMessage}
+                                            </Alert>
+                                        </div>
+                                    )}
                                 </Grid>
                             </Grid>
-                        </PaperWithTitleContainer>
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* APPLY TO */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth title="Aplica a">
+                        <CardContainerWithTitle fullWidth title={lang[locale].applyTo}>
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
-                                    <RadioButtons name="applyTo" items={applyTo} />
+                                    <RadioButtons
+                                        name="apply_to|type"
+                                        items={applyTo}
+                                        value={form.apply_to.type}
+                                        handleOnChange={handleOnChange}
+                                    />
+                                    {form.apply_to.type === defaultFillItems.apply_to[1] && (
+                                        <SimpleTileList
+                                            listItemsSelected={form.apply_to.value}
+                                            list={applyToProducts}
+                                            handleChangeList={(item) => {
+                                                handleOnChange({
+                                                    target: {
+                                                        name: "apply_to|value",
+                                                        value: [...form.apply_to.value, item],
+                                                    },
+                                                });
+                                            }}
+                                            handleRemoveItem={(item) => {
+                                                handleOnChange({
+                                                    target: {
+                                                        name: "apply_to|value",
+                                                        value: form.apply_to.value.filter((_item) => _item.label !== item.label),
+                                                    },
+                                                });
+                                            }}
+                                        />
+                                    )}
                                 </Grid>
                             </Grid>
-                        </PaperWithTitleContainer>
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* APPLICATION LIMIT */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth title="Limite de aplicación">
+                        <CardContainerWithTitle fullWidth title="Limite de aplicación">
                             <Grid container spacing={1} direction="column">
                                 <Grid item xs>
                                     <CheckboxList items={limitOfApplication} />
@@ -333,16 +345,16 @@ const CouponsForm = ({ lang = {}, ...props }) => {
                                     <Typography>¿Cuántas veces se aplicará el cupón en la suscripción del cliente?</Typography>
                                 </Grid>
                                 <Grid item xs>
-                                    <RadioButtons name="applyTo" useBool={true} items={howManyTimeCouponCanBeApplied} />
+                                    <RadioButtons name="applyTo" useBold={true} items={howManyTimeCouponCanBeApplied} />
                                 </Grid>
                             </Grid>
-                        </PaperWithTitleContainer>
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* DATE RANGE */}
 
                     <Grid item>
-                        <PaperWithTitleContainer fullWidth title="Rango de fechas">
+                        <CardContainerWithTitle fullWidth title="Rango de fechas">
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
                                     <DatePicker label="Fecha de inicio"></DatePicker>
@@ -360,13 +372,13 @@ const CouponsForm = ({ lang = {}, ...props }) => {
                                     </Grid>
                                 )}
                             </Grid>
-                        </PaperWithTitleContainer>
+                        </CardContainerWithTitle>
                     </Grid>
 
                     {/* ACTIONS BUTTONS */}
 
                     <Grid item xs={12} alignItems="flex-end">
-                        <BackAndCreateButtons
+                        <FormActionsButtons
                             createButtonHandler={_handleClickCreateButton}
                             createButtonText="Crear Cupón"
                             variant="outline"

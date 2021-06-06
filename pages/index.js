@@ -19,7 +19,7 @@ export async function getStaticProps({ locale, previewData }) {
 
     const redirect = !!_token ? {
         redirect: {
-            destination: "/dashboarad",
+            destination: "/dashboard",
             permanent: true,
         }
     } : {}

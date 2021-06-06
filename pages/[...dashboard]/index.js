@@ -103,7 +103,7 @@ const Index = ({ token, ...props }) => {
                 return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
 
             case "cupones":
-                return <CouponsForm />;
+                return <CouponsForm lang={props.langs.couponsForm} />;
 
             case "gestion-de-envios":
                 return <ShippingDashboard />;
