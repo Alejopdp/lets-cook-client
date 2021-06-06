@@ -18,7 +18,6 @@ import PlansDashboard from "../../components/organisms/plansDashboard/plansDashb
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
-import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
 import ErrorPage from "../../components/molecules/errorPage/errorPage";
@@ -26,6 +25,9 @@ import CouponsForm from "../../components/organisms/coupons/couponsForm";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
+import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
+import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,34 +49,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Index = (props) => {
+const Index = ({ token, ...props }) => {
     const route = useRouter();
     const classes = useStyles();
+    const { getFromLocalStorage } = useLocalStorage();
 
     useEffect(() => {
-        const verifyTheToken = async () => {
-            const token = getToken();
-
-            if (!token) return route.replace("/", "/");
-
-            const res = await verifyToken(token);
-
-            if (res.status === 200) {
-                return;
-            } else {
-                clearLocalStorage();
-                route.replace("/", "/");
-            }
-        };
-
-        verifyTheToken();
+        const notIsLogged = token !== getFromLocalStorage(LOCAL_STORAGE_KEYS.token);
+        if(notIsLogged) {
+            route.replace('/');
+        }
     }, [route.asPath]);
 
     const getSectionComponent = (path) => {
         /* TODO: IMPORTANT!!! 
             optimize the cases for return componet dynamically
         **/
-
         if (!!props.error) {
             return (
                 <Box width="100%" height="100vh" className={classes.root}>
@@ -143,12 +133,38 @@ const Index = (props) => {
 
 Index.propTypes = {};
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps({ locale, query, previewData, ...context }) {
     const langs = require("../../lang");
-    const props = await pagesPropsGetter(context.query, context.locale);
+    const props = await pagesPropsGetter(query,locale);
+    
+    // Todo: Move this 'if' to hook or helper.
+    let _token = "";
+    if (!!previewData) {
+        const { token } = previewData;
+        const _API_URL = process.env.NEXT_PUBLIC_API_URL + USER_REQUEST_SETTINGS.verifyTokenToken.endpoint;
+
+        if (!!token) {
+            _token = token;
+
+            const res = await axios({
+                method: USER_REQUEST_SETTINGS.verifyTokenToken.method,
+                headers: {
+                    Authorization: token,
+                },
+                url: _API_URL,
+            });
+
+            if (res.status !== 200) {
+                _token = "";
+                // Todo: Clear Server cookies
+            }
+
+            console.log("***-> Token verify: ", res.status);
+        }
+    } // ent to do refactor.
 
     return {
-        props: { ...props, langs: { ...langs } },
+        props: { ...props, langs: { ...langs }, token: _token },
     };
 }
 

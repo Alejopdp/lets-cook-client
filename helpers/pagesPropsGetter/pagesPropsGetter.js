@@ -3,7 +3,6 @@ import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
 import { getZonesList } from "../serverRequests/shipping";
-import { getToken } from "../localStorage/localStorage";
 
 export const pagesPropsGetter = async (params, locale) => {
     // Use locale for the API calls

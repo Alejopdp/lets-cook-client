@@ -33,22 +33,23 @@ import DatePicker from "../../atoms/datepicker/datepicker";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
 import ComplexModal from "../../molecules/complexModal/complexModal";
 
-const buildMinimumBuyComponent = () => (
+const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
     <>
         <Grid container>
             <Grid item xs={12} md={6}>
                 <Input
                     label="Valor"
                     name="minimumBuy"
+                    type="number"
                     customProps={{
                         InputProps: {
                             endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
                         },
                     }}
+                    handleChange={(e) => handleOnChangeInputMinimiunRequirement(e.target.value)}
                 />
             </Grid>
         </Grid>
-
         <Alert severity="info" color="success">
             Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero,
             y luego se validará el monto mínimo.
@@ -102,7 +103,9 @@ const buildSpecificProductsComponent = ({
 }) => {
     const [openDialogAddProducts, setOpenDialogAddProducts] = useState(false);
 
-    const handleOnChange = (e) => {};
+    const handleOnChange = (e) => {
+        console.log(e);
+    };
 
     return (
         <>
@@ -131,10 +134,19 @@ const buildSpecificProductsComponent = ({
             </Grid>
             <ComplexModal
                 title="Agregar productos"
-                component={<CheckboxList handleOnChange={handleOnChange} items={products.map((product, index)=>({
-                    label: <Typography> <b>{product.name}</b> {product.type}</Typography> ,
-                    name: product.name
-                }))} />}
+                component={
+                    <CheckboxList
+                        handleOnChange={handleOnChange}
+                        items={products.map((product, index) => ({
+                            label: (
+                                <Typography>
+                                    <b>{product.name}</b> {product.type}
+                                </Typography>
+                            ),
+                            name: product.name,
+                        }))}
+                    />
+                }
                 cancelButtonText="volver"
                 confirmButtonText="Agregar Productos"
                 handleConfirmButton={() => setOpenDialogAddProducts(false)}
@@ -156,7 +168,11 @@ const CouponsForm = ({ lang = {}, ...props }) => {
         {
             label: "Monto minimo de compra",
             value: "Monto minimo de compra",
-            children: buildMinimumBuyComponent(),
+            children: buildMinimumBuyComponent({
+                handleOnChangeInputMinimiunRequirement: (value) => {
+                    console.log("***-> Monto minimo de compra: ", value);
+                },
+            }),
         },
     ];
     const applyToProducts = [
@@ -192,26 +208,15 @@ const CouponsForm = ({ lang = {}, ...props }) => {
         {
             label: "Limitar la cantidad de veces que se puede aplicar este cupón",
             name: "limitNumberCouponApplying",
-            // value: PropTypes.string,
-            // checked: PropTypes.bool,
-            // subtitle: PropTypes.string,
             children: buildLimitApplicationHowManyTimeComponent(),
         },
         {
             label: "Limitar a un solo uso por cliente",
             name: "limitOnlyUseByClient",
-            // value: PropTypes.string,
-            // checked: PropTypes.bool,
-            // subtitle: PropTypes.string,
-            // children:<Typography>Test</Typography>,
         },
         {
             label: "Limitar solo para primeros pedidos",
             name: "limiOnlyFirstOrders",
-            // value: PropTypes.string,
-            // checked: PropTypes.bool,
-            // subtitle: PropTypes.string,
-            // children:<Typography>Test</Typography>,
         },
     ];
     const howManyTimeCouponCanBeApplied = [
@@ -292,7 +297,13 @@ const CouponsForm = ({ lang = {}, ...props }) => {
                         <PaperWithTitleContainer fullWidth title="Requerimientos mínimos">
                             <Grid container spacing={2}>
                                 <Grid item xs>
-                                    <RadioButtons name="minimumRequirement" items={minimumRequirement} />
+                                    <RadioButtons
+                                        name="minimumRequirement"
+                                        items={minimumRequirement}
+                                        handleOnChange={(e) => {
+                                            console.log("***-> Requerimientos minimos: ", e);
+                                        }}
+                                    />
                                 </Grid>
                             </Grid>
                         </PaperWithTitleContainer>
