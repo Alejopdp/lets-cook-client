@@ -20,6 +20,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Group from "@material-ui/icons/Group";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import useLocalStorage from "../../../../../hooks/useLocalStorage/localStorage";
+import usePersistToken from "../../../../../hooks/usePersistToken/usePersistToken";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,6 +37,8 @@ const UserDropdown = (props) => {
     const anchorRef = useRef(null);
     const router = useRouter();
     const { resetLocalStorage } = useLocalStorage();
+    const [persistToken] = usePersistToken();
+
 
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = useRef(open);
@@ -68,6 +71,7 @@ const UserDropdown = (props) => {
 
     const handleSignOut = () => {
         resetLocalStorage();
+        persistToken()
         router.push("/");
         setOpen(false);
     };

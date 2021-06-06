@@ -9,7 +9,8 @@ export const usePersistToken = () => {
     const toPersistToken = async (token) => {
         setIsLoading(true);
         try {
-            const req = await fetch(`api/preview?token=${token}`);
+            const tokenQuery = token ? `token=${token}` : `clear=true`;
+            const req = await fetch(`api/preview?${tokenQuery}`);
             const json = req.json();
             if (json.result === "success") {
                 setSuccess(true);

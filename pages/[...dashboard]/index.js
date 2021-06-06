@@ -28,6 +28,7 @@ import UpdateShippingZone from "../../components/organisms/updateShippingZone/up
 import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
 import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
 import axios from "axios";
+import authToken from "../../helpers/serverRequests/authToken";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,8 +57,8 @@ const Index = ({ token, ...props }) => {
 
     useEffect(() => {
         const notIsLogged = token !== getFromLocalStorage(LOCAL_STORAGE_KEYS.token);
-        if(notIsLogged) {
-            route.replace('/');
+        if (notIsLogged) {
+            route.replace("/");
         }
     }, [route.asPath]);
 
@@ -133,36 +134,19 @@ const Index = ({ token, ...props }) => {
 
 Index.propTypes = {};
 
-export async function getServerSideProps({ locale, query, previewData, ...context }) {
+export async function getServerSideProps({ locale, query, previewData }) {
+    let _token = await authToken(previewData);
+    if (!!!_token) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: true,
+            },
+        };
+    }
+
     const langs = require("../../lang");
-    const props = await pagesPropsGetter(query,locale);
-    
-    // Todo: Move this 'if' to hook or helper.
-    let _token = "";
-    if (!!previewData) {
-        const { token } = previewData;
-        const _API_URL = process.env.NEXT_PUBLIC_API_URL + USER_REQUEST_SETTINGS.verifyTokenToken.endpoint;
-
-        if (!!token) {
-            _token = token;
-
-            const res = await axios({
-                method: USER_REQUEST_SETTINGS.verifyTokenToken.method,
-                headers: {
-                    Authorization: token,
-                },
-                url: _API_URL,
-            });
-
-            if (res.status !== 200) {
-                _token = "";
-                // Todo: Clear Server cookies
-            }
-
-            console.log("***-> Token verify: ", res.status);
-        }
-    } // ent to do refactor.
-
+    const props = await pagesPropsGetter(query, locale);
     return {
         props: { ...props, langs: { ...langs }, token: _token },
     };

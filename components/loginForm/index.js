@@ -1,35 +1,34 @@
 // Utils & config
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import FormControl from "@material-ui/core/FormControl";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import InputLabel from "@material-ui/core/InputLabel";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
-import { login } from "../../helpers/serverRequests/user";
-import { useRouter } from "next/router";
-import { useLocalStorage, LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
-
 // External components
 import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import clsx from "clsx";
+// Icons & Images
+import Image from "next/image";
 import Link from "next/link";
-
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 // Internal components
 import { emailRegex, pswRegex } from "../../helpers/regex";
+import { LOCAL_STORAGE_KEYS, useLocalStorage } from "../../hooks/useLocalStorage/localStorage";
+import usePersistToken from "../../hooks/usePersistToken/usePersistToken";
+import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
+import useRequest from "../../hooks/useRequest/useRequest";
 import Button from "../atoms/button/button";
 import PaperWithTitleContainer from "../molecules/paperWithTitleContainer/paperWithTitleContainer";
 
-// Icons & Images
-import Image from "next/image";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import useRequest from "../../hooks/useRequest/useRequest";
-import usePersistToken from "../../hooks/usePersistToken/usePersistToken";
+
+
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -109,7 +108,6 @@ const LoginForm = (props) => {
         }
 
         if (!!!isLoading && !!!error && data) {
-            console.log("***-> Request is successfully: ", data);
             const { token, userInfo } = data;
             saveInLocalStorage(LOCAL_STORAGE_KEYS.userInfo, userInfo);
             saveInLocalStorage(LOCAL_STORAGE_KEYS.token, token);
