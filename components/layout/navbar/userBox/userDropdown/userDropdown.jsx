@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { clearLocalStorage } from "../../../../../helpers/localStorage/localStorage";
 import { useRouter } from "next/router";
 
 // External components
@@ -20,6 +19,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 // Icons & images
 import Group from "@material-ui/icons/Group";
 import ExitToApp from "@material-ui/icons/ExitToApp";
+import useLocalStorage from "../../../../../hooks/useLocalStorage/localStorage";
+import usePersistToken from "../../../../../hooks/usePersistToken/usePersistToken";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,6 +36,9 @@ const UserDropdown = (props) => {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef(null);
     const router = useRouter();
+    const { resetLocalStorage } = useLocalStorage();
+    const [persistToken] = usePersistToken();
+
 
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = useRef(open);
@@ -66,7 +70,8 @@ const UserDropdown = (props) => {
     };
 
     const handleSignOut = () => {
-        clearLocalStorage();
+        resetLocalStorage();
+        persistToken()
         router.push("/");
         setOpen(false);
     };

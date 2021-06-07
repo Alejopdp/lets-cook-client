@@ -1,41 +1,34 @@
-import React, { useEffect } from "react";
 import LoginForm from "../components/loginForm";
-import { getToken, clearLocalStorage } from "../helpers/localStorage/localStorage";
-import { verifyToken } from "../helpers/serverRequests/user";
-import { useRouter } from "next/router";
+import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../hooks/useLocalStorage/localStorage";
+import authToken from "../helpers/serverRequests/authToken";
 
-const Login = (props) => {
-    const router = useRouter();
-
-    useEffect(() => {
-        const verifyTheToken = async () => {
-            const token = getToken();
-
-            if (!token) return;
-            const res = await verifyToken(token);
-
-            if (res.status === 200) {
-                router.replace("/dashboard", "/dashboard");
-            } else {
-                clearLocalStorage();
-            }
-            return;
-        };
-
-        verifyTheToken();
-    }, []);
+const Login = ({ token, lang, ...props }) => {
+    const { getFromLocalStorage } = useLocalStorage();
     return (
         <div>
-            <LoginForm lang={props.lang} />
+            <LoginForm lang={lang} isLogged={token === getFromLocalStorage(LOCAL_STORAGE_KEYS.token)} />
         </div>
     );
 };
 
 export default Login;
 
-export async function getStaticProps(context) {
+export async function getStaticProps({ locale, previewData }) {
     const langs = require("../lang");
-    const locale = context.locale;
+    let _token = await authToken(previewData);
 
-    return { props: { lang: langs.loginForm[locale] } };
+    const redirect = !!_token ? {
+        redirect: {
+            destination: "/dashboard",
+            permanent: true,
+        }
+    } : {}
+
+    return {
+        ...redirect,
+        props: {
+            lang: langs.loginForm[locale],
+            token: _token,
+        },
+    };
 }
