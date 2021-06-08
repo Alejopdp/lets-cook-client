@@ -43,7 +43,7 @@ Input.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
     handleChange: PropTypes.func,
-    value: PropTypes.any.isRequired,
+    value: PropTypes.any,
     rows: PropTypes.number,
     multiline: PropTypes.bool,
     customProps: PropTypes.any

@@ -5,7 +5,7 @@ import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from "@m
 import CustomCheckbox from "../checkbox/checkbox";
 import useStyles from "./styles";
 
-const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }) => {
+const CheckboxList = ({ items = [], handleOnChange = () => {}, name, ...props }) => {
     const classes = useStyles();
     const [selection, setSelection] = useState(Array(items.length).fill(false));
     return (
@@ -21,7 +21,13 @@ const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }) => {
                             const newState = [...selection];
                             newState[index] = e.target.checked;
                             setSelection(newState);
-                            handleOnChange(item);
+                            handleOnChange({
+                                type: "list",
+                                name,
+                                item,
+                                checked: e.target.checked,
+                                value: newState,
+                            });
                         }}
                     />
                     {item.subtitle && (
@@ -40,7 +46,7 @@ CheckboxList.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.any,
-            value: PropTypes.string,
+            value: PropTypes.any,
             name: PropTypes.string,
             checked: PropTypes.bool,
             subtitle: PropTypes.string,

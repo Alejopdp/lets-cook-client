@@ -1,89 +1,43 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-
-import { Box, Grid, InputAdornment, Typography, IconButton, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Box, Checkbox, FormControlLabel, Grid, InputAdornment, Typography } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { Add, Delete } from "@material-ui/icons";
-
-import HeaderTitleWithBackButton from "../../layout/dashboardTitleWithBackButton";
-import CardContainerWithTitle from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import FormActionsButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
-import Input from "../../atoms/input/input";
-import SimpleSelect from "../../atoms/simpleSelect/SimpleSelect";
-import RadioButtons from "../../atoms/radioButtons/radioButtons";
-import DatePicker from "../../atoms/datepicker/datepicker";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { COUPONS_REQUEST_SETTINGS } from "../../../hooks/useRequest/endpoints/coupons";
+import useRequest from "../../../hooks/useRequest/useRequest";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
-import ComplexModal from "../../molecules/complexModal/complexModal";
-
+import DatePicker from "../../atoms/datepicker/datepicker";
+import Input from "../../atoms/input/input";
+import RadioButtons from "../../atoms/radioButtons/radioButtons";
+import SimpleSelect from "../../atoms/simpleSelect/SimpleSelect";
+import HeaderTitleWithBackButton from "../../layout/dashboardTitleWithBackButton";
+import FormActionsButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
+import CardContainerWithTitle from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import ParagraphWithSimpleInput from "../../molecules/paragraphWithSimpleInput/paragraphWithSimpleInput";
+import SimpleTileList from "../../molecules/simpleTileList/simpleTileList";
 import { useStyles } from "./styles";
 import useCouponsForm from "./useCouponsForm";
-import { useRouter } from "next/router";
-import SimpleTileList from "../../molecules/simpleTileList/simpleTileList";
 
-const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
-    <>
-        <Grid container>
-            <Grid item xs={12} md={6}>
-                <Input
-                    label="Valor"
-                    name="minimumBuy"
-                    type="number"
-                    customProps={{
-                        InputProps: {
-                            endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
-                        },
-                    }}
-                    handleChange={(e) => handleOnChangeInputMinimiunRequirement(e.target.value)}
-                />
-            </Grid>
-        </Grid>
-        <Alert severity="info" color="success">
-            Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero,
-            y luego se validará el monto mínimo.
-        </Alert>
-    </>
-);
-
-const buildLimitApplicationHowManyTimeComponent = () => (
-    <Grid container direction="column" spacing={1}>
-        <Grid item xs={12}>
-            <Typography>El cupón será inválido después de…</Typography>
-        </Grid>
-        <Grid item xs={12} md={4}>
-            <Input
-                label="Cantidad"
-                name="minimumBuy"
-                customProps={{
-                    InputProps: {
-                        endAdornment: <InputAdornment position="end">Usos</InputAdornment>,
-                    },
-                }}
-            />
-        </Grid>
-    </Grid>
-);
-
-const buildLimitApplicationMoreOfAFeeComponent = () => (
-    <Grid container direction="column" spacing={1}>
-        <Grid item xs={12}>
-            <Typography>Se aplicará el cupón aplicará por los siguientes</Typography>
-        </Grid>
-        <Grid item xs={12} md={4}>
-            <Input
-                label="Cantidad"
-                name="minimumBuy"
-                customProps={{
-                    InputProps: {
-                        endAdornment: <InputAdornment position="end">Cargos</InputAdornment>,
-                    },
-                }}
-            />
-        </Grid>
-    </Grid>
-);
-
-const CouponsForm = ({ lang, ...props }) => {
-    const frominitialState = {
-        discountCode: "",
+const CouponsForm = ({
+    lang,
+    applyToProducts = [
+        {
+            id:"de54247f-5438-4b82-b050-203a47f59688",
+            name: "Plan Vegetariano",
+            type: "Principal",
+        },
+        {
+            id:"de54247f-5438-4b82-b050-203a47f59689",
+            name: "Plan Ahorro",
+            type: "Principal",
+        },
+        {
+            id:"de54247f-5438-4b82-b050-203a47f59680",
+            name: "Plan Desayuno",
+            type: "Adicional",
+        },
+    ],
+    frominitialState = {
+        discount_code: "",
         discount_type: {
             type: "fix",
             value: "",
@@ -96,124 +50,281 @@ const CouponsForm = ({ lang, ...props }) => {
             type: "all",
             value: [],
         },
-        application_limit: [], // [{ "type": "limit_qty | limit_one_customer | first_order",  "value": "double|null" }]
+        application_limit: [],
         coupons_by_subscription: {
-            type: "only_fee", // "only_fee|more_one_fee|all_fee",
-            value: "", //"double|null"
+            type: "only_fee",
+            value: "",
         },
         date_rage: {
-            start: "date",
-            expire: "date|null",
+            start: new Date().toISOString(),
+            expire: "",
         },
         state: "active",
+    },
+}) => {
+    const { locale, back: _handleGoBack } = useRouter();
+    const classes = useStyles();
+    const { handleOnChange, form } = useCouponsForm(frominitialState);
+    const [showExpireDate, setShowExpireDate] = useState(false);
+    const { data, error, isLoading, doRequest } = useRequest();
+
+    const _formConstantsValues = {
+        discount_type: ["fix", "percent", "free"],
+        minimum_requirement: ["none", "amount"],
+        apply_to: ["all", "specific"],
+        application_limit: ["limit_qty", "limit_one_customer", "first_order"],
+        coupons_by_subscription: ["only_fee", "more_one_fee", "all_fee"],
     };
 
-    const { handleOnChange, defaultFillItems, form } = useCouponsForm(frominitialState);
+    const _minimumRequirementItems = [
+        {
+            label: lang[locale].minimum_requirement_type[0],
+            value: _formConstantsValues.minimum_requirement[0],
+        },
+        {
+            label: lang[locale].minimum_requirement_type[1],
+            value: _formConstantsValues.minimum_requirement[1],
+        },
+    ];
 
-    const { locale } = useRouter();
-
-    const classes = useStyles();
-    const [showExpireDate, setShowExpireDate] = useState(false);
-
-    const minimumRequirement = useMemo(
-        () => [
-            {
-                label: lang[locale].minimum_requirement_type[0],
-                value: defaultFillItems.minimum_requirement[0],
-            },
-            {
-                label: lang[locale].minimum_requirement_type[1],
-                value: defaultFillItems.minimum_requirement[1],
-            },
-        ],
-        [locale]
-    );
-    const applyTo = useMemo(() => [
+    const _applyToItems = [
         {
             label: lang[locale].apply_to_type[0],
-            value: defaultFillItems.apply_to[0],
+            value: _formConstantsValues.apply_to[0],
         },
         {
             label: lang[locale].apply_to_type[1],
-            value: defaultFillItems.apply_to[1],
-        },
-    ]);
-
-    const applyToProducts = [
-        {
-            label: "Plan Vegetariano",
-            value: "Principal",
-        },
-        {
-            label: "Plan Ahorro",
-            value: "Principal",
-        },
-        {
-            label: "Plan Desayuno",
-            value: "Adicional",
-        },
-    ];
-    const applyToSpecificProducts = [applyToProducts[0], applyToProducts[2]];
-
-    const limitOfApplication = [
-        {
-            label: "Limitar la cantidad de veces que se puede aplicar este cupón",
-            name: "limitNumberCouponApplying",
-            children: buildLimitApplicationHowManyTimeComponent(),
-        },
-        {
-            label: "Limitar a un solo uso por cliente",
-            name: "limitOnlyUseByClient",
-        },
-        {
-            label: "Limitar solo para primeros pedidos",
-            name: "limiOnlyFirstOrders",
-        },
-    ];
-    const howManyTimeCouponCanBeApplied = [
-        {
-            label: "Solo un cargo",
-            value: "Solo un cargo",
-            subtitle: "El código de descuento se aplicará a un cargo por cliente antes de caducar.",
-        },
-        {
-            label: "Más de un cargo",
-            value: "Más de un cargo",
-            subtitle: "El código de descuento se aplicará a una cantidad determinada de cargos por cliente antes de que expire.",
-            children: buildLimitApplicationMoreOfAFeeComponent(),
-        },
-        {
-            label: "Todos los cargos",
-            value: "Todos los cargos",
-            subtitle: "El código de descuento seguirá aplicándose a todos los cargos futuros del cliente.",
+            value: _formConstantsValues.apply_to[1],
         },
     ];
 
-    const _handleGoBack = () => {};
-
-    const _handleChangeLanguage = () => {};
-    const _handleClickCreateButton = () => {
-        // TODO: Put here all code for get form values.
-        const discountCode = formRef.current.discountCode.value;
+    const _handleOnChangeApplicationLimitList = ({ name: fieldName, item: itemField, checked: isAdd }) => {
+        let fieldValue = [];
+        if (isAdd) {
+            fieldValue = [
+                ...form.application_limit,
+                {
+                    type: itemField.name,
+                    value: "",
+                },
+            ];
+        } else {
+            fieldValue = form.application_limit.filter((item) => item.type !== itemField.name);
+        }
+        handleOnChange({
+            target: {
+                name: fieldName,
+                value: fieldValue,
+            },
+        });
     };
+
+    const _handleOnChangeApplicationLimitInput = ({ target: input }) => {
+        const fieldValue = form.application_limit.map((item) => {
+            if (item.type === input.name) {
+                return {
+                    type: item.type,
+                    value: input.value,
+                };
+            }
+            return item;
+        });
+
+        handleOnChange({
+            target: {
+                name: "application_limit",
+                value: fieldValue,
+            },
+        });
+    };
+
+    const _applicationLimitItems = [
+        {
+            label: lang[locale].application_limit[0],
+            name: _formConstantsValues.application_limit[0],
+            value: form.application_limit[0],
+            children: ParagraphWithSimpleInput({
+                paragraph: lang[locale].limit_qty,
+                inputLabel: lang[locale].amount,
+                inputType: "number",
+                inputRightText: lang[locale].uses,
+                inputName: _formConstantsValues.application_limit[0],
+                handleOnChage: _handleOnChangeApplicationLimitInput,
+            }),
+        },
+        {
+            label: lang[locale].application_limit[1],
+            name: _formConstantsValues.application_limit[1],
+        },
+        {
+            label: lang[locale].application_limit[2],
+            name: _formConstantsValues.application_limit[2],
+        },
+    ];
+
+    const _couponsBySubscriptionItems = [
+        {
+            label: lang[locale].coupons_by_subscription[0],
+            subtitle: lang[locale].coupons_by_subscription_subtitle[0],
+            value: _formConstantsValues.coupons_by_subscription[0],
+        },
+        {
+            label: lang[locale].coupons_by_subscription[1],
+            subtitle: lang[locale].coupons_by_subscription_subtitle[1],
+            value: _formConstantsValues.coupons_by_subscription[1],
+            children: ParagraphWithSimpleInput({
+                inputType: "number",
+                paragraph: lang[locale].more_one_fee,
+                inputLabel: lang[locale].amount,
+                inputRightText: lang[locale].charges,
+                inputName: "coupons_by_subscription|value",
+                handleOnChage: (e) => {
+                    handleOnChange(e);
+                },
+            }),
+        },
+        {
+            label: lang[locale].coupons_by_subscription[2],
+            subtitle: lang[locale].coupons_by_subscription_subtitle[2],
+            value: _formConstantsValues.coupons_by_subscription[2],
+        },
+    ];
+
+    const _handleClickCreateButton = () => {
+        // TODO: Put here all code for send form values and validations.
+        console.log("Form values: ", form);
+        doRequest({
+            endpointSetting: COUPONS_REQUEST_SETTINGS.create,
+            body: JSON.stringify(form)
+        })
+    };
+
+    useEffect(() => {
+        if (form.discount_type.type === _formConstantsValues.discount_type[2] && !!form.discount_type.value) {
+            handleOnChange({
+                target: {
+                    name: "discount_type|value",
+                    value: "",
+                },
+            });
+        }
+        if (form.minimum_requirement.type === _formConstantsValues.minimum_requirement[0] && !!form.minimum_requirement.value) {
+            handleOnChange({
+                target: {
+                    name: "minimum_requirement|value",
+                    value: "",
+                },
+            });
+        }
+        if (form.apply_to.type === _formConstantsValues.apply_to[0] && !!form.apply_to.value.length) {
+            handleOnChange({
+                target: {
+                    name: "apply_to|value",
+                    value: [],
+                },
+            });
+        }
+        if (form.coupons_by_subscription.type !== _formConstantsValues.coupons_by_subscription[1] && !!form.coupons_by_subscription.value) {
+            handleOnChange({
+                target: {
+                    name: "coupons_by_subscription|value",
+                    value: "",
+                },
+            });
+        }
+
+        //TODO: DEBUG: DELETE AFTER IMPLEMENTATION
+        console.log( '***-> DATA: ',data, "***-> ERROR: ", error)
+    }, [form.discount_type, form.minimum_requirement, form.apply_to, form.coupons_by_subscription, data, error]);
+
+    const renderMinimumRequirementInput = () => (
+        <div style={{ paddingTop: 16 }}>
+            <Grid container>
+                <Grid item xs={12} md={6}>
+                    <Input
+                        label={lang[locale].value}
+                        name="minimum_requirement|value"
+                        type="number"
+                        value={form.minimum_requirement.value}
+                        customProps={{
+                            InputProps: {
+                                endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
+                            },
+                        }}
+                        handleChange={handleOnChange}
+                    />
+                </Grid>
+            </Grid>
+            <Alert severity="info" color="success">
+                {lang[locale].minimumRequirementMessage}
+            </Alert>
+        </div>
+    );
+
+    const renderDiscountTypeInput = () => (
+        <Grid item xs={4}>
+            <Input
+                label={lang[locale].value}
+                name="discount_type|value"
+                value={form.discount_type.value}
+                handleChange={handleOnChange}
+                type="number"
+                customProps={{
+                    InputProps: {
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                {form.discount_type.type === _formConstantsValues.discount_type[0] ? "€" : "%"}
+                            </InputAdornment>
+                        ),
+                    },
+                }}
+            />
+        </Grid>
+    );
+
+    const renderSpecificProductToApplyCoupon = () => (
+        <SimpleTileList
+            useBold={true}
+            listItemsSelected={form.apply_to.value}
+            list={applyToProducts}
+            buttonAddTitle={lang[locale].buttonAddTitle}
+            handleChangeList={(items) => {
+                handleOnChange({
+                    target: {
+                        name: "apply_to|value",
+                        value: [...items],
+                    },
+                });
+            }}
+            handleRemoveItem={(item) => {
+                console.log(item)
+                handleOnChange({
+                    target: {
+                        name: "apply_to|value",
+                        value: form.apply_to.value.filter((id) => id !== item.id),
+                    },
+                });
+            }}
+        />
+    );
 
     return (
         <Grid item xs={12}>
             <form className={classes.rootForm}>
-                <Grid container xs={12} md={9} spacing={2} direction="column">
-                    <Grid item xs={12}>
-                        <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Grid container spacing={2} direction="row" justify="center">
+                    <Grid item xs={12} md={9}>
+                        <Box display="flex" alignItems="center">
                             <HeaderTitleWithBackButton title={lang[locale].title} handleClick={_handleGoBack} />
                         </Box>
                     </Grid>
 
                     {/* DISCOUNT CODE */}
 
-                    <Grid item>
+                    <Grid item xs={12} md={9}>
                         <CardContainerWithTitle fullWidth={true} title={lang[locale].discountCode}>
                             <Input
                                 label={lang[locale].discountCode}
-                                name="discountCode"
+                                name="discount_code"
                                 value={form.discountCode}
                                 handleChange={handleOnChange}
                             />
@@ -222,73 +333,37 @@ const CouponsForm = ({ lang, ...props }) => {
 
                     {/* DISCOUNT TYPE */}
 
-                    <Grid item>
+                    <Grid item xs={12} md={9}>
                         <CardContainerWithTitle fullWidth={true} title={lang[locale].discountType}>
-                            <Grid container spacing={2} justifyContent="center">
+                            <Grid container spacing={2} justify="center">
                                 <Grid item xs>
                                     <SimpleSelect
                                         name="discount_type|type"
                                         items={lang[locale].discount_type}
-                                        values={defaultFillItems.discount_type}
+                                        values={_formConstantsValues.discount_type}
                                         value={form.discount_type.type}
                                         handleChange={handleOnChange}
                                     />
                                 </Grid>
-                                {form.discount_type.type !== defaultFillItems.discount_type[2] && (
-                                    <Grid item xs={4}>
-                                        <Input
-                                            label={lang[locale].value}
-                                            name="discount_type|value"
-                                            value={form.discount_type.value}
-                                            handleChange={handleOnChange}
-                                            type="number"
-                                            customProps={{
-                                                InputProps: {
-                                                    endAdornment: <InputAdornment position="end">€</InputAdornment>,
-                                                },
-                                            }}
-                                        />
-                                    </Grid>
-                                )}
+                                {form.discount_type.type !== _formConstantsValues.discount_type[2] && renderDiscountTypeInput()}
                             </Grid>
                         </CardContainerWithTitle>
                     </Grid>
 
                     {/* MINIMUM REQUIREMENT */}
 
-                    <Grid item>
+                    <Grid item xs={12} md={9}>
                         <CardContainerWithTitle fullWidth title={lang[locale].minimumRequirement}>
                             <Grid container spacing={2}>
                                 <Grid item xs>
                                     <RadioButtons
                                         name="minimum_requirement|type"
-                                        items={minimumRequirement}
+                                        items={_minimumRequirementItems}
                                         value={form.minimum_requirement.type}
                                         handleOnChange={handleOnChange}
                                     />
-                                    {form.minimum_requirement.type === defaultFillItems.minimum_requirement[1] && (
-                                        <div style={{ paddingTop: 16 }}>
-                                            <Grid container>
-                                                <Grid item xs={12} md={6}>
-                                                    <Input
-                                                        label={lang[locale].value}
-                                                        name="minimum_requirement|value"
-                                                        type="number"
-                                                        value={form.minimum_requirement.value}
-                                                        customProps={{
-                                                            InputProps: {
-                                                                endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
-                                                            },
-                                                        }}
-                                                        handleChange={handleOnChange}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                            <Alert severity="info" color="success">
-                                                {lang[locale].minimumRequirementMessage}
-                                            </Alert>
-                                        </div>
-                                    )}
+                                    {form.minimum_requirement.type === _formConstantsValues.minimum_requirement[1] &&
+                                        renderMinimumRequirementInput()}
                                 </Grid>
                             </Grid>
                         </CardContainerWithTitle>
@@ -296,38 +371,17 @@ const CouponsForm = ({ lang, ...props }) => {
 
                     {/* APPLY TO */}
 
-                    <Grid item>
+                    <Grid item xs={12} md={9}>
                         <CardContainerWithTitle fullWidth title={lang[locale].applyTo}>
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
                                     <RadioButtons
                                         name="apply_to|type"
-                                        items={applyTo}
+                                        items={_applyToItems}
                                         value={form.apply_to.type}
                                         handleOnChange={handleOnChange}
                                     />
-                                    {form.apply_to.type === defaultFillItems.apply_to[1] && (
-                                        <SimpleTileList
-                                            listItemsSelected={form.apply_to.value}
-                                            list={applyToProducts}
-                                            handleChangeList={(item) => {
-                                                handleOnChange({
-                                                    target: {
-                                                        name: "apply_to|value",
-                                                        value: [...form.apply_to.value, item],
-                                                    },
-                                                });
-                                            }}
-                                            handleRemoveItem={(item) => {
-                                                handleOnChange({
-                                                    target: {
-                                                        name: "apply_to|value",
-                                                        value: form.apply_to.value.filter((_item) => _item.label !== item.label),
-                                                    },
-                                                });
-                                            }}
-                                        />
-                                    )}
+                                    {form.apply_to.type === _formConstantsValues.apply_to[1] && renderSpecificProductToApplyCoupon()}
                                 </Grid>
                             </Grid>
                         </CardContainerWithTitle>
@@ -335,17 +389,27 @@ const CouponsForm = ({ lang, ...props }) => {
 
                     {/* APPLICATION LIMIT */}
 
-                    <Grid item>
-                        <CardContainerWithTitle fullWidth title="Limite de aplicación">
+                    <Grid item xs={12} md={9}>
+                        <CardContainerWithTitle fullWidth title={lang[locale].applicationLimit}>
                             <Grid container spacing={1} direction="column">
                                 <Grid item xs>
-                                    <CheckboxList items={limitOfApplication} />
+                                    <CheckboxList
+                                        name="application_limit"
+                                        handleOnChange={_handleOnChangeApplicationLimitList}
+                                        items={_applicationLimitItems}
+                                    />
                                 </Grid>
                                 <Grid item xs>
-                                    <Typography>¿Cuántas veces se aplicará el cupón en la suscripción del cliente?</Typography>
+                                    <Typography>{lang[locale].applicationLimitSecondPart}</Typography>
                                 </Grid>
                                 <Grid item xs>
-                                    <RadioButtons name="applyTo" useBold={true} items={howManyTimeCouponCanBeApplied} />
+                                    <RadioButtons
+                                        useBold={true}
+                                        name="coupons_by_subscription|type"
+                                        value={form.coupons_by_subscription.type}
+                                        items={_couponsBySubscriptionItems}
+                                        handleOnChange={handleOnChange}
+                                    />
                                 </Grid>
                             </Grid>
                         </CardContainerWithTitle>
@@ -353,22 +417,53 @@ const CouponsForm = ({ lang, ...props }) => {
 
                     {/* DATE RANGE */}
 
-                    <Grid item>
-                        <CardContainerWithTitle fullWidth title="Rango de fechas">
+                    <Grid item xs={12} md={9}>
+                        <CardContainerWithTitle fullWidth title={lang[locale].dateRage}>
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
-                                    <DatePicker label="Fecha de inicio"></DatePicker>
+                                    <DatePicker
+                                        handleDateChange={(startDate) => {
+                                            handleOnChange({
+                                                target: {
+                                                    name: "date_rage|start",
+                                                    value: startDate.toISOString(),
+                                                },
+                                            });
+                                        }}
+                                        dateSelected={form.date_rage.start}
+                                        label={lang[locale].dateStart}
+                                    />
                                 </Grid>
                                 <Grid item xs>
                                     <FormControlLabel
                                         control={<Checkbox name="hasExpirateDate" color="primary" />}
-                                        label="Establecer una fecha de expiración"
-                                        onChange={(e) => setShowExpireDate(e.target.checked)}
+                                        label={lang[locale].setExpireDate}
+                                        onChange={(e) => {
+                                            setShowExpireDate(e.target.checked);
+                                            const value = e.target.checked ? new Date().toISOString() : "";
+                                            handleOnChange({
+                                                target: {
+                                                    name: "date_rage|expire",
+                                                    value,
+                                                },
+                                            });
+                                        }}
                                     />
                                 </Grid>
                                 {showExpireDate && (
                                     <Grid item xs>
-                                        <DatePicker label="Fecha de expiración"></DatePicker>
+                                        <DatePicker
+                                            dateSelected={form.date_rage.expire}
+                                            handleDateChange={(startDate) => {
+                                                handleOnChange({
+                                                    target: {
+                                                        name: "date_rage|expire",
+                                                        value: startDate.toISOString(),
+                                                    },
+                                                });
+                                            }}
+                                            label={lang[locale].dateExpire}
+                                        ></DatePicker>
                                     </Grid>
                                 )}
                             </Grid>
@@ -377,12 +472,15 @@ const CouponsForm = ({ lang, ...props }) => {
 
                     {/* ACTIONS BUTTONS */}
 
-                    <Grid item xs={12} alignItems="flex-end">
-                        <FormActionsButtons
-                            createButtonHandler={_handleClickCreateButton}
-                            createButtonText="Crear Cupón"
-                            variant="outline"
-                        />
+                    <Grid item xs={12} md={9}>
+                        <Grid container justify="flex-end">
+                            <FormActionsButtons
+                                createButtonHandler={_handleClickCreateButton}
+                                backButtonHandler={_handleGoBack}
+                                createButtonText={lang[locale].buutonSubmitTtle}
+                                variant="outline"
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </form>

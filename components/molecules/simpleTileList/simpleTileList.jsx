@@ -1,86 +1,120 @@
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PropsType from "prop-types";
 import { Button, Grid, IconButton, Typography } from "@material-ui/core";
 import { Add, Delete } from "@material-ui/icons";
-import React, { useState } from "react";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
 import ComplexModal from "../complexModal/complexModal";
-
-// interface SimpleListItem {
-//     label: string,
-//     value: any
-// }
-
-// interface Props {
-//     list: SimpleListItem[],
-//     listItemsSelected: SimpleListItem[],
-//     handleChangeList?: (list: SimpleListItem[]) => void,
-//     handleRemoveItem?: (item: SimpleListItem) => void,
-//     hideRemoveButton?: boolean,
-//     useBold?: boolean
-// }
+import { simpleTileList } from "../../../lang";
 
 const SimpleTileList = (props) => {
     const [openDialog, setOpenDialog] = useState(false);
+    const [newItemsToAdd, setNewItemsToAdd] = useState(props.listItemsSelected);
+    const { locale } = useRouter();
+
+    useEffect(() => {
+        if (openDialog) {
+            console.log("***->  Listado de itens: ", props.listItemsSelected);
+            setNewItemsToAdd(props.listItemsSelected);
+        }
+    }, [openDialog]);
+
+    const itemsList = () =>
+        props.list.map((item, index) => ({
+            name: item.name,
+            value: item,
+            id: item.id,
+            checked: newItemsToAdd.some((id) => item.id === id),
+            label: (
+                <Typography key={index}>
+                    <b>{item.name}</b> {item.type}
+                </Typography>
+            ),
+        }));
+
+    const itemsListSelected = () =>
+        props.list.reduce((list, currItem, index) => {
+            const isContained = props.listItemsSelected.some((id) => currItem.id === id);
+            if (!isContained) return list;
+            return [
+                ...list,
+                <Grid key={index} item>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        {!props.hideRemoveButton && (
+                            <IconButton onClick={() => props.handleRemoveItem(currItem)}>
+                                <Delete />
+                            </IconButton>
+                        )}
+                        <Typography>
+                            {props.useBold ? <b>{currItem.name}</b> : currItem.name} {currItem.type}
+                        </Typography>
+                    </div>
+                </Grid>,
+            ];
+        }, []);
 
     return (
         <>
             <Grid container direction="column" spacing={2}>
                 <Grid item>
                     <Grid container direction="column">
-                        {props.listItemsSelected.map((item, index) => (
-                            <Grid key={index} item>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    {!props.hideRemoveButton && (
-                                        <IconButton onClick={() => props.handleRemoveItem(item)}>
-                                            <Delete />
-                                        </IconButton>
-                                    )}
-                                    <Typography>
-                                        {props.useBold && (
-                                            <>
-                                                <b>{item.label}</b> {item.value}
-                                            </>
-                                        )}
-                                        {!props.useBold && item.label + " " + item.value}
-                                    </Typography>
-                                </div>
-                            </Grid>
-                        ))}
+                        {itemsListSelected()}
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Button color="default" variant="contained" startIcon={<Add />} onClick={() => {
-                        props.handleChangeList({label: "test-"+props.listItemsSelected.length, value: "test"})
-                    //    setOpenDialog(true)
-                    }
-                        }>
-                        Agregar producto
+                    <Button color="default" variant="contained" startIcon={<Add />} onClick={() => setOpenDialog(true)}>
+                        {props.buttonAddTitle || simpleTileList[locale].buttonTitle}
                     </Button>
                 </Grid>
             </Grid>
 
-            {/* <ComplexModal
-                title="Agregar productos"
+            <ComplexModal
+                title={props.buttonAddTitle || simpleTileList[locale].buttonTitle}
+                cancelButtonText={simpleTileList[locale].cancelButtonText}
+                confirmButtonText={props.buttonAddTitle || simpleTileList[locale].buttonTitle}
+                open={openDialog}
+                handleConfirmButton={() => {
+                    props.handleChangeList([...newItemsToAdd]);
+                    setOpenDialog(false);
+                }}
+                handleCancelButton={() => setOpenDialog(false)}
                 component={
                     <CheckboxList
-                        handleOnChange={handleOnChange}
-                        items={products.map((product, index) => ({
-                            label: (
-                                <Typography>
-                                    <b>{product.name}</b> {product.type}
-                                </Typography>
-                            ),
-                            name: product.name,
-                        }))}
+                        items={itemsList()}
+                        handleOnChange={({ item, checked: isAdd }) => {
+                            if (isAdd) {
+                                setNewItemsToAdd([...newItemsToAdd, item.id]);
+                            } else {
+                                setNewItemsToAdd(newItemsToAdd.filter((id) => item.id !== id));
+                            }
+                        }}
                     />
                 }
-                cancelButtonText="volver"
-                confirmButtonText="Agregar Productos"
-                handleConfirmButton={() => setOpenDialog(false)}
-                handleCancelButton={() => setOpenDialog(false)}
-                open={openDialog}
-                handleClose={() => { }}
-            /> */}
+            />
         </>
     );
 };
+
+SimpleTileList.propType = {
+    list: PropsType.arrayOf(
+        PropsType.shape({
+            name: PropsType.string,
+            type: PropsType.any,
+            id: PropsType.any,
+        })
+    ).isRequired,
+    listItemsSelected: PropsType.arrayOf(
+        PropsType.shape({
+            name: PropsType.string,
+            type: PropsType.any,
+            id: PropsType.any,
+        })
+    ),
+    buttonAddTitle: PropsType.string,
+    handleChangeList: PropsType.func,
+    handleRemoveItem: PropsType.func,
+    hideRemoveButton: PropsType.bool,
+    useBold: PropsType.bool,
+};
+
 export default SimpleTileList;

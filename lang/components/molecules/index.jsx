@@ -4,3 +4,5 @@ export * from "./createUser";
 export * from "./planGeneralData";
 export * from "./attributesAndVariants";
 export * from "./otherPlanData";
+export * from "./simpleTileList";
+

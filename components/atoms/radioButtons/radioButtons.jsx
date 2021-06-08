@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import useStyles from "./styles";
 
-const RadioButtons = ({ name, useBool: useBold = false, items = [], value, handleOnChange = () => {}, ...props }) => {
+const RadioButtons = ({ name, useBold: useBold = false, items = [], value, handleOnChange = () => {}, ...props }) => {
     const classes = useStyles();
     const [selection, setSelection] = useState();
     return (
@@ -34,7 +34,7 @@ const RadioButtons = ({ name, useBool: useBold = false, items = [], value, handl
 
 RadioButtons.propTypes = {
     name: PropTypes.string,
-    useBool: PropTypes.bool,
+    useBold: PropTypes.bool,
     items: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string,
@@ -49,7 +49,7 @@ RadioButtons.propTypes = {
 
 RadioButtons.defaultValues = {
     items: [],
-    useBool: false,
+    useBold: false,
     handleOnChange: () => {},
 };
 

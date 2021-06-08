@@ -18,10 +18,10 @@ const CustomCheckbox = (props) => {
 };
 
 CustomCheckbox.propTypes = {
-    checked: PropTypes.bool.isRequired,
+    checked: PropTypes.bool,
     handleChange: PropTypes.func.isRequired,
-    label: PropTypes.string,
-    value: PropTypes.bool.isRequired,
+    label: PropTypes.any,
+    value: PropTypes.any,
     name: PropTypes.string.isRequired,
 };
 
