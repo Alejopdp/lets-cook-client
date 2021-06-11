@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
 import { verifyToken } from "../../helpers/serverRequests/user";
 import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
+import cookies from "js-cookie";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
@@ -18,7 +20,6 @@ import PlansDashboard from "../../components/organisms/plansDashboard/plansDashb
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
-import { clearLocalStorage, getToken } from "../../helpers/localStorage/localStorage";
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
 import UpdateRecipe from "../../components/organisms/updateRecipe/updateRecipe";
 import ErrorPage from "../../components/molecules/errorPage/errorPage";
@@ -48,22 +49,26 @@ const Index = (props) => {
     const classes = useStyles();
 
     useEffect(() => {
-        const verifyTheToken = async () => {
-            const token = getToken();
+        // const verifyTheToken = async () => {
+        //     const token = getToken();
 
-            if (!token) return route.replace("/", "/");
+        //     if (!token) return route.replace("/", "/");
 
-            const res = await verifyToken(token);
+        //     const res = await verifyToken(token);
 
-            if (res.status === 200) {
-                return;
-            } else {
-                clearLocalStorage();
-                route.replace("/", "/");
-            }
-        };
+        //     if (res.status === 200) {
+        //         return;
+        //     } else {
+        //         clearLocalStorage();
+        //         route.replace("/", "/");
+        //     }
+        // };
 
-        verifyTheToken();
+        if (props.status === 401) {
+            clearLocalStorage();
+            cookies.remove("token");
+        }
+        // verifyTheToken();
     }, [route.asPath]);
 
     const getSectionComponent = (path) => {
@@ -128,8 +133,13 @@ Index.propTypes = {};
 
 export async function getServerSideProps(context) {
     const langs = require("../../lang");
-    console.log(context.req.headers);
-    const props = await pagesPropsGetter(context.query, context.locale);
+    const token = context.req.cookies.token;
+
+    if (!token) {
+        return { props: { hasError: "Usuario no autorizado", status: 401 } };
+    }
+
+    const props = await pagesPropsGetter(context.query, context.locale, context.req.cookies.token);
 
     return {
         props: { ...props, langs: { ...langs } },

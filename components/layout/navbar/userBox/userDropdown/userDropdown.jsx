@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { clearLocalStorage } from "../../../../../helpers/localStorage/localStorage";
 import { useRouter } from "next/router";
+import cookies from "js-cookie";
 
 // External components
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
@@ -67,6 +68,7 @@ const UserDropdown = (props) => {
 
     const handleSignOut = () => {
         clearLocalStorage();
+        cookies.remove("token");
         router.push("/");
         setOpen(false);
     };

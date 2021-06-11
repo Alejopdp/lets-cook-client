@@ -67,7 +67,7 @@ const LoginForm = (props) => {
             setItemInLocalStorage("token", res.data.token);
             setItemInLocalStorage("userInfo", res.data.userInfo);
             setUserInfo(res.data.userInfo);
-            // cookies.set("token", )
+            cookies.set("token", res.data.token);
             router.push("/dashboard");
         } else {
             setserverError(res.data.message);
