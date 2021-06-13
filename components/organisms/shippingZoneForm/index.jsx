@@ -36,7 +36,7 @@ const ShippingZoneForm = (props) => {
     });
 
     const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value || event.target.checked });
+        setValues({ ...values, [prop]: event.target.value });
     };
 
     const handleCreate = async () => {
