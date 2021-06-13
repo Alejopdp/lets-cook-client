@@ -43,7 +43,7 @@ const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () 
     </>
 );
 
-const buildLimitApplicationHowManyTimeComponent = () => (
+const buildLimitApplicationHowManyTimeComponent = ({ value = 0, handleChange = () => "Not implemented yet" }) => (
     <Grid container direction="column" spacing={1}>
         <Grid item xs={12}>
             <Typography>El cupón será inválido después de…</Typography>
@@ -52,6 +52,9 @@ const buildLimitApplicationHowManyTimeComponent = () => (
             <Input
                 label="Cantidad"
                 name="minimumBuy"
+                value={value}
+                type="number"
+                handleChange={(e) => handleChange(e.target.value)}
                 customProps={{
                     InputProps: {
                         endAdornment: <InputAdornment position="end">Usos</InputAdornment>,
@@ -108,7 +111,8 @@ const CouponsForm = ({ lang, ...props }) => {
         state: "active",
     };
 
-    const { handleOnChange, defaultFillItems, form } = useCouponsForm(frominitialState);
+    const { handleOnChange, defaultFillItems, form, handleApplicationLimitChange, handleQtyLimitChange, getQtyLimitValue } =
+        useCouponsForm(frominitialState);
 
     const { locale } = useRouter();
 
@@ -158,16 +162,19 @@ const CouponsForm = ({ lang, ...props }) => {
     const limitOfApplication = [
         {
             label: "Limitar la cantidad de veces que se puede aplicar este cupón",
-            name: "limitNumberCouponApplying",
-            children: buildLimitApplicationHowManyTimeComponent(),
+            name: "limit_qty",
+            value: 0,
+            children: buildLimitApplicationHowManyTimeComponent({ value: getQtyLimitValue(), handleChange: handleQtyLimitChange }),
         },
         {
             label: "Limitar a un solo uso por cliente",
-            name: "limitOnlyUseByClient",
+            name: "limit_one_customer",
+            value: null,
         },
         {
             label: "Limitar solo para primeros pedidos",
-            name: "limiOnlyFirstOrders",
+            name: "first_order",
+            value: null,
         },
     ];
     const howManyTimeCouponCanBeApplied = [
@@ -189,12 +196,16 @@ const CouponsForm = ({ lang, ...props }) => {
         },
     ];
 
+    console.log("A ver ese FORMMOMO: ", form);
+
     const _handleGoBack = () => {};
 
     const _handleChangeLanguage = () => {};
     const _handleClickCreateButton = () => {
         // TODO: Put here all code for get form values.
-        const discountCode = formRef.current.discountCode.value;
+        // const discountCode = formRef.current.discountCode.value;
+
+        console.log("A ver ese form con la data: ", form);
     };
 
     return (
@@ -339,7 +350,7 @@ const CouponsForm = ({ lang, ...props }) => {
                         <CardContainerWithTitle fullWidth title="Limite de aplicación">
                             <Grid container spacing={1} direction="column">
                                 <Grid item xs>
-                                    <CheckboxList items={limitOfApplication} />
+                                    <CheckboxList items={limitOfApplication} handleOnChange={handleApplicationLimitChange} />
                                 </Grid>
                                 <Grid item xs>
                                     <Typography>¿Cuántas veces se aplicará el cupón en la suscripción del cliente?</Typography>
