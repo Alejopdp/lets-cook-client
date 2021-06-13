@@ -29,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ShippingTable = ({ shippingZones = [], handleStateClick = () => alert("Not implemented yet") }) => {
+const ShippingTable = ({
+    shippingZones = [],
+    handleStateClick = () => alert("Not implemented yet"),
+    handleDeleteClick = () => alert("Not implemented yet"),
+}) => {
     const { table, cells } = useStyles();
     const router = useRouter();
 
@@ -85,7 +89,7 @@ const ShippingTable = ({ shippingZones = [], handleStateClick = () => alert("Not
                                     <EditIcon />
                                 </IconButton>
 
-                                <IconButton>
+                                <IconButton onClick={() => handleDeleteClick(zone)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
+import { toggleZoneState, deleteZone } from "../../../helpers/serverRequests/shipping";
 
 // External components
 import Container from "@material-ui/core/Container";
@@ -10,7 +11,6 @@ import Container from "@material-ui/core/Container";
 import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
 import ShippingTable from "./shippingTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
-import { toggleZoneState } from "../../../helpers/serverRequests/shipping";
 import { useSnackbar } from "notistack";
 
 const ShippingDashboard = (props) => {
@@ -24,6 +24,7 @@ const ShippingDashboard = (props) => {
         cost: "",
     });
     const [isStateModalOpen, setisStateModalOpen] = useState(false);
+    const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
 
     const handleClick = () => {
         router.push("/gestion-de-envios/crear");
@@ -42,7 +43,7 @@ const ShippingDashboard = (props) => {
             );
             virtuallyUpdateShippingZones();
             setisStateModalOpen(false);
-            setselectedShippingZone({});
+            resetSelectedShippingState();
         } else {
             enqueueSnackbar(`No se pudó modificar la zona de envío`, { variant: "error" });
         }
@@ -54,12 +55,7 @@ const ShippingDashboard = (props) => {
     };
 
     const handleCloseStateModal = () => {
-        setselectedShippingZone({
-            id: "",
-            state: "",
-            reference: "",
-            cost: "",
-        });
+        resetSelectedShippingState();
         setisStateModalOpen(false);
     };
 
@@ -72,10 +68,46 @@ const ShippingDashboard = (props) => {
         );
     };
 
+    const handleOpenDeleteModal = (shippingZone) => {
+        setselectedShippingZone(shippingZone);
+        setisDeleteModalOpen(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        resetSelectedShippingState();
+        setisDeleteModalOpen(false);
+    };
+
+    const resetSelectedShippingState = () => {
+        setselectedShippingZone({
+            id: "",
+            state: "",
+            reference: "",
+            cost: "",
+        });
+    };
+
+    const handleDeleteShippingZone = async () => {
+        const res = await deleteZone(selectedShippingZone.id);
+
+        if (res.status === 200) {
+            enqueueSnackbar(`La zona de envío se eliminó correctamente`, { variant: "success" });
+            setshippingZones(shippingZones.filter((zone) => zone.id !== selectedShippingZone.id));
+            setisDeleteModalOpen(false);
+            resetSelectedShippingState();
+        } else {
+            enqueueSnackbar(`No se pudó modificar la zona de envío`, { variant: "error" });
+        }
+    };
+
     return (
         <Container size="md">
             <DashboardWithButton title="Zonas de envío" buttonText="Crear zona de envío" startIcon handleClick={handleClick} />
-            <ShippingTable shippingZones={shippingZones} handleStateClick={handleOpenStateModal} />
+            <ShippingTable
+                shippingZones={shippingZones}
+                handleStateClick={handleOpenStateModal}
+                handleDeleteClick={handleOpenDeleteModal}
+            />
 
             {isStateModalOpen && (
                 <SimpleModal
@@ -91,6 +123,19 @@ const ShippingDashboard = (props) => {
                         } la zona de envío ${selectedShippingZone.reference}?`,
                     ]}
                     title={`${selectedShippingZone.state.toLowerCase() === "active" ? "Desactivar" : "Activar"} zona de envío`}
+                />
+            )}
+
+            {isDeleteModalOpen && (
+                <SimpleModal
+                    cancelButtonText="VOLVER"
+                    confirmButtonText="ELIMINAR ZONA DE ENVÍO"
+                    handleCancelButton={handleCloseDeleteModal}
+                    handleClose={handleCloseDeleteModal}
+                    handleConfirmButton={handleDeleteShippingZone}
+                    open={isDeleteModalOpen}
+                    paragraphs={[`¿Estás seguro de que quieres eliminar la zona de envío ${selectedShippingZone.reference}?`]}
+                    title={`Eliminar zona de envío`}
                 />
             )}
         </Container>
