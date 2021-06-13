@@ -12,9 +12,14 @@ import { Box, Grid, Typography, Container } from "@material-ui/core";
 // Internal components
 import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import Input from "../../atoms/input/input";
-import RoundedCheckbox from "../../atoms/roundedCheckbox/roundedCheckbox";
+import CustomRadioGroup from "../../molecules/radioGroup";
 import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
 import FormPaperWithImageDropzone from "../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
+
+const shippingZoneTypeOptions = [
+    { label: "Gratis", value: "free" },
+    { label: "Pago", value: "pay" },
+];
 
 const ShippingZoneForm = (props) => {
     const theme = useTheme();
@@ -25,9 +30,8 @@ const ShippingZoneForm = (props) => {
     const [values, setValues] = useState({
         zoneName: props.shippingZone ? props.shippingZone.name : "",
         zoneRef: props.shippingZone ? props.shippingZone.reference : "",
-        free: props.shippingZone && props.shippingZone.cost < 1 ? true : props.shippingZone && props.shippingZone.cost > 0 ? false : false,
-        pay: props.shippingZone && props.shippingZone.cost < 1 ? false : props.shippingZone && props.shippingZone.cost > 0 ? true : false,
         price: props.shippingZone ? props.shippingZone.cost : 0,
+        type: props.shippingZone && props.shippingZone.cost > 0 ? "pay" : "free",
         file: [],
     });
 
@@ -62,9 +66,14 @@ const ShippingZoneForm = (props) => {
 
     const isValid = () => {
         if (props.update) {
-            return !!values.zoneName && !!values.zoneRef && (!!values.free || (!!values.pay && values.price > 0));
+            return !!values.zoneName && !!values.zoneRef && (values.type === "free" || (values.type === "pay" && values.price > 0));
         } else {
-            return !!values.zoneName && !!values.zoneRef && (!!values.free || (!!values.pay && values.price > 0)) && values.file.length > 0;
+            return (
+                !!values.zoneName &&
+                !!values.zoneRef &&
+                (values.type === "free" || (values.type === "pay" && values.price > 0)) &&
+                values.file.length > 0
+            );
         }
     };
 
@@ -80,15 +89,15 @@ const ShippingZoneForm = (props) => {
 
                 <Grid item container direction="column">
                     <PaperWithTitleContainer title="Coste de envío" width={600}>
-                        <Grid item>
-                            <RoundedCheckbox label="Gratis" onChange={handleChange("free")} checked={values.free} />
+                        <Grid item style={{ marginBottom: theme.spacing(1) }}>
+                            <CustomRadioGroup
+                                handleChange={handleChange("type")}
+                                inputName="type"
+                                options={shippingZoneTypeOptions}
+                                value={values.type}
+                            />
                         </Grid>
-
-                        <Grid item>
-                            <RoundedCheckbox label="Pago" onChange={handleChange("pay")} checked={values.pay} />
-                        </Grid>
-
-                        {values.pay && (
+                        {values.type === "pay" && (
                             <Grid item container direction="row" alignItems="center" spacing={2}>
                                 <Grid item>
                                     <Input type="number" label="Valor" handleChange={handleChange("price")} value={values.price} />

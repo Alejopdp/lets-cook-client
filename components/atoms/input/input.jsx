@@ -46,7 +46,7 @@ Input.propTypes = {
     value: PropTypes.any.isRequired,
     rows: PropTypes.number,
     multiline: PropTypes.bool,
-    customProps: PropTypes.any
+    customProps: PropTypes.any,
 };
 
 export default Input;
