@@ -79,8 +79,8 @@ export const updateZone = async (zone, zoneId) => {
     try {
         const res = await Axios({
             method: "PUT",
-            url: `${apiUrl}/${planId}`,
-            data: plan,
+            url: `${apiUrl}/${zoneId}`,
+            data: zone,
         });
 
         return res;

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 // import { useRequest } from "../../../hooks/useRequest/index";
-import { createZone } from "../../../helpers/serverRequests/shipping";
+import { createZone, updateZone } from "../../../helpers/serverRequests/shipping";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -16,18 +16,18 @@ import RoundedCheckbox from "../../atoms/roundedCheckbox/roundedCheckbox";
 import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
 import FormPaperWithImageDropzone from "../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
 
-const ShippingZoneForm = () => {
+const ShippingZoneForm = (props) => {
     const theme = useTheme();
     const router = useRouter();
     // const { doRequest } = useRequest();
     const { enqueueSnackbar } = useSnackbar();
 
     const [values, setValues] = useState({
-        zoneName: "",
-        zoneRef: "",
-        free: false,
-        pay: false,
-        price: "",
+        zoneName: props.shippingZone ? props.shippingZone.name : "",
+        zoneRef: props.shippingZone ? props.shippingZone.reference : "",
+        free: props.shippingZone && props.shippingZone.cost < 1 ? true : props.shippingZone && props.shippingZone.cost > 0 ? false : false,
+        pay: props.shippingZone && props.shippingZone.cost < 1 ? false : props.shippingZone && props.shippingZone.cost > 0 ? true : false,
+        price: props.shippingZone ? props.shippingZone.cost : 0,
         file: [],
     });
 
@@ -43,9 +43,10 @@ const ShippingZoneForm = () => {
         formData.append("cost", values.price);
         formData.append("map", values.file[0]);
 
-        const res = await createZone(formData);
+        const res = props.update ? await updateZone(formData, props.shippingZone.id) : await createZone(formData);
 
         if (res.status === 200) {
+            enqueueSnackbar(`Zona de envío ${props.update ? "creada" : "modificada"} correctamente`, { variant: "success" });
             router.push("/gestion-de-envios");
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
@@ -111,7 +112,7 @@ const ShippingZoneForm = () => {
                 <BackAndCreateButtons
                     backButtonHandler={() => router.back()}
                     createButtonHandler={handleCreate}
-                    createButtonText={"Crear zona de envío"}
+                    createButtonText={`${props.update ? "Modificar" : "Crear"} zona de envío`}
                 />
             </Box>
         </Container>

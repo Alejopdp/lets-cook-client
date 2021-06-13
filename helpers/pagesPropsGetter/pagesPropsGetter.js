@@ -2,7 +2,7 @@ import { getRoleList } from "../serverRequests/role";
 import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
-import { getZonesList } from "../serverRequests/shipping";
+import { getZoneById, getZonesList } from "../serverRequests/shipping";
 
 export const pagesPropsGetter = async (params, locale) => {
     // Use locale for the API calls
@@ -68,6 +68,11 @@ export const pagesPropsGetter = async (params, locale) => {
             res = await getZonesList();
 
             return { shippingZones: res.data || [], error: res.data.message || null };
+
+        case "gestion-de-envios/modificar":
+            res = await getZoneById(params.id);
+
+            return { shippingZone: res.data || [], error: res.data.message || null };
         default:
             return null;
     }

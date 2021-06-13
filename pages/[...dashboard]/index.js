@@ -112,8 +112,8 @@ const Index = ({ token, ...props }) => {
                 return <CreateShippingZone />;
 
             // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
-            case "gestion-de-envios/editar":
-                return <UpdateShippingZone />;
+            case "gestion-de-envios/modificar":
+                return <UpdateShippingZone shippingZone={props.shippingZone} />;
 
             default:
                 return (
