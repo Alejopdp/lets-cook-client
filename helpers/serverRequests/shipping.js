@@ -30,11 +30,12 @@ export const getZoneById = async (zoneId) => {
     }
 };
 
-export const toggleZoneState = async (zoneId) => {
+export const toggleZoneState = async (zoneId, state) => {
     try {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/toggle-state/${zoneId}`,
+            data: { state },
         });
 
         return res;

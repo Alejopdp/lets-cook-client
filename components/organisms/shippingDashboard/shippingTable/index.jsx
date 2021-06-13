@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ShippingTable = ({ shippingZones = [] }) => {
+const ShippingTable = ({ shippingZones = [], handleStateClick = () => alert("Not implemented yet") }) => {
     const { table, cells } = useStyles();
     const router = useRouter();
 
@@ -71,7 +71,12 @@ const ShippingTable = ({ shippingZones = [] }) => {
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Switch name="checkedB" color="primary" checked={zone.state.toLowerCase() === "active"} />
+                                <Switch
+                                    name="checkedB"
+                                    color="primary"
+                                    checked={zone.state.toLowerCase() === "active"}
+                                    onClick={() => handleStateClick(zone)}
+                                />
                             </TableCell>
                             <TableCell className={cells}>
                                 <IconButton

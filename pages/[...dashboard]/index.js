@@ -106,7 +106,7 @@ const Index = ({ token, ...props }) => {
                 return <CouponsForm lang={props.langs.couponsForm} />;
 
             case "gestion-de-envios":
-                return <ShippingDashboard />;
+                return <ShippingDashboard shippingZones={props.shippingZones} />;
 
             case "gestion-de-envios/crear":
                 return <CreateShippingZone />;
