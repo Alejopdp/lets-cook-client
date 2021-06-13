@@ -60,6 +60,14 @@ const ShippingZoneForm = (props) => {
         });
     };
 
+    const isValid = () => {
+        if (props.update) {
+            return !!values.zoneName && !!values.zoneRef && (!!values.free || (!!values.pay && values.price > 0));
+        } else {
+            return !!values.zoneName && !!values.zoneRef && (!!values.free || (!!values.pay && values.price > 0)) && values.file.length > 0;
+        }
+    };
+
     return (
         <Container size="lg">
             <Grid item container spacing={2} justify="center" direction="column">
@@ -110,6 +118,7 @@ const ShippingZoneForm = (props) => {
 
             <Box width={600} display="flex" justifyContent="flex-end" margin="0 auto">
                 <BackAndCreateButtons
+                    isCreateButtonDisabled={!isValid()}
                     backButtonHandler={() => router.back()}
                     createButtonHandler={handleCreate}
                     createButtonText={`${props.update ? "Modificar" : "Crear"} zona de envío`}
