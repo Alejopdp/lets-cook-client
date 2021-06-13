@@ -7,7 +7,7 @@ export const getZonesList = async () => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}`,
-        })
+        });
 
         return res;
     } catch (error) {
@@ -18,7 +18,7 @@ export const getZonesList = async () => {
 
 export const getZoneById = async (zoneId) => {
     try {
-        const res = await Axios ({
+        const res = await Axios({
             method: "GET",
             url: `${apiUrl}/${zoneId}`,
         });
@@ -32,7 +32,7 @@ export const getZoneById = async (zoneId) => {
 
 export const toggleZoneState = async (zoneId) => {
     try {
-        const res = await Axios ({
+        const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/toggle-state/${zoneId}`,
         });
@@ -58,17 +58,18 @@ export const deleteZone = async (zoneId) => {
     }
 };
 
-export const createZone = async (zone) => {
+export const createZone = async (data) => {
     try {
         const res = await Axios({
             headers: { "Content-Type": "multipart/form-data" },
             method: "POST",
             url: `${apiUrl}`,
+            data,
         });
 
         return res;
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return error.response;
     }
 };

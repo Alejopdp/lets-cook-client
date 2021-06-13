@@ -1,5 +1,6 @@
 // Utils & Config
 import React from "react";
+import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 
 // External components
@@ -9,7 +10,7 @@ import Container from "@material-ui/core/Container";
 import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
 import ShippingTable from "./shippingTable";
 
-const ShippingDashboard = () => {
+const ShippingDashboard = ({ shippingZones = [] }) => {
     const router = useRouter();
 
     const handleClick = () => {
@@ -19,9 +20,13 @@ const ShippingDashboard = () => {
     return (
         <Container size="md">
             <DashboardWithButton title="Zonas de envío" buttonText="Crear zona de envío" startIcon handleClick={handleClick} />
-            <ShippingTable />
+            <ShippingTable shippingZones={shippingZones} />
         </Container>
     );
 };
 
 export default ShippingDashboard;
+
+ShippingDashboard.propTypes = {
+    shippingZones: PropTypes.array.isRequired,
+};

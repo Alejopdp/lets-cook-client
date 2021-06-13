@@ -29,28 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const zones = [
-    {
-        id: "1",
-        name: "Zona 1 - BCN",
-        ref: "Sant Marti, Ciutat Vella, L'Eixample, Sant Andreu",
-        price: "Gratis",
-    },
-    {
-        id: "2",
-        name: "Zona 2 - BCN",
-        ref: "Sants Montjuic, Les Corts, Sarría-Sant Gervasi",
-        price: "5 €",
-    },
-    {
-        id: "3",
-        name: "Zona 3 - BCN",
-        ref: "Horta - Guinardo, Nous Barris, Sant Andreu",
-        price: "10 €",
-    },
-];
-
-const ShippingTable = (props) => {
+const ShippingTable = ({ shippingZones = [] }) => {
     const { table, cells } = useStyles();
     const router = useRouter();
 
@@ -77,25 +56,27 @@ const ShippingTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {zones.map((zone, index) => (
+                    {shippingZones.map((zone, index) => (
                         <TableRow key={index}>
                             <TableCell />
                             <TableCell className={cells}>
                                 <Typography variant="body1">{zone.name}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{zone.ref}</Typography>
+                                <Typography variant="body1">{zone.reference}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
                                 <Typography variant="body1" style={{ textAlign: "right" }}>
-                                    {zone.price}
+                                    {zone.cost}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Switch name="checkedB" color="primary" />
+                                <Switch name="checkedB" color="primary" checked={zone.state.toLowerCase() === "active"} />
                             </TableCell>
                             <TableCell className={cells}>
-                                <IconButton onClick={() => router.push({ pathname: "/gestion-de-envios/modificar", query: { id: zone.id } })}>
+                                <IconButton
+                                    onClick={() => router.push({ pathname: "/gestion-de-envios/modificar", query: { id: zone.id } })}
+                                >
                                     <EditIcon />
                                 </IconButton>
 

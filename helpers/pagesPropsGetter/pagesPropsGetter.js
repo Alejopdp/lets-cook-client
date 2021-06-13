@@ -67,7 +67,7 @@ export const pagesPropsGetter = async (params, locale) => {
         case "gestion-de-envios":
             res = await getZonesList();
 
-            return { zones: res.data || [], error: res.data.message || null };
+            return { shippingZones: res.data || [], error: res.data.message || null };
         default:
             return null;
     }
