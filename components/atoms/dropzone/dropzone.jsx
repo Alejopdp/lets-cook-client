@@ -47,7 +47,7 @@ const rejectStyle = {
 
 const CustomDropzone = (props) => {
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
-        accept: "image/*",
+        accept: ["image/*", ".kml"],
         maxFiles: props.maxFiles,
         onDropAccepted: props.handleDropFile,
     });
