@@ -12,10 +12,8 @@ const useCouponsForm = (initialValues = {}) => {
     const [form, setForm] = useState(initialValues);
 
     const handleOnChange = ({ target = "" }) => {
-        console.log("Target name: ", target.name);
-        console.log("Target value: ", target.value);
         const name = target.name.split("|");
-        console.log("Target name splitted: ", name);
+
         if (name.length > 1) {
             setForm({
                 ...form,
@@ -32,8 +30,8 @@ const useCouponsForm = (initialValues = {}) => {
     const handleApplicationLimitChange = (limitItem) => {
         setForm({
             ...form,
-            application_limit: form.application_limit.some((item) => item.name === limitItem.name)
-                ? form.application_limit.filter((item) => item.name !== limitItem.name)
+            application_limit: form.application_limit.some((item) => item.type === limitItem.type)
+                ? form.application_limit.filter((item) => item.type !== limitItem.type)
                 : [...form.application_limit, limitItem],
         });
     };
@@ -41,12 +39,12 @@ const useCouponsForm = (initialValues = {}) => {
     const handleQtyLimitChange = (qty) => {
         setForm({
             ...form,
-            application_limit: form.application_limit.map((limit) => (limit.name === "limit_qty" ? { ...limit, value: qty } : limit)),
+            application_limit: form.application_limit.map((limit) => (limit.type === "limit_qty" ? { ...limit, value: qty } : limit)),
         });
     };
 
     const getQtyLimitValue = () => {
-        const limitQty = form.application_limit.find((limit) => limit.name === "limit_qty");
+        const limitQty = form.application_limit.find((limit) => limit.type === "limit_qty");
 
         return limitQty ? limitQty.value : 0;
     };
@@ -62,16 +60,3 @@ const useCouponsForm = (initialValues = {}) => {
 };
 
 export default useCouponsForm;
-
-// Target name:  minimum_requirement|type
-// useCouponsForm.jsx:16 Target value:  amount
-// useCouponsForm.jsx:18 Target name splitted:  (2) ["minimum_requirement", "type"]
-
-// setForm({
-//     ...form,
-//     minimum_requirement: {
-//         ...form["minimum_requirement"],
-//         type: target.value,
-
-//     },
-// });

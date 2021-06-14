@@ -8,6 +8,7 @@ import useStyles from "./styles";
 const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }) => {
     const classes = useStyles();
     const [selection, setSelection] = useState(Array(items.length).fill(false));
+
     return (
         <>
             {items.map((item, index) => (

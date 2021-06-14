@@ -12,12 +12,15 @@ import SimpleSelect from "../../atoms/simpleSelect/SimpleSelect";
 import RadioButtons from "../../atoms/radioButtons/radioButtons";
 import DatePicker from "../../atoms/datepicker/datepicker";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
-import ComplexModal from "../../molecules/complexModal/complexModal";
+import CustomCheckbox from "../../atoms/checkbox/checkbox";
 
 import { useStyles } from "./styles";
 import useCouponsForm from "./useCouponsForm";
 import { useRouter } from "next/router";
 import SimpleTileList from "../../molecules/simpleTileList/simpleTileList";
+import { createCoupon } from "../../../helpers/serverRequests/coupon";
+import AddProductsModal from "./addProductsModal";
+import { useSnackbar } from "notistack";
 
 const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
     <>
@@ -65,7 +68,7 @@ const buildLimitApplicationHowManyTimeComponent = ({ value = 0, handleChange = (
     </Grid>
 );
 
-const buildLimitApplicationMoreOfAFeeComponent = () => (
+const buildLimitApplicationMoreOfAFeeComponent = ({ value, handleChange }) => (
     <Grid container direction="column" spacing={1}>
         <Grid item xs={12}>
             <Typography>Se aplicará el cupón aplicará por los siguientes</Typography>
@@ -73,7 +76,10 @@ const buildLimitApplicationMoreOfAFeeComponent = () => (
         <Grid item xs={12} md={4}>
             <Input
                 label="Cantidad"
-                name="minimumBuy"
+                name="coupons_by_subscription|value"
+                type="number"
+                value={value}
+                handleChange={handleChange}
                 customProps={{
                     InputProps: {
                         endAdornment: <InputAdornment position="end">Cargos</InputAdornment>,
@@ -86,7 +92,7 @@ const buildLimitApplicationMoreOfAFeeComponent = () => (
 
 const CouponsForm = ({ lang, ...props }) => {
     const frominitialState = {
-        discountCode: "",
+        couponCode: "",
         discount_type: {
             type: "fix",
             value: "",
@@ -101,8 +107,8 @@ const CouponsForm = ({ lang, ...props }) => {
         },
         application_limit: [], // [{ "type": "limit_qty | limit_one_customer | first_order",  "value": "double|null" }]
         coupons_by_subscription: {
-            type: "only_fee", // "only_fee|more_one_fee|all_fee",
-            value: "", //"double|null"
+            type: "only_fee",
+            value: 0,
         },
         date_rage: {
             start: "date",
@@ -115,9 +121,12 @@ const CouponsForm = ({ lang, ...props }) => {
         useCouponsForm(frominitialState);
 
     const { locale } = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
 
     const classes = useStyles();
     const [showExpireDate, setShowExpireDate] = useState(false);
+    const [isAddProductModalOpen, setisAddProductModalOpen] = useState(false);
+    const [selectedPlans, setselectedPlans] = useState([]);
 
     const minimumRequirement = useMemo(
         () => [
@@ -143,69 +152,69 @@ const CouponsForm = ({ lang, ...props }) => {
         },
     ]);
 
-    const applyToProducts = [
-        {
-            label: "Plan Vegetariano",
-            value: "Principal",
-        },
-        {
-            label: "Plan Ahorro",
-            value: "Principal",
-        },
-        {
-            label: "Plan Desayuno",
-            value: "Adicional",
-        },
-    ];
-    const applyToSpecificProducts = [applyToProducts[0], applyToProducts[2]];
-
     const limitOfApplication = [
         {
             label: "Limitar la cantidad de veces que se puede aplicar este cupón",
-            name: "limit_qty",
+            type: defaultFillItems.application_limit[0],
             value: 0,
             children: buildLimitApplicationHowManyTimeComponent({ value: getQtyLimitValue(), handleChange: handleQtyLimitChange }),
         },
         {
             label: "Limitar a un solo uso por cliente",
-            name: "limit_one_customer",
+            type: defaultFillItems.application_limit[1],
             value: null,
         },
         {
             label: "Limitar solo para primeros pedidos",
-            name: "first_order",
+            type: defaultFillItems.application_limit[2],
             value: null,
         },
     ];
+
     const howManyTimeCouponCanBeApplied = [
         {
             label: "Solo un cargo",
-            value: "Solo un cargo",
+            value: defaultFillItems.coupons_by_subscription[0],
+            // value: null,
             subtitle: "El código de descuento se aplicará a un cargo por cliente antes de caducar.",
         },
         {
             label: "Más de un cargo",
-            value: "Más de un cargo",
+            value: defaultFillItems.coupons_by_subscription[1],
+            // value: 2,
             subtitle: "El código de descuento se aplicará a una cantidad determinada de cargos por cliente antes de que expire.",
-            children: buildLimitApplicationMoreOfAFeeComponent(),
+            children: buildLimitApplicationMoreOfAFeeComponent({ value: form.coupons_by_subscription.value, handleChange: handleOnChange }),
         },
         {
             label: "Todos los cargos",
-            value: "Todos los cargos",
+            value: defaultFillItems.coupons_by_subscription[2],
+            // value: null,
             subtitle: "El código de descuento seguirá aplicándose a todos los cargos futuros del cliente.",
         },
     ];
 
-    console.log("A ver ese FORMMOMO: ", form);
-
     const _handleGoBack = () => {};
 
     const _handleChangeLanguage = () => {};
-    const _handleClickCreateButton = () => {
-        // TODO: Put here all code for get form values.
-        // const discountCode = formRef.current.discountCode.value;
 
-        console.log("A ver ese form con la data: ", form);
+    const _handleClickCreateButton = async () => {
+        const body = {
+            ...form,
+            application_limit: form.application_limit.map((limit) => (!!limit.children ? { ...limit, children: "" } : limit)), // Gives circular reference error if any has a children property (a dom element)
+        };
+        const res = await createCoupon(body);
+
+        if (res.status === 200) {
+            enqueueSnackbar("El cupón fue creado correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+    };
+
+    const handleSelectedProductsChange = (newItems) => {
+        setselectedPlans(newItems);
+        handleOnChange({ target: { name: "apply_to|value", value: newItems } });
+        setisAddProductModalOpen(false);
     };
 
     return (
@@ -221,13 +230,8 @@ const CouponsForm = ({ lang, ...props }) => {
                     {/* DISCOUNT CODE */}
 
                     <Grid item>
-                        <CardContainerWithTitle fullWidth={true} title={lang[locale].discountCode}>
-                            <Input
-                                label={lang[locale].discountCode}
-                                name="discountCode"
-                                value={form.discountCode}
-                                handleChange={handleOnChange}
-                            />
+                        <CardContainerWithTitle fullWidth={true} title={lang[locale].couponCode}>
+                            <Input label="Código del cupón" name="couponCode" value={form.couponCode} handleChange={handleOnChange} />
                         </CardContainerWithTitle>
                     </Grid>
 
@@ -319,24 +323,13 @@ const CouponsForm = ({ lang, ...props }) => {
                                     />
                                     {form.apply_to.type === defaultFillItems.apply_to[1] && (
                                         <SimpleTileList
-                                            listItemsSelected={form.apply_to.value}
-                                            list={applyToProducts}
-                                            handleChangeList={(item) => {
-                                                handleOnChange({
-                                                    target: {
-                                                        name: "apply_to|value",
-                                                        value: [...form.apply_to.value, item],
-                                                    },
-                                                });
-                                            }}
-                                            handleRemoveItem={(item) => {
-                                                handleOnChange({
-                                                    target: {
-                                                        name: "apply_to|value",
-                                                        value: form.apply_to.value.filter((_item) => _item.label !== item.label),
-                                                    },
-                                                });
-                                            }}
+                                            handleButtonClick={() => setisAddProductModalOpen(true)}
+                                            listItemsSelected={selectedPlans}
+                                            list={selectedPlans}
+                                            handleChangeList={handleSelectedProductsChange}
+                                            handleRemoveItem={(item) =>
+                                                setselectedPlans(selectedPlans.filter((plan) => plan.id !== item.id))
+                                            }
                                         />
                                     )}
                                 </Grid>
@@ -356,7 +349,13 @@ const CouponsForm = ({ lang, ...props }) => {
                                     <Typography>¿Cuántas veces se aplicará el cupón en la suscripción del cliente?</Typography>
                                 </Grid>
                                 <Grid item xs>
-                                    <RadioButtons name="applyTo" useBold={true} items={howManyTimeCouponCanBeApplied} />
+                                    <RadioButtons
+                                        name="coupons_by_subscription|type"
+                                        items={howManyTimeCouponCanBeApplied}
+                                        value={form.coupons_by_subscription.type}
+                                        handleOnChange={handleOnChange}
+                                        useBold={true}
+                                    />
                                 </Grid>
                             </Grid>
                         </CardContainerWithTitle>
@@ -368,7 +367,10 @@ const CouponsForm = ({ lang, ...props }) => {
                         <CardContainerWithTitle fullWidth title="Rango de fechas">
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
-                                    <DatePicker label="Fecha de inicio"></DatePicker>
+                                    <DatePicker
+                                        label="Fecha de inicio"
+                                        handleDateChange={(date) => handleOnChange({ target: { name: "date_rage|start", value: date } })}
+                                    ></DatePicker>
                                 </Grid>
                                 <Grid item xs>
                                     <FormControlLabel
@@ -379,7 +381,12 @@ const CouponsForm = ({ lang, ...props }) => {
                                 </Grid>
                                 {showExpireDate && (
                                     <Grid item xs>
-                                        <DatePicker label="Fecha de expiración"></DatePicker>
+                                        <DatePicker
+                                            label="Fecha de expiración"
+                                            handleDateChange={(date) =>
+                                                handleOnChange({ target: { name: "date_rage|expire", value: date } })
+                                            }
+                                        ></DatePicker>
                                     </Grid>
                                 )}
                             </Grid>
@@ -397,6 +404,20 @@ const CouponsForm = ({ lang, ...props }) => {
                     </Grid>
                 </Grid>
             </form>
+
+            {isAddProductModalOpen && (
+                <AddProductsModal
+                    cancelButtonText="VOLVER"
+                    confirmButtonText="AGREGAR PRODUCTOS"
+                    handleCancelButton={() => setisAddProductModalOpen(false)}
+                    handleClose={() => setisAddProductModalOpen(false)}
+                    handleConfirmButton={handleSelectedProductsChange}
+                    selectedPlans={selectedPlans}
+                    plans={props.plans}
+                    open={isAddProductModalOpen}
+                    title="Agregar productos"
+                />
+            )}
         </Grid>
     );
 };
