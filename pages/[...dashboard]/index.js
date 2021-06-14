@@ -102,7 +102,7 @@ const Index = ({ token, ...props }) => {
             case "planes/modificar":
                 return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
 
-            case "cupones":
+            case "cupones/crear":
                 return <CouponsForm lang={props.langs.couponsForm} plans={props.plans} />;
 
             case "gestion-de-envios":
