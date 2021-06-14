@@ -30,3 +30,16 @@ export const getCouponList = async () => {
         return error.response;
     }
 };
+
+export const deleteCoupon = async (couponId) => {
+    try {
+        const res = await Axios({
+            method: "DELETE",
+            url: `${apiUrl}/${couponId}`
+        })
+
+        return res
+    } catch (error) {
+        return error.response
+    }
+}
