@@ -1,6 +1,6 @@
 // Utils & config
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 
@@ -13,19 +13,14 @@ import Chip from "@material-ui/core/Chip";
 import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
 import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
-// import PlansGrid from "./plansGrid";
-import SimpleModal from "../../molecules/simpleModal/simpleModal";
+import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
 
-const CouponsDashboard = props => {
-    
+const CouponsDashboard = (props) => {
     const router = useRouter();
     const [coupons, setcoupons] = useState([...props.coupons] || []);
     const [filtersBy, setfiltersBy] = useState([]);
     const [searchValue, setsearchValue] = useState("");
-    const [selectedCoupon, setselectedCoupon] = useState({});
-    const [isToggleStateModalOpen, setisToggleStateModalOpen] = useState(false);
-    const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleApplyFilters = (filters = []) => {
@@ -36,55 +31,8 @@ const CouponsDashboard = props => {
         setfiltersBy(filtersBy.filter((itemFilter) => itemFilter.id !== itemFilterToRemove.id));
     };
 
-    // const handleToggleState = async () => {
-    //     const res = await togglePlanState(selectedCoupon.id);
-
-    //     if (res.status === 200) {
-    //         setcoupons(coupons.map((coupon) => (coupon.id === selectedCoupon.id ? { ...selectedCoupon, isActive: !selectedCoupon.isActive } : coupon)));
-    //         setselectedCoupon({});
-    //         setisToggleStateModalOpen(false);
-    //         enqueueSnackbar("Se ha cambiado el estado correctamente", {
-    //             variant: "success",
-    //         });
-    //     } else {
-    //         enqueueSnackbar("Error al cambiar el estado", {
-    //             variant: "error",
-    //         });
-    //     }
-    // };
-
-    const handleDelete = async () => {
-        const res = await deleteCoupon(selectedCoupon.id);
-
-        if (res.status === 200) {
-            setcoupons(coupons.filter((coupon) => coupon.id !== selectedCoupon.id));
-            setselectedCoupon({});
-            setisDeleteModalOpen(false);
-            enqueueSnackbar("Se ha eliminado el cupón correctamente", {
-                variant: "success",
-            });
-        } else {
-            enqueueSnackbar("Error al eliminar el cupón", {
-                variant: "error",
-            });
-        }
-    };
-
-    const handleOpenToggleStateModal = (coupon) => {
-        setselectedCoupon(coupon);
-        setisToggleStateModalOpen(true);
-    };
-
-    const handleOpenDeleteModal = (coupon) => {
-        setselectedCoupon(coupon);
-        setisDeleteModalOpen(true);
-    };
-
     const filterCouponsBySearchValue = () => {
-        return coupons.filter(
-            (coupon) =>
-            coupon.couponCode.toUpperCase().indexOf(searchValue.toUpperCase()) > -1
-        );
+        return coupons.filter((coupon) => coupon.code.toUpperCase().indexOf(searchValue.toUpperCase()) > -1);
     };
 
     const filteredCoupons =
@@ -94,16 +42,92 @@ const CouponsDashboard = props => {
               )
             : filterCouponsBySearchValue();
 
-    
     return (
-        <div>
-            
-        </div>
-    )
-}
+        <>
+            <CreateDashboardTitle
+                createButtonText="CREAR CUPÓN"
+                dashboardTitle="Cupones"
+                handleCreateButton={() => router.push("/cupones/crear")}
+            />
 
-CouponsDashboard.propTypes = {
+            <Grid item xs={12}>
+                <Box display="flex" alignItems="center" marginY={2}>
+                    <Box marginRight={2}>
+                        <FilterByDropdown
+                            lang="Filtrar"
+                            options={filterOptions}
+                            optionsSelected={filtersBy}
+                            handlerOnConfirm={handleApplyFilters}
+                        />
+                    </Box>
+                    <SearchInputFIeld handlerOnChange={setsearchValue} placeholder="Buscar por código de cupón..." />
+                </Box>
+            </Grid>
 
-}
+            {filtersBy.length > 0 && (
+                <Grid item xs={12}>
+                    <Box display="flex" alignItems="center">
+                        {filtersBy.map((itemFilter, index) => (
+                            <Chip
+                                key={index}
+                                label={itemFilter.label}
+                                onDelete={() => handleRemoveFilter(itemFilter)}
+                                color="primary"
+                                style={{ marginRight: 8 }}
+                            />
+                        ))}
+                    </Box>
+                </Grid>
+            )}
 
-export default CouponsDashboard
+            {filteredCoupons.length > 0 ? (
+                <CuoponsTable coupons={filteredCoupons} />
+            ) : (
+                <EmptyImage
+                    label={
+                        filtersBy.length > 0 || !!searchValue
+                            ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
+                            : "Aún no se crearon cupones"
+                    }
+                />
+            )}
+        </>
+    );
+};
+
+CouponsDashboard.propTypes = {};
+
+export default CouponsDashboard;
+
+const filterOptions = [
+    {
+        columnLabel: "Estado",
+        items: [
+            {
+                id: "Activo",
+                label: "Activo",
+                code: true,
+            },
+            {
+                id: "Desactivo",
+                label: "Desactivo",
+                code: false,
+            },
+        ],
+    },
+    {
+        columnLabel: "Tipo de plan",
+        items: [
+            {
+                id: "Principal",
+                label: "Principal",
+                code: "Principal",
+            },
+            {
+                id: "Adicional",
+                label: "Adicional",
+                code: "Adicional",
+            },
+        ],
+    },
+];

@@ -31,15 +31,29 @@ export const getCouponList = async () => {
     }
 };
 
+export const getCouponById = async (couponId) => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/${couponId}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};
+
 export const deleteCoupon = async (couponId) => {
     try {
         const res = await Axios({
             method: "DELETE",
-            url: `${apiUrl}/${couponId}`
-        })
+            url: `${apiUrl}/${couponId}`,
+        });
 
-        return res
+        return res;
     } catch (error) {
-        return error.response
+        return error.response;
     }
-}
+};

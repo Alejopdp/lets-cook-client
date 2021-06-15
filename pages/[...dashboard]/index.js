@@ -5,7 +5,8 @@ import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGette
 import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
 import { verifyToken } from "../../helpers/serverRequests/user";
-import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import authToken from "../../helpers/serverRequests/authToken";
+import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
@@ -25,10 +26,9 @@ import CouponsForm from "../../components/organisms/coupons/couponsForm";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
-import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import axios from "axios";
-import authToken from "../../helpers/serverRequests/authToken";
+import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import CouponsDashboard from "../../components/organisms/couponsDashboard";
+import CouponDetail from "../../components/organisms/couponDetail";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -101,6 +101,12 @@ const Index = ({ token, ...props }) => {
 
             case "planes/modificar":
                 return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
+
+            case "cupon":
+                return <CouponDetail coupon={props.coupon} />;
+
+            case "cupones":
+                return <CouponsDashboard coupons={props.coupons} />;
 
             case "cupones/crear":
                 return <CouponsForm lang={props.langs.couponsForm} plans={props.plans} />;
