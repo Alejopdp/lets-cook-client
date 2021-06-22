@@ -1,21 +1,28 @@
 // Utils & config
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
+import axios from "axios";
+
+// Internal Hooks & Helpers
+import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
+import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
+import authToken from "../../helpers/serverRequests/authToken";
 import { verifyToken } from "../../helpers/serverRequests/user";
-import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 
 // External components
-import { Box, makeStyles, Typography } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 
 // Internal components
+import useStyles from "./styles";
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import RecipesDashboard from "../../components/organisms/recipesDashboard/";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
+import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
@@ -25,30 +32,7 @@ import CouponsForm from "../../components/organisms/coupons/couponsForm";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
-import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import axios from "axios";
-import authToken from "../../helpers/serverRequests/authToken";
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        paddingTop: theme.spacing(10),
-        paddingRight: theme.spacing(8),
-        paddingLeft: theme.spacing(8),
-    },
-    backBtn: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        position: "",
-        paddingLeft: theme.spacing(35),
-        paddingTop: theme.spacing(10),
-        "@media (max-width: 780px)": {
-            border: "1px solid red",
-            paddingLeft: theme.spacing(0),
-        },
-    },
-}));
+import ClientsDashboard from "../../components/organisms/clientsDashboard/clientsDashboard";
 
 const Index = ({ token, ...props }) => {
     const route = useRouter();
@@ -63,7 +47,7 @@ const Index = ({ token, ...props }) => {
     }, [route.asPath]);
 
     const getSectionComponent = (path) => {
-        /* TODO: IMPORTANT!!! 
+        /* TODO: IMPORTANT!!!
             optimize the cases for return componet dynamically
         **/
         if (!!props.error) {
@@ -114,6 +98,9 @@ const Index = ({ token, ...props }) => {
             // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
             case "gestion-de-envios/modificar":
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
+
+            case "gestion-de-clientes":
+                return <ClientsDashboard />
 
             default:
                 return (
