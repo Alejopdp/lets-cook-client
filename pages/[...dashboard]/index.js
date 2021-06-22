@@ -102,6 +102,9 @@ const Index = ({ token, ...props }) => {
             case "gestion-de-clientes":
                 return <ClientsDashboard />
 
+            case "gestion-de-clientes/crear":
+                return <h1>crear cliente</h1>
+
             default:
                 return (
                     <Box width="100%" height="100vh" className={classes.root}>
