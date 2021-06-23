@@ -15,6 +15,7 @@ import ClientSubscriptionsTable from "./clientSubscriptionsTable";
 import ClientCalendarTable from "./clientCalendarTable";
 import ClientPurchaseHistoryTable from "./clientPurchaseHistoryTable";
 import ClientInfo from "./clientInfo/clientInfo";
+import ClientEvents from "./clientEvents";
 
 const client = {
     name: "Damián Sánchez"
@@ -68,11 +69,11 @@ const ClientProfile = () => {
             break;
 
         case breadcrumb === "events":
-            currentClientInfo = <h1>Eventos</h1>
+            currentClientInfo = <ClientEvents />
             break;
 
         default:
-            currentClientInfo = <h1>suscripciones</h1>
+            currentClientInfo = <ClientSubscriptionsTable />
     }
 
     return (
