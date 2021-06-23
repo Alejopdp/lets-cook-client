@@ -33,6 +33,7 @@ import CreateShippingZone from "../../components/organisms/createShippingZone/cr
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
 import ClientsDashboard from "../../components/organisms/clientsDashboard/clientsDashboard";
 import CreateClient from "../../components/organisms/createClient/createClient";
+import ClientProfile from "../../components/organisms/clientProfile/clientProfile";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -120,6 +121,9 @@ const Index = ({ token, ...props }) => {
 
             case "gestion-de-clientes":
                 return <ClientsDashboard />
+
+            case "gestion-de-clientes/modificar":
+                return <ClientProfile />
 
             case "gestion-de-clientes/crear":
                 return <CreateClient />
