@@ -16,7 +16,6 @@ import { Typography } from "@material-ui/core";
 
 // Icons & Images
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -32,37 +31,34 @@ const useStyles = makeStyles((theme) => ({
     idCell: {
         paddingLeft: theme.spacing(6),
     },
-    addRow: {
-        display: "flex",
-        alignItems: "center",
-        paddingLeft: theme.spacing(5),
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
-        cursor: "pointer"
-    }
 }));
 
-const subscriptions = [
+const orders = [
     {
-        subscriptionId: 123,
+        date: "09/08/2021",
+        orderId: "534",
         plan: "Plan Familiar",
-        variant: "4 personas / 2 recetas",
-        price: 50,
-        frequency: "Semanal",
-        status: "Activo"
+        variation: "2 personas / 2 recetas",
+        price: 30,
     },
     {
-        subscriptionId: 321,
-        plan: "Plan Vegano",
-        variant: "2 personas / 2 recetas",
+        date: "09/08/2021",
+        orderId: "534",
+        plan: "Plan Familiar",
+        variation: "2 personas / 2 recetas",
         price: 30,
-        frequency: "Por única vez",
-        status: "Activo"
+    },
+    {
+        date: "09/08/2021",
+        orderId: "534",
+        plan: "Plan Familiar",
+        variation: "2 personas / 2 recetas",
+        price: 30,
     },
 ]
 
-const ClientSubscriptionsTable = (props) => {
-    const { tableContainer, table, cells, idCell, addRow } = useStyles();
+const ClientCalendarTable = (props) => {
+    const { tableContainer, table, cells, idCell } = useStyles();
 
     return (
         <TableContainer component={Paper} className={tableContainer}>
@@ -70,7 +66,11 @@ const ClientSubscriptionsTable = (props) => {
                 <TableHead>
                     <TableRow>
                         <TableCell className={idCell}>
-                            <Typography variant="subtitle1">Subscription ID</Typography>
+                            <Typography variant="subtitle1">Fecha</Typography>
+                        </TableCell>
+
+                        <TableCell className={cells}>
+                            <Typography variant="subtitle1">Order ID</Typography>
                         </TableCell>
 
                         <TableCell className={cells}>
@@ -78,68 +78,57 @@ const ClientSubscriptionsTable = (props) => {
                         </TableCell>
 
                         <TableCell className={cells}>
-                            <Typography variant="subtitle1">Variante</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Precio</Typography>
+                            <Typography variant="subtitle1">Variación</Typography>
                         </TableCell>
 
                         <TableCell>
-                            <Typography variant="subtitle1">Frecuencia</Typography>
+                            <Typography variant="subtitle1">Monto</Typography>
                         </TableCell>
 
-                        <TableCell>
-                            <Typography variant="subtitle1">Estado</Typography>
-                        </TableCell>
-
+                        <TableCell />
                         <TableCell />
                     </TableRow>
                 </TableHead>
 
                 <TableBody>
-                    {subscriptions.map((subscription, index) => (
+                    {orders.map((order, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
-                                <Typography variant="body1">#{subscription.subscriptionId}</Typography>
+                                <Typography variant="body1">{order.date}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{subscription.plan}</Typography>
+                                <Typography variant="body1">{order.orderId}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{subscription.variant}</Typography>
+                                <Typography variant="body1">{order.plan}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">€{subscription.price}</Typography>
+                                <Typography variant="body1">{order.variation}</Typography>
                             </TableCell>
                             <TableCell >
-                                <Typography variant="body1">{subscription.frequency}</Typography>
+                                <Typography variant="body1">€{order.price}</Typography>
                             </TableCell>
-                            <TableCell >
-                                <Typography variant="body1">{subscription.status}</Typography>
+
+                            <TableCell
+                                style={{ textTransform: "uppercase", cursor: "pointer" }}
+                                onClick={() => alert("Saltar semana")}
+                            >
+                                <Typography variant="subtitle1" color="primary">
+                                    Saltar semana
+                                </Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <IconButton onClick={() => alert("Redirigir a 'Detalle de suscripción'")}>
+                                <IconButton onClick={() => alert("Redirigir a 'Detalle de la orden'")}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </TableCell>
                         </TableRow>
                     ))}
-
-                    <TableRow className={addRow} onClick={() => alert("Agregar plan")}>
-                            <AddCircleIcon color="primary" />
-                            <Typography
-                                variant="subtitle1"
-                                color="primary"
-                                style={{ marginLeft: "8px", textTransform: "uppercase"}}
-                            >
-                                Agregar Plan
-                            </Typography>
-                    </TableRow>
                 </TableBody>
             </Table>
         </TableContainer>
     );
 };
 
-export default ClientSubscriptionsTable;
+export default ClientCalendarTable;
