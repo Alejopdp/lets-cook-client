@@ -13,10 +13,9 @@ import { verifyToken } from "../../helpers/serverRequests/user";
 import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 
 // External components
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, makeStyles } from "@material-ui/core";
 
 // Internal components
-import useStyles from "./styles";
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
 import RecipesDashboard from "../../components/organisms/recipesDashboard/";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
@@ -33,6 +32,27 @@ import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
 import ClientsDashboard from "../../components/organisms/clientsDashboard/clientsDashboard";
+import CreateClient from "../../components/organisms/createClient/createClient";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        paddingTop: theme.spacing(10),
+        paddingRight: theme.spacing(8),
+        paddingLeft: theme.spacing(8),
+    },
+    backBtn: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        position: "",
+        paddingLeft: theme.spacing(35),
+        paddingTop: theme.spacing(10),
+        "@media (max-width: 780px)": {
+            border: "1px solid red",
+            paddingLeft: theme.spacing(0),
+        },
+    },
+}));
 
 const Index = ({ token, ...props }) => {
     const route = useRouter();
@@ -95,7 +115,6 @@ const Index = ({ token, ...props }) => {
             case "gestion-de-envios/crear":
                 return <CreateShippingZone />;
 
-            // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
             case "gestion-de-envios/modificar":
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
 
@@ -103,7 +122,7 @@ const Index = ({ token, ...props }) => {
                 return <ClientsDashboard />
 
             case "gestion-de-clientes/crear":
-                return <h1>crear cliente</h1>
+                return <CreateClient />
 
             default:
                 return (
