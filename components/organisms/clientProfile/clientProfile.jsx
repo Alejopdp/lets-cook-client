@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 
 // Internal components
 import DashboardWithBackTitle from "../../layout/dashboardTitleWithBackButton";
+import ClientSubscriptionsTable from "./clientSubscriptionsTable";
 
 const client = {
     name: "Damián Sánchez"
@@ -48,7 +49,7 @@ const ClientProfile = () => {
 
     switch (true) {
         case breadcrumb === "subscriptions":
-            currentClientInfo = <h1>suscripciones</h1>
+            currentClientInfo = <ClientSubscriptionsTable />
             break;
 
         case breadcrumb === "calendar":
