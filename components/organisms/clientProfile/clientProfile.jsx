@@ -14,6 +14,7 @@ import DashboardWithBackTitle from "../../layout/dashboardTitleWithBackButton";
 import ClientSubscriptionsTable from "./clientSubscriptionsTable";
 import ClientCalendarTable from "./clientCalendarTable";
 import ClientPurchaseHistoryTable from "./clientPurchaseHistoryTable";
+import ClientInfo from "./clientInfo/clientInfo";
 
 const client = {
     name: "Damián Sánchez"
@@ -63,7 +64,7 @@ const ClientProfile = () => {
             break;
 
         case breadcrumb === "info":
-            currentClientInfo = <h1>Información del cliente</h1>
+            currentClientInfo = <ClientInfo />
             break;
 
         case breadcrumb === "events":
@@ -75,7 +76,7 @@ const ClientProfile = () => {
     }
 
     return (
-        <Container size="lg">
+        <Container size="md">
             <DashboardWithBackTitle title={`Perfil de ${client.name}`} />
 
             <Box className={container}>
