@@ -12,12 +12,13 @@ import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboard
 import SeacrhInputField from "../../molecules/searchInputField/searchInputField";
 import ClientsTable from "./clientsTable/clientsTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
+import EmptyImage from "../../molecules/emptyImage/emptyImage";
 
 const ClientsDashboard = (props) => {
     const clientela = [
         {
             id: "1",
-            fullName: "Santiago Castiella",
+            fullName: "Alejo Scotti",
             email: "santiago@letscooknow.es",
             phone: "+34 686 281 378",
             activeSubscriptions: 1,
@@ -61,6 +62,7 @@ const ClientsDashboard = (props) => {
 
     const router = useRouter();
 
+    const [searchValue, setSearchValue] = useState("");
     const [clients, setClients] = useState([...clientela] || []);
     const [selectedClient, setSelectedClient] = useState({});
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -93,6 +95,10 @@ const ClientsDashboard = (props) => {
         setIsDeleteModalOpen(true)
     }
 
+    const filteredClients = clients.filter((client) => {
+        return client.fullName.toLowerCase().includes(searchValue.toLowerCase())
+    });
+
     return (
         <>
         <Container size="md">
@@ -103,9 +109,12 @@ const ClientsDashboard = (props) => {
                 handleClick={handleCreateClient}
             />
 
-            <SeacrhInputField placeholder="Buscar por nombre..." />
+            <SeacrhInputField handlerOnChange={setSearchValue} placeholder="Buscar por nombre..." />
 
-            <ClientsTable clients={clients} handleDeleteClient={handleOpenDeleteModal} />
+            {filteredClients == 0
+                ? <EmptyImage label="No se han encontrado usuarios que coincidan con los términos de búsqueda" />
+                : <ClientsTable clients={filteredClients} handleDeleteClient={handleOpenDeleteModal} />
+            }
         </Container>
 
         {isDeleteModalOpen && (
