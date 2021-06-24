@@ -29,24 +29,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const events = [
-    {
-        date: "09/08/2021 15:30 hs.",
-        performedBy: "Usuario",
-        event: "Se ha realizado un cambio de plan a Plan Ahorro"
-    },
-    {
-        date: "09/08/2021 15:30 hs.",
-        performedBy: "Usuario",
-        event: "Se ha realizado un cambio en la dirección de entrega"
-    },
-    {
-        date: "09/08/2021 15:30 hs.",
-        performedBy: "Administrador",
-        event: "Se ha realizado un cambio de plan a Plan Ahorro"
-    },
-]
-
 const ClientEvents = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
@@ -70,7 +52,7 @@ const ClientEvents = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {events.map((event, index) => (
+                    {props.events.map((event, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">{event.date}</Typography>

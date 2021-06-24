@@ -33,30 +33,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const orders = [
-    {
-        date: "09/08/2021",
-        orderId: "534",
-        plan: "Plan Familiar",
-        variation: "2 personas / 2 recetas",
-        price: 30,
-    },
-    {
-        date: "09/08/2021",
-        orderId: "534",
-        plan: "Plan Familiar",
-        variation: "2 personas / 2 recetas",
-        price: 30,
-    },
-    {
-        date: "09/08/2021",
-        orderId: "534",
-        plan: "Plan Familiar",
-        variation: "2 personas / 2 recetas",
-        price: 30,
-    },
-]
-
 const ClientCalendarTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
@@ -91,7 +67,7 @@ const ClientCalendarTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {orders.map((order, index) => (
+                    {props.orders.map((order, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">{order.date}</Typography>

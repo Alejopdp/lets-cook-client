@@ -12,13 +12,13 @@ const DeliveryAddress = (props) => {
     return (
         <PaperWithTitleContainer title="Dirección de entrega" height={"418px"}>
             <Typography variant="subtitle2">Dirección</Typography>
-            <Typography variant="body1" paragraph>{props.client.deliveryAddress}</Typography>
+            <Typography variant="body1" paragraph>{props.client.address}</Typography>
 
             <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
-            <Typography variant="body1" paragraph>{props.deliveryClarifications || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{props.client.clarifications || "Sin indicar"}</Typography>
 
             <Typography variant="subtitle2">Horario de preferencia</Typography>
-            <Typography variant="body1" paragraph>{props.client.deliveryPreferredSchedule || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{props.client.preferredSchedule || "Sin indicar"}</Typography>
 
             <Typography
                 variant="subtitle2"

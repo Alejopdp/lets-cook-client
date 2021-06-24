@@ -42,25 +42,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const subscriptions = [
-    {
-        subscriptionId: 123,
-        plan: "Plan Familiar",
-        variant: "4 personas / 2 recetas",
-        price: 50,
-        frequency: "Semanal",
-        status: "Activo"
-    },
-    {
-        subscriptionId: 321,
-        plan: "Plan Vegano",
-        variant: "2 personas / 2 recetas",
-        price: 30,
-        frequency: "Por única vez",
-        status: "Activo"
-    },
-]
-
 const ClientSubscriptionsTable = (props) => {
     const { tableContainer, table, cells, idCell, addRow } = useStyles();
 
@@ -98,7 +79,7 @@ const ClientSubscriptionsTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {subscriptions.map((subscription, index) => (
+                    {props.subscriptions.map((subscription, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">#{subscription.subscriptionId}</Typography>

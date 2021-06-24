@@ -33,30 +33,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const purchaseLogs = [
-    {
-        date: "09/08/2021",
-        paymentOrderId: "534",
-        ordersQty: 2,
-        price: 30,
-        status: "Pago exitoso"
-    },
-    {
-        date: "09/08/2021",
-        paymentOrderId: "534",
-        ordersQty: 2,
-        price: 30,
-        status: "Pago fallido"
-    },
-    {
-        date: "09/08/2021",
-        paymentOrderId: "534",
-        ordersQty: 2,
-        price: 30,
-        status: "Pago exitoso"
-    },
-]
-
 const ClientPurchaseHistoryTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
@@ -91,7 +67,7 @@ const ClientPurchaseHistoryTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {purchaseLogs.map((log, index) => (
+                    {props.purchaseLogs.map((log, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">{log.date}</Typography>
