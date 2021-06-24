@@ -10,7 +10,7 @@ import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/
 
 const BillingData = (props) => {
     return (
-        <PaperWithTitleContainer title="Datos de facturación" height={"418px"}>
+        <PaperWithTitleContainer title="Datos de facturación" height={"418px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.client.address}</Typography>
 
@@ -26,7 +26,7 @@ const BillingData = (props) => {
             <Typography
                 variant="subtitle2"
                 color="primary"
-                style={{ textTransform: "uppercase", cursor: "pointer"}}
+                style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto"}}
                 onClick={() => alert("Modificar datos de facturación")}
             >
                 Modificar datos de facturación {" >"}

@@ -4,6 +4,13 @@ export const useStyles = makeStyles((theme) => ({
     container: {
         display: "flex",
         flexDirection: "row",
+        [theme.breakpoints.down("md")]: {
+            textAlign: "center"
+        },
+        [theme.breakpoints.down("sm")]: {
+            flexDirection: "column",
+            textAlign: "center"
+        },
     },
     breadcrumbs: {
         paddingRight: theme.spacing(2),
