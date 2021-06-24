@@ -36,51 +36,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const clients = [
-    {
-        id: "1",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 1,
-    },
-    {
-        id: "2",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 2,
-    },
-    {
-        id: "3",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 3,
-    },
-    {
-        id: "1",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 1,
-    },
-    {
-        id: "2",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 2,
-    },
-    {
-        id: "3",
-        fullName: "Santiago Castiella",
-        email: "santiago@letscooknow.es",
-        phone: "+34 686 281 378",
-        activeSubscriptions: 3,
-    },
-];
-
 const ShippingTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
@@ -115,7 +70,7 @@ const ShippingTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {clients.map((client, index) => (
+                    {props.clients.map((client, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">{client.id}</Typography>
@@ -137,7 +92,7 @@ const ShippingTable = (props) => {
                                     <VisibilityIcon />
                                 </IconButton>
                                 <IconButton>
-                                    <DeleteIcon />
+                                    <DeleteIcon onClick={() => props.handleDeleteClient(client)} />
                                 </IconButton>
                             </TableCell>
                         </TableRow>

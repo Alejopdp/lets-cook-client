@@ -49,6 +49,7 @@ PaperWithTitleContainer.propTypes = {
     title: PropTypes.string.isRequired,
     width: PropTypes.number,
     fullWidth: PropTypes.bool,
+    flex: PropTypes.bool,
 };
 
 export default PaperWithTitleContainer;
