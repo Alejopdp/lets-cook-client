@@ -46,6 +46,16 @@ const customer = {
         paymentMethod: {
             creditCard: "Visa terminada en 1234",
             cardExpirationDate: "08/12",
+            savedCards: [
+                {
+                    creditCard: "Visa terminada en 4321",
+                    cardExpirationDate: "05/24"
+                },
+                {
+                    creditCard: "Savi terminada en 1237",
+                    cardExpirationDate: "05/24"
+                },
+            ]
         },
     },
     // Subscriptions table
