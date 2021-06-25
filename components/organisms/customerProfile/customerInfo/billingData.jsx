@@ -1,15 +1,38 @@
 // Utils & Config
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useSnackbar } from "notistack";
 
 // External components
 import { Typography } from "@material-ui/core";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import BillingDataModal from "./customerInfoModals/billingDataModal";
+import ComplexModal from "../../../molecules/complexModal/complexModal";
 
 const BillingData = (props) => {
+    const [isBillingDataModalOpen, setBillingDataModalOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const handleModifyBillingData = () => {
+        const res = { status: 200 };
+
+        if (res.status === 200) {
+            setBillingDataModalOpen(false);
+            enqueueSnackbar("Datos de facturación modificados", {
+                variant: "success",
+            });
+        } else {
+            enqueueSnackbar("No se han podido modificar los datos de facturación", {
+                variant: "error",
+            });
+            setDeliveryAddressModalOpen(false);
+        }
+    }
+
     return (
+        <>
         <PaperWithTitleContainer title="Datos de facturación" height={"418px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
@@ -27,12 +50,24 @@ const BillingData = (props) => {
                 variant="subtitle2"
                 color="primary"
                 style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto"}}
-                onClick={() => alert("Modificar datos de facturación")}
+                onClick={() => setBillingDataModalOpen(true)}
             >
                 Modificar datos de facturación {" >"}
             </Typography>
-
         </PaperWithTitleContainer>
+
+        {isBillingDataModalOpen &&
+            <ComplexModal
+                title="Modificar dirección de facturación"
+                component={<BillingDataModal customer={props.customer} />}
+                open={isBillingDataModalOpen}
+                cancelButtonText="Cancelar"
+                confirmButtonText="Modificar dirección de facturación"
+                handleCancelButton={() => setBillingDataModalOpen(false)}
+                handleConfirmButton={handleModifyBillingData}
+            />
+        }
+        </>
     );
 };
 
