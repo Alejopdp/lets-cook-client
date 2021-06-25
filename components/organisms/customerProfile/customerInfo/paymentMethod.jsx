@@ -12,10 +12,10 @@ const PaymentMethods = (props) => {
     return (
         <PaperWithTitleContainer title="Método de pago">
             <Typography variant="subtitle2">Tarjeta</Typography>
-            <Typography variant="body1" paragraph>{props.client.creditCard}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.creditCard}</Typography>
 
             <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
-            <Typography variant="body1" paragraph>{props.client.cardExpirationDate}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.cardExpirationDate}</Typography>
 
             <Typography
                 variant="subtitle2"

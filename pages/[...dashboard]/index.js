@@ -31,9 +31,9 @@ import CouponsForm from "../../components/organisms/coupons/couponsForm";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
-import ClientsDashboard from "../../components/organisms/clientsDashboard/clientsDashboard";
-import CreateClient from "../../components/organisms/createClient/createClient";
-import ClientProfile from "../../components/organisms/clientProfile/clientProfile";
+import CustomersDashboard from "../../components/organisms/customersDashboard/customersDashboard";
+import CreateCustomer from "../../components/organisms/createClient/createClient";
+import CustomerProfile from "../../components/organisms/customerProfile/customerProfile";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -120,13 +120,13 @@ const Index = ({ token, ...props }) => {
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
 
             case "gestion-de-clientes":
-                return <ClientsDashboard />
+                return <CustomersDashboard />
 
             case "gestion-de-clientes/modificar":
-                return <ClientProfile />
+                return <CustomerProfile />
 
             case "gestion-de-clientes/crear":
-                return <CreateClient />
+                return <CreateCustomer />
 
             default:
                 return (

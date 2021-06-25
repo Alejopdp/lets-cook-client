@@ -2,7 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { useRouter } from "next/router";
 
 // External components
 import Table from "@material-ui/core/Table";
@@ -16,7 +15,6 @@ import IconButton from "@material-ui/core/IconButton";
 import { Typography } from "@material-ui/core";
 
 // Icons & Images
-import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,13 +30,11 @@ const useStyles = makeStyles((theme) => ({
     },
     idCell: {
         paddingLeft: theme.spacing(6),
-        // paddingRight: theme.spacing(5)
-    }
+    },
 }));
 
-const ShippingTable = (props) => {
+const CustomerPurchaseHistoryTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
-    const router = useRouter();
 
     return (
         <TableContainer component={Paper} className={tableContainer}>
@@ -46,53 +42,52 @@ const ShippingTable = (props) => {
                 <TableHead>
                     <TableRow>
                         <TableCell className={idCell}>
-                            <Typography variant="subtitle1">#</Typography>
+                            <Typography variant="subtitle1">Fecha de cobro</Typography>
                         </TableCell>
 
                         <TableCell className={cells}>
-                            <Typography variant="subtitle1">Nombre completo</Typography>
+                            <Typography variant="subtitle1">Payment Order ID</Typography>
                         </TableCell>
 
                         <TableCell className={cells}>
-                            <Typography variant="subtitle1">Correo electrónico</Typography>
+                            <Typography variant="subtitle1"># Ordenes</Typography>
                         </TableCell>
 
                         <TableCell className={cells}>
-                            <Typography variant="subtitle1">Teléfono</Typography>
+                            <Typography variant="subtitle1">Monto</Typography>
                         </TableCell>
 
                         <TableCell>
-                            <Typography variant="subtitle1">Suscripciones activas</Typography>
+                            <Typography variant="subtitle1">Estado</Typography>
                         </TableCell>
 
+                        <TableCell />
                         <TableCell />
                     </TableRow>
                 </TableHead>
 
                 <TableBody>
-                    {props.clients.map((client, index) => (
+                    {props.purchaseLogs.map((log, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
-                                <Typography variant="body1">{client.id}</Typography>
+                                <Typography variant="body1">{log.date}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{client.fullName}</Typography>
+                                <Typography variant="body1">#{log.paymentOrderId}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{client.email}</Typography>
+                                <Typography variant="body1">{log.ordersQty}</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="body1">{client.phone}</Typography>
+                                <Typography variant="body1">€{log.price}</Typography>
                             </TableCell>
-                            <TableCell>
-                                <Typography variant="body1">{client.activeSubscriptions}</Typography>
+                            <TableCell >
+                                <Typography variant="body1">{log.status}</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { id: client.fullName } })}>
+                                <IconButton onClick={() => alert("Redirigir a 'Detalle de la orden de pago'")}>
                                     <VisibilityIcon />
-                                </IconButton>
-                                <IconButton>
-                                    <DeleteIcon onClick={() => props.handleDeleteClient(client)} />
                                 </IconButton>
                             </TableCell>
                         </TableRow>
@@ -103,4 +98,4 @@ const ShippingTable = (props) => {
     );
 };
 
-export default ShippingTable;
+export default CustomerPurchaseHistoryTable;

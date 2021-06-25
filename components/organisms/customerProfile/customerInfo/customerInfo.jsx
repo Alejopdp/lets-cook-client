@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 // External components
-import { Grid, Box } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 // Internal components
 import PersonalData from "./personalData";
@@ -21,24 +21,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ClientInfo = (props) => {
+const CustomerInfo = (props) => {
     const { container } = useStyles();
 
     return (
         <Box className={container}>
-            <PersonalData client={props.client} />
+            <PersonalData customer={props.customer} />
 
-            <DeliveryAddress client={props.client.deliveryAddress} />
+            <DeliveryAddress customer={props.customer.deliveryAddress} />
 
-            <BillingData client={props.client.billingData} />
+            <BillingData customer={props.customer.billingData} />
 
-            <PaymentMethods client={props.client.paymentMethod} />
+            <PaymentMethods customer={props.customer.paymentMethod} />
         </Box>
     );
 };
 
-export default ClientInfo;
+export default CustomerInfo;
 
-ClientInfo.propTypes = {
+CustomerInfo.propTypes = {
 
 };

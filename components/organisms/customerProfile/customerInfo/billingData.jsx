@@ -12,16 +12,16 @@ const BillingData = (props) => {
     return (
         <PaperWithTitleContainer title="Datos de facturación" height={"418px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
-            <Typography variant="body1" paragraph>{props.client.address}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 
             <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
-            <Typography variant="body1" paragraph>{props.client.clarifications || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.clarifications || "Sin indicar"}</Typography>
 
             <Typography variant="subtitle2">Nombre completo</Typography>
-            <Typography variant="body1" paragraph>{props.client.name}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.name}</Typography>
 
             <Typography variant="subtitle2">DNI / NIE / CIF</Typography>
-            <Typography variant="body1" paragraph>{props.client.personalIdNumber}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.personalIdNumber}</Typography>
 
             <Typography
                 variant="subtitle2"

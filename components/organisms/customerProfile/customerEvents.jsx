@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ClientEvents = (props) => {
+const CustomerEvents = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
     return (
@@ -71,4 +71,4 @@ const ClientEvents = (props) => {
     );
 };
 
-export default ClientEvents;
+export default CustomerEvents;

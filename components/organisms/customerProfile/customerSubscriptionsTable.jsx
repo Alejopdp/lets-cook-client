@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ClientSubscriptionsTable = (props) => {
+const CustomerSubscriptionsTable = (props) => {
     const { tableContainer, table, cells, idCell, addRow } = useStyles();
 
     return (
@@ -123,4 +123,4 @@ const ClientSubscriptionsTable = (props) => {
     );
 };
 
-export default ClientSubscriptionsTable;
+export default CustomerSubscriptionsTable;

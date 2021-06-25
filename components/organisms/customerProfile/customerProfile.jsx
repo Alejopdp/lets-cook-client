@@ -11,13 +11,13 @@ import Typography from "@material-ui/core/Typography";
 
 // Internal components
 import DashboardWithBackTitle from "../../layout/dashboardTitleWithBackButton";
-import ClientSubscriptionsTable from "./clientSubscriptionsTable";
-import ClientCalendarTable from "./clientCalendarTable";
-import ClientPurchaseHistoryTable from "./clientPurchaseHistoryTable";
-import ClientInfo from "./clientInfo/clientInfo";
-import ClientEvents from "./clientEvents";
+import CustomerSubscriptionsTable from "./customerSubscriptionsTable";
+import CustomerCalendarTable from "./customerCalendarTable";
+import CustomerPurchaseHistoryTable from "./customerPurchaseHistoryTable";
+import CustomerInfo from "./customerInfo/customerInfo";
+import CustomerEvents from "./customerEvents";
 
-const client = {
+const customer = {
     personalData: {
         name: "Alejo",
         lastName: "Scotti",
@@ -157,41 +157,41 @@ const crumbs = [
     }
 ]
 
-const ClientProfile = () => {
+const CustomerProfile = () => {
     const [breadcrumb, setBreadcrumb] = useState("subscriptions")
 
     const { container, breadcrumbs, active } = useStyles();
 
-    var currentClientInfo = <></>;
+    var currentCustomerInfo = <></>;
 
     switch (true) {
         case breadcrumb === "subscriptions":
-            currentClientInfo = <ClientSubscriptionsTable subscriptions={client.subscriptions} />
+            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />
             break;
 
         case breadcrumb === "calendar":
-            currentClientInfo = <ClientCalendarTable orders={client.orders} />
+            currentCustomerInfo = <CustomerCalendarTable orders={customer.orders} />
             break;
 
         case breadcrumb === "purchases":
-            currentClientInfo = <ClientPurchaseHistoryTable purchaseLogs={client.purchaseLogs} />
+            currentCustomerInfo = <CustomerPurchaseHistoryTable purchaseLogs={customer.purchaseLogs} />
             break;
 
         case breadcrumb === "info":
-            currentClientInfo = <ClientInfo client={client.personalData} />
+            currentCustomerInfo = <CustomerInfo customer={customer.personalData} />
             break;
 
         case breadcrumb === "events":
-            currentClientInfo = <ClientEvents events={client.events} />
+            currentCustomerInfo = <CustomerEvents events={customer.events} />
             break;
 
         default:
-            currentClientInfo = <ClientSubscriptionsTable subscriptions={client.subscriptions} />
+            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />
     }
 
     return (
         <Container size="md">
-            <DashboardWithBackTitle title={`Perfil de ${client.personalData.name} ${client.personalData.lastName}`} />
+            <DashboardWithBackTitle title={`Perfil de ${customer.personalData.name} ${customer.personalData.lastName}`} />
 
             <Box className={container}>
                 {crumbs.map((crumb, index) => (
@@ -206,14 +206,14 @@ const ClientProfile = () => {
                 ))}
             </Box>
 
-            {currentClientInfo}
+            {currentCustomerInfo}
 
         </Container>
     );
 };
 
-export default ClientProfile;
+export default CustomerProfile;
 
-ClientProfile.propTypes = {
+CustomerProfile.propTypes = {
 
 };

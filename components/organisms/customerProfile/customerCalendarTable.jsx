@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ClientCalendarTable = (props) => {
+const CustomerCalendarTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
     return (
@@ -107,4 +107,4 @@ const ClientCalendarTable = (props) => {
     );
 };
 
-export default ClientCalendarTable;
+export default CustomerCalendarTable;
