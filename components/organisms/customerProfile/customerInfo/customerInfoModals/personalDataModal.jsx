@@ -42,8 +42,6 @@ const PersonalDataModal = (props) => {
         });
     }
 
-    console.log(formData)
-
     return (
         <>
             <Box display="flex" flexDirection="row">

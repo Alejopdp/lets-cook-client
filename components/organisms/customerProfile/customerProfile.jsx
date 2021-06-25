@@ -30,7 +30,10 @@ const customer = {
         deliveryAddress: {
             address: "Calle Ing Fausto Elio 42, 54001, Valencia",
             clarifications: "Piso 2, Puerta 10",
-            preferredSchedule: null,
+            preferredSchedule: {
+                value: 1,
+                label: "De 8 a 12"
+            },
         },
 
         billingData: {

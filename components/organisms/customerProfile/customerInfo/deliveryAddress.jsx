@@ -1,15 +1,38 @@
 // Utils & Config
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useSnackbar } from "notistack";
 
 // External components
 import { Typography } from "@material-ui/core";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import DeliveryAddressModal from "./customerInfoModals/deliveryAddressModal";
+import ComplexModal from "../../../molecules/complexModal/complexModal";
 
 const DeliveryAddress = (props) => {
+    const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const handleModifyDeliveryAddress = () => {
+        const res = { status: 200 };
+
+        if (res.status === 200) {
+            setDeliveryAddressModalOpen(false);
+            enqueueSnackbar("Datos de entrega modificados", {
+                variant: "success",
+            });
+        } else {
+            enqueueSnackbar("No se ha podido modificar la dirección de entrega", {
+                variant: "error",
+            });
+            setDeliveryAddressModalOpen(false);
+        }
+    }
+
     return (
+        <>
         <PaperWithTitleContainer title="Dirección de entrega" height={"418px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
@@ -18,17 +41,30 @@ const DeliveryAddress = (props) => {
             <Typography variant="body1" paragraph>{props.customer.clarifications || "Sin indicar"}</Typography>
 
             <Typography variant="subtitle2">Horario de preferencia</Typography>
-            <Typography variant="body1" paragraph>{props.customer.preferredSchedule || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{props.customer.preferredSchedule.label || "Sin indicar"}</Typography>
 
             <Typography
                 variant="subtitle2"
                 color="primary"
                 style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
-                onClick={() => alert("Modificar dirección de entrega")}
+                onClick={() => setDeliveryAddressModalOpen(true)}
             >
                 Modificar dirección de entrega {" >"}
             </Typography>
         </PaperWithTitleContainer>
+
+        {isDeliveryAddressModalOpen &&
+            <ComplexModal
+                title="Modificar datos de entrega"
+                component={<DeliveryAddressModal customer={props.customer} />}
+                open={isDeliveryAddressModalOpen}
+                cancelButtonText="Cancelar"
+                confirmButtonText="Modificar datos de entrega"
+                handleCancelButton={() => setDeliveryAddressModalOpen(false)}
+                handleConfirmButton={handleModifyDeliveryAddress}
+            />
+        }
+        </>
     );
 };
 

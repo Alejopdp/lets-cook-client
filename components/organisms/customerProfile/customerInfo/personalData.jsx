@@ -8,8 +8,8 @@ import { Typography } from "@material-ui/core";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import PersonalDataModal from "./customerInfoModals/personalDataModal";
 import ComplexModal from "../../../molecules/complexModal/complexModal";
+import PersonalDataModal from "./customerInfoModals/personalDataModal";
 
 const PersonalData = (props) => {
     const [isPersonalDataModalOpen, setPersonalDataModalOpen] = useState(false);
