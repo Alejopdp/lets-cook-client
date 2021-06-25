@@ -21,10 +21,11 @@ const customer = {
     personalData: {
         name: "Alejo",
         lastName: "Scotti",
+        email: "alejo@novolabs.xyz",
         phone1: "+34 686 234 345",
         phone2: null,
-        bornDate: null,
-        preferredLanguage: "Español",
+        bornDate: "14/12/98",
+        preferredLanguage: "CA",
 
         deliveryAddress: {
             address: "Calle Ing Fausto Elio 42, 54001, Valencia",
