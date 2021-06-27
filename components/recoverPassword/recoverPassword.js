@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { forgotPassword } from "../../helpers/serverRequests/user";
 import { emailRegex } from "../../helpers/regex/index";
+import { useRouter } from "next/router";
+const langs = require("../../lang").recoverPassword;
 
 // External components
 
@@ -28,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 const RecoverPassword = (props) => {
     const classes = useStyles();
+    const router = useRouter();
+    const lang = langs[router.locale];
 
     const [values, setValues] = useState({
         email: "",
@@ -61,16 +65,11 @@ const RecoverPassword = (props) => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title={props.lang.title}>
+                <PaperWithTitleContainer title={lang.title}>
                     {success ? (
-                        <Success lang={props.lang.success} />
+                        <Success lang={lang.success} />
                     ) : (
-                        <RecoverFormPassword
-                            lang={props.lang.form}
-                            handleChange={handleChange}
-                            isEmail={isEmail}
-                            handleSubmit={handleSubmit}
-                        />
+                        <RecoverFormPassword lang={lang.form} handleChange={handleChange} isEmail={isEmail} handleSubmit={handleSubmit} />
                     )}
                 </PaperWithTitleContainer>
             </div>

@@ -13,6 +13,7 @@ import { emailRegex, pswRegex } from "../../helpers/regex";
 import usePersistToken from "../../hooks/usePersistToken/usePersistToken";
 import { LOCAL_STORAGE_KEYS, useLocalStorage } from "../../hooks/useLocalStorage/localStorage";
 import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
+const langs = require("../../lang").loginForm;
 
 // External components
 import FormControl from "@material-ui/core/FormControl";
@@ -35,6 +36,7 @@ const LoginForm = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
+    const lang = langs[router.locale];
     const [values, setValues] = useState({
         email: "",
         password: "",
@@ -95,12 +97,12 @@ const LoginForm = (props) => {
             </div>
 
             <div className={classes.center}>
-                <PaperWithTitleContainer title={props.lang.title}>
+                <PaperWithTitleContainer title={lang.title}>
                     <form className={classes.form} onSubmit={handleSubmit}>
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                             <TextField
                                 id="outlined-basic"
-                                label={props.lang.emailPlaceholder}
+                                label={lang.emailPlaceholder}
                                 variant="outlined"
                                 type="email"
                                 onChange={handleChange("email")}
@@ -108,7 +110,7 @@ const LoginForm = (props) => {
                         </FormControl>
 
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">{props.lang.passwordPlaceholder}</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password">{lang.passwordPlaceholder}</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 type={values.showPassword ? "text" : "password"}
@@ -137,7 +139,7 @@ const LoginForm = (props) => {
                         )}
 
                         <Typography variant="body2" color="primary" style={{ marginTop: theme.spacing(2) }}>
-                            <Link href="/recupero-de-contrasena">{props.lang.forgotPassword}</Link>
+                            <Link href="/recupero-de-contrasena">{lang.forgotPassword}</Link>
                         </Typography>
 
                         <div className={classes.btnDiv}>
@@ -147,7 +149,7 @@ const LoginForm = (props) => {
                                 disabled={!isEmail || !isPassword || isSubmitting}
                                 onClick={handleSubmit}
                             >
-                                {props.lang.button}
+                                {lang.button}
                             </Button>
                         </div>
                     </form>
