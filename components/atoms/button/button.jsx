@@ -23,6 +23,7 @@ const CustomButton = (props) => {
 
     return (
         <Button
+            type={props.type || "submit"}
             classes={{ root: classes.root }}
             variant={props.variant || "contained"}
             size={props.size}
@@ -37,6 +38,7 @@ const CustomButton = (props) => {
 };
 
 CustomButton.propTypes = {
+    type: PropTypes.oneOf(["button", "submit", "reset"]),
     disabled: PropTypes.bool,
     size: PropTypes.oneOf(["large", "medium", "small"]),
     variant: PropTypes.any,

@@ -4,12 +4,12 @@ import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
 import { getZoneById, getZonesList } from "../serverRequests/shipping";
 
-export const pagesPropsGetter = async (params, locale) => {
+export const pagesPropsGetter = async (params, locale, token) => {
     // Use locale for the API calls
     var res;
     switch (params.dashboard.join("/")) {
         case "recetas":
-            res = await getRecipes("", locale);
+            res = await getRecipes(token, locale);
             const filtersRes = await getRecipesFilterOptions("");
 
             return { recipesList: res.data, filterList: filtersRes.data, hasError: res.data.message || res.data.message || null };

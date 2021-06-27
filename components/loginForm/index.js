@@ -1,63 +1,35 @@
 // Utils & config
-import FormControl from "@material-ui/core/FormControl";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import InputLabel from "@material-ui/core/InputLabel";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { useTheme } from "@material-ui/core/styles";
+import clsx from "clsx";
+import { login } from "../../helpers/serverRequests/user";
+import { useRouter } from "next/router";
+import { useUserInfoStore } from "../../stores/auth";
+import { useStyles } from "./styles";
+import cookies from "js-cookie";
+import useRequest from "../../hooks/useRequest/useRequest";
+import { emailRegex, pswRegex } from "../../helpers/regex";
+import usePersistToken from "../../hooks/usePersistToken/usePersistToken";
+import { LOCAL_STORAGE_KEYS, useLocalStorage } from "../../hooks/useLocalStorage/localStorage";
+import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
+
 // External components
+import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import clsx from "clsx";
-// Icons & Images
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import InputLabel from "@material-ui/core/InputLabel";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+
+// Internal components
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-// Internal components
-import { emailRegex, pswRegex } from "../../helpers/regex";
-import { LOCAL_STORAGE_KEYS, useLocalStorage } from "../../hooks/useLocalStorage/localStorage";
-import usePersistToken from "../../hooks/usePersistToken/usePersistToken";
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import useRequest from "../../hooks/useRequest/useRequest";
 import Button from "../atoms/button/button";
 import PaperWithTitleContainer from "../molecules/paperWithTitleContainer/paperWithTitleContainer";
-
-
-
-
-
-const useStyles = makeStyles((theme) => ({
-    image: {
-        padding: theme.spacing(2),
-    },
-    center: {
-        display: "flex",
-        placeItems: "center",
-        minHeight: "75vh",
-    },
-
-    form: {
-        display: "flex",
-        flexDirection: "column",
-    },
-    btnDiv: {
-        display: "flex",
-        justifyContent: "flex-end",
-        flexWrap: "wrap",
-        marginTop: theme.spacing(3),
-    },
-    margin: {
-        marginBottom: theme.spacing(1),
-        marginTop: theme.spacing(1),
-    },
-    textField: {
-        width: "100%",
-    },
-}));
 
 const LoginForm = (props) => {
     const classes = useStyles();
@@ -69,6 +41,8 @@ const LoginForm = (props) => {
         showPassword: false,
     });
     const [serverError, setserverError] = useState(false);
+    const [isSubmitting, setisSubmitting] = useState(false);
+    const setUserInfo = useUserInfoStore((state) => state.setuserInfo);
 
     const { doRequest, isLoading, data, error } = useRequest();
     const { saveInLocalStorage } = useLocalStorage();
@@ -76,6 +50,13 @@ const LoginForm = (props) => {
 
     const isEmail = emailRegex.test(values.email);
     const isPassword = pswRegex.test(values.password);
+
+    useEffect(() => {
+        if (props.isLogged) {
+            router.replace("/dashboard");
+            return;
+        }
+    }, []);
 
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
@@ -91,41 +72,21 @@ const LoginForm = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { email, password } = values;
-        doRequest({
-            endpointSetting: USER_REQUEST_SETTINGS.login,
-            body: {
-                email,
-                password,
-            },
-        });
+        setisSubmitting(true);
+
+        const res = await login(values.email, values.password);
+
+        if (res.status === 200) {
+            saveInLocalStorage("token", res.data.token);
+            saveInLocalStorage("userInfo", res.data.userInfo);
+            setUserInfo(res.data.userInfo);
+            cookies.set("token", res.data.token);
+            router.push("/dashboard");
+        } else {
+            setserverError(res.data.message);
+        }
+        setisSubmitting(false);
     };
-
-    useEffect(() => {
-        if (props.isLogged) {
-            router.replace("/dashboard");
-            return;
-        }
-
-        if (!!!isLoading && !!!error && data) {
-            const { token, userInfo } = data;
-            saveInLocalStorage(LOCAL_STORAGE_KEYS.userInfo, userInfo);
-            saveInLocalStorage(LOCAL_STORAGE_KEYS.token, token);
-            persistToken(token);
-            router.replace("/dashboard");
-            return;
-        }
-
-        if (error) {
-            console.log("***-> Response has Error: ", error);
-            setserverError(error.message);
-        }
-
-        // Todo: Use isLoading var for spinner indicator
-        // and bloquing controls
-
-        console.log("***-> Is request in course: ", isLoading);
-    }, [isLoading, data, error]);
 
     return (
         <>
@@ -180,7 +141,12 @@ const LoginForm = (props) => {
                         </Typography>
 
                         <div className={classes.btnDiv}>
-                            <Button variant="contained" size="large" disabled={!isEmail || !isPassword || isLoading} onClick={handleSubmit}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                disabled={!isEmail || !isPassword || isSubmitting}
+                                onClick={handleSubmit}
+                            >
                                 {props.lang.button}
                             </Button>
                         </div>

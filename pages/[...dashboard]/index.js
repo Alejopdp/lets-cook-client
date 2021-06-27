@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
 import { verifyToken } from "../../helpers/serverRequests/user";
 import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import cookies from "js-cookie";
 
 // External components
 import { Box, makeStyles, Typography } from "@material-ui/core";
@@ -26,9 +27,6 @@ import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
 import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import axios from "axios";
-import authToken from "../../helpers/serverRequests/authToken";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,12 +51,12 @@ const useStyles = makeStyles((theme) => ({
 const Index = ({ token, ...props }) => {
     const route = useRouter();
     const classes = useStyles();
-    const { getFromLocalStorage } = useLocalStorage();
+    const { getFromLocalStorage, resetLocalStorage } = useLocalStorage();
 
     useEffect(() => {
-        const notIsLogged = token !== getFromLocalStorage(LOCAL_STORAGE_KEYS.token);
-        if (notIsLogged) {
-            route.replace("/");
+        if (props.status === 401) {
+            resetLocalStorage();
+            cookies.remove("token");
         }
     }, [route.asPath]);
 
@@ -134,21 +132,18 @@ const Index = ({ token, ...props }) => {
 
 Index.propTypes = {};
 
-export async function getServerSideProps({ locale, query, previewData }) {
-    let _token = await authToken(previewData);
-    if (!!!_token) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: true,
-            },
-        };
+export async function getServerSideProps(context) {
+    const langs = require("../../lang");
+    const token = context.req.cookies.token;
+
+    if (!token) {
+        return { props: { hasError: "Usuario no autorizado", status: 401 } };
     }
 
-    const langs = require("../../lang");
-    const props = await pagesPropsGetter(query, locale);
+    const props = await pagesPropsGetter(context.query, context.locale, context.req.cookies.token);
+
     return {
-        props: { ...props, langs: { ...langs }, token: _token },
+        props: { ...props, langs: { ...langs } },
     };
 }
 

@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import cookies from "js-cookie";
 
 // External components
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
@@ -21,6 +22,7 @@ import Group from "@material-ui/icons/Group";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import useLocalStorage from "../../../../../hooks/useLocalStorage/localStorage";
 import usePersistToken from "../../../../../hooks/usePersistToken/usePersistToken";
+import { useUserInfoStore } from "../../../../../stores/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,7 +40,7 @@ const UserDropdown = (props) => {
     const router = useRouter();
     const { resetLocalStorage } = useLocalStorage();
     const [persistToken] = usePersistToken();
-
+    const userInfo = useUserInfoStore((state) => state.userInfo);
 
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = useRef(open);
@@ -71,7 +73,7 @@ const UserDropdown = (props) => {
 
     const handleSignOut = () => {
         resetLocalStorage();
-        persistToken()
+        cookies.remove("token");
         router.push("/");
         setOpen(false);
     };
@@ -89,9 +91,9 @@ const UserDropdown = (props) => {
                 aria-haspopup="true"
                 onClick={handleToggle}
                 endIcon={<KeyboardArrowDown />}
-                style={{ textTransform: 'none' }}
+                style={{ textTransform: "none" }}
             >
-                {props.title || "Alejo"}
+                {userInfo.firstName}
             </Button>
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
@@ -122,7 +124,7 @@ const UserDropdown = (props) => {
 };
 
 UserDropdown.propTypes = {
-    title: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
 };
 
 export default UserDropdown;
