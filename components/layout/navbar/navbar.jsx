@@ -20,7 +20,7 @@ const Navbar = (props) => {
     const classes = useStyles();
 
     return (
-        <AppBar position="fixed" className={clsx(classes.appBar)} elevation={8}>
+        <AppBar position="fixed" classes={{ root: classes.appBar }}>
             <Toolbar className={classes.toolbar}>
                 <Hidden mdUp>
                     <IconButton
