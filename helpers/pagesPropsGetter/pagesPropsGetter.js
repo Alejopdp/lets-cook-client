@@ -3,6 +3,7 @@ import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
 import { getZoneById, getZonesList } from "../serverRequests/shipping";
+import { getCouponById, getCouponList } from "../serverRequests/coupon";
 
 export const pagesPropsGetter = async (params, locale, token) => {
     // Use locale for the API calls
@@ -74,7 +75,17 @@ export const pagesPropsGetter = async (params, locale, token) => {
 
             return { shippingZone: res.data || [], error: res.data.message || null };
 
+        case "cupon":
+            res = await getCouponById(params.id);
+
+            return { coupon: res.data || {}, error: res.data.message || null };
+
         case "cupones":
+            res = await getCouponList();
+
+            return { coupons: res.data || [], error: res.data.message || null };
+
+        case "cupones/crear":
             res = await getPlanList(locale);
 
             return { plans: res.data || [], error: res.data.message || null };

@@ -5,8 +5,6 @@ import { useRouter } from "next/router";
 const langs = require("../../../lang").createPlan;
 
 // External components
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 
 // Internal components
 import CreatePlanForm from "./createPlanForm/createPlanForm";
