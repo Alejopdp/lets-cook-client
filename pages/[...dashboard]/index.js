@@ -28,6 +28,7 @@ import UpdateShippingZone from "../../components/organisms/updateShippingZone/up
 import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import CouponsDashboard from "../../components/organisms/couponsDashboard";
 import CouponDetail from "../../components/organisms/couponDetail";
+import { useUserInfoStore } from "../../stores/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,6 +54,13 @@ const Index = ({ token, ...props }) => {
     const route = useRouter();
     const classes = useStyles();
     const { getFromLocalStorage, resetLocalStorage } = useLocalStorage();
+    const setuserInfo = useUserInfoStore((state) => state.setuserInfo);
+
+    useEffect(() => {
+        const userInfo = getFromLocalStorage("userInfo");
+
+        if (!!userInfo) setuserInfo(userInfo);
+    }, []);
 
     useEffect(() => {
         if (props.status === 401) {
