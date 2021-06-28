@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 
 // External components
 import Table from "@material-ui/core/Table";
@@ -39,28 +40,30 @@ const CustomerCalendarTable = (props) => {
 
     const [orders, setOrders] = useState([...props.orders] || []);
     const [selectedOrder, setSelectedOrder] = useState({});
-    // const [orderActive, setOrderActive] = useState(selectedOrder.active);
-    const [isJumpWeekModalOpen, setJumpWeekModalOpen] = useState(false);
-    const [isResumeWeekModalOpen, setResumeWeekModalOpen] = useState(false);
+    const [isToggleStateModalOpen, setToggleStateModalOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const handleOpenJumpWeekModal = (order) => {
+    const handleOpenModal = (order) => {
         setSelectedOrder(order);
-        setJumpWeekModalOpen(true);
+        setToggleStateModalOpen(true)
     }
 
-    const handleOpenResumeWeekModal = (order) => {
-        setSelectedOrder(order);
-        setResumeWeekModalOpen(true);
-    }
+    const handleToggleState = () => {
+        const res = { status: 200 };
 
-    const handleJumpWeek = () => {
-        alert("semana salteada")
-        setJumpWeekModalOpen(false)
-    }
-
-    const handleResumeWeek = () => {
-        alert("semana reanudada")
-        setResumeWeekModalOpen(false)
+        if (res.status === 200) {
+            setOrders(orders.map((order) => (order.orderId === selectedOrder.orderId ? { ...selectedOrder, active: !selectedOrder.active} : order)));
+            setSelectedOrder({});
+            setToggleStateModalOpen(false)
+            enqueueSnackbar(`Semana ${selectedOrder.active ? "salteada" : "reanudada"}`, {
+                variant: "success",
+            });
+        } else {
+            setToggleStateModalOpen(false)
+            enqueueSnackbar(`Error al ${selectedOrder.active ? "saltear la semana" : "reanudar la semana"}`, {
+                variant: "error",
+            });
+        }
     }
 
     return (
@@ -116,11 +119,11 @@ const CustomerCalendarTable = (props) => {
                             <TableCell style={{ textTransform: "uppercase", cursor: "pointer" }}>
                                 {order.active
                                     ?
-                                        <Typography onClick={() => handleOpenJumpWeekModal(order)} variant="subtitle1" color="primary">
+                                        <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
                                             Saltar semana
                                         </Typography>
                                     :
-                                        <Typography onClick={() => handleOpenResumeWeekModal(order)} variant="subtitle1" style={{color: "#F8961E"}}>
+                                        <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" style={{color: "#F8961E"}}>
                                             Reanudar semana
                                         </Typography>
                                 }
@@ -137,37 +140,20 @@ const CustomerCalendarTable = (props) => {
             </Table>
         </TableContainer>
 
-        {isJumpWeekModalOpen &&
+        {isToggleStateModalOpen &&
             <SimpleModal
-                title="Saltar semana"
+                title={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
                 cancelButtonText="Cancelar"
-                confirmButtonText="Saltar semana"
+                confirmButtonText={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
                 paragraphs={[
-                    "¿Estás seguro de que deseas saltar la siguiente semana?",
+                    selectedOrder.active === true ? "¿Estás seguro de que deseas saltar la siguiente semana?" : "¿Estás seguro de que deseas reanudar la siguiente semana?",
                     `${selectedOrder.plan}`,
                     `${selectedOrder.variation}`,
                     `${selectedOrder.date}`
                 ]}
-                open={isJumpWeekModalOpen}
-                handleCancelButton={() => setJumpWeekModalOpen(false)}
-                handleConfirmButton={handleJumpWeek}
-            />
-        }
-
-        {isResumeWeekModalOpen &&
-            <SimpleModal
-                title="Reanudar semana"
-                cancelButtonText="Cancelar"
-                confirmButtonText="Reanudar semana"
-                paragraphs={[
-                    "¿Estás seguro de que deseas reanudar la siguiente semana?",
-                    `${selectedOrder.plan}`,
-                    `${selectedOrder.variation}`,
-                    `${selectedOrder.date}`
-                ]}
-                open={isResumeWeekModalOpen}
-                handleCancelButton={() => setResumeWeekModalOpen(false)}
-                handleConfirmButton={handleResumeWeek}
+                open={isToggleStateModalOpen}
+                handleCancelButton={() => setToggleStateModalOpen(false)}
+                handleConfirmButton={handleToggleState}
             />
         }
         </>

@@ -82,7 +82,7 @@ const customer = {
     orders: [
         {
             date: "09/08/2021",
-            orderId: "534",
+            orderId: "001",
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
@@ -90,7 +90,7 @@ const customer = {
         },
         {
             date: "09/08/2021",
-            orderId: "534",
+            orderId: "002",
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
@@ -98,7 +98,7 @@ const customer = {
         },
         {
             date: "09/08/2021",
-            orderId: "534",
+            orderId: "003",
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
