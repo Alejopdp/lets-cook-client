@@ -1,7 +1,8 @@
 // Utils & Config
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 
 // External components
 import Table from "@material-ui/core/Table";
@@ -17,6 +18,10 @@ import { Typography } from "@material-ui/core";
 // Icons & Images
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+
+// Internal components
+import ComplexModal from "../../molecules/complexModal/complexModal";
+import AddPlanModal from "./customerProfileModals/addPlanModal";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -45,7 +50,39 @@ const useStyles = makeStyles((theme) => ({
 const CustomerSubscriptionsTable = (props) => {
     const { tableContainer, table, cells, idCell, addRow } = useStyles();
 
+    const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const [formData, setFormData] = useState({
+        plan: "",
+        variant: ""
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleAddPlan = () => {
+        const res = { status: 200 };
+
+        if (res.status === 200) {
+            setAddPlanModalOpen(false);
+            enqueueSnackbar("Plan añadido", {
+                variant: "success",
+            });
+        } else {
+            enqueueSnackbar("No se ha podido añadir el plan", {
+                variant: "error",
+            });
+            setAddPlanModalOpen(false);
+        }
+    }
+
     return (
+        <>
         <TableContainer component={Paper} className={tableContainer}>
             <Table className={table} aria-label="custom pagination table">
                 <TableHead>
@@ -107,7 +144,7 @@ const CustomerSubscriptionsTable = (props) => {
                         </TableRow>
                     ))}
 
-                    <TableRow className={addRow} onClick={() => alert("Agregar plan")}>
+                    <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
                             <AddCircleIcon color="primary" />
                             <Typography
                                 variant="subtitle1"
@@ -120,6 +157,19 @@ const CustomerSubscriptionsTable = (props) => {
                 </TableBody>
             </Table>
         </TableContainer>
+
+        {isAddPlanModalOpen &&
+            <ComplexModal
+            title="Agregar Plan"
+            component={<AddPlanModal formData={formData} handleChange={handleChange} />}
+            open={isAddPlanModalOpen}
+            cancelButtonText="Cancelar"
+            confirmButtonText="Agregar Plan"
+            handleCancelButton={() => setAddPlanModalOpen(false)}
+            handleConfirmButton={handleAddPlan}
+        />
+        }
+        </>
     );
 };
 
