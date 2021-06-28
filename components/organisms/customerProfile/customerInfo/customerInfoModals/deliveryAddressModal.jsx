@@ -7,12 +7,6 @@ import Input from "../../../../atoms/input/input";
 import SelectInput from "../../../../atoms/selectInput/SelectInput";
 
 const DeliveryAddressModal = (props) => {
-    const [formData, setFormData] = useState({
-        deliveryAddress: props.customer.address || "",
-        clarifications: props.customer.clarifications || "",
-        preferredSchedule: props.customer.preferredSchedule.value || "",
-    })
-
     const scheduleOptions = [
         {
             value: '1',
@@ -28,34 +22,27 @@ const DeliveryAddressModal = (props) => {
         },
     ];
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    }
-
     return (
         <>
             <Input
                 name="address"
                 label="Dirección de entrega"
-                value={formData.deliveryAddress}
-                handleChange={handleChange}
+                value={props.formData.address}
+                handleChange={props.handleChange}
             />
 
             <Input
                 name="clarifications"
                 label="Aclaraciones"
-                value={formData.clarifications}
-                handleChange={handleChange}
+                value={props.formData.clarifications}
+                handleChange={props.handleChange}
             />
 
             <SelectInput
                 name="preferredSchedule"
                 label="Horario de preferencia de entrega"
-                value={formData.preferredSchedule}
-                handleChange={handleChange}
+                value={props.formData.preferredSchedule}
+                handleChange={props.handleChange}
                 options={scheduleOptions}
             />
 

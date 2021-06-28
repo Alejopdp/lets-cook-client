@@ -15,6 +15,19 @@ const DeliveryAddress = (props) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    const [formData, setFormData] = useState({
+        address: props.customer.address || "",
+        clarifications: props.customer.clarifications || "",
+        preferredSchedule: props.customer.preferredSchedule.value || "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
     const handleModifyDeliveryAddress = () => {
         const res = { status: 200 };
 
@@ -56,7 +69,7 @@ const DeliveryAddress = (props) => {
         {isDeliveryAddressModalOpen &&
             <ComplexModal
                 title="Modificar datos de entrega"
-                component={<DeliveryAddressModal customer={props.customer} />}
+                component={<DeliveryAddressModal formData={formData} handleChange={handleChange} />}
                 open={isDeliveryAddressModalOpen}
                 cancelButtonText="Cancelar"
                 confirmButtonText="Modificar datos de entrega"

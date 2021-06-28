@@ -28,7 +28,7 @@ const customer = {
         preferredLanguage: "CA",
 
         deliveryAddress: {
-            address: "Calle Ing Fausto Elio 42, 54001, Valencia",
+            address: "[deliveryAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
             clarifications: "Piso 2, Puerta 10",
             preferredSchedule: {
                 value: 1,
@@ -37,7 +37,7 @@ const customer = {
         },
 
         billingData: {
-            address: "Calle Ing Fausto Elio 42, 54001, Valencia",
+            address: "[billingAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
             clarifications: "Piso 2, Puerta 10",
             name: "Alejo Scotti",
             personalIdNumber: "39481743 V",

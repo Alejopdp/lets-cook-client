@@ -15,6 +15,20 @@ const BillingData = (props) => {
     const [isBillingDataModalOpen, setBillingDataModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    const [formData, setFormData] = useState({
+        address: props.customer.address || "",
+        clarifications: props.customer.clarifications || "",
+        name: props.customer.name || "",
+        personalIdNumber: props.customer.personalIdNumber || "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    }
+
     const handleModifyBillingData = () => {
         const res = { status: 200 };
 
@@ -59,7 +73,7 @@ const BillingData = (props) => {
         {isBillingDataModalOpen &&
             <ComplexModal
                 title="Modificar dirección de facturación"
-                component={<BillingDataModal customer={props.customer} />}
+                component={<BillingDataModal formData={formData} handleChange={handleChange} />}
                 open={isBillingDataModalOpen}
                 cancelButtonText="Cancelar"
                 confirmButtonText="Modificar dirección de facturación"

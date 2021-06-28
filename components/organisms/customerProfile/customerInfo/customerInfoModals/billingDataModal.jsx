@@ -6,50 +6,34 @@ import PropTypes from "prop-types";
 import Input from "../../../../atoms/input/input";
 
 const BillingDataModal = (props) => {
-    const [formData, setFormData] = useState({
-        address: props.customer.address || "",
-        clarifications: props.customer.clarifications || "",
-        name: props.customer.name || "",
-        personalIdNumber: props.customer.personalIdNumber || "",
-    });
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    }
-
-    console.log(props.customer)
-
     return (
         <>
             <Input
                 name="address"
                 label="Dirección de facturación"
-                value={formData.address}
-                handleChange={handleChange}
+                value={props.formData.address}
+                handleChange={props.handleChange}
             />
 
             <Input
                 name="clarifications"
                 label="Aclaraciones"
-                value={formData.clarifications}
-                handleChange={handleChange}
+                value={props.formData.clarifications}
+                handleChange={props.handleChange}
             />
 
             <Input
                 name="name"
                 label="Nombre"
-                value={formData.name}
-                handleChange={handleChange}
+                value={props.formData.name}
+                handleChange={props.handleChange}
             />
 
             <Input
                 name="personalIdNumber"
                 label="DNI / NIE / CIF"
-                value={formData.personalIdNumber}
-                handleChange={handleChange}
+                value={props.formData.personalIdNumber}
+                handleChange={props.handleChange}
             />
 
         </>

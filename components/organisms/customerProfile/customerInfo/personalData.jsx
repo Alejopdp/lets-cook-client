@@ -15,6 +15,23 @@ const PersonalData = (props) => {
     const [isPersonalDataModalOpen, setPersonalDataModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    const [formData, setFormData] = useState({
+        name: props.customer.name || "",
+        lastName: props.customer.lastName || "",
+        email: props.customer.email || "",
+        phone1: props.customer.phone1 || "",
+        phone2: props.customer.phone2 || "",
+        bornDate: props.customer.bornDate || "",
+        preferredLanguage: props.customer.preferredLanguage || "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
     const handleModifyPersonalData = () => {
         const res = { status: 200 }
 
@@ -63,7 +80,7 @@ const PersonalData = (props) => {
         {isPersonalDataModalOpen &&
             <ComplexModal
                 title="Modificar datos personales"
-                component={<PersonalDataModal customer={props.customer} />}
+                component={<PersonalDataModal formData={formData} handleChange={handleChange} />}
                 open={isPersonalDataModalOpen}
                 cancelButtonText="Cancelar"
                 confirmButtonText="Modificar datos personales"
