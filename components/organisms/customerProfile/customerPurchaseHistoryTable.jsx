@@ -62,7 +62,6 @@ const CustomerPurchaseHistoryTable = (props) => {
                         </TableCell>
 
                         <TableCell />
-                        <TableCell />
                     </TableRow>
                 </TableHead>
 

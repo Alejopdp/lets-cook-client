@@ -86,6 +86,7 @@ const customer = {
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
+            active: false,
         },
         {
             date: "09/08/2021",
@@ -93,6 +94,7 @@ const customer = {
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
+            active: true,
         },
         {
             date: "09/08/2021",
@@ -100,6 +102,7 @@ const customer = {
             plan: "Plan Familiar",
             variation: "2 personas / 2 recetas",
             price: 30,
+            active: true,
         },
     ],
 
