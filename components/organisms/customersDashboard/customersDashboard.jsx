@@ -66,6 +66,7 @@ const CustomersDashboard = (props) => {
     const [customers, setCustomers] = useState([...clientela] || []);
     const [selectedCustomer, setSelectedCustomer] = useState({});
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleCreateCustomer = () => {
@@ -73,7 +74,7 @@ const CustomersDashboard = (props) => {
     }
 
     const handleDeleteCustomer = () => {
-        const res = { status: 200 }
+        const res = { status: 404 }
 
         if (res.status === 200) {
             setCustomers(customers.filter((customer) => customer.id !== selectedCustomer.id));
@@ -82,6 +83,8 @@ const CustomersDashboard = (props) => {
             enqueueSnackbar(`Cliente ${selectedCustomer.fullName} ${selectedCustomer.id} eliminado`, {
                 variant: "success",
             });
+        } else if (res.status === 404) {
+            setErrorModalOpen(true)
         } else {
             enqueueSnackbar(`Error al eliminar el cliente ${selectedCustomer.fullName} ${selectedCustomer.id}`, {
                 variant: "error",
@@ -93,6 +96,11 @@ const CustomersDashboard = (props) => {
     const handleOpenDeleteModal = (customer) => {
         setSelectedCustomer(customer)
         setIsDeleteModalOpen(true)
+    }
+
+    const handleCloseErrorModal = () => {
+        setErrorModalOpen(false)
+        setIsDeleteModalOpen(false)
     }
 
     const filteredCustomers = customers.filter((customer) => {
@@ -130,6 +138,18 @@ const CustomersDashboard = (props) => {
                 handleConfirmButton={handleDeleteCustomer}
             />
         )}
+
+        {isErrorModalOpen &&
+            <SimpleModal
+                title="Eliminar cliente"
+                cancelButtonText="Cancelar"
+                paragraphs={[
+                    `No puedes eliminar al cliente ${selectedCustomer.fullName} porque tiene suscripciones activas.`
+                ]}
+                open={isDeleteModalOpen}
+                handleCancelButton={handleCloseErrorModal}
+            />
+        }
         </>
     );
 };

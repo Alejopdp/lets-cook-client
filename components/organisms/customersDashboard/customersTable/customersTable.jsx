@@ -92,7 +92,7 @@ const CustomersTable = (props) => {
                                     <VisibilityIcon />
                                 </IconButton>
                                 <IconButton>
-                                    <DeleteIcon onClick={() => props.handleDeleteClient(customer)} />
+                                    <DeleteIcon onClick={() => props.handleDeleteCustomer(customer)} />
                                 </IconButton>
                             </TableCell>
                         </TableRow>
