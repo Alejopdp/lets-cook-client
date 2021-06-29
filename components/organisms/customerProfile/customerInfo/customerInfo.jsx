@@ -28,7 +28,7 @@ const CustomerInfo = (props) => {
         <Box className={container}>
             <PersonalData customer={props.customer} />
 
-            <DeliveryAddress customer={props.customer.deliveryAddress} />
+            <DeliveryAddress customer={props.customer.deliveryAddress} customerId={props.customer.id} />
 
             <BillingData customer={props.customer.billingData} />
 

@@ -27,6 +27,8 @@ const customer = {
         bornDate: "14/12/98",
         preferredLanguage: "CA",
 
+        id: 123456,
+
         deliveryAddress: {
             address: "[deliveryAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
             clarifications: "Piso 2, Puerta 10",

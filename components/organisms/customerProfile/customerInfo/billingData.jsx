@@ -1,6 +1,7 @@
 // Utils & Config
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { updateCustomer } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -29,7 +30,16 @@ const BillingData = (props) => {
         });
     }
 
-    const handleModifyBillingData = () => {
+    const handleModifyBillingData = async () => {
+        // const formDataToUpdate = new FormData();
+
+        // formDataToUpdate.append("address", formData.address);
+        // formDataToUpdate.append("clarifications", formData.clarifications);
+        // formDataToUpdate.append("name", formData.name);
+        // formDataToUpdate.append("personalIdNumber", formData.personalIdNumber);
+
+        // const res = await updateCustomer(formDataToUpdate, props.customer.id);
+
         const res = { status: 200 };
 
         if (res.status === 200) {
@@ -38,10 +48,10 @@ const BillingData = (props) => {
                 variant: "success",
             });
         } else {
+            setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se han podido modificar los datos de facturación", {
                 variant: "error",
             });
-            setDeliveryAddressModalOpen(false);
         }
     }
 

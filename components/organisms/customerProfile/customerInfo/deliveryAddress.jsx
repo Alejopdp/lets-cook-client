@@ -1,6 +1,7 @@
 // Utils & Config
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { updateCustomer } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -28,7 +29,15 @@ const DeliveryAddress = (props) => {
         });
     };
 
-    const handleModifyDeliveryAddress = () => {
+    const handleModifyDeliveryAddress = async () => {
+        // const formDataToUpdate = new FormData();
+
+        // formDataToUpdate.append("address", formData.address);
+        // formDataToUpdate.append("clarifications", formData.clarifications);
+        // formDataToUpdate.append("preferredSchedule", formData.preferredSchedule);
+
+        // const res = await updateCustomer(formDataToUpdate, props.customerId);
+
         const res = { status: 200 };
 
         if (res.status === 200) {
@@ -37,10 +46,10 @@ const DeliveryAddress = (props) => {
                 variant: "success",
             });
         } else {
+            setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se ha podido modificar la dirección de entrega", {
                 variant: "error",
             });
-            setDeliveryAddressModalOpen(false);
         }
     }
 

@@ -1,6 +1,7 @@
 // Utils & Config
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { updateCustomer } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -32,7 +33,19 @@ const PersonalData = (props) => {
         });
     };
 
-    const handleModifyPersonalData = () => {
+    const handleModifyPersonalData = async () => {
+        // const formDataToUpdate = new FormData();
+
+        // formDataToUpdate.append("name", formData.name);
+        // formDataToUpdate.append("lastName", formData.lastName);
+        // formDataToUpdate.append("email", formData.email);
+        // formDataToUpdate.append("phone1", formData.phone1);
+        // formDataToUpdate.append("phone2", formData.phone2);
+        // formDataToUpdate.append("bornDate", formData.bornDate);
+        // formDataToUpdate.append("preferredLanguage", formData.preferredLanguage);
+
+        // const res = await updateCustomer(formDataToUpdate, props.customer.id);
+
         const res = { status: 200 }
 
         if (res.status === 200) {
@@ -41,10 +54,10 @@ const PersonalData = (props) => {
                 variant: "success",
             });
         } else {
+            setPersonalDataModalOpen(false);
             enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {
                 variant: "error",
             });
-            setPersonalDataModalOpen(false);
         }
     }
 
@@ -52,19 +65,19 @@ const PersonalData = (props) => {
         <>
         <PaperWithTitleContainer title="Datos personales">
             <Typography variant="subtitle2">Nombre completo</Typography>
-            <Typography variant="body1" paragraph>{props.customer.name} {props.customer.lastName}</Typography>
+            <Typography variant="body1" paragraph>{formData.name} {formData.lastName}</Typography>
 
             <Typography variant="subtitle2">Teléfono (1)</Typography>
-            <Typography variant="body1" paragraph>{props.customer.phone1}</Typography>
+            <Typography variant="body1" paragraph>{formData.phone1}</Typography>
 
             <Typography variant="subtitle2">Teléfono (2)</Typography>
-            <Typography variant="body1" paragraph>{props.customer.phone2 || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{formData.phone2 || "Sin indicar"}</Typography>
 
             <Typography variant="subtitle2">Fecha de nacimiento</Typography>
-            <Typography variant="body1" paragraph>{props.customer.bornDate || "Sin indicar"}</Typography>
+            <Typography variant="body1" paragraph>{formData.bornDate || "Sin indicar"}</Typography>
 
             <Typography variant="subtitle2">Idioma de preferencia</Typography>
-            <Typography variant="body1" paragraph>{props.customer.preferredLanguage}</Typography>
+            <Typography variant="body1" paragraph>{formData.preferredLanguage}</Typography>
 
             <Typography
                 variant="subtitle2"

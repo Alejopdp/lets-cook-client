@@ -37,7 +37,7 @@ const PaymentMethods = (props) => {
             <Typography variant="subtitle2">Tarjeta</Typography>
             <Typography variant="body1" paragraph>{props.customer.creditCard}</Typography>
 
-            <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
+            <Typography variant="subtitle2">Vencimiento</Typography>
             <Typography variant="body1" paragraph>{props.customer.cardExpirationDate}</Typography>
 
             <Typography

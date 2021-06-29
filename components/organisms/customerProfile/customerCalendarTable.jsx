@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { toggleWeekState } from "../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -48,7 +49,9 @@ const CustomerCalendarTable = (props) => {
         setToggleStateModalOpen(true)
     }
 
-    const handleToggleState = () => {
+    const handleToggleState = async () => {
+        // const res = await toggleWeekState(selectedOrder.orderId);
+
         const res = { status: 200 };
 
         if (res.status === 200) {

@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 // Internal components
 import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import Input from "../../atoms/input/input";
-import DatePicker from "../../atoms/datePicker/datePicker";
+// import DatePicker from "../../atoms/datePicker/datePicker";
 import SelectInput from "../../atoms/selectInput/SelectInput";
 
 const PersonalData = (props) => {
@@ -52,7 +52,7 @@ const PersonalData = (props) => {
                 </Box>
             </Box>
 
-            <DatePicker />
+            {/* <DatePicker /> */}
 
             <SelectInput />
         </PaperWithTitleContainer>
