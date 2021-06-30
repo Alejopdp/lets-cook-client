@@ -9,7 +9,7 @@ import { Grid } from "@material-ui/core";
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import DataDisplay from "../../../molecules/dataDisplay/dataDisplay";
 import DataDisplayPaymentOrderTable from "./dataDisplayPaymentOrderTable"
-import AmountDetails from "./amountDetails";
+import AmountDetails from "../../../molecules/amountDetails";
 import Refund from "./refund";
 import RefundModal from "./refundModal";
 
@@ -92,7 +92,7 @@ const PaymentOrderGrid = (props) => {
                         </Grid>
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Reembolso">
-                                <Refund handleClickOpenRefundModal={handleClickOpenRefundModal} totalAmount={amountDetail.total} value={amountToRefund} handleChange={handleChangeRefundInput} />
+                                <Refund handleClick={handleClickOpenRefundModal} totalAmount={amountDetail.total} value={amountToRefund} handleChange={handleChangeRefundInput} />
                             </PaperWithTitleContainer>
                         </Grid>
                     </Grid>

@@ -31,6 +31,10 @@ import CouponDetail from "../../components/organisms/couponDetail";
 import OrdersDashboard from "../../components/organisms/ordersDashboard/"
 import PaymentOrderDetail from "../../components/organisms/paymentOrderDetail"
 import OrderDetail from "../../components/organisms/orderDetail"
+import SubscriptionsDashboard from "../../components/organisms/subscriptionsDashboard"
+import SubscriptionDetail from "../../components/organisms/subscriptionDetail"
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -131,6 +135,12 @@ const Index = ({ token, ...props }) => {
 
             case "ordenes/detalle-orden":
                 return <OrderDetail />;
+
+            case "suscripciones":
+                return <SubscriptionsDashboard />;
+
+            case "suscripciones/detalle":
+                return <SubscriptionDetail />;
 
             default:
                 return (
