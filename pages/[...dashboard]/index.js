@@ -29,6 +29,11 @@ import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import CouponsDashboard from "../../components/organisms/couponsDashboard";
 import CouponDetail from "../../components/organisms/couponDetail";
 import { useUserInfoStore } from "../../stores/auth";
+import OrdersDashboard from "../../components/organisms/ordersDashboard/";
+import PaymentOrderDetail from "../../components/organisms/paymentOrderDetail";
+import OrderDetail from "../../components/organisms/orderDetail";
+import SubscriptionsDashboard from "../../components/organisms/subscriptionsDashboard";
+import SubscriptionDetail from "../../components/organisms/subscriptionDetail";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -127,6 +132,21 @@ const Index = ({ token, ...props }) => {
             // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
             case "gestion-de-envios/modificar":
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
+
+            case "ordenes":
+                return <OrdersDashboard />;
+
+            case "ordenes/detalle-orden-de-pago":
+                return <PaymentOrderDetail />;
+
+            case "ordenes/detalle-orden":
+                return <OrderDetail />;
+
+            case "suscripciones":
+                return <SubscriptionsDashboard />;
+
+            case "suscripciones/detalle":
+                return <SubscriptionDetail />;
 
             default:
                 return (
