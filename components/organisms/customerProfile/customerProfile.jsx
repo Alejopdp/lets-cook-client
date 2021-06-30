@@ -42,7 +42,7 @@ const crumbs = [
 
 const CustomerProfile = () => {
     const [breadcrumb, setBreadcrumb] = useState("subscriptions");
-    const [customer, setcustomer] = useState({
+    const [customer, setCustomer] = useState({
         personalData: {
             name: "Alejo",
             lastName: "Scotti",
@@ -178,12 +178,18 @@ const CustomerProfile = () => {
         ],
     });
 
-    const handlePersonalDataSubmit = (email) => {
-        setcustomer({
+    const handlePersonalDataSubmit = (name) => {
+        setCustomer({
             ...customer,
             personalData: {
                 ...customer.personalData,
-                email,
+                name,
+                // lastName,
+                // email,
+                // phone1,
+                // phone2,
+                // bornDate,
+                // preferredLanguage
             },
         });
     };

@@ -54,7 +54,7 @@ const PersonalData = (props) => {
                 variant: "success",
             });
 
-            props.handlePersonalDataSubmit(formData.email);
+            props.handlePersonalDataSubmit(formData.name);
         } else {
             setPersonalDataModalOpen(false);
             enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {
@@ -68,27 +68,27 @@ const PersonalData = (props) => {
             <PaperWithTitleContainer title="Datos personales">
                 <Typography variant="subtitle2">Nombre completo</Typography>
                 <Typography variant="body1" paragraph>
-                    {formData.name} {formData.lastName}
+                    {props.customer.name} {props.customer.lastName}
                 </Typography>
 
                 <Typography variant="subtitle2">Teléfono (1)</Typography>
                 <Typography variant="body1" paragraph>
-                    {formData.phone1}
+                    {props.customer.phone1}
                 </Typography>
 
                 <Typography variant="subtitle2">Teléfono (2)</Typography>
                 <Typography variant="body1" paragraph>
-                    {formData.phone2 || "Sin indicar"}
+                    {props.customer.phone2 || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Fecha de nacimiento</Typography>
                 <Typography variant="body1" paragraph>
-                    {formData.bornDate || "Sin indicar"}
+                    {props.customer.bornDate || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Idioma de preferencia</Typography>
                 <Typography variant="body1" paragraph>
-                    {formData.preferredLanguage}
+                    {props.customer.preferredLanguage}
                 </Typography>
 
                 <Typography variant="subtitle2">Email</Typography>
