@@ -30,12 +30,6 @@ const DeliveryAddress = (props) => {
     };
 
     const handleModifyDeliveryAddress = async () => {
-        // const formDataToUpdate = new FormData();
-
-        // formDataToUpdate.append("address", formData.address);
-        // formDataToUpdate.append("clarifications", formData.clarifications);
-        // formDataToUpdate.append("preferredSchedule", formData.preferredSchedule);
-
         // const res = await updateCustomer(formDataToUpdate, props.customerId);
 
         const res = { status: 200 };
@@ -45,6 +39,8 @@ const DeliveryAddress = (props) => {
             enqueueSnackbar("Datos de entrega modificados", {
                 variant: "success",
             });
+
+            props.handlePersonalDataSubmit(formData);
         } else {
             setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se ha podido modificar la dirección de entrega", {

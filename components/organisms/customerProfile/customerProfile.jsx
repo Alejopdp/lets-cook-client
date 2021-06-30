@@ -184,6 +184,14 @@ const CustomerProfile = () => {
             personalData: {
                 ...customer.personalData,
                 ...formData,
+                deliveryAddress: {
+                    ...customer.personalData.deliveryAddress,
+                    ...formData,
+                },
+                billingData: {
+                    ...customer.personalData.billingData,
+                    ...formData,
+                }
             },
         });
     };
