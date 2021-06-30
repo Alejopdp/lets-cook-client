@@ -178,18 +178,12 @@ const CustomerProfile = () => {
         ],
     });
 
-    const handlePersonalDataSubmit = (name) => {
+    const handlePersonalDataSubmit = (formData) => {
         setCustomer({
             ...customer,
             personalData: {
                 ...customer.personalData,
-                name,
-                // lastName,
-                // email,
-                // phone1,
-                // phone2,
-                // bornDate,
-                // preferredLanguage
+                ...formData,
             },
         });
     };
