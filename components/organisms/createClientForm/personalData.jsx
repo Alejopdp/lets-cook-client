@@ -54,7 +54,7 @@ const PersonalData = (props) => {
 
             {/* <DatePicker /> */}
 
-            <SelectInput />
+            {/* <SelectInput /> */}
         </PaperWithTitleContainer>
     );
 };

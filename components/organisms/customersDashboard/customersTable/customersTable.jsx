@@ -1,8 +1,11 @@
 // Utils & Config
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+
+// Internal components
+import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
 
 // External components
 import Table from "@material-ui/core/Table";
@@ -11,9 +14,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
+import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import { Typography } from "@material-ui/core";
+import { TableFooter, Typography } from "@material-ui/core";
 
 // Icons & Images
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -39,6 +43,20 @@ const useStyles = makeStyles((theme) => ({
 const CustomersTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.customers.length - page * rowsPerPage);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     return (
         <TableContainer component={Paper} className={tableContainer}>
@@ -70,7 +88,8 @@ const CustomersTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {props.customers.map((customer, index) => (
+                    {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers).map(
+                        (customer, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">{customer.id}</Typography>
@@ -98,6 +117,26 @@ const CustomersTable = (props) => {
                         </TableRow>
                     ))}
                 </TableBody>
+
+                <TableFooter>
+                    <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                            colSpan={5}
+                            count={props.customers.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            SelectProps={{
+                                inputProps: { "aria-label": "rows per page" },
+                                native: true,
+                            }}
+                            labelRowsPerPage="Filas por página"
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                            ActionsComponent={TablePaginationActions}
+                        />
+                    </TableRow>
+                </TableFooter>
             </Table>
         </TableContainer>
     );
