@@ -18,7 +18,7 @@ export default [
     {
         icon: "account_circle",
         text: "Clientes",
-        path: "/clientes",
+        path: "/gestion-de-clientes",
     },
     {
         icon: "local_mall",

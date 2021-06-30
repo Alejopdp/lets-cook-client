@@ -17,167 +17,176 @@ import CustomerPurchaseHistoryTable from "./customerPurchaseHistoryTable";
 import CustomerInfo from "./customerInfo/customerInfo";
 import CustomerEvents from "./customerEvents";
 
-const customer = {
-    personalData: {
-        name: "Alejo",
-        lastName: "Scotti",
-        email: "alejo@novolabs.xyz",
-        phone1: "+34 686 234 345",
-        phone2: null,
-        bornDate: "14/12/98",
-        preferredLanguage: "CA",
-
-        id: 123456,
-
-        deliveryAddress: {
-            address: "[deliveryAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
-            clarifications: "Piso 2, Puerta 10",
-            preferredSchedule: {
-                value: 1,
-                label: "De 8 a 12"
-            },
-        },
-
-        billingData: {
-            address: "[billingAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
-            clarifications: "Piso 2, Puerta 10",
-            name: "Alejo Scotti",
-            personalIdNumber: "39481743 V",
-        },
-
-        paymentMethod: {
-            creditCard: "Visa terminada en 1234",
-            cardExpirationDate: "08/12",
-            savedCards: [
-                {
-                    creditCard: "Visa terminada en 4321",
-                    cardExpirationDate: "05/24"
-                },
-                {
-                    creditCard: "Savi terminada en 1237",
-                    cardExpirationDate: "05/24"
-                },
-            ]
-        },
-    },
-    // Subscriptions table
-    subscriptions: [
-        {
-            subscriptionId: 123,
-            plan: "Plan Familiar",
-            variant: "4 personas / 2 recetas",
-            price: 50,
-            frequency: "Semanal",
-            status: "Activo"
-        },
-        {
-            subscriptionId: 321,
-            plan: "Plan Vegano",
-            variant: "2 personas / 2 recetas",
-            price: 30,
-            frequency: "Por única vez",
-            status: "Activo"
-        },
-    ],
-
-    // Calendar table
-    orders: [
-        {
-            date: "09/08/2021",
-            orderId: "001",
-            plan: "Plan Familiar",
-            variation: "2 personas / 2 recetas",
-            price: 30,
-            active: false,
-        },
-        {
-            date: "09/08/2021",
-            orderId: "002",
-            plan: "Plan Familiar",
-            variation: "2 personas / 2 recetas",
-            price: 30,
-            active: true,
-        },
-        {
-            date: "09/08/2021",
-            orderId: "003",
-            plan: "Plan Familiar",
-            variation: "2 personas / 2 recetas",
-            price: 30,
-            active: true,
-        },
-    ],
-
-    // Purchase history table
-    purchaseLogs: [
-        {
-            date: "09/08/2021",
-            paymentOrderId: "534",
-            ordersQty: 2,
-            price: 30,
-            status: "Pago exitoso"
-        },
-        {
-            date: "09/08/2021",
-            paymentOrderId: "534",
-            ordersQty: 2,
-            price: 30,
-            status: "Pago fallido"
-        },
-        {
-            date: "09/08/2021",
-            paymentOrderId: "534",
-            ordersQty: 2,
-            price: 30,
-            status: "Pago exitoso"
-        },
-    ],
-
-    // Events table
-    events: [
-        {
-            date: "09/08/2021 15:30 hs.",
-            performedBy: "Usuario",
-            event: "Se ha realizado un cambio de plan a Plan Ahorro"
-        },
-        {
-            date: "09/08/2021 15:30 hs.",
-            performedBy: "Usuario",
-            event: "Se ha realizado un cambio en la dirección de entrega"
-        },
-        {
-            date: "09/08/2021 15:30 hs.",
-            performedBy: "Administrador",
-            event: "Se ha realizado un cambio de plan a Plan Ahorro"
-        },
-    ]
-}
-
 const crumbs = [
     {
         key: "subscriptions",
-        label: "Suscripciones"
+        label: "Suscripciones",
     },
     {
         key: "calendar",
-        label: "Calendario"
+        label: "Calendario",
     },
     {
         key: "purchases",
-        label: "Histórico de compras"
+        label: "Histórico de compras",
     },
     {
         key: "info",
-        label: "Información del cliente"
+        label: "Información del cliente",
     },
     {
         key: "events",
-        label: "Eventos"
-    }
-]
+        label: "Eventos",
+    },
+];
 
 const CustomerProfile = () => {
-    const [breadcrumb, setBreadcrumb] = useState("subscriptions")
+    const [breadcrumb, setBreadcrumb] = useState("subscriptions");
+    const [customer, setcustomer] = useState({
+        personalData: {
+            name: "Alejo",
+            lastName: "Scotti",
+            email: "alejo@novolabs.xyz",
+            phone1: "+34 686 234 345",
+            phone2: null,
+            bornDate: "14/12/98",
+            preferredLanguage: "CA",
+
+            id: 123456,
+
+            deliveryAddress: {
+                address: "[deliveryAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
+                clarifications: "Piso 2, Puerta 10",
+                preferredSchedule: {
+                    value: 1,
+                    label: "De 8 a 12",
+                },
+            },
+
+            billingData: {
+                address: "[billingAddress] Calle Ing Fausto Elio 42, 54001, Valencia",
+                clarifications: "Piso 2, Puerta 10",
+                name: "Alejo Scotti",
+                personalIdNumber: "39481743 V",
+            },
+
+            paymentMethod: {
+                creditCard: "Visa terminada en 1234",
+                cardExpirationDate: "08/12",
+                savedCards: [
+                    {
+                        creditCard: "Visa terminada en 4321",
+                        cardExpirationDate: "05/24",
+                    },
+                    {
+                        creditCard: "Savi terminada en 1237",
+                        cardExpirationDate: "05/24",
+                    },
+                ],
+            },
+        },
+        // Subscriptions table
+        subscriptions: [
+            {
+                subscriptionId: 123,
+                plan: "Plan Familiar",
+                variant: "4 personas / 2 recetas",
+                price: 50,
+                frequency: "Semanal",
+                status: "Activo",
+            },
+            {
+                subscriptionId: 321,
+                plan: "Plan Vegano",
+                variant: "2 personas / 2 recetas",
+                price: 30,
+                frequency: "Por única vez",
+                status: "Activo",
+            },
+        ],
+
+        // Calendar table
+        orders: [
+            {
+                date: "09/08/2021",
+                orderId: "001",
+                plan: "Plan Familiar",
+                variation: "2 personas / 2 recetas",
+                price: 30,
+                active: false,
+            },
+            {
+                date: "09/08/2021",
+                orderId: "002",
+                plan: "Plan Familiar",
+                variation: "2 personas / 2 recetas",
+                price: 30,
+                active: true,
+            },
+            {
+                date: "09/08/2021",
+                orderId: "003",
+                plan: "Plan Familiar",
+                variation: "2 personas / 2 recetas",
+                price: 30,
+                active: true,
+            },
+        ],
+
+        // Purchase history table
+        purchaseLogs: [
+            {
+                date: "09/08/2021",
+                paymentOrderId: "534",
+                ordersQty: 2,
+                price: 30,
+                status: "Pago exitoso",
+            },
+            {
+                date: "09/08/2021",
+                paymentOrderId: "534",
+                ordersQty: 2,
+                price: 30,
+                status: "Pago fallido",
+            },
+            {
+                date: "09/08/2021",
+                paymentOrderId: "534",
+                ordersQty: 2,
+                price: 30,
+                status: "Pago exitoso",
+            },
+        ],
+
+        // Events table
+        events: [
+            {
+                date: "09/08/2021 15:30 hs.",
+                performedBy: "Usuario",
+                event: "Se ha realizado un cambio de plan a Plan Ahorro",
+            },
+            {
+                date: "09/08/2021 15:30 hs.",
+                performedBy: "Usuario",
+                event: "Se ha realizado un cambio en la dirección de entrega",
+            },
+            {
+                date: "09/08/2021 15:30 hs.",
+                performedBy: "Administrador",
+                event: "Se ha realizado un cambio de plan a Plan Ahorro",
+            },
+        ],
+    });
+
+    const handlePersonalDataSubmit = (email) => {
+        setcustomer({
+            ...customer,
+            personalData: {
+                ...customer.personalData,
+                email,
+            },
+        });
+    };
 
     const { container, breadcrumbs, active } = useStyles();
 
@@ -185,27 +194,27 @@ const CustomerProfile = () => {
 
     switch (true) {
         case breadcrumb === "subscriptions":
-            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />
+            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />;
             break;
 
         case breadcrumb === "calendar":
-            currentCustomerInfo = <CustomerCalendarTable orders={customer.orders} />
+            currentCustomerInfo = <CustomerCalendarTable orders={customer.orders} />;
             break;
 
         case breadcrumb === "purchases":
-            currentCustomerInfo = <CustomerPurchaseHistoryTable purchaseLogs={customer.purchaseLogs} />
+            currentCustomerInfo = <CustomerPurchaseHistoryTable purchaseLogs={customer.purchaseLogs} />;
             break;
 
         case breadcrumb === "info":
-            currentCustomerInfo = <CustomerInfo customer={customer.personalData} />
+            currentCustomerInfo = <CustomerInfo handlePersonalDataSubmit={handlePersonalDataSubmit} customer={customer.personalData} />;
             break;
 
         case breadcrumb === "events":
-            currentCustomerInfo = <CustomerEvents events={customer.events} />
+            currentCustomerInfo = <CustomerEvents events={customer.events} />;
             break;
 
         default:
-            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />
+            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />;
     }
 
     return (
@@ -226,13 +235,10 @@ const CustomerProfile = () => {
             </Box>
 
             {currentCustomerInfo}
-
         </Container>
     );
 };
 
 export default CustomerProfile;
 
-CustomerProfile.propTypes = {
-
-};
+CustomerProfile.propTypes = {};

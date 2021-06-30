@@ -46,68 +46,81 @@ const PersonalData = (props) => {
 
         // const res = await updateCustomer(formDataToUpdate, props.customer.id);
 
-        const res = { status: 200 }
+        const res = { status: 200 };
 
         if (res.status === 200) {
-            setPersonalDataModalOpen(false)
+            setPersonalDataModalOpen(false);
             enqueueSnackbar(`Cliente ${props.customer.name} ${props.customer.lastName} modificado`, {
                 variant: "success",
             });
+
+            props.handlePersonalDataSubmit(formData.email);
         } else {
             setPersonalDataModalOpen(false);
             enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {
                 variant: "error",
             });
         }
-    }
+    };
 
     return (
         <>
-        <PaperWithTitleContainer title="Datos personales">
-            <Typography variant="subtitle2">Nombre completo</Typography>
-            <Typography variant="body1" paragraph>{formData.name} {formData.lastName}</Typography>
+            <PaperWithTitleContainer title="Datos personales">
+                <Typography variant="subtitle2">Nombre completo</Typography>
+                <Typography variant="body1" paragraph>
+                    {formData.name} {formData.lastName}
+                </Typography>
 
-            <Typography variant="subtitle2">Teléfono (1)</Typography>
-            <Typography variant="body1" paragraph>{formData.phone1}</Typography>
+                <Typography variant="subtitle2">Teléfono (1)</Typography>
+                <Typography variant="body1" paragraph>
+                    {formData.phone1}
+                </Typography>
 
-            <Typography variant="subtitle2">Teléfono (2)</Typography>
-            <Typography variant="body1" paragraph>{formData.phone2 || "Sin indicar"}</Typography>
+                <Typography variant="subtitle2">Teléfono (2)</Typography>
+                <Typography variant="body1" paragraph>
+                    {formData.phone2 || "Sin indicar"}
+                </Typography>
 
-            <Typography variant="subtitle2">Fecha de nacimiento</Typography>
-            <Typography variant="body1" paragraph>{formData.bornDate || "Sin indicar"}</Typography>
+                <Typography variant="subtitle2">Fecha de nacimiento</Typography>
+                <Typography variant="body1" paragraph>
+                    {formData.bornDate || "Sin indicar"}
+                </Typography>
 
-            <Typography variant="subtitle2">Idioma de preferencia</Typography>
-            <Typography variant="body1" paragraph>{formData.preferredLanguage}</Typography>
+                <Typography variant="subtitle2">Idioma de preferencia</Typography>
+                <Typography variant="body1" paragraph>
+                    {formData.preferredLanguage}
+                </Typography>
 
-            <Typography
-                variant="subtitle2"
-                color="primary"
-                style={{ textTransform: "uppercase", cursor: "pointer"}}
-                onClick={() => setPersonalDataModalOpen(true)}
-            >
-                Modificar datos personales {" >"}
-            </Typography>
+                <Typography variant="subtitle2">Email</Typography>
+                <Typography variant="body1" paragraph>
+                    {props.customer.email}
+                </Typography>
 
-        </PaperWithTitleContainer>
+                <Typography
+                    variant="subtitle2"
+                    color="primary"
+                    style={{ textTransform: "uppercase", cursor: "pointer" }}
+                    onClick={() => setPersonalDataModalOpen(true)}
+                >
+                    Modificar datos personales {" >"}
+                </Typography>
+            </PaperWithTitleContainer>
 
-        {isPersonalDataModalOpen &&
-            <ComplexModal
-                title="Modificar datos personales"
-                component={<PersonalDataModal formData={formData} handleChange={handleChange} />}
-                open={isPersonalDataModalOpen}
-                cancelButtonText="Cancelar"
-                confirmButtonText="Modificar datos personales"
-                handleCancelButton={() => setPersonalDataModalOpen(false)}
-                handleConfirmButton={handleModifyPersonalData}
-            />
-
-        }
+            {isPersonalDataModalOpen && (
+                <ComplexModal
+                    title="Modificar datos personales"
+                    component={<PersonalDataModal formData={formData} handleChange={handleChange} />}
+                    open={isPersonalDataModalOpen}
+                    cancelButtonText="Cancelar"
+                    confirmButtonText="Modificar datos personales"
+                    handleCancelButton={() => setPersonalDataModalOpen(false)}
+                    handleConfirmButton={handleModifyPersonalData}
+                />
+            )}
         </>
     );
 };
 
 export default PersonalData;
 
-PersonalData.propTypes = {
-
-};
+PersonalData.propTypes = {};
