@@ -36,23 +36,30 @@ const AddPlanModal = (props) => {
         },
     ];
 
+    const [plans, setPlans] = useState(props.plans);
+    const [selectedPlan, setSelectedPlan] = useState({});
+
+    const plansNames = plans.map((plan, index) => (plan.name))
+
     return (
         <>
             <SelectInput
                 name="plans"
                 label="Plan"
-                value={props.formData.plan}
-                handleChange={props.handleChange}
-                options={planOptions}
+                value={selectedPlan}
+                handleChange={() => setSelectedPlan(selectedPlan)}
+                items={plansNames}
             />
 
-            <SelectInput
+
+
+            {/* <SelectInput
                 name="variants"
                 label="Variante"
                 value={props.formData.variant}
                 handleChange={props.handleChange}
-                options={variantOptions}
-            />
+                items={variantOptions}
+            /> */}
 
         </>
     );

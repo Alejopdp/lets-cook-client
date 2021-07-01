@@ -73,6 +73,12 @@ export const pagesPropsGetter = async (params, locale) => {
             res = await getZoneById(params.id);
 
             return { shippingZone: res.data || [], error: res.data.message || null };
+
+        case "gestion-de-clientes/modificar":
+            res = await getPlanList(locale);
+
+            return { plans: res.data || [], error: res.data.message || null };
+
         default:
             return null;
     }

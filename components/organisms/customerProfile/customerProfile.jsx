@@ -40,7 +40,7 @@ const crumbs = [
     },
 ];
 
-const CustomerProfile = () => {
+const CustomerProfile = (props) => {
     const [breadcrumb, setBreadcrumb] = useState("subscriptions");
     const [customer, setCustomer] = useState({
         personalData: {
@@ -215,7 +215,7 @@ const CustomerProfile = () => {
 
     switch (true) {
         case breadcrumb === "subscriptions":
-            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />;
+            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} plans={props.plans} />;
             break;
 
         case breadcrumb === "calendar":

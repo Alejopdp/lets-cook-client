@@ -30,11 +30,21 @@ const SelectInput = (props) => {
                 onChange={props.handleChange}
                 variant="outlined"
             >
-                {props.options.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                ))}
+                {props.options &&
+                    props.options.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))
+                }
+
+                {props.items &&
+                    props.items.map((item) => (
+                        <MenuItem key={item.value} value={item.value}>
+                            {item}
+                        </MenuItem>
+                    ))
+                }
             </TextField>
         </form>
     );

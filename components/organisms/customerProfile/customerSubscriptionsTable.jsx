@@ -161,7 +161,7 @@ const CustomerSubscriptionsTable = (props) => {
         {isAddPlanModalOpen &&
             <ComplexModal
             title="Agregar Plan"
-            component={<AddPlanModal formData={formData} handleChange={handleChange} />}
+            component={<AddPlanModal formData={formData} handleChange={handleChange} plans={props.plans} />}
             open={isAddPlanModalOpen}
             cancelButtonText="Cancelar"
             confirmButtonText="Agregar Plan"
