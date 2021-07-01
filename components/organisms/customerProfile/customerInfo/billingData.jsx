@@ -52,7 +52,7 @@ const BillingData = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Datos de facturación" height={"418px"} flex>
+        <PaperWithTitleContainer title="Datos de facturación" height={"479px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 

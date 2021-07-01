@@ -51,7 +51,7 @@ const DeliveryAddress = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Dirección de entrega" height={"418px"} flex>
+        <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 

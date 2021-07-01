@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "flex-start",
+        justifyContent: "center",
+        alignContent: "flex-start"
     },
 }));
 
