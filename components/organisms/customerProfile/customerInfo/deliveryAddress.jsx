@@ -40,7 +40,7 @@ const DeliveryAddress = (props) => {
                 variant: "success",
             });
 
-            props.handlePersonalDataSubmit(formData);
+            props.handleUpdateDeliveryAddress(formData);
         } else {
             setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se ha podido modificar la dirección de entrega", {

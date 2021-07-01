@@ -26,11 +26,11 @@ const CustomerInfo = (props) => {
 
     return (
         <Box className={container}>
-            <PersonalData customer={props.customer} handlePersonalDataSubmit={props.handlePersonalDataSubmit} />
+            <PersonalData customer={props.customer} handleUpdatePersonalData={props.handleUpdatePersonalData} />
 
-            <DeliveryAddress customer={props.customer.deliveryAddress} handlePersonalDataSubmit={props.handlePersonalDataSubmit} />
+            <DeliveryAddress customer={props.customer.deliveryAddress} handleUpdateDeliveryAddress={props.handleUpdateDeliveryAddress} />
 
-            <BillingData customer={props.customer.billingData} handlePersonalDataSubmit={props.handlePersonalDataSubmit} />
+            <BillingData customer={props.customer.billingData} handleUpdateBillingData={props.handleUpdateBillingData} />
 
             <PaymentMethods customer={props.customer.paymentMethod} />
         </Box>

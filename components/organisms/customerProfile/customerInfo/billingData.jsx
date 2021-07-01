@@ -41,7 +41,7 @@ const BillingData = (props) => {
                 variant: "success",
             });
 
-            props.handlePersonalDataSubmit(formData);
+            props.handleUpdateBillingData(formData);
         } else {
             setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se han podido modificar los datos de facturación", {

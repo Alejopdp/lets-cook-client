@@ -178,23 +178,36 @@ const CustomerProfile = () => {
         ],
     });
 
-    const handlePersonalDataSubmit = (formData) => {
+    const handleUpdatePersonalData = (formData) => {
         setCustomer({
             ...customer,
             personalData: {
                 ...customer.personalData,
                 ...formData,
-                deliveryAddress: {
-                    ...customer.personalData.deliveryAddress,
-                    ...formData,
-                },
-                billingData: {
-                    ...customer.personalData.billingData,
-                    ...formData,
-                }
             },
         });
     };
+
+    const handleUpdateDeliveryAddress = (formData) => {
+        setCustomer({
+            ...customer,
+            personalData: {
+                ...customer.personalData,
+                deliveryAddress: formData
+            }
+        })
+    }
+
+    const handleUpdateBillingData = (formData) => {
+        setCustomer({
+            ...customer,
+            personalData: {
+                ...customer.personalData,
+                billingData: formData
+            }
+        })
+    }
+
 
     const { container, breadcrumbs, active } = useStyles();
 
@@ -214,7 +227,13 @@ const CustomerProfile = () => {
             break;
 
         case breadcrumb === "info":
-            currentCustomerInfo = <CustomerInfo handlePersonalDataSubmit={handlePersonalDataSubmit} customer={customer.personalData} />;
+            currentCustomerInfo =
+                <CustomerInfo
+                    handleUpdatePersonalData={handleUpdatePersonalData}
+                    handleUpdateDeliveryAddress={handleUpdateDeliveryAddress}
+                    handleUpdateBillingData={handleUpdateBillingData}
+                    customer={customer.personalData}
+                />;
             break;
 
         case breadcrumb === "events":
