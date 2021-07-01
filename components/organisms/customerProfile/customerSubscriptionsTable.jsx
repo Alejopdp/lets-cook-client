@@ -53,17 +53,21 @@ const CustomerSubscriptionsTable = (props) => {
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const [formData, setFormData] = useState({
-        plan: "",
-        variant: ""
-    });
+    const [selectedPlan, setSelectedPlan] = useState({ variants: [] });
+    const [selectedVariation, setSelectedVariation] = useState({});
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+    const handlePlanSelect = (e) => {
+        setSelectedPlan(e.target.value);
+    }
+
+    const handleVariationSelect = (e) => {
+        setSelectedVariation(e.target.value);
+    }
+
+    // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
+    console.log("Suscripciones:", props.subscriptions);
+    console.log("Planes:", props.plans)
+
 
     const handleAddPlan = () => {
         const res = { status: 200 };
@@ -161,7 +165,15 @@ const CustomerSubscriptionsTable = (props) => {
         {isAddPlanModalOpen &&
             <ComplexModal
             title="Agregar Plan"
-            component={<AddPlanModal formData={formData} handleChange={handleChange} plans={props.plans} />}
+            component={
+                <AddPlanModal
+                    plans={props.plans}
+                    handlePlanSelect={handlePlanSelect}
+                    handleVariationSelect={handleVariationSelect}
+                    selectedPlan={selectedPlan}
+                    selectedVariation={selectedVariation}
+                />
+            }
             open={isAddPlanModalOpen}
             cancelButtonText="Cancelar"
             confirmButtonText="Agregar Plan"

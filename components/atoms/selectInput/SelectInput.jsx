@@ -37,14 +37,6 @@ const SelectInput = (props) => {
                         </MenuItem>
                     ))
                 }
-
-                {props.items &&
-                    props.items.map((item) => (
-                        <MenuItem key={item.value} value={item.value}>
-                            {item}
-                        </MenuItem>
-                    ))
-                }
             </TextField>
         </form>
     );

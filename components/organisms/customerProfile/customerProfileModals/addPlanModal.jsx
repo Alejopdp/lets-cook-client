@@ -1,67 +1,65 @@
 // Utils & Config
 import React, { useState } from "react";
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from "prop-types";
 
-// Internal components
-import SelectInput from "../../../atoms/selectInput/SelectInput";
+// External components
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Box from '@material-ui/core/Box';
+import { Typography } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+    selectField: {
+        width: "100%",
+        marginBottom: theme.spacing(2)
+    },
+}));
 
 const AddPlanModal = (props) => {
-    const planOptions = [
-        {
-            value: '1',
-            label: 'Plan 1',
-        },
-        {
-            value: '2',
-            label: 'Plan 2',
-        },
-        {
-            value: '3',
-            label: 'Plan 3',
-        },
-    ];
-
-    const variantOptions = [
-        {
-            value: '1',
-            label: 'Variante 1',
-        },
-        {
-            value: '2',
-            label: 'Variante 2',
-        },
-        {
-            value: '3',
-            label: 'Variante 3',
-        },
-    ];
-
-    const [plans, setPlans] = useState(props.plans);
-    const [selectedPlan, setSelectedPlan] = useState({});
-
-    const plansNames = plans.map((plan, index) => (plan.name))
+    const { selectField } = useStyles();
 
     return (
-        <>
-            <SelectInput
-                name="plans"
-                label="Plan"
-                value={selectedPlan}
-                handleChange={() => setSelectedPlan(selectedPlan)}
-                items={plansNames}
-            />
+        <Box minWidth="400px">
+            <FormControl className={selectField} variant="outlined">
+                <InputLabel>Plan</InputLabel>
+                <Select
+                    value={props.selectedPlan}
+                    onChange={props.handlePlanSelect}
+                    label="Plan"
+                >
+                    {props.plans.map((plan, index) => (
+                        <MenuItem value={plan} key={index}>
+                            {plan.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
 
+            <FormControl className={selectField} variant="outlined">
+                <InputLabel>Variante</InputLabel>
+                <Select
+                    value={props.selectedVariation}
+                    onChange={props.handleVariationSelect}
+                    label="Variante"
+                >
+                    {props.selectedPlan.variants.map((variant, index) => (
+                        <MenuItem value={variant} key={index}>
+                            {variant.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
 
+            {props.selectedPlan.description &&
+                <Typography variant="body1">
+                    {props.selectedPlan.description}
+                </Typography>
+            }
+        </Box>
 
-            {/* <SelectInput
-                name="variants"
-                label="Variante"
-                value={props.formData.variant}
-                handleChange={props.handleChange}
-                items={variantOptions}
-            /> */}
-
-        </>
     );
 };
 
