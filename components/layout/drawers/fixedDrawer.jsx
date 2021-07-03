@@ -13,7 +13,7 @@ import List from "@material-ui/core/List";
 // Internal components
 import ItemListWithIcon from "../../molecules/itemListWithIcon/itemListWIthIcon";
 
-const drawerWidth = 200;
+const drawerWidth = 220;
 
 const useStyles = makeStyles((theme) => ({
     root: {

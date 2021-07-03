@@ -101,7 +101,7 @@ const ShippingDashboard = (props) => {
     };
 
     return (
-        <Container size="md">
+        <Container>
             <DashboardWithButton title="Zonas de envío" buttonText="Crear zona de envío" startIcon handleClick={handleClick} />
             <ShippingTable
                 shippingZones={shippingZones}

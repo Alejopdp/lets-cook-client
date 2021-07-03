@@ -149,22 +149,44 @@ const OrderGrid = (props) => {
                         <DataDisplay title='Estado' text={orderDetail.state} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplayOrderTable title='Subscripción relacionada' columns={columns} rows={rows} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Payment Order ID relacionada' text={orderDetail.relatedPaymentOrderId.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
-                        <div>
+                        {/* <div>
                             <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelOrderModal}>
                                 CANCELAR ORDEN
                             </Button>
                             <Button size="medium" style={{ color: theme.palette.secondary.main }} onClick={handleClickOpenSkipWeekModal}>
                                 SALTAR SEMANA
                             </Button>
-                        </div>
+                        </div> */}
 
                     </PaperWithTitleContainer>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <PaperWithTitleContainer fullWidth={true} title="Recetas de la semana actual">
-                        <ActualWeekRecipesDetail data={actualWeekOrder} handleClick={handleClickOpenRecipesModal} />
-                    </PaperWithTitleContainer>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Recetas de la semana actual">
+                                <ActualWeekRecipesDetail data={actualWeekOrder} handleClick={handleClickOpenRecipesModal} />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelOrderModal}>
+                                        CANCELAR ORDEN
+                                    </Button>
+                                <div>
+                                </div>
+                                    <Button size="medium" style={{ color: theme.palette.secondary.main }} onClick={handleClickOpenSkipWeekModal}>
+                                        SALTAR SEMANA
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    </Grid>
                 </Grid>
+
+
+
+
             </Grid>
             <CancelOrderModal
                 open={openCancelOrderModal}

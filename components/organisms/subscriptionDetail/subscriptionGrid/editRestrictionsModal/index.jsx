@@ -22,10 +22,12 @@ const EditRestrictionsModal = (props) => {
 
 
     const restrictionsList = [
-        { id: 1, value: 'L', text: 'Sin lactosa' },
-        { id: 2, value: 'LG', text: 'Sin lactosa ni glúten' },
+        { id: 1, value: 'G', text: 'Sin glúten' },
+        { id: 2, value: 'L', text: 'Sin lactosa' },
         { id: 3, value: 'V', text: 'Vegano' },
-        { id: 4, value: 'VG', text: 'Vegano sin glúten' },
+        { id: 4, value: 'GL', text: 'Sin gluten ni lactosa' },
+        { id: 5, value: 'GV', text: 'Sin gluten y vegano' },
+        { id: 6, value: 'other', text: 'Otro' }
     ];
 
 

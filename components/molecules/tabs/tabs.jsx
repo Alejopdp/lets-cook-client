@@ -48,18 +48,18 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.default,
         '& .MuiTabs-indicator': {
             backgroundColor: theme.palette.primary.main
-        }
+        },
     },
 
 }));
 
 const TabsGrouo = props => {
     const classes = useStyles();
-
+    const theme = useTheme();
 
     return (
         <div className={classes.root}>
-            <Tabs value={props.value} onChange={props.handleChange} aria-label="ingredients tabs" scrollButtons="auto" variant="scrollable">
+            <Tabs value={props.value} onChange={props.handleChange} aria-label="ingredients tabs" scrollButtons="auto" variant="scrollable" style={{ marginBottom: theme.spacing(1) }}>
                 {props.options.map((variant, index) => (
                     <Tab key={index} label={variant} {...a11yProps(index)} />
                 ))}

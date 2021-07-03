@@ -9,13 +9,11 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
 // Internal components
-import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
+import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
 import SubscriptionTable from "./subscriptionTable";
 
 
 const SubscriptionsDashboard = (props) => {
-
-    const handleClick = () => alert('asd')
 
     const nextOrdersRows = [
         { subscriptionId: '1', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
@@ -31,9 +29,11 @@ const SubscriptionsDashboard = (props) => {
         { subscriptionId: '1', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
     ]
 
+    const handleClickExport = () => alert('Export')
+
     return (
-        <Container size="md">
-            <DashboardWithButton title="Suscripciones" buttonText="Exportar a CSV" startIcon handleClick={handleClick} />
+        <Container>
+            <DashboardTitleWithCSV title="Suscripciones" export handleClickExport={handleClickExport} />
             <SubscriptionTable rows={nextOrdersRows} />
         </Container>
     );

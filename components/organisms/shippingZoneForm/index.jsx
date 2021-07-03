@@ -78,7 +78,7 @@ const ShippingZoneForm = (props) => {
     };
 
     return (
-        <Container size="lg">
+        <Container>
             <Grid item container spacing={2} justify="center" direction="column">
                 <Grid item>
                     <PaperWithTitleContainer title="Detalles" width={600}>

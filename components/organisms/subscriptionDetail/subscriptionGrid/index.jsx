@@ -183,9 +183,6 @@ const SubscriptionGrid = (props) => {
                         <DataDisplayEditable title='Próximo cobro' text={subscriptionDetail.nextPaymentDate} handleClick={handleClickOpenEditNextChargeDateModal} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Método de pago' text={subscriptionDetail.paymentMethod} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Dirección de entrega' text={subscriptionDetail.addressName} style={{ marginBottom: theme.spacing(3) }} />
-                        <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelSubscriptionModal}>
-                            CANCELAR SUSCRIPCIÓN
-                        </Button>
                     </PaperWithTitleContainer>
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -204,6 +201,15 @@ const SubscriptionGrid = (props) => {
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
                                 <ApplyCoupon handleChange={handleChangeCouponInput} handleClick={handleClickApplyCoupon} value={couponCode} />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelSubscriptionModal}>
+                                        CANCELAR SUSCRIPCIÓN
+                                    </Button>
+                                </div>
                             </PaperWithTitleContainer>
                         </Grid>
                     </Grid>

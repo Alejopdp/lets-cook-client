@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTheme } from "@material-ui/core";
 
 // External components
-import { Grid } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
@@ -93,6 +93,15 @@ const PaymentOrderGrid = (props) => {
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Reembolso">
                                 <Refund handleClick={handleClickOpenRefundModal} totalAmount={amountDetail.total} value={amountToRefund} handleChange={handleChangeRefundInput} />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" color='secondary' onClick={() => alert('paynow')}>
+                                        PAGAR AHORA
+                                    </Button>
+                                </div>
                             </PaperWithTitleContainer>
                         </Grid>
                     </Grid>
