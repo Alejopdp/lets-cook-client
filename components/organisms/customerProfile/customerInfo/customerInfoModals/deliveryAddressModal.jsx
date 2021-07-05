@@ -22,6 +22,8 @@ const DeliveryAddressModal = (props) => {
         },
     ];
 
+    console.log(props.formData.preferredSchedule)
+
     return (
         <>
             <Input

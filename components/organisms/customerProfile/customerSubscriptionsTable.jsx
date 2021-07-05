@@ -53,8 +53,10 @@ const CustomerSubscriptionsTable = (props) => {
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const [selectedPlan, setSelectedPlan] = useState({ variants: [] });
+    const [subscriptions, setSubscriptions] = useState([...props.subscriptions] || []);
+    const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
     const [selectedVariation, setSelectedVariation] = useState({});
+    // const [selectedFrequency, setSelectedFrequency] = useState({ availablePlanFrecuencies: [] });
 
     const handlePlanSelect = (e) => {
         setSelectedPlan(e.target.value);
@@ -64,10 +66,22 @@ const CustomerSubscriptionsTable = (props) => {
         setSelectedVariation(e.target.value);
     }
 
-    // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
-    console.log("Suscripciones:", props.subscriptions);
-    console.log("Planes:", props.plans)
+    var subscriptionToAdd = {
+        subscriptionId: selectedPlan.id,
+        plan: selectedPlan.name,
+        variant: selectedVariation.name,
+        price: selectedVariation.price
+    }
 
+    const handleSetSubscriptions = () => {
+        setSubscriptions([...subscriptions, subscriptionToAdd])
+    }
+
+    // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
+    // console.log("Suscripciones:", subscriptions);
+    // console.log("Planes:", props.plans)
+    console.log(selectedPlan)
+    // console.log(selectedVariation)
 
     const handleAddPlan = () => {
         const res = { status: 200 };
@@ -77,6 +91,8 @@ const CustomerSubscriptionsTable = (props) => {
             enqueueSnackbar("Plan añadido", {
                 variant: "success",
             });
+
+            handleSetSubscriptions()
         } else {
             enqueueSnackbar("No se ha podido añadir el plan", {
                 variant: "error",
@@ -120,7 +136,7 @@ const CustomerSubscriptionsTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {props.subscriptions.map((subscription, index) => (
+                    {subscriptions.map((subscription, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">#{subscription.subscriptionId}</Typography>

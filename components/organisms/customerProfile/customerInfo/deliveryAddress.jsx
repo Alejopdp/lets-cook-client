@@ -22,6 +22,8 @@ const DeliveryAddress = (props) => {
         preferredSchedule: props.customer.preferredSchedule.value || "",
     });
 
+    console.log(props.customer)
+
     const handleChange = (e) => {
         setFormData({
             ...formData,

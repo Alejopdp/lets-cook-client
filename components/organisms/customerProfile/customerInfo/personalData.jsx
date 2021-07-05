@@ -44,7 +44,7 @@ const PersonalData = (props) => {
                 variant: "success",
             });
 
-            props.handlePersonalDataSubmit(formData);
+            props.handleUpdatePersonalData(formData);
         } else {
             setPersonalDataModalOpen(false);
             enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {

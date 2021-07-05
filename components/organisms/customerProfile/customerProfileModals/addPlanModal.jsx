@@ -53,6 +53,21 @@ const AddPlanModal = (props) => {
                 </Select>
             </FormControl>
 
+            <FormControl className={selectField} variant="outlined">
+                <InputLabel>Frecuencia</InputLabel>
+                <Select
+                    value={props.selectedPlan.availablePlanFrecuencies}
+                    // onChange={props.handleVariationSelect}
+                    label="Frecuencia"
+                >
+                    {props.selectedPlan.availablePlanFrecuencies.map((frequency, index) => (
+                        <MenuItem value={frequency} key={index}>
+                            {frequency}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+
             {props.selectedPlan.description &&
                 <Typography variant="body1">
                     {props.selectedPlan.description}
