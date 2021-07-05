@@ -13,7 +13,11 @@ import DataDisplayEditable from "../../../molecules/dataDisplay/dataDisplayEdita
 import AmountDetails from "../../../molecules/amountDetails";
 import ApplyCoupon from "./applyCoupon";
 import CancelSubscriptionModal from "./cancelSubscriptionModal";
-import EditSubscriptionAttributeModal from "./editSubscriptionAttributeModal";
+import EditPlanModal from "./editPlanModal";
+import EditPlanVariantModal from "./editPlanVariantModal";
+import EditFrequencyModal from "./editFrequencyModal";
+import EditRestrictionsModal from "./editRestrictionsModal"
+import EditNextChargeDateModal from "./editNextChargeDateModal"
 // import DataDisplayOrderTable from "./dataDisplayOrderTable"
 // import CancelOrderModal from "./cancelOrderModal"
 // import SkipWeekModal from "./skipWeekModal"
@@ -25,9 +29,10 @@ const SubscriptionGrid = (props) => {
         subscriptionId: '123',
         clientName: 'Alejo Scotti',
         state: 'Activo',
+        planId: '1',
         planName: 'Plan Familiar',
         planVariantDescription: '3 recetas para 3 personas',
-        frequency: 'semanal',
+        frequency: 'Semanal',
         nextPaymentDate: '10/12/2021',
         paymentMethod: 'Mastercard terminada en 1234',
         addressName: 'Av. Fausto Elio 42, 46011, Valencia'
@@ -51,7 +56,11 @@ const SubscriptionGrid = (props) => {
 
     const theme = useTheme();
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
-    const [openEditSubscriptionAttributeModal, setOpenEditSubscriptionAttributeModal] = useState(false);
+    const [openEditPlanModal, setOpenEditPlanModal] = useState(false);
+    const [openEditPlanVariantModal, setOpenEditPlanVariantModal] = useState(false);
+    const [openEditFrequencyModal, setOpenEditFrequencyModal] = useState(false);
+    const [openEditNextChargeDateModal, setOpenEditNextChargeDateModal] = useState(false);
+    const [openEditRestrictionsModal, setOpenEditRestrictionsModal] = useState(false);
     const [couponCode, setCouponCode] = useState('');
 
 
@@ -71,20 +80,83 @@ const SubscriptionGrid = (props) => {
     }
 
 
-    // Edit Subscription Attribute Modal Functions
+    // Edit Plan Modal Functions
 
-    const handleClickOpenEditSubscriptionAttributeModal = () => {
-        setOpenEditSubscriptionAttributeModal(true);
+    const handleClickOpenEditPlanModal = () => {
+        setOpenEditPlanModal(true);
     };
 
-    const handleCloseEditSubscriptionAttributeModal = () => {
-        setOpenEditSubscriptionAttributeModal(false);
+    const handleCloseEditPlanModal = () => {
+        setOpenEditPlanModal(false);
     };
 
-    const handleEditSubscriptionAttribute = (reason, comments) => {
-        alert(`cancel: ${JSON.stringify(reason)}, ${comments}`)
-        setOpenEditSubscriptionAttributeModal(false);
+    const handleEditPlan = (newPlanId, newPlanVariantId) => {
+        alert(`new plan: ${newPlanId}, ${newPlanVariantId}`)
+        setOpenEditPlanModal(false);
     }
+
+    // Edit Plan Variant Modal Functions
+
+    const handleClickOpenEditPlanVariantModal = () => {
+        setOpenEditPlanVariantModal(true);
+    };
+
+    const handleCloseEditPlanVariantModal = () => {
+        setOpenEditPlanVariantModal(false);
+    };
+
+    const handleEditPlanVariant = (planId, newPlanVariantId) => {
+        alert(`new plan: ${planId}, ${newPlanVariantId}`)
+        setOpenEditPlanVariantModal(false);
+    }
+
+    // Edit Frequency Modal Functions
+
+    const handleClickOpenEditFrequencyModal = () => {
+        setOpenEditFrequencyModal(true);
+    };
+
+    const handleCloseEditFrequencyModal = () => {
+        setOpenEditFrequencyModal(false);
+    };
+
+    const handleEditFrequency = frequency => {
+        alert(`new frequency: ${frequency}`)
+        setOpenEditFrequencyModal(false);
+    }
+
+
+    // Edit Next Charge Date Modal Functions
+
+    const handleClickOpenEditNextChargeDateModal = () => {
+        setOpenEditNextChargeDateModal(true);
+    };
+
+    const handleCloseEditNextChargeDateModal = () => {
+        setOpenEditNextChargeDateModal(false);
+    };
+
+    const handleChangeNextChargeDate = date => {
+        alert(`new date: ${date}`)
+        setOpenEditNextChargeDateModal(false);
+    }
+
+
+    // Edit Restrictions Modal Functions
+
+    const handleClickOpenEditRestrictionsModal = () => {
+        setOpenEditRestrictionsModal(true);
+    };
+
+    const handleCloseEditRestrictionsModal = () => {
+        setOpenEditRestrictionsModal(false);
+    };
+
+    const handleEditRestrictions = (restriction, comments) => {
+        alert(`new frequency: ${restriction} ${comments}`)
+        setOpenEditRestrictionsModal(false);
+    }
+
 
     // Coupon Functions
 
@@ -105,22 +177,19 @@ const SubscriptionGrid = (props) => {
                         <DataDisplay title='Subscription ID' text={subscriptionDetail.subscriptionId} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Cliente' text={subscriptionDetail.clientName} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Estado' text={subscriptionDetail.state} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayEditable title='Plan' text={subscriptionDetail.planName} handleClick={handleClickOpenEditSubscriptionAttributeModal} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayEditable title='Variante' text={subscriptionDetail.planVariantDescription} handleClick={handleClickOpenEditSubscriptionAttributeModal} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayEditable title='Frecuencia' text={subscriptionDetail.frequency} handleClick={handleClickOpenEditSubscriptionAttributeModal} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayEditable title='Próximo cobro' text={subscriptionDetail.nextPaymentDate} handleClick={handleClickOpenEditSubscriptionAttributeModal} style={{ marginBottom: theme.spacing(3) }} />
+                        <DataDisplayEditable title='Plan' text={subscriptionDetail.planName} handleClick={handleClickOpenEditPlanModal} style={{ marginBottom: theme.spacing(3) }} />
+                        <DataDisplayEditable title='Variante' text={subscriptionDetail.planVariantDescription} handleClick={handleClickOpenEditPlanVariantModal} style={{ marginBottom: theme.spacing(3) }} />
+                        <DataDisplayEditable title='Frecuencia' text={subscriptionDetail.frequency} handleClick={handleClickOpenEditFrequencyModal} style={{ marginBottom: theme.spacing(3) }} />
+                        <DataDisplayEditable title='Próximo cobro' text={subscriptionDetail.nextPaymentDate} handleClick={handleClickOpenEditNextChargeDateModal} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Método de pago' text={subscriptionDetail.paymentMethod} style={{ marginBottom: theme.spacing(3) }} />
                         <DataDisplay title='Dirección de entrega' text={subscriptionDetail.addressName} style={{ marginBottom: theme.spacing(3) }} />
-                        <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelSubscriptionModal}>
-                            CANCELAR SUSCRIPCIÓN
-                        </Button>
                     </PaperWithTitleContainer>
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Restricciones">
-                                <DataDisplayEditable title='Rescricción' text={restrictions.restriction.text} handleClick={handleClickOpenEditSubscriptionAttributeModal} style={{ marginBottom: theme.spacing(2) }} />
+                                <DataDisplayEditable title='Rescricción' text={restrictions.restriction.text} handleClick={handleClickOpenEditRestrictionsModal} style={{ marginBottom: theme.spacing(2) }} />
                                 <DataDisplay title='Comentarios' text={restrictions.comments} />
                             </PaperWithTitleContainer>
                         </Grid>
@@ -134,6 +203,15 @@ const SubscriptionGrid = (props) => {
                                 <ApplyCoupon handleChange={handleChangeCouponInput} handleClick={handleClickApplyCoupon} value={couponCode} />
                             </PaperWithTitleContainer>
                         </Grid>
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelSubscriptionModal}>
+                                        CANCELAR SUSCRIPCIÓN
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
@@ -142,10 +220,31 @@ const SubscriptionGrid = (props) => {
                 handleClose={handleCloseCancelSubscriptionModal}
                 handlePrimaryButtonClick={handleCancelSubscription}
             />
-            <EditSubscriptionAttributeModal
-                open={openEditSubscriptionAttributeModal}
-                handleClose={handleCloseEditSubscriptionAttributeModal}
-                handlePrimaryButtonClick={handleEditSubscriptionAttribute}
+            <EditPlanModal
+                open={openEditPlanModal}
+                handleClose={handleCloseEditPlanModal}
+                handlePrimaryButtonClick={handleEditPlan}
+            />
+            <EditPlanVariantModal
+                open={openEditPlanVariantModal}
+                handleClose={handleCloseEditPlanVariantModal}
+                handlePrimaryButtonClick={handleEditPlanVariant}
+                planId={subscriptionDetail.planId}
+            />
+            <EditFrequencyModal
+                open={openEditFrequencyModal}
+                handleClose={handleCloseEditFrequencyModal}
+                handlePrimaryButtonClick={handleEditFrequency}
+            />
+            <EditRestrictionsModal
+                open={openEditRestrictionsModal}
+                handleClose={handleCloseEditRestrictionsModal}
+                handlePrimaryButtonClick={handleEditRestrictions}
+            />
+            <EditNextChargeDateModal
+                open={openEditNextChargeDateModal}
+                handleClose={handleCloseEditNextChargeDateModal}
+                handlePrimaryButtonClick={handleChangeNextChargeDate}
             />
         </>
     );

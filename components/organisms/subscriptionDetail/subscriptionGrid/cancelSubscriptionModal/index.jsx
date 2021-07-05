@@ -37,6 +37,10 @@ const CancelSubscriptionModal = (props) => {
     const [reasonSelected, setReason] = useState({});
     const [cancellationComments, setCancellationComments] = useState('')
 
+    useEffect(() => {
+        setReason({})
+        setCancellationComments('')
+    }, [props.open]);
 
 
     const handleChangeReason = event => {
@@ -51,8 +55,6 @@ const CancelSubscriptionModal = (props) => {
 
     const handleSubmitCancellation = () => {
         props.handlePrimaryButtonClick(reasonSelected, cancellationComments)
-        setReason({})
-        setCancellationComments('')
     }
 
     return (

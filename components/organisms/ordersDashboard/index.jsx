@@ -9,7 +9,8 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 
 // Internal components
-import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
+// import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
+import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
 import Tabs from "../../molecules/tabs/tabs";
 import OrdersTable from "./ordersTable/index";
 
@@ -52,10 +53,12 @@ const OrdersDashboard = (props) => {
     const options = ['PRÓXIMAS ORDENES', 'ORDENES PROCESADAS', 'PAGOS RECHAZADOS'];
     const content = [nextOrders, processedOrders, refusedOrder];
 
-    const handleClick = () => alert('asd')
+    const handleClickImport = () => alert('Import')
+    const handleClickExport = () => alert('Export')
+
     return (
-        <Container size="md">
-            <DashboardWithButton title="Ordenes" buttonText="Exportar a CSV" startIcon handleClick={handleClick} />
+        <Container>
+            <DashboardTitleWithCSV title="Ordenes" import export handleClickImport={handleClickImport} handleClickExport={handleClickExport} />
             <Tabs options={options} content={content} handleChange={handleChangeTab} value={tabValue} />
         </Container>
     );

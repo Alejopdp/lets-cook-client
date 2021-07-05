@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 
 const DashboardContainer = (props) => {
     return (
-        <Container maxWidth={props.maxWidth || "lg"} style={{ width: "100%", paddingTop: 100, paddingBottom: 64 }}>
+        <Container maxWidth={props.maxWidth || "xl"} style={{ minHeight: "100vh", width: "100%", paddingTop: 100, paddingBottom: 64 }}>
             <Grid container spacing={2}>
                 {props.children}
             </Grid>
