@@ -19,6 +19,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import { Typography } from "@material-ui/core";
 
+// TODO: Usar molécula de tablePaginationActions
 // Internal components
 import TablePaginationActions from "./tablePaginationActions";
 

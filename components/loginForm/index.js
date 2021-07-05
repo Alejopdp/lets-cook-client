@@ -86,8 +86,8 @@ const LoginForm = (props) => {
             router.push("/dashboard");
         } else {
             setserverError(res.data.message);
+            setisSubmitting(false);
         }
-        setisSubmitting(false);
     };
 
     return (

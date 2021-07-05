@@ -153,7 +153,7 @@ const RecipeForm = ({ formData, recipeData }) => {
         formDataToCreate.append("shortDescription", generalData.shortDescription);
         formDataToCreate.append("longDescription", generalData.longDescription);
         formDataToCreate.append("cookDuration", generalData.cookDuration);
-        formDataToCreate.append("diffcultyLevel", difficultyLevel);
+        formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
         formDataToCreate.append("weight", generalData.weight);
         formDataToCreate.append("recipeImage", generalData.image[0]);
@@ -320,6 +320,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                             <FormInput
                                 label="Tiempo de cocina"
                                 name="cookDuration"
+                                type="number"
                                 value={recipeData && recipeData.cookDuration}
                                 handleChange={handleGeneralDataChange}
                             />
@@ -409,7 +410,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                                         style={{ margin: "0px" }}
                                                         control={
                                                             <Checkbox
-                                                                onChange={(e) =>
+                                                                handleChange={(e) =>
                                                                     handleRestrictionsForVariants(
                                                                         index,
                                                                         e.target.name,
@@ -482,7 +483,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                     <Checkbox
                                         key={plan.id}
                                         label={plan.name}
-                                        onChange={handlePlansChange}
+                                        handleChange={handlePlansChange}
                                         checked={plans.some((id) => id === plan.id.toString())}
                                         value={plan.id}
                                     />

@@ -60,7 +60,7 @@ const Others = (props) => {
                         label={lang.hasRecipesText}
                         value={props.data.hasRecipes}
                         checked={props.data.hasRecipes}
-                        onChange={props.handleHasRecipes}
+                        handleChange={props.handleHasRecipes}
                     />
                 </PaperWithTitleContainer>
             </Grid>
@@ -76,7 +76,7 @@ const Others = (props) => {
                             {props.additionalPlans.map((plan) => (
                                 <Checkbox
                                     label={plan.name}
-                                    onChange={props.handleAdditionalPlansChange}
+                                    handleChange={props.handleAdditionalPlansChange}
                                     checked={props.selectedAdditionalPlansIds.some((id) => id === plan.id)}
                                     value={plan.id}
                                 />
