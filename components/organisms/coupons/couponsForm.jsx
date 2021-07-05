@@ -120,7 +120,7 @@ const CouponsForm = ({ lang, ...props }) => {
     const { handleOnChange, defaultFillItems, form, handleApplicationLimitChange, handleQtyLimitChange, getQtyLimitValue } =
         useCouponsForm(frominitialState);
 
-    const { locale } = useRouter();
+    const { locale, push } = useRouter();
     const { enqueueSnackbar } = useSnackbar();
 
     const classes = useStyles();
@@ -197,7 +197,8 @@ const CouponsForm = ({ lang, ...props }) => {
 
     const _handleChangeLanguage = () => {};
 
-    const _handleClickCreateButton = async () => {
+    const _handleClickCreateButton = async (e) => {
+        e.preventDefault();
         const body = {
             ...form,
             application_limit: form.application_limit.map((limit) => (!!limit.children ? { ...limit, children: "" } : limit)), // Gives circular reference error if any has a children property (a dom element)
@@ -206,6 +207,7 @@ const CouponsForm = ({ lang, ...props }) => {
 
         if (res.status === 200) {
             enqueueSnackbar("El cupón fue creado correctamente", { variant: "success" });
+            push("/cupones");
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
