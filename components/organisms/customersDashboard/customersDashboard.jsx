@@ -69,6 +69,10 @@ const CustomersDashboard = (props) => {
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    const handleExportToCSV = () => {
+        alert("Exportar a CSV")
+    }
+
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear")
     }
@@ -114,6 +118,8 @@ const CustomersDashboard = (props) => {
                 title="Clientes"
                 buttonText="Crear cliente"
                 startIcon
+                toCSV
+                handleExportToCSV={handleExportToCSV}
                 handleClick={handleCreateCustomer}
             />
 

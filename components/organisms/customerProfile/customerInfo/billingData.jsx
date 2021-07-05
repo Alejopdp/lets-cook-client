@@ -31,13 +31,6 @@ const BillingData = (props) => {
     }
 
     const handleModifyBillingData = async () => {
-        // const formDataToUpdate = new FormData();
-
-        // formDataToUpdate.append("address", formData.address);
-        // formDataToUpdate.append("clarifications", formData.clarifications);
-        // formDataToUpdate.append("name", formData.name);
-        // formDataToUpdate.append("personalIdNumber", formData.personalIdNumber);
-
         // const res = await updateCustomer(formDataToUpdate, props.customer.id);
 
         const res = { status: 200 };
@@ -47,6 +40,8 @@ const BillingData = (props) => {
             enqueueSnackbar("Datos de facturación modificados", {
                 variant: "success",
             });
+
+            props.handleUpdateBillingData(formData);
         } else {
             setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se han podido modificar los datos de facturación", {
@@ -57,7 +52,7 @@ const BillingData = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Datos de facturación" height={"418px"} flex>
+        <PaperWithTitleContainer title="Datos de facturación" height={"479px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 

@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "flex-start",
+        justifyContent: "center",
+        alignContent: "flex-start"
     },
 }));
 
@@ -26,11 +27,11 @@ const CustomerInfo = (props) => {
 
     return (
         <Box className={container}>
-            <PersonalData customer={props.customer} handlePersonalDataSubmit={props.handlePersonalDataSubmit} />
+            <PersonalData customer={props.customer} handleUpdatePersonalData={props.handleUpdatePersonalData} />
 
-            <DeliveryAddress customer={props.customer.deliveryAddress} customerId={props.customer.id} />
+            <DeliveryAddress customer={props.customer.deliveryAddress} handleUpdateDeliveryAddress={props.handleUpdateDeliveryAddress} />
 
-            <BillingData customer={props.customer.billingData} />
+            <BillingData customer={props.customer.billingData} handleUpdateBillingData={props.handleUpdateBillingData} />
 
             <PaymentMethods customer={props.customer.paymentMethod} />
         </Box>

@@ -34,16 +34,6 @@ const PersonalData = (props) => {
     };
 
     const handleModifyPersonalData = async () => {
-        // const formDataToUpdate = new FormData();
-
-        // formDataToUpdate.append("name", formData.name);
-        // formDataToUpdate.append("lastName", formData.lastName);
-        // formDataToUpdate.append("email", formData.email);
-        // formDataToUpdate.append("phone1", formData.phone1);
-        // formDataToUpdate.append("phone2", formData.phone2);
-        // formDataToUpdate.append("bornDate", formData.bornDate);
-        // formDataToUpdate.append("preferredLanguage", formData.preferredLanguage);
-
         // const res = await updateCustomer(formDataToUpdate, props.customer.id);
 
         const res = { status: 200 };
@@ -54,7 +44,7 @@ const PersonalData = (props) => {
                 variant: "success",
             });
 
-            props.handlePersonalDataSubmit(formData);
+            props.handleUpdatePersonalData(formData);
         } else {
             setPersonalDataModalOpen(false);
             enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {

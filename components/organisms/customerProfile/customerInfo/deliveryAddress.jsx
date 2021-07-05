@@ -22,6 +22,8 @@ const DeliveryAddress = (props) => {
         preferredSchedule: props.customer.preferredSchedule.value || "",
     });
 
+    console.log(props.customer)
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -30,12 +32,6 @@ const DeliveryAddress = (props) => {
     };
 
     const handleModifyDeliveryAddress = async () => {
-        // const formDataToUpdate = new FormData();
-
-        // formDataToUpdate.append("address", formData.address);
-        // formDataToUpdate.append("clarifications", formData.clarifications);
-        // formDataToUpdate.append("preferredSchedule", formData.preferredSchedule);
-
         // const res = await updateCustomer(formDataToUpdate, props.customerId);
 
         const res = { status: 200 };
@@ -45,6 +41,8 @@ const DeliveryAddress = (props) => {
             enqueueSnackbar("Datos de entrega modificados", {
                 variant: "success",
             });
+
+            props.handleUpdateDeliveryAddress(formData);
         } else {
             setDeliveryAddressModalOpen(false);
             enqueueSnackbar("No se ha podido modificar la dirección de entrega", {
@@ -55,7 +53,7 @@ const DeliveryAddress = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Dirección de entrega" height={"418px"} flex>
+        <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 

@@ -53,17 +53,35 @@ const CustomerSubscriptionsTable = (props) => {
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const [formData, setFormData] = useState({
-        plan: "",
-        variant: ""
-    });
+    const [subscriptions, setSubscriptions] = useState([...props.subscriptions] || []);
+    const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
+    const [selectedVariation, setSelectedVariation] = useState({});
+    // const [selectedFrequency, setSelectedFrequency] = useState({ availablePlanFrecuencies: [] });
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+    const handlePlanSelect = (e) => {
+        setSelectedPlan(e.target.value);
+    }
+
+    const handleVariationSelect = (e) => {
+        setSelectedVariation(e.target.value);
+    }
+
+    var subscriptionToAdd = {
+        subscriptionId: selectedPlan.id,
+        plan: selectedPlan.name,
+        variant: selectedVariation.name,
+        price: selectedVariation.price
+    }
+
+    const handleSetSubscriptions = () => {
+        setSubscriptions([...subscriptions, subscriptionToAdd])
+    }
+
+    // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
+    // console.log("Suscripciones:", subscriptions);
+    // console.log("Planes:", props.plans)
+    console.log(selectedPlan)
+    // console.log(selectedVariation)
 
     const handleAddPlan = () => {
         const res = { status: 200 };
@@ -73,6 +91,8 @@ const CustomerSubscriptionsTable = (props) => {
             enqueueSnackbar("Plan añadido", {
                 variant: "success",
             });
+
+            handleSetSubscriptions()
         } else {
             enqueueSnackbar("No se ha podido añadir el plan", {
                 variant: "error",
@@ -116,7 +136,7 @@ const CustomerSubscriptionsTable = (props) => {
                 </TableHead>
 
                 <TableBody>
-                    {props.subscriptions.map((subscription, index) => (
+                    {subscriptions.map((subscription, index) => (
                         <TableRow key={index}>
                             <TableCell className={idCell}>
                                 <Typography variant="body1">#{subscription.subscriptionId}</Typography>
@@ -161,7 +181,15 @@ const CustomerSubscriptionsTable = (props) => {
         {isAddPlanModalOpen &&
             <ComplexModal
             title="Agregar Plan"
-            component={<AddPlanModal formData={formData} handleChange={handleChange} />}
+            component={
+                <AddPlanModal
+                    plans={props.plans}
+                    handlePlanSelect={handlePlanSelect}
+                    handleVariationSelect={handleVariationSelect}
+                    selectedPlan={selectedPlan}
+                    selectedVariation={selectedVariation}
+                />
+            }
             open={isAddPlanModalOpen}
             cancelButtonText="Cancelar"
             confirmButtonText="Agregar Plan"

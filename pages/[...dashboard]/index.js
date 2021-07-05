@@ -156,7 +156,7 @@ const Index = ({ token, ...props }) => {
                 return <CustomersDashboard />;
 
             case "gestion-de-clientes/modificar":
-                return <CustomerProfile />;
+                return <CustomerProfile plans={props.plans} />;
 
             case "gestion-de-clientes/crear":
                 return <CreateCustomer />;
