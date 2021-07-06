@@ -25,7 +25,7 @@ const Navbar = (props) => {
                 <Hidden mdUp>
                     <IconButton
                         edge="start"
-                        color="inherit"
+                        color="textSecondary"
                         aria-label="open drawer"
                         onClick={props.handleOpenDrawer}
                         className={clsx(classes.menuButton, props.opened && classes.menuButtonHidden)}

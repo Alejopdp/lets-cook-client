@@ -32,10 +32,10 @@ const SubscriptionsDashboard = (props) => {
     const handleClickExport = () => alert('Export')
 
     return (
-        <Container>
+        <>
             <DashboardTitleWithCSV title="Suscripciones" export handleClickExport={handleClickExport} />
             <SubscriptionTable rows={nextOrdersRows} />
-        </Container>
+        </>
     );
 };
 

@@ -72,7 +72,6 @@ const PaymentOrderGrid = (props) => {
 
     return (
         <>
-            <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <PaperWithTitleContainer fullWidth={true} title="Información general">
                         <DataDisplay title='Payment Order ID' text={paymentOrderDetail.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
@@ -106,7 +105,6 @@ const PaymentOrderGrid = (props) => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
             <RefundModal
                 open={openRefundModal}
                 handleClose={handleCloseRefundModal}

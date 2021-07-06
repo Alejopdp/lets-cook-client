@@ -20,8 +20,11 @@ const CreatePlanForm = (props) => {
     const [generalData, setgeneralData] = useState({
         name: "",
         description: "",
+        slug: "",
         sku: "",
         image: [],
+        iconColor: [],
+        iconByg: [],
     });
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
@@ -29,6 +32,7 @@ const CreatePlanForm = (props) => {
         isActive: "",
         planType: "",
         hasRecipes: false,
+        abilityToChooseRecipes: false,
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
@@ -141,10 +145,31 @@ const CreatePlanForm = (props) => {
         });
     };
 
-    const handleDropFile = (files) => {
+    const handleAbilityToChooseRecipes = () => {
+        setotherData({
+            ...otherData,
+            abilityToChooseRecipes: !otherData.abilityToChooseRecipes,
+        });
+    };
+
+    const handleDropFileImage = (files) => {
         setgeneralData({
             ...generalData,
             image: files,
+        });
+    };
+
+    const handleDropFileIconColor = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconColor: files,
+        });
+    };
+
+    const handleDropFileIconByg = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconByg: files,
         });
     };
 
@@ -253,7 +278,7 @@ const CreatePlanForm = (props) => {
         <>
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
+                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFileImage={handleDropFileImage} handleDropFileIconColor={handleDropFileIconColor} handleDropFileIconByg={handleDropFileIconByg}/>
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
@@ -275,18 +300,21 @@ const CreatePlanForm = (props) => {
                     />
                 </Grid>
             </Grid>
-            <Grid item xs={12} md={4} spacing={2}>
-                <Others
-                    data={otherData}
-                    frequency={frequency}
-                    handleFrequencyChange={handleFrequencyChange}
-                    handleRemoveFrequency={handleRemoveFrequency}
-                    handleChange={handleOtherData}
-                    additionalPlans={props.additionalPlans}
-                    handleAdditionalPlansChange={handleAdditionalPlansChange}
-                    handleHasRecipes={handleHasRecipes}
-                    selectedAdditionalPlansIds={additionalPlans}
-                />
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                    <Others
+                        data={otherData}
+                        frequency={frequency}
+                        handleFrequencyChange={handleFrequencyChange}
+                        handleRemoveFrequency={handleRemoveFrequency}
+                        handleChange={handleOtherData}
+                        additionalPlans={props.additionalPlans}
+                        handleAdditionalPlansChange={handleAdditionalPlansChange}
+                        handleHasRecipes={handleHasRecipes}
+                        handleAbilityToChooseRecipes={handleAbilityToChooseRecipes}
+                        selectedAdditionalPlansIds={additionalPlans}
+                    />
+                </Grid>
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons

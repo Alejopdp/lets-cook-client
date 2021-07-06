@@ -139,17 +139,16 @@ const OrderGrid = (props) => {
 
     return (
         <>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
-                    <PaperWithTitleContainer fullWidth={true} title="Información general">
-                        <DataDisplay title='Order ID' text={orderDetail.orderId} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Cliente' text={orderDetail.clientName} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Fecha de cobro' text={orderDetail.paymentDate} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Fecha de envío' text={orderDetail.deliveryDate} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Estado' text={orderDetail.state} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayOrderTable title='Subscripción relacionada' columns={columns} rows={rows} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Payment Order ID relacionada' text={orderDetail.relatedPaymentOrderId.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
-                        {/* <div>
+            <Grid item xs={12} md={8}>
+                <PaperWithTitleContainer fullWidth={true} title="Información general">
+                    <DataDisplay title='Order ID' text={orderDetail.orderId} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Cliente' text={orderDetail.clientName} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Fecha de cobro' text={orderDetail.paymentDate} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Fecha de envío' text={orderDetail.deliveryDate} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Estado' text={orderDetail.state} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplayOrderTable title='Subscripción relacionada' columns={columns} rows={rows} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Payment Order ID relacionada' text={orderDetail.relatedPaymentOrderId.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
+                    {/* <div>
                             <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelOrderModal}>
                                 CANCELAR ORDEN
                             </Button>
@@ -158,35 +157,30 @@ const OrderGrid = (props) => {
                             </Button>
                         </div> */}
 
-                    </PaperWithTitleContainer>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Recetas de la semana actual">
-                                <ActualWeekRecipesDetail data={actualWeekOrder} handleClick={handleClickOpenRecipesModal} />
-                            </PaperWithTitleContainer>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                                <div>
-                                    <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelOrderModal}>
-                                        CANCELAR ORDEN
+                </PaperWithTitleContainer>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Recetas de la semana actual">
+                            <ActualWeekRecipesDetail data={actualWeekOrder} handleClick={handleClickOpenRecipesModal} />
+                        </PaperWithTitleContainer>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                            <div>
+                                <Button size="medium" style={{ color: '#FC1919' }} onClick={handleClickOpenCancelOrderModal}>
+                                    CANCELAR ORDEN
                                     </Button>
                                 <div>
                                 </div>
-                                    <Button size="medium" style={{ color: theme.palette.secondary.main }} onClick={handleClickOpenSkipWeekModal}>
-                                        SALTAR SEMANA
+                                <Button size="medium" style={{ color: theme.palette.secondary.main }} onClick={handleClickOpenSkipWeekModal}>
+                                    SALTAR SEMANA
                                     </Button>
-                                </div>
-                            </PaperWithTitleContainer>
-                        </Grid>
+                            </div>
+                        </PaperWithTitleContainer>
                     </Grid>
                 </Grid>
-
-
-
-
             </Grid>
             <CancelOrderModal
                 open={openCancelOrderModal}

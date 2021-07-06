@@ -10,10 +10,10 @@ import PaymentOrderGrid from "./paymentOrderGrid";
 
 const PaymentOrderDetail = (props) => {
     return (
-        <Container>
+        <>
             <DashboardWithBackTitle title="Detalle de la orden de pago" />
             <PaymentOrderGrid />
-        </Container>
+        </>
     );
 };
 

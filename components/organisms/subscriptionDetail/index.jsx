@@ -10,10 +10,10 @@ import SubscriptionGrid from "./subscriptionGrid";
 
 const SubscriptionDetail = (props) => {
     return (
-        <Container>
+        <>
             <DashboardWithBackTitle title="Detalle de la suscripción" />
             <SubscriptionGrid />
-        </Container>
+        </>
     );
 };
 

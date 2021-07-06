@@ -4,8 +4,10 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { toggleWeekState } from "../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 
 // External components
+import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
@@ -22,7 +24,7 @@ import SimpleModal from "../../molecules/simpleModal/simpleModal";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        marginTop: theme.spacing(4)
+        // marginTop: theme.spacing(2)
     },
     table: {
         minWidth: 500,
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomerCalendarTable = (props) => {
+    const router = useRouter();
     const { tableContainer, table, cells, idCell } = useStyles();
 
     const [orders, setOrders] = useState([...props.orders] || []);
@@ -71,6 +74,7 @@ const CustomerCalendarTable = (props) => {
 
     return (
         <>
+    <Grid item xs={12}>
         <TableContainer component={Paper} className={tableContainer}>
             <Table className={table} aria-label="custom pagination table">
                 <TableHead>
@@ -133,7 +137,7 @@ const CustomerCalendarTable = (props) => {
                             </TableCell>
 
                             <TableCell className={cells}>
-                                <IconButton onClick={() => alert("Redirigir a 'Detalle de la orden'")}>
+                                <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden", query: { orderId: order.orderId } })}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </TableCell>
@@ -142,7 +146,7 @@ const CustomerCalendarTable = (props) => {
                 </TableBody>
             </Table>
         </TableContainer>
-
+    </Grid>
         {isToggleStateModalOpen &&
             <SimpleModal
                 title={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}

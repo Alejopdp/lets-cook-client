@@ -53,7 +53,7 @@ const DeliveryAddress = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex>
+        <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex fullWidth>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 
@@ -69,7 +69,7 @@ const DeliveryAddress = (props) => {
                 style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
                 onClick={() => setDeliveryAddressModalOpen(true)}
             >
-                Modificar dirección de entrega {" >"}
+                Modificar dirección de entrega
             </Typography>
         </PaperWithTitleContainer>
 

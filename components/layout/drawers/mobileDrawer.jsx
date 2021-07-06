@@ -58,7 +58,7 @@ const MobileDrawer = (props) => {
                 onClose={props.onClose}
             >
                 {/* <div className={classes.appBarSpacer} /> */}
-                <Box display="flex" justifyContent="center" alignItems="center" paddingTop={2}>
+                <Box display="flex" justifyContent="center" alignItems="center" paddingTop={2} marginBottom={3}>
                     <Image src="/logo.png" alt="logo" width={82} height={28} style={{ margin: "auto" }} layout="fixed" />
                 </Box>
 

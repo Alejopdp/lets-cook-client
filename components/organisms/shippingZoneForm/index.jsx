@@ -15,10 +15,42 @@ import Input from "../../atoms/input/input";
 import CustomRadioGroup from "../../molecules/radioGroup";
 import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
 import FormPaperWithImageDropzone from "../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
+import SelectInput from "../../atoms/selectInput/SelectInput";
 
 const shippingZoneTypeOptions = [
     { label: "Gratis", value: "free" },
     { label: "Pago", value: "pay" },
+];
+
+const shippingDayOptions = [
+    {
+        value: 1,
+        label: 'Lunes',
+    },
+    {
+        value: 2,
+        label: 'Martes',
+    },
+    {
+        value: 3,
+        label: 'Miercoles',
+    },
+    {
+        value: 4,
+        label: 'Jueves',
+    },
+    {
+        value: 5,
+        label: 'Viernes',
+    },
+    {
+        value: 6,
+        label: 'Sábado',
+    },
+    {
+        value: 0,
+        label: 'Domingo',
+    },
 ];
 
 const ShippingZoneForm = (props) => {
@@ -32,11 +64,16 @@ const ShippingZoneForm = (props) => {
         zoneRef: props.shippingZone ? props.shippingZone.reference : "",
         price: props.shippingZone ? props.shippingZone.cost : 0,
         type: props.shippingZone && props.shippingZone.cost > 0 ? "pay" : "free",
+        shippingDay: props.shippingDay ? props.shippingDay : 2,
         file: [],
     });
 
     const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+        setValues(
+            {
+                ...values,
+                [prop]: event.target.value
+            });
     };
 
     const handleCreate = async () => {
@@ -78,16 +115,16 @@ const ShippingZoneForm = (props) => {
     };
 
     return (
-        <Container>
-            <Grid item container spacing={2} justify="center" direction="column">
-                <Grid item>
+        <>
+            <Grid container spacing={2} justify="center" direction="column">
+                <Grid item xs={12}>
                     <PaperWithTitleContainer title="Detalles" width={600}>
                         <Input label="Nombre" handleChange={handleChange("zoneName")} value={values.zoneName} />
                         <Input label="Referencia" handleChange={handleChange("zoneRef")} value={values.zoneRef} />
                     </PaperWithTitleContainer>
                 </Grid>
 
-                <Grid item container direction="column">
+                <Grid item xs={12}>
                     <PaperWithTitleContainer title="Coste de envío" width={600}>
                         <Grid item style={{ marginBottom: theme.spacing(1) }}>
                             <CustomRadioGroup
@@ -98,7 +135,7 @@ const ShippingZoneForm = (props) => {
                             />
                         </Grid>
                         {values.type === "pay" && (
-                            <Grid item container direction="row" alignItems="center" spacing={2}>
+                            <Grid container direction="row" alignItems="center" spacing={2}>
                                 <Grid item>
                                     <Input type="number" label="Valor" handleChange={handleChange("price")} value={values.price} />
                                 </Grid>
@@ -109,6 +146,18 @@ const ShippingZoneForm = (props) => {
                                 </Grid>
                             </Grid>
                         )}
+                    </PaperWithTitleContainer>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer title="Día de entrega" width={600}>
+                        <SelectInput
+                            name='shippingDay'
+                            label="Día de entrega"
+                            value={values.shippingDay}
+                            handleChange={handleChange("shippingDay")}
+                            options={shippingDayOptions}
+                        />
                     </PaperWithTitleContainer>
                 </Grid>
 
@@ -133,7 +182,7 @@ const ShippingZoneForm = (props) => {
                     createButtonText={`${props.update ? "Modificar" : "Crear"} zona de envío`}
                 />
             </Box>
-        </Container>
+        </>
     );
 };
 

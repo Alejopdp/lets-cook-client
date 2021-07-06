@@ -12,7 +12,7 @@ import InformationItem from "../../../atoms/informationItem/informationItem";
 const Applications = (props) => {
     return (
         <Grid item xs={12}>
-            <PaperWithTitleContainer title="Aplicaciones" fullWdith>
+            <PaperWithTitleContainer title="Aplicaciones" fullWidth>
                 <Typography variant="body1" color="initial">
                     {props.applications || "10 de ∞"}
                 </Typography>

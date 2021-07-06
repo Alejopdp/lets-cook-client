@@ -20,9 +20,12 @@ const UpdatePlanForm = (props) => {
     const [generalData, setgeneralData] = useState({
         id: "",
         name: "",
+        slug: "",
         description: "",
         sku: "",
         image: [],
+        iconColor: [],
+        iconByg: [],
     });
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
@@ -30,6 +33,7 @@ const UpdatePlanForm = (props) => {
         isActive: null,
         planType: "",
         hasRecipes: false,
+        abilityToChooseRecipes: false,
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
@@ -168,10 +172,31 @@ const UpdatePlanForm = (props) => {
         });
     };
 
-    const handleDropFile = (files) => {
+    const handleAbilityToChooseRecipes = () => {
+        setotherData({
+            ...otherData,
+            abilityToChooseRecipes: !otherData.abilityToChooseRecipes,
+        });
+    };
+
+    const handleDropFileImage = (files) => {
         setgeneralData({
             ...generalData,
             image: files,
+        });
+    };
+
+    const handleDropFileIconColor = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconColor: files,
+        });
+    };
+
+    const handleDropFileIconByg = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconByg: files,
         });
     };
 
@@ -267,10 +292,10 @@ const UpdatePlanForm = (props) => {
     };
 
     return (
-        <Grid container item spacing={2}>
-            <Grid item xs={8}>
+        <>
+            <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
+                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFileImage={handleDropFileImage} handleDropFileIconColor={handleDropFileIconColor} handleDropFileIconByg={handleDropFileIconByg}/>
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
@@ -292,18 +317,21 @@ const UpdatePlanForm = (props) => {
                     />
                 </Grid>
             </Grid>
-            <Grid item xs={4} spacing={2}>
-                <Others
-                    data={otherData}
-                    frequency={frequency}
-                    handleFrequencyChange={handleFrequencyChange}
-                    handleRemoveFrequency={handleRemoveFrequency}
-                    handleChange={handleOtherData}
-                    selectedAdditionalPlansIds={additionalPlans}
-                    additionalPlans={props.additionalPlans}
-                    handleAdditionalPlansChange={handleAdditionalPlansChange}
-                    handleHasRecipes={handleHasRecipes}
-                />
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                    <Others
+                        data={otherData}
+                        frequency={frequency}
+                        handleFrequencyChange={handleFrequencyChange}
+                        handleRemoveFrequency={handleRemoveFrequency}
+                        handleChange={handleOtherData}
+                        selectedAdditionalPlansIds={additionalPlans}
+                        additionalPlans={props.additionalPlans}
+                        handleAdditionalPlansChange={handleAdditionalPlansChange}
+                        handleHasRecipes={handleHasRecipes}
+                        handleAbilityToChooseRecipes={handleAbilityToChooseRecipes}
+                    />
+                </Grid>
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
@@ -313,7 +341,7 @@ const UpdatePlanForm = (props) => {
                     isCreateButtonDisabled={!isFormOkForCreation() || isSubmitting}
                 />
             </Grid>
-        </Grid>
+        </>
     );
 };
 

@@ -2,8 +2,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRouter } from "next/router";
 
 // External components
+import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
@@ -19,7 +21,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        marginTop: theme.spacing(4)
+        // marginTop: theme.spacing(2)
     },
     table: {
         minWidth: 500,
@@ -34,66 +36,72 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomerPurchaseHistoryTable = (props) => {
+    const router = useRouter();
     const { tableContainer, table, cells, idCell } = useStyles();
 
     return (
-        <TableContainer component={Paper} className={tableContainer}>
-            <Table className={table} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={idCell}>
-                            <Typography variant="subtitle1">Fecha de cobro</Typography>
-                        </TableCell>
+        <>
+            <Grid item xs={12}>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Payment Order ID</Typography>
-                        </TableCell>
+                <TableContainer component={Paper} className={tableContainer}>
+                    <Table className={table} aria-label="custom pagination table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className={idCell}>
+                                    <Typography variant="subtitle1">Fecha de cobro</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1"># Ordenes</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Payment Order ID</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Monto</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1"># Ordenes</Typography>
+                                </TableCell>
 
-                        <TableCell>
-                            <Typography variant="subtitle1">Estado</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Monto</Typography>
+                                </TableCell>
 
-                        <TableCell />
-                    </TableRow>
-                </TableHead>
+                                <TableCell>
+                                    <Typography variant="subtitle1">Estado</Typography>
+                                </TableCell>
 
-                <TableBody>
-                    {props.purchaseLogs.map((log, index) => (
-                        <TableRow key={index}>
-                            <TableCell className={idCell}>
-                                <Typography variant="body1">{log.date}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">#{log.paymentOrderId}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{log.ordersQty}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">€{log.price}</Typography>
-                            </TableCell>
-                            <TableCell >
-                                <Typography variant="body1">{log.status}</Typography>
-                            </TableCell>
+                                <TableCell />
+                            </TableRow>
+                        </TableHead>
 
-                            <TableCell className={cells}>
-                                <IconButton onClick={() => alert("Redirigir a 'Detalle de la orden de pago'")}>
-                                    <VisibilityIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                        <TableBody>
+                            {props.purchaseLogs.map((log, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className={idCell}>
+                                        <Typography variant="body1">{log.date}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">#{log.paymentOrderId}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{log.ordersQty}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">€{log.price}</Typography>
+                                    </TableCell>
+                                    <TableCell >
+                                        <Typography variant="body1">{log.status}</Typography>
+                                    </TableCell>
+
+                                    <TableCell className={cells}>
+                                        <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden-de-pago", query: { paymentOrderId: log.paymentOrderId } })}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+        </>
     );
 };
 

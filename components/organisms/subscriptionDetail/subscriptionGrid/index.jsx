@@ -171,7 +171,6 @@ const SubscriptionGrid = (props) => {
 
     return (
         <>
-            <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <PaperWithTitleContainer fullWidth={true} title="Información general">
                         <DataDisplay title='Subscription ID' text={subscriptionDetail.subscriptionId} style={{ marginBottom: theme.spacing(3) }} />
@@ -214,7 +213,6 @@ const SubscriptionGrid = (props) => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
             <CancelSubscriptionModal
                 open={openCancelSubscriptionModal}
                 handleClose={handleCloseCancelSubscriptionModal}
