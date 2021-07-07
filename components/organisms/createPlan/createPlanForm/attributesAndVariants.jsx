@@ -13,7 +13,6 @@ import Box from "@material-ui/core/Box";
 import { Add as AddIcon } from "@material-ui/icons";
 
 // Internal components
-import CreateButton from "../../../atoms/createButton/createButton";
 import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
 
@@ -25,6 +24,10 @@ const AttributesAndVariants = (props) => {
 
     const attributeKeyIsPersonasOrRecetas = (attr) => {
         return attr[0] === "Personas" || attr[0] === "Recetas";
+    };
+
+    const planHasRecipesAndAttributeIsRecipes = (attr) => {
+        return attr[0] === "Recetas" && props.hasRecipes;
     };
 
     return (
@@ -40,8 +43,14 @@ const AttributesAndVariants = (props) => {
                                     handleRemoveAttribute={() => props.handleRemoveAttribute(index)}
                                     keyValue={attr[0]}
                                     values={attr[1]}
-                                    isDeletable={!(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr))}
-                                    isKeyEditable={!(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr))}
+                                    isDeletable={
+                                        !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
+                                        !planHasRecipesAndAttributeIsRecipes(attr)
+                                    }
+                                    isKeyEditable={
+                                        !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
+                                        !planHasRecipesAndAttributeIsRecipes(attr)
+                                    }
                                     handleKeyChange={props.handleKeyChange}
                                     handleValuesChange={props.handleValuesChange}
                                     handleRemoveAttributeValue={props.handleRemoveAttributeValue}

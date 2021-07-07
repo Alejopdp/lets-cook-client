@@ -48,18 +48,39 @@ const CreatePlanForm = (props) => {
     };
 
     const handleOtherData = (propName, newValue) => {
-        if (propName === "planType" && newValue === "Principal") {
-            const attributesToAdd = [];
-            if (attributes.every((attr) => attr[0] !== "Personas")) attributesToAdd.push(["Personas", []]);
-            if (attributes.every((attr) => attr[0] !== "Recetas")) attributesToAdd.push(["Recetas", []]);
+        if (isUserSelectingPlanTypePrincipal) {
+            addPersonasAndRecetasAttributes();
+            addSemanalFrequency();
+            setotherData({
+                ...otherData,
+                [propName]: newValue,
+                hasRecipes: true,
+            });
 
-            setattributes([...attributes, ...attributesToAdd]);
+            return;
         }
 
         setotherData({
             ...otherData,
             [propName]: newValue,
         });
+    };
+
+    const isUserSelectingPlanTypePrincipal = (propName, newValue) => {
+        return propName === "planType" && newValue === "Principal";
+    };
+
+    const addPersonasAndRecetasAttributes = () => {
+        const attributesToAdd = [];
+        if (attributes.every((attr) => attr[0] !== "Personas")) attributesToAdd.push(["Personas", []]);
+        if (attributes.every((attr) => attr[0] !== "Recetas")) attributesToAdd.push(["Recetas", []]);
+
+        setattributes([...attributes, ...attributesToAdd]);
+    };
+
+    const addSemanalFrequency = () => {
+        if (frequency.some((freq) => freq === "Semanal")) return;
+        setfrequency(["Semanal", ...frequency]);
     };
 
     const handleAddAttribute = () => {
@@ -110,12 +131,15 @@ const CreatePlanForm = (props) => {
     };
 
     const handleFrequencyChange = (e, newValue) => {
-        if (newValue.length === 0) setfrequency(newValue);
+        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? ["Semanal"] : []);
         else if (newValue.every((newFreq) => frequency.some((stateFreq) => newFreq === stateFreq))) return;
         else setfrequency(newValue);
     };
 
+    const isPlanTypePrincipal = () => otherData.planType === "Principal";
+
     const handleRemoveFrequency = (freqToRemove) => {
+        if (freqToRemove === "Semanal" && isPlanTypePrincipal()) return;
         setfrequency(frequency.filter((freq) => freq !== freqToRemove));
     };
 
@@ -143,10 +167,18 @@ const CreatePlanForm = (props) => {
     };
 
     const handleHasRecipes = () => {
+        const newValue = !otherData.hasRecipes;
+
         setotherData({
             ...otherData,
-            hasRecipes: !otherData.hasRecipes,
+            hasRecipes: isPlanTypePrincipal() ? true : newValue,
         });
+
+        if (newValue) addRecetasAttribute();
+    };
+
+    const addRecetasAttribute = () => {
+        if (attributes.every((attr) => attr[0] !== "Recetas")) setattributes([...attributes, ["Recetas", []]]);
     };
 
     const handleDropFile = (files) => {
@@ -198,6 +230,11 @@ const CreatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
+        if (params.field === "isDefault") {
+            handleDefaultVariantChange(params);
+
+            return;
+        }
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
@@ -207,6 +244,24 @@ const CreatePlanForm = (props) => {
             } else {
                 return {
                     ...variant,
+                };
+            }
+        });
+
+        setvariants(newVariants);
+    };
+
+    const handleDefaultVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    isDefault: true,
+                };
+            } else {
+                return {
+                    ...variant,
+                    isDefault: false,
                 };
             }
         });
@@ -265,6 +320,7 @@ const CreatePlanForm = (props) => {
                         attributes={attributes}
                         variants={variants}
                         planType={otherData.planType}
+                        hasRecipes={otherData.hasRecipes}
                         handleAddAttribute={handleAddAttribute}
                         handleRemoveAttribute={handleRemoveAttribute}
                         handleKeyChange={handleAttributeKeyChange}
@@ -277,6 +333,9 @@ const CreatePlanForm = (props) => {
                             { field: "price", headerName: "Precio lista", editable: true },
                             { field: "priceWithOffer", headerName: "Precio oferta", editable: true },
                             { field: "sku", headerName: "SKU", editable: true },
+                            { field: "description", headerName: "Descripción", editable: true },
+                            { field: "isDefault", headerName: "Default", editable: true, type: "boolean" },
+                            { field: "eliminar", headerName: "Eliminar" },
                         ]}
                         variantsRows={attributes.length > 0 ? variants : []}
                         handleVariantsEdit={handleVariantsEdit}
