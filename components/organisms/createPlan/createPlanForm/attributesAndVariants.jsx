@@ -23,6 +23,10 @@ const AttributesAndVariants = (props) => {
     const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
 
+    const attributeKeyIsPersonasOrRecetas = (attr) => {
+        return attr[0] === "Personas" || attr[0] === "Recetas";
+    };
+
     return (
         <>
             <Grid item xs={12}>
@@ -36,8 +40,8 @@ const AttributesAndVariants = (props) => {
                                     handleRemoveAttribute={() => props.handleRemoveAttribute(index)}
                                     keyValue={attr[0]}
                                     values={attr[1]}
-                                    isDeletable={!(props.planType === "Principal" && (attr[0] === "Personas" || attr[0] === "Recetas"))}
-                                    isKeyEditable={props.planType === "Principal" ? attr[0] !== "Personas" && attr[0] !== "Recetas" : true}
+                                    isDeletable={!(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr))}
+                                    isKeyEditable={!(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr))}
                                     handleKeyChange={props.handleKeyChange}
                                     handleValuesChange={props.handleValuesChange}
                                     handleRemoveAttributeValue={props.handleRemoveAttributeValue}
