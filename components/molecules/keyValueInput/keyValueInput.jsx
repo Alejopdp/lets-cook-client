@@ -33,6 +33,7 @@ const KeyValueInput = (props) => {
                         label=""
                         value={props.keyValue}
                         handleChange={(e) => props.handleKeyChange(props.index, e)}
+                        disabled={!props.isKeyEditable}
                     />
                 </Box>
                 <MultipleChipInput
@@ -56,6 +57,8 @@ KeyValueInput.propTypes = {
     handleValuesChange: PropTypes.func.isRequired,
     handleRemoveAttributeValue: PropTypes.func.isRequired,
     handleRemoveAttribute: PropTypes.func.isRequired,
+    isKeyEditable: PropTypes.bool,
+    isDeletable: PropTypes.bool,
 };
 
 export default KeyValueInput;

@@ -37,7 +37,7 @@ const AttributesAndVariants = (props) => {
                                     keyValue={attr[0]}
                                     values={attr[1]}
                                     isDeletable={!(props.planType === "Principal" && (attr[0] === "Personas" || attr[0] === "Recetas"))}
-                                    isKeyEditable={attr[0] !== "Personas" || attr[0] !== "Recetas"}
+                                    isKeyEditable={props.planType === "Principal" ? attr[0] !== "Personas" && attr[0] !== "Recetas" : true}
                                     handleKeyChange={props.handleKeyChange}
                                     handleValuesChange={props.handleValuesChange}
                                     handleRemoveAttributeValue={props.handleRemoveAttributeValue}

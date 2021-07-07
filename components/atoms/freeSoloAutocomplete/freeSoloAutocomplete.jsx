@@ -17,6 +17,8 @@ const FreeSoloAutocomplete = (props) => {
             freeSolo
             options={props.options}
             value={props.value}
+            disabled={props.disabled}
+            disableClearable={props.disabled}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -25,6 +27,7 @@ const FreeSoloAutocomplete = (props) => {
                     variant="outlined"
                     value={props.value}
                     onChange={props.handleChange}
+                    disabled={props.disabled}
                 />
             )}
         />
@@ -36,6 +39,7 @@ FreeSoloAutocomplete.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
 };
 
 export default FreeSoloAutocomplete;
