@@ -18,7 +18,7 @@ import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
 
 const AttributesAndVariants = (props) => {
-    const theme = useTheme()
+    const theme = useTheme();
     const router = useRouter();
     const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
@@ -36,6 +36,8 @@ const AttributesAndVariants = (props) => {
                                     handleRemoveAttribute={() => props.handleRemoveAttribute(index)}
                                     keyValue={attr[0]}
                                     values={attr[1]}
+                                    isDeletable={!(props.planType === "Principal" && (attr[0] === "Personas" || attr[0] === "Recetas"))}
+                                    isKeyEditable={attr[0] !== "Personas" || attr[0] !== "Recetas"}
                                     handleKeyChange={props.handleKeyChange}
                                     handleValuesChange={props.handleValuesChange}
                                     handleRemoveAttributeValue={props.handleRemoveAttributeValue}
@@ -43,7 +45,13 @@ const AttributesAndVariants = (props) => {
                             ))}
                         </Box>
                     )}
-                    <Button style={{ marginTop: theme.spacing(2) }} variant="contained" size="small" startIcon={<AddIcon />} onClick={props.handleAddAttribute}>
+                    <Button
+                        style={{ marginTop: theme.spacing(2) }}
+                        variant="contained"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={props.handleAddAttribute}
+                    >
                         {lang.addAttributeButton}
                     </Button>
                 </FormPaperWithEmptyState>

@@ -16,7 +16,7 @@ import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAn
 
 const CreatePlanForm = (props) => {
     const router = useRouter();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const [generalData, setgeneralData] = useState({
         name: "",
         description: "",
@@ -48,6 +48,14 @@ const CreatePlanForm = (props) => {
     };
 
     const handleOtherData = (propName, newValue) => {
+        if (propName === "planType" && newValue === "Principal") {
+            const attributesToAdd = [];
+            if (attributes.every((attr) => attr[0] !== "Personas")) attributesToAdd.push(["Personas", []]);
+            if (attributes.every((attr) => attr[0] !== "Recetas")) attributesToAdd.push(["Recetas", []]);
+
+            setattributes([...attributes, ...attributesToAdd]);
+        }
+
         setotherData({
             ...otherData,
             [propName]: newValue,
@@ -208,7 +216,6 @@ const CreatePlanForm = (props) => {
 
     const handleCreate = async () => {
         setisSubmitting(true);
-        console.log("El stat de isACrive: ", otherData.isActive);
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
@@ -257,6 +264,7 @@ const CreatePlanForm = (props) => {
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
+                        planType={otherData.planType}
                         handleAddAttribute={handleAddAttribute}
                         handleRemoveAttribute={handleRemoveAttribute}
                         handleKeyChange={handleAttributeKeyChange}

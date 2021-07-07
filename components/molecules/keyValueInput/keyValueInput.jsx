@@ -18,13 +18,13 @@ import Delete from "@material-ui/icons/Delete";
 const KeyValueInput = (props) => {
     return (
         <Box>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="subtitle2">
-                    {props.title}
-                </Typography>
-                <IconButton style={{ marginRight: -16 }} onClick={props.handleRemoveAttribute}>
-                    <Delete style={{ cursor: "pointer" }} />
-                </IconButton>
+            <Box display="flex" justifyContent="space-between" alignItems="center" minHeight={80}>
+                <Typography variant="subtitle2">{props.title}</Typography>
+                {props.isDeletable && (
+                    <IconButton style={{ marginRight: -16 }} onClick={props.handleRemoveAttribute}>
+                        <Delete style={{ cursor: "pointer" }} />
+                    </IconButton>
+                )}
             </Box>
             <Box display="flex" alignItems="center">
                 <Box minWidth="40%" marginRight={2} alignSelf="flex-start">
