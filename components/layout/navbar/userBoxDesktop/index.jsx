@@ -17,7 +17,7 @@ const UserBox = (props) => {
 
     return (
         <Box display="flex">
-            <Avatar sizes="sm" style={{ marginRight: theme.spacing(1) }} />
+            <Avatar sizes="sm" style={{ marginRight: theme.spacing(1) }}>{userInfo.firstName.slice(0,2).toUpperCase()}</Avatar>
             <UserDropdown name={userInfo.firstName} />
         </Box>
     );

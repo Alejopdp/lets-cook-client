@@ -16,8 +16,8 @@ const Selector = (props) => {
             <IconButton onClick={() => props.handleChange(props.id, -1)} style={{ color: '#FC1919' }}>
                 <RemoveCircleIcon />
             </IconButton>
-            <Typography>{props.quantity}</Typography>
-            <IconButton onClick={() => props.handleChange(props.id, +1)} color="primary">
+            <Typography style={{fontWeight: props.quantity > 0 ? 700 : 400 }}>{props.quantity}</Typography>
+            <IconButton onClick={() => props.handleChange(props.id, +1)} color="primary" disabled={props.disabled}>
                 <AddCircleIcon />
             </IconButton>
         </div>

@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeForm = ({ formData, recipeData }) => {
+const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
@@ -46,7 +46,7 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [weeks, setweeks] = useState([]);
     const [months, setmonths] = useState([]);
     const [generalData, setgeneralData] = useState({
-        name:"",
+        name: "",
         sku: "",
         shortDescription: "",
         longDescription: "",
@@ -349,7 +349,7 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 files={generalData.image}
                                 fileName={generalData.name}
                             />
-                            </PaperWithTitleContainer>
+                        </PaperWithTitleContainer>
                     </Grid>
 
                     {/* FORM LEFT BOTTOM, INGREDIENTS */}
@@ -532,10 +532,10 @@ const RecipeForm = ({ formData, recipeData }) => {
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
-                    backButtonHandler={() => ""}
+                    backButtonHandler={handleClickGoBack}
                     createButtonHandler={handleCreate}
                     createButtonText="CREAR RECETA"
-                    // isCreateButtonDisabled={!isFormOkForCreation()}
+                // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
         </>

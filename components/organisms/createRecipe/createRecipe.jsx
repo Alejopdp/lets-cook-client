@@ -22,7 +22,7 @@ const CreateRecipe = (props) => {
     return (
         <>
             <DashboardTitle title={lang.title} handleClick={goBackHandler} />
-            <CreateRecipeForm formData={props.formData} recipeData={props.recipeData} />
+            <CreateRecipeForm formData={props.formData} recipeData={props.recipeData} handleClickGoBack={goBackHandler}/>
         </>
     );
 };

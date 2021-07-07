@@ -109,7 +109,7 @@ const CustomersTable = (props) => {
                                         <Typography variant="body1">{customer.activeSubscriptions}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { id: customer.id } })}>
+                                        <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: customer.id } })}>
                                             <VisibilityIcon />
                                         </IconButton>
                                         <IconButton>

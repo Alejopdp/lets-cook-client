@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeForm = ({ formData, recipeData }) => {
+const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const theme = useTheme();
     const classes = useStyles();
     const router = useRouter();
@@ -566,7 +566,7 @@ const RecipeForm = ({ formData, recipeData }) => {
 
         <Grid item xs={12}>
             <BackAndCreateButtons
-                backButtonHandler={() => ""}
+                backButtonHandler={handleClickGoBack}
                 createButtonHandler={handleCreate}
                 createButtonText="MODIFICAR RECETA"
             // isCreateButtonDisabled={!isFormOkForCreation()}

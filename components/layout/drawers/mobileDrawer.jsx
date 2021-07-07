@@ -38,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
 
 const MobileDrawer = (props) => {
     const classes = useStyles();
-    const routes = useRouter();
+    const router = useRouter();
     const handleOptionClick = (path) => {
         props.onClose();
-        routes.push(path);
+        router.push(path);
     };
 
     return (
@@ -59,7 +59,7 @@ const MobileDrawer = (props) => {
             >
                 {/* <div className={classes.appBarSpacer} /> */}
                 <Box display="flex" justifyContent="center" alignItems="center" paddingTop={2} marginBottom={3}>
-                    <Image src="/logo.png" alt="logo" width={82} height={28} style={{ margin: "auto" }} layout="fixed" />
+                    <Image src="/logo.png" alt="logo" width={82} height={28} style={{ margin: "auto" }} layout="fixed" onClick={() => router.push({ pathname: `/` })} />
                 </Box>
 
                 <List>

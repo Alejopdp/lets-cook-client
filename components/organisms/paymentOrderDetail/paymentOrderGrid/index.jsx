@@ -8,6 +8,7 @@ import { Grid, Button } from "@material-ui/core";
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import DataDisplay from "../../../molecules/dataDisplay/dataDisplay";
+import DataDisplayLink from "../../../molecules/dataDisplay/dataDisplayLink";
 import DataDisplayPaymentOrderTable from "./dataDisplayPaymentOrderTable"
 import AmountDetails from "../../../molecules/amountDetails";
 import Refund from "./refund";
@@ -21,7 +22,7 @@ const PaymentOrderGrid = (props) => {
         clientName: 'Alejo Scotti',
         paymentDate: '10/12/2021',
         state: 'Pago exitoso',
-        stripeTransactionId: 'jio123lmak_21',
+        stripeTransactionId: 'pi_1JAZcjH24hlkZqHlK0aiu9C4',
     }
 
     const amountDetail = {
@@ -72,39 +73,39 @@ const PaymentOrderGrid = (props) => {
 
     return (
         <>
-                <Grid item xs={12} md={8}>
-                    <PaperWithTitleContainer fullWidth={true} title="Información general">
-                        <DataDisplay title='Payment Order ID' text={paymentOrderDetail.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Cliente' text={paymentOrderDetail.clientName} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Fecha de cobro' text={paymentOrderDetail.paymentDate} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Estado' text={paymentOrderDetail.state} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplay title='Stripe Transaction ID' text={paymentOrderDetail.stripeTransactionId} style={{ marginBottom: theme.spacing(3) }} />
-                        <DataDisplayPaymentOrderTable title='Ordenes relacionadas' columns={columns} rows={rows} />
-                    </PaperWithTitleContainer>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
-                                <AmountDetails data={amountDetail} />
-                            </PaperWithTitleContainer>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Reembolso">
-                                <Refund handleClick={handleClickOpenRefundModal} totalAmount={amountDetail.total} value={amountToRefund} handleChange={handleChangeRefundInput} />
-                            </PaperWithTitleContainer>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                                <div>
-                                    <Button size="medium" color='secondary' onClick={() => alert('paynow')}>
-                                        PAGAR AHORA
+            <Grid item xs={12} md={8}>
+                <PaperWithTitleContainer fullWidth={true} title="Información general">
+                    <DataDisplay title='Payment Order ID' text={paymentOrderDetail.paymentOrderId} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Cliente' text={paymentOrderDetail.clientName} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Fecha de cobro' text={paymentOrderDetail.paymentDate} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title='Estado' text={paymentOrderDetail.state} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplayLink title='Stripe Transaction ID' text={paymentOrderDetail.stripeTransactionId} link={`https://dashboard.stripe.com/payments/${paymentOrderDetail.stripeTransactionId}`} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplayPaymentOrderTable title='Ordenes relacionadas' columns={columns} rows={rows} />
+                </PaperWithTitleContainer>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
+                            <AmountDetails data={amountDetail} />
+                        </PaperWithTitleContainer>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Reembolso">
+                            <Refund handleClick={handleClickOpenRefundModal} totalAmount={amountDetail.total} value={amountToRefund} handleChange={handleChangeRefundInput} />
+                        </PaperWithTitleContainer>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                            <div>
+                                <Button size="medium" color='secondary' onClick={() => alert('paynow')}>
+                                    PAGAR AHORA
                                     </Button>
-                                </div>
-                            </PaperWithTitleContainer>
-                        </Grid>
+                            </div>
+                        </PaperWithTitleContainer>
                     </Grid>
                 </Grid>
+            </Grid>
             <RefundModal
                 open={openRefundModal}
                 handleClose={handleCloseRefundModal}

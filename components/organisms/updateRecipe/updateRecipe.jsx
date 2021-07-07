@@ -24,7 +24,7 @@ const UpdateRecipe = (props) => {
     return (
         <>
             <DashboardTitleWithBackButtonAndLanguageSelector title='Modificar receta' handleClick={goBackHandler} handleChangeLanguage={handleChangeLanguage} />
-            <UpdateRecipeForm formData={props.formData} recipeData={props.recipeData} />
+            <UpdateRecipeForm formData={props.formData} recipeData={props.recipeData} handleClickGoBack={goBackHandler}/>
         </>
     );
 };
