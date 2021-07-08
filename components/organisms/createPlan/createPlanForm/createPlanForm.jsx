@@ -7,12 +7,14 @@ import { useRouter } from "next/router";
 
 // External components
 import Grid from "@material-ui/core/Grid";
+import RadioButton from "@material-ui/core/Radio";
 
 // Internal components
 import GeneralData from "./generalData";
 import AttributesAndVariants from "./attributesAndVariants";
 import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
+import EnabledOrDisabledIconButton from "../../../atoms/enabledOrDisabledIconButton/enabledOrDisabledIconButton";
 
 const CreatePlanForm = (props) => {
     const router = useRouter();
@@ -230,16 +232,17 @@ const CreatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
+        // e.preventDefault();
         if (params.field === "isDefault") {
             handleDefaultVariantChange(params);
-
             return;
         }
+
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.props.value,
+                    [params.field]: params.field === "deleted" ? !variant.deleted || false : params.props.value,
                 };
             } else {
                 return {
@@ -311,6 +314,9 @@ const CreatePlanForm = (props) => {
         );
     };
 
+    const getVariantByRowId = (rowId) => {
+        return variants.find((variant) => variant.id === rowId);
+    };
     return (
         <>
             <Grid item xs={12} md={8}>
@@ -334,8 +340,29 @@ const CreatePlanForm = (props) => {
                             { field: "priceWithOffer", headerName: "Precio oferta", editable: true },
                             { field: "sku", headerName: "SKU", editable: true },
                             { field: "description", headerName: "Descripción", editable: true },
-                            { field: "isDefault", headerName: "Default", editable: true, type: "boolean" },
-                            { field: "eliminar", headerName: "Eliminar" },
+                            {
+                                field: "isDefault",
+                                headerName: "Default",
+                                editable: true,
+                                renderCell: (params) => (
+                                    <RadioButton
+                                        checked={!!params.value}
+                                        onChange={() => handleDefaultVariantChange(params)}
+                                        value={!!params.value}
+                                    />
+                                ),
+                            },
+                            {
+                                field: "deleted",
+                                headerName: "Eliminar",
+                                type: "boolean",
+                                renderCell: (params) => (
+                                    <EnabledOrDisabledIconButton
+                                        enabled={getVariantByRowId(params.id).deleted}
+                                        onClick={(e) => handleVariantsEdit(params, e)}
+                                    />
+                                ),
+                            },
                         ]}
                         variantsRows={attributes.length > 0 ? variants : []}
                         handleVariantsEdit={handleVariantsEdit}

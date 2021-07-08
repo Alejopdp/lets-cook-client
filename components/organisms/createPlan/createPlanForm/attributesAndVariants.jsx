@@ -4,23 +4,61 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 const langs = require("../../../../lang").attributesAndVariants;
 import { useTheme } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
+import clsx from "clsx";
 
 // External components
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { DataGrid } from "@material-ui/data-grid";
 import Box from "@material-ui/core/Box";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, CallMerge } from "@material-ui/icons";
 
 // Internal components
 import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
+
+const useStyles = makeStyles((theme) => {
+    return {
+        root: {
+            "& .data-grid-row--deleted": {
+                backgroundColor: "red",
+                "&:hover": {
+                    backgroundColor: "red",
+                },
+
+                "&:selected": {
+                    backgroundColor: "red",
+                },
+                "&:selected:hover": {
+                    backgroundColor: "red",
+                },
+            },
+        },
+        row: {
+            "& .data-grid-row--deleted": {
+                backgroundColor: "red",
+                "&:hover": {
+                    backgroundColor: "red",
+                },
+
+                "&:selected": {
+                    backgroundColor: "red",
+                },
+                "&:selected:hover": {
+                    backgroundColor: "red",
+                },
+            },
+        },
+    };
+});
 
 const AttributesAndVariants = (props) => {
     const theme = useTheme();
     const router = useRouter();
     const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
+    const classes = useStyles();
 
     const attributeKeyIsPersonasOrRecetas = (attr) => {
         return attr[0] === "Personas" || attr[0] === "Recetas";
@@ -78,7 +116,12 @@ const AttributesAndVariants = (props) => {
                 >
                     {props.variantsRows.length > 0 && (
                         <DataGrid
-                            onEditCellChangeCommitted={(params, e) => props.handleVariantsEdit(params, e)}
+                            classes={{ root: classes.root, row: classes.row }}
+                            onEditCellChangeCommitted={(params, e) => {
+                                e.preventDefault();
+                                props.handleVariantsEdit(params, e);
+                            }}
+                            getRowClassName={(params) => (params.row.deleted ? "data-grid-row--deleted" : "")}
                             autoHeight
                             disableColumnMenu
                             disableColumnSelector
