@@ -22,31 +22,31 @@ const useStyles = makeStyles((theme) => {
     return {
         root: {
             "& .data-grid-row--deleted": {
-                backgroundColor: "red",
+                backgroundColor: "#C6C6C6",
                 "&:hover": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
 
                 "&:selected": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
                 "&:selected:hover": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
             },
         },
         row: {
             "& .data-grid-row--deleted": {
-                backgroundColor: "red",
+                backgroundColor: "#C6C6C6",
                 "&:hover": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
 
                 "&:selected": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
                 "&:selected:hover": {
-                    backgroundColor: "red",
+                    backgroundColor: "#C6C6C6",
                 },
             },
         },
@@ -96,15 +96,17 @@ const AttributesAndVariants = (props) => {
                             ))}
                         </Box>
                     )}
-                    <Button
-                        style={{ marginTop: theme.spacing(2) }}
-                        variant="contained"
-                        size="small"
-                        startIcon={<AddIcon />}
-                        onClick={props.handleAddAttribute}
-                    >
-                        {lang.addAttributeButton}
-                    </Button>
+                    {props.planType !== "Principal" && (
+                        <Button
+                            style={{ marginTop: theme.spacing(2) }}
+                            variant="contained"
+                            size="small"
+                            startIcon={<AddIcon />}
+                            onClick={props.handleAddAttribute}
+                        >
+                            {lang.addAttributeButton}
+                        </Button>
+                    )}
                 </FormPaperWithEmptyState>
             </Grid>
             <Grid item xs={12}>

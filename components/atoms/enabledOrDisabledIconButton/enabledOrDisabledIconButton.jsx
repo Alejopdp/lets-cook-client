@@ -10,7 +10,7 @@ import Delete from "@material-ui/icons/RemoveCircle";
 import Enable from "@material-ui/icons/Check";
 
 const EnabledOrDisabledIconButton = (props) => {
-    return <IconButton onClick={props.onClick}>{props.enabled ? <Delete /> : <Enable />}</IconButton>;
+    return <IconButton onClick={props.onClick}>{!props.enabled ? <Delete /> : <Enable />}</IconButton>;
 };
 
 EnabledOrDisabledIconButton.propTypes = {

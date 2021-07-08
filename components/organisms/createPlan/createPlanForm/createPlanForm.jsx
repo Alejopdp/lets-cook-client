@@ -238,6 +238,11 @@ const CreatePlanForm = (props) => {
             return;
         }
 
+        if (params.field === "deleted") {
+            handleDeleteVariantChange(params);
+            return;
+        }
+
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
@@ -265,6 +270,23 @@ const CreatePlanForm = (props) => {
                 return {
                     ...variant,
                     isDefault: false,
+                };
+            }
+        });
+
+        setvariants(newVariants);
+    };
+    const handleDeleteVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    deleted: !variant.deleted || false,
+                    isDefault: !variant.deleted ? false : variant.isDefault,
+                };
+            } else {
+                return {
+                    ...variant,
                 };
             }
         });
@@ -343,11 +365,11 @@ const CreatePlanForm = (props) => {
                             {
                                 field: "isDefault",
                                 headerName: "Default",
-                                editable: true,
                                 renderCell: (params) => (
                                     <RadioButton
+                                        style={{ margin: "auto" }}
                                         checked={!!params.value}
-                                        onChange={() => handleDefaultVariantChange(params)}
+                                        onChange={(e) => handleDefaultVariantChange(params, e)}
                                         value={!!params.value}
                                     />
                                 ),
