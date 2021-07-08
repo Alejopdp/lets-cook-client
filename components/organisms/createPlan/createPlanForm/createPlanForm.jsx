@@ -326,11 +326,15 @@ const CreatePlanForm = (props) => {
         formData.append("description", generalData.description);
         formData.append("sku", generalData.sku);
         formData.append("planImage", generalData.image[0]);
+        formData.append("icon", generalData.iconByg[0]);
+        formData.append("iconWithColor", generalData.iconColor[0]);
+        formData.append("planSlug", generalData.slug);
+        formData.append("abilityToChooseRecipes", otherData.abilityToChooseRecipes);
         formData.append("isActive", JSON.stringify(otherData.isActive === "Activo"));
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
-        formData.append("variants", JSON.stringify(variants)); // Because it is an array
+        formData.append("variants", JSON.stringify(variants.filter((variant) => !variant.deleted))); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
 
         const res = await createPlan(formData);
@@ -368,7 +372,13 @@ const CreatePlanForm = (props) => {
         <>
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFileImage={handleDropFileImage} handleDropFileIconColor={handleDropFileIconColor} handleDropFileIconByg={handleDropFileIconByg}/>
+                    <GeneralData
+                        data={generalData}
+                        handleChange={handleGeneralData}
+                        handleDropFileImage={handleDropFileImage}
+                        handleDropFileIconColor={handleDropFileIconColor}
+                        handleDropFileIconByg={handleDropFileIconByg}
+                    />
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
