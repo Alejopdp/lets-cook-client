@@ -10,10 +10,10 @@ import OrderGrid from "./orderGrid"
 
 const OrderDetail = (props) => {
     return (
-        <Container>
+        <>
             <DashboardWithBackTitle title="Detalle de la orden" />
             <OrderGrid />
-        </Container>
+        </>
     );
 };
 

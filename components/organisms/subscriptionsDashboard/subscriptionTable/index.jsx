@@ -68,7 +68,7 @@ const SubscriptionTable = props => {
                             <TableRow key={row.subscriptionId}>
                                 <TableCell align="left">{row.subscriptionId}</TableCell>
                                 <TableCell align="left">
-                                    <Link onClick={() => router.push({ pathname: "/cliente/detalle", query: { clientId: row.client.id } })} color='primary' style={{textDecoration: 'none', cursor: 'pointer', fontWeight: 600}} >
+                                    <Link onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: row.client.id } })} color='primary' style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} >
                                         {row.client.name}
                                     </Link>
                                 </TableCell>

@@ -15,14 +15,16 @@ import CustomButton from "../../atoms/button/button";
 // Images & icons
 import GetAppIcon from '@material-ui/icons/GetApp';
 import PublishIcon from '@material-ui/icons/Publish';
+import AddIcon from "@material-ui/icons/Add";
 
-const DashboardTitleWithCSV = (props) => {
+
+const DashboardTitleWithButtonAndCSV = (props) => {
     const theme = useTheme();
     // TODO: Usar este componente en usersDashboard.jsx
 
     return (
         <Grid item xs={12}>
-            <Box display="flex" alignItems="center" justifyContent="space-between" width="lg" marginBottom={4}>
+            <Box display="flex" alignItems="center" justifyContent="space-between" width="lg">
                 <Typography variant="h5" color="textSecondary">{props.title}</Typography>
                 <div>
                     {props.import && (
@@ -31,24 +33,21 @@ const DashboardTitleWithCSV = (props) => {
                     </Button>
                     )}
                     {props.export && (
-                        <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport} >
+                        <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport} style={{ marginRight: theme.spacing(2) }}>
                             Exportar CSV
                     </Button>
                     )}
+                    <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
+                        {props.buttonText}
+                    </CustomButton>
                 </div>
-                {/* <CustomButton
-                onClick={props.handleClick}
-                startIcon={props.startIcon ? <AddIcon /> : null}
-            >
-                {props.buttonText}
-            </CustomButton> */}
             </Box>
         </Grid>
     );
 };
 
-DashboardTitleWithCSV.propTypes = {
+DashboardTitleWithButtonAndCSV.propTypes = {
 
 };
 
-export default DashboardTitleWithCSV;
+export default DashboardTitleWithButtonAndCSV;

@@ -20,7 +20,7 @@ const Others = (props) => {
     const lang = langs[router.locale];
 
     return (
-        <Grid container spacing={2}>
+        <>
             <Grid item xs={12}>
                 <PaperWithTitleContainer fullWidth={true} title={lang.stateTitle}>
                     <Autocomplete
@@ -62,6 +62,12 @@ const Others = (props) => {
                         checked={props.data.hasRecipes}
                         handleChange={props.handleHasRecipes}
                     />
+                    <Checkbox
+                        label='El usuario podrá elegir recetas'
+                        value={props.data.abilityToChooseRecipes}
+                        checked={props.data.abilityToChooseRecipes}
+                        handleChange={props.handleAbilityToChooseRecipes}
+                    />
                 </PaperWithTitleContainer>
             </Grid>
             {props.data.planType === "Principal" && (
@@ -85,7 +91,7 @@ const Others = (props) => {
                     </FormPaperWithEmptyState>
                 </Grid>
             )}
-        </Grid>
+        </>
     );
 };
 

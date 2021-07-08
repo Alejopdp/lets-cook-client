@@ -55,7 +55,7 @@ const PersonalData = (props) => {
 
     return (
         <>
-            <PaperWithTitleContainer title="Datos personales">
+            <PaperWithTitleContainer title="Datos personales" fullWidth>
                 <Typography variant="subtitle2">Nombre completo</Typography>
                 <Typography variant="body1" paragraph>
                     {props.customer.name} {props.customer.lastName}
@@ -92,7 +92,7 @@ const PersonalData = (props) => {
                     style={{ textTransform: "uppercase", cursor: "pointer" }}
                     onClick={() => setPersonalDataModalOpen(true)}
                 >
-                    Modificar datos personales {" >"}
+                    Modificar datos personales
                 </Typography>
             </PaperWithTitleContainer>
 

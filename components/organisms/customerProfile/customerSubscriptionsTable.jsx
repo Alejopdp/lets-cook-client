@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 
 // External components
+import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
@@ -25,7 +27,7 @@ import AddPlanModal from "./customerProfileModals/addPlanModal";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        marginTop: theme.spacing(4)
+        // marginTop: theme.spacing(2)
     },
     table: {
         minWidth: 500,
@@ -48,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomerSubscriptionsTable = (props) => {
+    const router = useRouter();
+
     const { tableContainer, table, cells, idCell, addRow } = useStyles();
 
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
@@ -103,100 +107,101 @@ const CustomerSubscriptionsTable = (props) => {
 
     return (
         <>
-        <TableContainer component={Paper} className={tableContainer}>
-            <Table className={table} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={idCell}>
-                            <Typography variant="subtitle1">Subscription ID</Typography>
-                        </TableCell>
+            <Grid item xs={12}>
+                <TableContainer component={Paper} className={tableContainer}>
+                    <Table className={table} aria-label="custom pagination table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className={idCell}>
+                                    <Typography variant="subtitle1">Subscription ID</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Plan</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Plan</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Variante</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Variante</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Precio</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Precio</Typography>
+                                </TableCell>
 
-                        <TableCell>
-                            <Typography variant="subtitle1">Frecuencia</Typography>
-                        </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle1">Frecuencia</Typography>
+                                </TableCell>
 
-                        <TableCell>
-                            <Typography variant="subtitle1">Estado</Typography>
-                        </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle1">Estado</Typography>
+                                </TableCell>
 
-                        <TableCell />
-                    </TableRow>
-                </TableHead>
+                                <TableCell />
+                            </TableRow>
+                        </TableHead>
 
-                <TableBody>
-                    {subscriptions.map((subscription, index) => (
-                        <TableRow key={index}>
-                            <TableCell className={idCell}>
-                                <Typography variant="body1">#{subscription.subscriptionId}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{subscription.plan}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{subscription.variant}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">€{subscription.price}</Typography>
-                            </TableCell>
-                            <TableCell >
-                                <Typography variant="body1">{subscription.frequency}</Typography>
-                            </TableCell>
-                            <TableCell >
-                                <Typography variant="body1">{subscription.status}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <IconButton onClick={() => alert("Redirigir a 'Detalle de suscripción'")}>
-                                    <VisibilityIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                        <TableBody>
+                            {subscriptions.map((subscription, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className={idCell}>
+                                        <Typography variant="body1">#{subscription.subscriptionId}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{subscription.plan}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{subscription.variant}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">€{subscription.price}</Typography>
+                                    </TableCell>
+                                    <TableCell >
+                                        <Typography variant="body1">{subscription.frequency}</Typography>
+                                    </TableCell>
+                                    <TableCell >
+                                        <Typography variant="body1">{subscription.status}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <IconButton onClick={() => router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: subscription.subscriptionId } })}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
 
-                    <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
-                            <AddCircleIcon color="primary" />
-                            <Typography
-                                variant="subtitle1"
-                                color="primary"
-                                style={{ marginLeft: "8px", textTransform: "uppercase"}}
-                            >
-                                Agregar Plan
+                            <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
+                                <AddCircleIcon color="primary" />
+                                <Typography
+                                    variant="subtitle1"
+                                    color="primary"
+                                    style={{ marginLeft: "8px", textTransform: "uppercase" }}
+                                >
+                                    Agregar Plan
                             </Typography>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </TableContainer>
-
-        {isAddPlanModalOpen &&
-            <ComplexModal
-            title="Agregar Plan"
-            component={
-                <AddPlanModal
-                    plans={props.plans}
-                    handlePlanSelect={handlePlanSelect}
-                    handleVariationSelect={handleVariationSelect}
-                    selectedPlan={selectedPlan}
-                    selectedVariation={selectedVariation}
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            {isAddPlanModalOpen &&
+                <ComplexModal
+                    title="Agregar Plan"
+                    component={
+                        <AddPlanModal
+                            plans={props.plans}
+                            handlePlanSelect={handlePlanSelect}
+                            handleVariationSelect={handleVariationSelect}
+                            selectedPlan={selectedPlan}
+                            selectedVariation={selectedVariation}
+                        />
+                    }
+                    open={isAddPlanModalOpen}
+                    cancelButtonText="Cancelar"
+                    confirmButtonText="Agregar Plan"
+                    handleCancelButton={() => setAddPlanModalOpen(false)}
+                    handleConfirmButton={handleAddPlan}
                 />
             }
-            open={isAddPlanModalOpen}
-            cancelButtonText="Cancelar"
-            confirmButtonText="Agregar Plan"
-            handleCancelButton={() => setAddPlanModalOpen(false)}
-            handleConfirmButton={handleAddPlan}
-        />
-        }
         </>
     );
 };

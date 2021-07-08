@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: theme.spacing(3),
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
-        margin: theme.spacing(2)
     },
     displayFlex: {
         display: "flex",

@@ -11,11 +11,10 @@ import CreateClientForm from "../createClientForm/createClientForm";
 
 const CreateClient = (props) => {
     return (
-        <Container size="md">
+        <>
             <DashboardWithBackTitle title="Crear cliente" />
-
             <CreateClientForm />
-        </Container>
+        </>
     );
 };
 

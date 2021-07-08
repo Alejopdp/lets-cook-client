@@ -33,7 +33,7 @@ const PaymentMethods = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Método de pago">
+        <PaperWithTitleContainer title="Método de pago" fullWidth>
             <Typography variant="subtitle2">Tarjeta</Typography>
             <Typography variant="body1" paragraph>{props.customer.creditCard}</Typography>
 
@@ -46,7 +46,7 @@ const PaymentMethods = (props) => {
                 style={{ textTransform: "uppercase", cursor: "pointer"}}
                 onClick={() => setPaymentMethodModalOpen(true)}
             >
-                Modificar método de pago {" >"}
+                Modificar método de pago
             </Typography>
 
         </PaperWithTitleContainer>

@@ -22,7 +22,7 @@ import { createCoupon } from "../../../helpers/serverRequests/coupon";
 import AddProductsModal from "./addProductsModal";
 import { useSnackbar } from "notistack";
 
-const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
+const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => { } }) => (
     <>
         <Grid container>
             <Grid item xs={12} md={6}>
@@ -193,9 +193,9 @@ const CouponsForm = ({ lang, ...props }) => {
         },
     ];
 
-    const _handleGoBack = () => {};
+    const _handleGoBack = () => { };
 
-    const _handleChangeLanguage = () => {};
+    const _handleChangeLanguage = () => { };
 
     const _handleClickCreateButton = async (e) => {
         e.preventDefault();
@@ -232,7 +232,7 @@ const CouponsForm = ({ lang, ...props }) => {
                     {/* DISCOUNT CODE */}
 
                     <Grid item>
-                        <CardContainerWithTitle fullWidth={true} title={lang[locale].couponCode}>
+                        <CardContainerWithTitle fullWidth={true} title='Código del cupón'>
                             <Input label="Código del cupón" name="couponCode" value={form.couponCode} handleChange={handleOnChange} />
                         </CardContainerWithTitle>
                     </Grid>
@@ -240,7 +240,7 @@ const CouponsForm = ({ lang, ...props }) => {
                     {/* DISCOUNT TYPE */}
 
                     <Grid item>
-                        <CardContainerWithTitle fullWidth={true} title={lang[locale].discountType}>
+                        <CardContainerWithTitle fullWidth={true} title='Tipo de descuento'>
                             <Grid container spacing={2} justifyContent="center">
                                 <Grid item xs>
                                     <SimpleSelect
@@ -261,7 +261,7 @@ const CouponsForm = ({ lang, ...props }) => {
                                             type="number"
                                             customProps={{
                                                 InputProps: {
-                                                    endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                                                    endAdornment: <InputAdornment position="end">{form.discount_type.type === 'fix' ? '€' : '%'}</InputAdornment>,
                                                 },
                                             }}
                                         />
@@ -274,7 +274,7 @@ const CouponsForm = ({ lang, ...props }) => {
                     {/* MINIMUM REQUIREMENT */}
 
                     <Grid item>
-                        <CardContainerWithTitle fullWidth title={lang[locale].minimumRequirement}>
+                        <CardContainerWithTitle fullWidth title='Requerimientos mínimos'>
                             <Grid container spacing={2}>
                                 <Grid item xs>
                                     <RadioButtons
@@ -294,7 +294,7 @@ const CouponsForm = ({ lang, ...props }) => {
                                                         value={form.minimum_requirement.value}
                                                         customProps={{
                                                             InputProps: {
-                                                                endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
+                                                                endAdornment: <InputAdornment position="end">€</InputAdornment>,
                                                             },
                                                         }}
                                                         handleChange={handleOnChange}
@@ -314,7 +314,7 @@ const CouponsForm = ({ lang, ...props }) => {
                     {/* APPLY TO */}
 
                     <Grid item>
-                        <CardContainerWithTitle fullWidth title={lang[locale].applyTo}>
+                        <CardContainerWithTitle fullWidth title='Aplica a'>
                             <Grid container spacing={2} direction="column">
                                 <Grid item xs>
                                     <RadioButtons
@@ -371,6 +371,7 @@ const CouponsForm = ({ lang, ...props }) => {
                                 <Grid item xs>
                                     <DatePicker
                                         label="Fecha de inicio"
+
                                         handleDateChange={(date) => handleOnChange({ target: { name: "date_rage|start", value: date } })}
                                     ></DatePicker>
                                 </Grid>

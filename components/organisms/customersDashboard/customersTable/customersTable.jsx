@@ -18,6 +18,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import { TableFooter, Typography } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 // Icons & Images
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -25,7 +26,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        marginTop: theme.spacing(4)
+        // marginTop: theme.spacing(4)
     },
     table: {
         minWidth: 500,
@@ -59,92 +60,94 @@ const CustomersTable = (props) => {
     };
 
     return (
-        <TableContainer component={Paper} className={tableContainer}>
-            <Table className={table} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={idCell}>
-                            <Typography variant="subtitle1">#</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Nombre completo</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Correo electrónico</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Teléfono</Typography>
-                        </TableCell>
-
-                        <TableCell>
-                            <Typography variant="subtitle1">Suscripciones activas</Typography>
-                        </TableCell>
-
-                        <TableCell />
-                    </TableRow>
-                </TableHead>
-
-                <TableBody>
-                    {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers).map(
-                        (customer, index) => (
-                        <TableRow key={index}>
+        <Grid item xs={12}>
+            <TableContainer component={Paper} className={tableContainer}>
+                <Table className={table} aria-label="custom pagination table">
+                    <TableHead>
+                        <TableRow>
                             <TableCell className={idCell}>
-                                <Typography variant="body1">{customer.id}</Typography>
+                                <Typography variant="subtitle1">#</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <Typography variant="body1">{customer.fullName}</Typography>
+                                <Typography variant="subtitle1">Nombre completo</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <Typography variant="body1">{customer.email}</Typography>
+                                <Typography variant="subtitle1">Correo electrónico</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <Typography variant="body1">{customer.phone}</Typography>
+                                <Typography variant="subtitle1">Teléfono</Typography>
                             </TableCell>
+
                             <TableCell>
-                                <Typography variant="body1">{customer.activeSubscriptions}</Typography>
+                                <Typography variant="subtitle1">Suscripciones activas</Typography>
                             </TableCell>
-                            <TableCell className={cells}>
-                                <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { id: customer.fullName } })}>
-                                    <VisibilityIcon />
-                                </IconButton>
-                                <IconButton>
-                                    <DeleteIcon onClick={() => props.handleDeleteCustomer(customer)} />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
 
-                    {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                            <TableCell colSpan={6} />
+                            <TableCell />
                         </TableRow>
-                    )}
-                </TableBody>
+                    </TableHead>
 
-                <TableFooter>
-                    <TableRow>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                            colSpan={5}
-                            count={props.customers.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            SelectProps={{
-                                inputProps: { "aria-label": "rows per page" },
-                                native: true,
-                            }}
-                            labelRowsPerPage="Filas por página"
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                            ActionsComponent={TablePaginationActions}
-                        />
-                    </TableRow>
-                </TableFooter>
-            </Table>
-        </TableContainer>
+                    <TableBody>
+                        {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers).map(
+                            (customer, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className={idCell}>
+                                        <Typography variant="body1">{customer.id}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{customer.fullName}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{customer.email}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{customer.phone}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body1">{customer.activeSubscriptions}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: customer.id } })}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton>
+                                            <DeleteIcon onClick={() => props.handleDeleteCustomer(customer)} />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                        {emptyRows > 0 && (
+                            <TableRow style={{ height: 53 * emptyRows }}>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
+                    </TableBody>
+
+                    <TableFooter>
+                        <TableRow>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                colSpan={5}
+                                count={props.customers.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                SelectProps={{
+                                    inputProps: { "aria-label": "rows per page" },
+                                    native: true,
+                                }}
+                                labelRowsPerPage="Filas por página"
+                                onChangePage={handleChangePage}
+                                onChangeRowsPerPage={handleChangeRowsPerPage}
+                                ActionsComponent={TablePaginationActions}
+                            />
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </TableContainer>
+        </Grid>
     );
 };
 

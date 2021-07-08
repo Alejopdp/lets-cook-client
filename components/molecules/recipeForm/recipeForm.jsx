@@ -21,6 +21,7 @@ import FormPaperWithEmptyState from "../../molecules/formPaperWithEmptyState/for
 import Checkbox from "../../atoms/checkbox/checkbox";
 import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
 import NutritionalInformationGrid from "../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
+import Dropzone from "../../molecules/dropzone/dropzone";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeForm = ({ formData, recipeData }) => {
+const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
@@ -45,6 +46,7 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [weeks, setweeks] = useState([]);
     const [months, setmonths] = useState([]);
     const [generalData, setgeneralData] = useState({
+        name: "",
         sku: "",
         shortDescription: "",
         longDescription: "",
@@ -287,20 +289,14 @@ const RecipeForm = ({ formData, recipeData }) => {
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <FormPaperWithImageDropzone
-                            title="Datos generales"
-                            maxFiles={1}
-                            handleDropFile={handleDropFile}
-                            files={generalData.image}
-                            filesTitle="Imagen"
-                        >
-                            <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
+                        <PaperWithTitleContainer title='Datos generales' fullWidth={true} >
                             <FormInput
                                 label="Nombre de la receta"
                                 name="name"
                                 value={recipeData && recipeData.name}
                                 handleChange={handleGeneralDataChange}
                             />
+                            <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
                             <FormInput
                                 label="Descripción corta"
                                 name="shortDescription"
@@ -346,7 +342,14 @@ const RecipeForm = ({ formData, recipeData }) => {
                                 onChange={(e, newValues) => handleAddTool(newValues)}
                                 handleRemoveValue={handleRemoveTool}
                             />
-                        </FormPaperWithImageDropzone>
+                            <Dropzone
+                                title='Imagenes de la receta'
+                                maxFiles={10}
+                                handleDropFile={handleDropFile}
+                                files={generalData.image}
+                                fileName={generalData.name}
+                            />
+                        </PaperWithTitleContainer>
                     </Grid>
 
                     {/* FORM LEFT BOTTOM, INGREDIENTS */}
@@ -529,10 +532,10 @@ const RecipeForm = ({ formData, recipeData }) => {
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
-                    backButtonHandler={() => ""}
+                    backButtonHandler={handleClickGoBack}
                     createButtonHandler={handleCreate}
                     createButtonText="CREAR RECETA"
-                    // isCreateButtonDisabled={!isFormOkForCreation()}
+                // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
         </>

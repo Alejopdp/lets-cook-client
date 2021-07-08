@@ -57,10 +57,10 @@ const OrdersDashboard = (props) => {
     const handleClickExport = () => alert('Export')
 
     return (
-        <Container>
+        <>
             <DashboardTitleWithCSV title="Ordenes" import export handleClickImport={handleClickImport} handleClickExport={handleClickExport} />
             <Tabs options={options} content={content} handleChange={handleChangeTab} value={tabValue} />
-        </Container>
+        </>
     );
 };
 

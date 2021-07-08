@@ -10,11 +10,10 @@ import AccountData from "./accountData";
 
 const CreateClientForm = (props) => {
     return (
-        <Container size="md">
+        <>
             <PersonalData />
-
             <AccountData />
-        </Container>
+        </>
     );
 };
 
