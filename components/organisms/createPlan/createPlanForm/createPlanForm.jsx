@@ -81,7 +81,7 @@ const CreatePlanForm = (props) => {
         if (attributes.every((attr) => attr[0] !== "Personas")) attributesToAdd.push(["Personas", []]);
         if (attributes.every((attr) => attr[0] !== "Recetas")) attributesToAdd.push(["Recetas", []]);
 
-        setattributes([...attributes, ...attributesToAdd]);
+        setattributes([...attributesToAdd, ...attributes]);
     };
 
     const addSemanalFrequency = () => {
