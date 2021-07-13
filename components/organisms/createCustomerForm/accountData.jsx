@@ -12,14 +12,14 @@ const AccountData = (props) => {
             <Input
                 name="email"
                 label="Correo electrónico"
-                value={props.email}
-                onChange={props.onChange}
+                value={props.formData.email}
+                handleChange={props.handleChange}
             />
             <Input
                 name="password"
                 label="Contraseña"
-                value={props.password}
-                onChange={props.onChange}
+                value={props.formData.password}
+                handleChange={props.handleChange}
             />
         </PaperWithTitleContainer>
     );
