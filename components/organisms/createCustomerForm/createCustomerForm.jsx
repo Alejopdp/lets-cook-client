@@ -8,7 +8,7 @@ import Container from "@material-ui/core/Container";
 import PersonalData from "./personalData";
 import AccountData from "./accountData";
 
-const CreateClientForm = (props) => {
+const CreateCustomerForm = (props) => {
     return (
         <>
             <PersonalData />
@@ -17,8 +17,8 @@ const CreateClientForm = (props) => {
     );
 };
 
-export default CreateClientForm;
+export default CreateCustomerForm;
 
-CreateClientForm.propTypes = {
+CreateCustomerForm.propTypes = {
 
 };

@@ -7,19 +7,19 @@ import Container from "@material-ui/core/Container";
 
 // Internal components
 import DashboardWithBackTitle from "../../layout/dashboardTitleWithBackButton";
-import CreateClientForm from "../createClientForm/createClientForm";
+import CreateCustomerForm from "../createCustomerForm/createCustomerForm";
 
-const CreateClient = (props) => {
+const CreateCustomer = (props) => {
     return (
         <>
-            <DashboardWithBackTitle title="Crear cliente" />
-            <CreateClientForm />
+            <DashboardWithBackTitle title="Crear Cliente" />
+            <CreateCustomerForm />
         </>
     );
 };
 
-export default CreateClient;
+export default CreateCustomer;
 
-CreateClient.propTypes = {
+CreateCustomer.propTypes = {
 
 };

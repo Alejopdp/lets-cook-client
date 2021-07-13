@@ -38,7 +38,7 @@ import OrderDetail from "../../components/organisms/orderDetail";
 import SubscriptionsDashboard from "../../components/organisms/subscriptionsDashboard";
 import SubscriptionDetail from "../../components/organisms/subscriptionDetail";
 import CustomersDashboard from "../../components/organisms/customersDashboard/customersDashboard";
-import CreateCustomer from "../../components/organisms/createClient/createClient";
+import CreateCustomer from "../../components/organisms/createCustomer/createCustomer";
 import CustomerProfile from "../../components/organisms/customerProfile/customerProfile";
 
 const useStyles = makeStyles((theme) => ({
