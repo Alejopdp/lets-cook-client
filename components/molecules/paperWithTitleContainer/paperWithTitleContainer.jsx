@@ -46,7 +46,14 @@ const PaperWithTitleContainer = (props) => {
 
 PaperWithTitleContainer.propTypes = {
     title: PropTypes.string.isRequired,
-    width: PropTypes.number,
+    width: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    marginBottom: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
     fullWidth: PropTypes.bool,
     flex: PropTypes.bool,
 };

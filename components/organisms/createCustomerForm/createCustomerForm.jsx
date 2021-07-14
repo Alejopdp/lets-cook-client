@@ -21,9 +21,10 @@ const CreateCustomerForm = (props) => {
         name: "",
         lastName: "",
         email: "",
+        password: "",
         phone1: "",
         phone2: "",
-        bornDate: new Date('1990-06-20'),
+        bornDate: new Date(),
         preferredLanguage: "",
         // Delivery
         deliveryAddress: "",
