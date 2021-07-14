@@ -1,9 +1,11 @@
 // Utils & Config
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { createCustomer } from "../../../helpers/serverRequests/customer";
+import { useSnackbar } from "notistack";
 
 // External components
-import { Box, Grid, Container } from "@material-ui/core";
+import { Box, Container } from "@material-ui/core";
 
 // Internal components
 import PersonalData from "./personalData";
@@ -14,13 +16,14 @@ import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCr
 
 const CreateCustomerForm = (props) => {
     const router = useRouter();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [formData, setFormData] = useState({
         name: "",
         lastName: "",
         email: "",
         phone1: "",
         phone2: "",
-        bornDate: new Date(),
+        bornDate: new Date('1990-06-20'),
         preferredLanguage: "",
         // Delivery
         deliveryAddress: "",
@@ -40,21 +43,42 @@ const CreateCustomerForm = (props) => {
         });
     };
 
-    console.log(formData)
+    const handleSubmit = async () => {
+        // const res = await createCustomer(formData);
+        const res = { status: 200 };
+
+        if (res.status === 200) {
+            enqueueSnackbar("Se ha creado el usuario correctamente", {
+                variant: "success",
+            });
+
+            router.push("/gestion-de-clientes");
+        } else {
+            enqueueSnackbar("No se ha podido crear el usuario", {
+                variant: "error",
+            });
+        }
+    };
+
+    console.log(formData);
 
     return (
-        <>
-            <PersonalData formData={formData} handleChange={handleChange} />
-            <AccountData formData={formData} handleChange={handleChange} />
-            <DeliveryData formData={formData} handleChange={handleChange} />
-            <BillingData formData={formData} handleChange={handleChange} />
+        <Container>
+            <Box>
+                <PersonalData formData={formData} handleChange={handleChange} />
+                <AccountData formData={formData} handleChange={handleChange} />
+                <DeliveryData formData={formData} handleChange={handleChange} />
+                <BillingData formData={formData} handleChange={handleChange} />
+            </Box>
 
-            <BackAndCreateButtons
-                createButtonText="Crear cliente"
-                backButtonHandler={() => router.push("/gestion-de-clientes")}
-                createButtonHandler={() => alert("Usuario creado")}
-            />
-        </>
+            <Box>
+                <BackAndCreateButtons
+                    createButtonText="Crear cliente"
+                    backButtonHandler={() => router.push("/gestion-de-clientes")}
+                    createButtonHandler={handleSubmit}
+                />
+            </Box>
+        </Container>
     );
 };
 

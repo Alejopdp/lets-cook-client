@@ -5,13 +5,13 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 // External components
 import Box from "@material-ui/core/Box";
+import DateFnsUtils from "@date-io/date-fns";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 // Internal components
 import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import Input from "../../atoms/input/input";
-import DatePicker from "../../atoms/datepicker";
-import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+// import DatePicker from "../../atoms/datepicker";
 import SelectInput from "../../atoms/selectInput/SelectInput";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,16 +45,8 @@ const PersonalData = (props) => {
         },
     ];
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    console.log('selectedDate', selectedDate)
-    const handleDateChange = (date) => {
-        console.log(date);
-        setSelectedDate(date);
-    };
-
     return (
-        <PaperWithTitleContainer width="70%" title="Datos personales">
+        <PaperWithTitleContainer width="70%" title="Datos personales" marginBottom="16px">
             <Box display="flex" flexDirection="row">
                 <Box width="50%" marginRight="8px">
                     <Input
@@ -91,14 +83,16 @@ const PersonalData = (props) => {
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <div className={classes.root}>
-                    <DatePicker
+                    <KeyboardDatePicker
                         disableFuture
-                        autoOk
-                        variant="static"
+                        variant="inline"
+                        inputVariant="outlined"
+                        fullWidth
                         openTo="year"
-                        views={['year', 'month', 'day']}
-                        value={selectedDate}
-                        handleDateChange={handleDateChange}
+                        autoOk
+                        format="dd/MM/yyyy"
+                        value={props.formData.bornDate}
+                        onChange={(date) => props.handleChange({ target: { name: "bornDate", value: date.toString() } })}
                     />
                 </div>
             </MuiPickersUtilsProvider>

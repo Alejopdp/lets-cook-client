@@ -8,7 +8,7 @@ import Input from "../../atoms/input/input";
 
 const AccountData = (props) => {
     return (
-        <PaperWithTitleContainer width="70%" title="Datos de la cuenta">
+        <PaperWithTitleContainer width="70%" title="Datos de la cuenta" marginBottom="16px">
             <Input
                 name="email"
                 label="Correo electrónico"
