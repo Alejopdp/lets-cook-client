@@ -32,11 +32,12 @@ const DeliveryData = (props) => {
                 value={props.formData.deliveryAddress}
                 handleChange={props.handleChange}
             /> */}
+
             <LocationSearchInput
                 name="deliveryAddress"
                 label="Dirección de entrega"
                 value={props.formData.deliveryAddress}
-                handleChange={props.handleChange}
+                handleChange={props.handleGoogleInput}
             />
 
             <Input

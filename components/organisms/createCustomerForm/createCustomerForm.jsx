@@ -1,8 +1,11 @@
 // Utils & Config
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { createCustomer } from "../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
+
+// Helpers
+import { createCustomer } from "../../../helpers/serverRequests/customer";
+import { getGeometry } from "../../../helpers/geocode/geocode";
 
 // External components
 import { Box, Container } from "@material-ui/core";
@@ -28,6 +31,8 @@ const CreateCustomerForm = (props) => {
         preferredLanguage: "",
         // Delivery
         deliveryAddress: "",
+        deliveryLatitude: "",
+        deliveryLongitude: "",
         deliveryClarifications: "",
         deliveryPreferredSchedule: "",
         // Billing
@@ -46,13 +51,16 @@ const CreateCustomerForm = (props) => {
 
     const handleGoogleInput = async (address) => {
         const geometry = await getGeometry(address.structured_formatting.main_text);
+        console.log("address:", address)
         setFormData({
             ...formData,
             deliveryAddress: address.description,
-            latitude: geometry.lat,
-            longitude: geometry.lng,
+            deliveryLatitude: geometry.lat,
+            deliveryLongitude: geometry.lng,
         });
     };
+
+    console.log("formdata:", formData)
 
     const handleSubmit = async () => {
         // const res = await createCustomer(formData);
@@ -71,14 +79,12 @@ const CreateCustomerForm = (props) => {
         }
     };
 
-    console.log(formData);
-
     return (
         <Container>
             <Box>
                 {/* <PersonalData formData={formData} handleChange={handleChange} /> */}
                 {/* <AccountData formData={formData} handleChange={handleChange} /> */}
-                <DeliveryData formData={formData} handleChange={handleChange} />
+                <DeliveryData formData={formData} handleChange={handleChange} handleGoogleInput={handleGoogleInput} />
                 {/* <BillingData formData={formData} handleChange={handleChange} /> */}
             </Box>
 
