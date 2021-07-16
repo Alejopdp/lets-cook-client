@@ -112,8 +112,8 @@ const CustomersTable = (props) => {
                                         <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: customer.id } })}>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton>
-                                            <DeleteIcon onClick={() => props.handleDeleteCustomer(customer)} />
+                                        <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
+                                            <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>

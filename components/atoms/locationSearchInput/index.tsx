@@ -1,1 +1,1 @@
-export * as LocationSearchInput from "./locationSearchiInput";
+export * as LocationSearchInput from "./locationSearchInput";

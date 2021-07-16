@@ -1,15 +1,19 @@
+// Utils & Config
 import React from "react";
 import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+
+// External components
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { CallMerge } from "@material-ui/icons";
+
 import parse from "autosuggest-highlight/parse";
 import throttle from "lodash/throttle";
-import { CallMerge } from "@material-ui/icons";
-import { LocationSearchInputProps } from "./intertfaces";
+import { LocationSearchInputProps } from "./interfaces";
 
 function loadScript(src, position, id) {
     if (!position) {
@@ -33,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
     autocompleteRoot: {
         width: "100%",
+        marginBottom: theme.spacing(2)
     },
 
     endAdornment: {

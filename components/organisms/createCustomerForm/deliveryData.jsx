@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Input from "../../atoms/input/input";
 import SelectInput from "../../atoms/selectInput/SelectInput";
 import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import LocationSearchInput from "../../atoms/locationSearchInput/locationSearchInput";
 
 const DeliveryData = (props) => {
     const scheduleOptions = [
@@ -25,7 +26,13 @@ const DeliveryData = (props) => {
 
     return (
         <PaperWithTitleContainer width="70%" title="Dirección de entrega" marginBottom="16px">
-            <Input
+            {/* <Input
+                name="deliveryAddress"
+                label="Dirección de entrega"
+                value={props.formData.deliveryAddress}
+                handleChange={props.handleChange}
+            /> */}
+            <LocationSearchInput
                 name="deliveryAddress"
                 label="Dirección de entrega"
                 value={props.formData.deliveryAddress}

@@ -44,6 +44,16 @@ const CreateCustomerForm = (props) => {
         });
     };
 
+    const handleGoogleInput = async (address) => {
+        const geometry = await getGeometry(address.structured_formatting.main_text);
+        setFormData({
+            ...formData,
+            deliveryAddress: address.description,
+            latitude: geometry.lat,
+            longitude: geometry.lng,
+        });
+    };
+
     const handleSubmit = async () => {
         // const res = await createCustomer(formData);
         const res = { status: 200 };
@@ -66,10 +76,10 @@ const CreateCustomerForm = (props) => {
     return (
         <Container>
             <Box>
-                <PersonalData formData={formData} handleChange={handleChange} />
-                <AccountData formData={formData} handleChange={handleChange} />
+                {/* <PersonalData formData={formData} handleChange={handleChange} /> */}
+                {/* <AccountData formData={formData} handleChange={handleChange} /> */}
                 <DeliveryData formData={formData} handleChange={handleChange} />
-                <BillingData formData={formData} handleChange={handleChange} />
+                {/* <BillingData formData={formData} handleChange={handleChange} /> */}
             </Box>
 
             <Box>
