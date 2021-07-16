@@ -1,0 +1,13 @@
+.customMaterialInput {
+  padding: 18.5px 14px;
+  border-radius: 8px;
+  width: 100%;
+  border: none;
+  color: #5d5d5d;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.customMaterialInput:focus {
+  border: solid 1px red;
+}
