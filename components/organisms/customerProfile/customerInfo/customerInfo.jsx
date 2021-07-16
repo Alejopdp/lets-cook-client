@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 // External components
-import { Box } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 
 // Internal components
 import PersonalData from "./personalData";
@@ -20,21 +20,30 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
         alignContent: "flex-start"
     },
+    grid: {
+        marginTop: theme.spacing(2)
+    }
 }));
 
 const CustomerInfo = (props) => {
-    const { container } = useStyles();
+    const { container,grid } = useStyles();
 
     return (
-        <Box className={container}>
-            <PersonalData customer={props.customer} handleUpdatePersonalData={props.handleUpdatePersonalData} />
+            <>
+                <Grid item xs={12} md={4}>
+                    <PersonalData customer={props.customer} handleUpdatePersonalData={props.handleUpdatePersonalData} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <DeliveryAddress customer={props.customer.deliveryAddress} handleUpdateDeliveryAddress={props.handleUpdateDeliveryAddress} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <BillingData customer={props.customer.billingData} handleUpdateBillingData={props.handleUpdateBillingData} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <PaymentMethods customer={props.customer.paymentMethod} />
+                </Grid>
+                </>
 
-            <DeliveryAddress customer={props.customer.deliveryAddress} handleUpdateDeliveryAddress={props.handleUpdateDeliveryAddress} />
-
-            <BillingData customer={props.customer.billingData} handleUpdateBillingData={props.handleUpdateBillingData} />
-
-            <PaymentMethods customer={props.customer.paymentMethod} />
-        </Box>
     );
 };
 

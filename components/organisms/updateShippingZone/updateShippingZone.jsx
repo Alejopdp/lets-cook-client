@@ -10,10 +10,10 @@ import ShippingZoneForm from "../shippingZoneForm";
 
 const UpdateShippingZone = (props) => {
     return (
-        <Container>
+        <>
             <DashboardWithBackTitle title="Modificar zona de envío" />
             <ShippingZoneForm shippingZone={props.shippingZone} update={true} />
-        </Container>
+        </>
     );
 };
 

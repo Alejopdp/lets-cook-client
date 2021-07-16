@@ -3,13 +3,14 @@ import { getUserById, getUserList } from "../serverRequests/user";
 import { getAdditionalPlans, getPlanById, getPlanList } from "../serverRequests/plan";
 import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById } from "../serverRequests/recipe";
 import { getZoneById, getZonesList } from "../serverRequests/shipping";
+import { getCouponById, getCouponList } from "../serverRequests/coupon";
 
-export const pagesPropsGetter = async (params, locale) => {
+export const pagesPropsGetter = async (params, locale, token) => {
     // Use locale for the API calls
     var res;
     switch (params.dashboard.join("/")) {
         case "recetas":
-            res = await getRecipes("", locale);
+            res = await getRecipes(token, locale);
             const filtersRes = await getRecipesFilterOptions("");
 
             return { recipesList: res.data, filterList: filtersRes.data, hasError: res.data.message || res.data.message || null };
@@ -74,6 +75,20 @@ export const pagesPropsGetter = async (params, locale) => {
 
             return { shippingZone: res.data || [], error: res.data.message || null };
 
+        case "cupon":
+            res = await getCouponById(params.id);
+
+            return { coupon: res.data || {}, error: res.data.message || null };
+
+        case "cupones":
+            res = await getCouponList();
+
+            return { coupons: res.data || [], error: res.data.message || null };
+
+        case "cupones/crear":
+            res = await getPlanList(locale);
+
+            return { plans: res.data || [], error: res.data.message || null };
         case "gestion-de-clientes/modificar":
             res = await getPlanList(locale);
 

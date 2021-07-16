@@ -3,11 +3,14 @@ const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/user`;
 
 export const login = async (email, password) => {
     try {
-        const res = await Axios({
-            method: "POST",
-            url: `${apiUrl}/login`,
-            data: { email, password },
-        });
+        const res = await Axios(
+            {
+                method: "POST",
+                url: `${apiUrl}/login`,
+                data: { email, password },
+            },
+            { withCredentials: true }
+        );
 
         return res;
     } catch (error) {

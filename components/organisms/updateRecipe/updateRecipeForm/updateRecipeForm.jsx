@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { updateRecipe } from "../../../../helpers/serverRequests/recipe";
 
 // External components
-import { Button, IconButton, Grid, makeStyles, Typography, FormControlLabel, Box } from "@material-ui/core";
+import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box } from "@material-ui/core";
 import { Flag as FlagIcon, ArrowBack, Add as AddIcon, Delete } from "@material-ui/icons";
 
 // Internal components
@@ -24,6 +24,7 @@ import Checkbox from "../../../atoms/checkbox/checkbox";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 import NutritionalInformationGrid from "../../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
 import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
+import Dropzone from "../../../molecules/dropzone/dropzone";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -34,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeForm = ({ formData, recipeData }) => {
+const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
+    const theme = useTheme();
     const classes = useStyles();
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
@@ -47,6 +49,7 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [weeks, setweeks] = useState([]);
     const [months, setmonths] = useState([]);
     const [generalData, setgeneralData] = useState({
+        name:"",
         sku: "",
         shortDescription: "",
         longDescription: "",
@@ -60,7 +63,7 @@ const RecipeForm = ({ formData, recipeData }) => {
     const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
-    const _handleVariantsInputChange = ($event) => {};
+    const _handleVariantsInputChange = ($event) => { };
     const _handleAddVariant = ($event) => {
         const newVariant = { ingredients: [], sku: "", restrictions: [] };
         const newVariants = [...ingredientsVariants, newVariant];
@@ -317,270 +320,259 @@ const RecipeForm = ({ formData, recipeData }) => {
     };
 
     return (
-        <Grid container direction="column" spacing={5} className={classes.height100}>
-            {/* RECIPES TITLE */}
-            <Grid container style={{ paddingTop: 20, paddingBottom: 20 }}>
+        <>
+            {/* FORM LEFT */}
+            <Grid item xs={12} md={8}>
+                <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Box display="inline-flex" alignItems="center" onClick={goBackHandler} style={{ cursor: "pointer" }}>
-                        <Box display="flex" marginRight={1}>
-                            <ArrowBack fontSize="24px" />
-                        </Box>
-                        <Typography variant="h5">{"Modificar receta"}</Typography>
-                    </Box>
+                    {/* <FormPaperWithImageDropzone
+                        title="Datos generales"
+                        maxFiles={1}
+                        handleDropFile={handleDropFile}
+                        files={generalData.image}
+                        filesTitle="Imagen"
+                        title={lang.paperTitle}
+                        fileName={generalData.name}
+                    > */}
+                    <PaperWithTitleContainer title='Datos generales' fullWidth={true} >
+
+                        <FormInput
+                            label="Nombre de la receta"
+                            name="name"
+                            value={generalData.name}
+                            handleChange={handleGeneralDataChange}
+                        />
+                        <FormInput label="SKU" name="sku" value={generalData.sku} handleChange={handleGeneralDataChange} />
+                        <FormInput
+                            label="Descripción corta"
+                            name="shortDescription"
+                            rows={3}
+                            multiline={true}
+                            value={generalData.shortDescription}
+                            handleChange={handleGeneralDataChange}
+                        />
+                        <FormInput
+                            label="Descripción larga"
+                            name="longDescription"
+                            rows={5}
+                            multiline={true}
+                            value={generalData.longDescription}
+                            handleChange={handleGeneralDataChange}
+                        />
+                        <FormInput
+                            label="Tiempo de cocina"
+                            name="cookDuration"
+                            value={generalData.cookDuration}
+                            handleChange={handleGeneralDataChange}
+                        />
+                        <Autocomplete
+                            label="Nivel de dificultad"
+                            name="difficultyLevel"
+                            options={difficultyLevelOptions.map((dl) => ({ title: dl, value: dl }))}
+                            value={difficultyLevel}
+                            onChange={(e, newDifficultyLevel) => setdifficultyLevel(newDifficultyLevel)}
+                        />
+
+                        <FormInput
+                            label="Peso del plato"
+                            name="weight"
+                            value={generalData.weight}
+                            handleChange={handleGeneralDataChange}
+                        />
+                        <MultiChipInput
+                            label="Herramientas necesarias"
+                            name="tools"
+                            freeSolo
+                            options={toolsOptions}
+                            values={tools}
+                            onChange={(e, newValues) => handleAddTool(newValues)}
+                            handleRemoveValue={handleRemoveTool}
+                        />
+                        <Dropzone
+                                title='Imagenes de la receta'
+                                maxFiles={10}
+                                handleDropFile={handleDropFile}
+                                files={generalData.image}
+                                fileName={generalData.name}
+                            />
+                        {/* <div className={classes.space}></div> */}
+                    </PaperWithTitleContainer>
                 </Grid>
-            </Grid>
-            {/* <DashboardTitle title={"Modificar receta"} handleClick={goBackHandler} /> */}
+                {/* <div className={classes.space}></div> */}
 
-            {/* FORM */}
-            <Grid container spacing={2}>
-                {/* FORM LEFT */}
-                <Grid item xs={8}>
-                    <Grid item xs={12}>
-                        <FormPaperWithImageDropzone
-                            title="Datos generales"
-                            maxFiles={1}
-                            handleDropFile={handleDropFile}
-                            files={generalData.image}
-                            filesTitle="Imagen"
-                            title={lang.paperTitle}
-                            fileName={generalData.name}
-                        >
-                            <FormInput label="SKU" name="sku" value={generalData.sku} handleChange={handleGeneralDataChange} />
-                            <FormInput
-                                label="Nombre de la receta"
-                                name="name"
-                                value={generalData.name}
-                                handleChange={handleGeneralDataChange}
-                            />
-                            <FormInput
-                                label="Descripción corta"
-                                name="shortDescription"
-                                rows={3}
-                                multiline={true}
-                                value={generalData.shortDescription}
-                                handleChange={handleGeneralDataChange}
-                            />
-                            <FormInput
-                                label="Descripción larga"
-                                name="longDescription"
-                                rows={5}
-                                multiline={true}
-                                value={generalData.longDescription}
-                                handleChange={handleGeneralDataChange}
-                            />
-                            <FormInput
-                                label="Tiempo de cocina"
-                                name="cookDuration"
-                                value={generalData.cookDuration}
-                                handleChange={handleGeneralDataChange}
-                            />
-                            <Autocomplete
-                                label="Nivel de dificultad"
-                                name="difficultyLevel"
-                                options={difficultyLevelOptions.map((dl) => ({ title: dl, value: dl }))}
-                                value={difficultyLevel}
-                                onChange={(e, newDifficultyLevel) => setdifficultyLevel(newDifficultyLevel)}
-                            />
+                {/* FORM LEFT BOTTOM, INGREDIENTS */}
 
-                            <FormInput
-                                label="Peso del plato"
-                                name="weight"
-                                value={generalData.weight}
-                                handleChange={handleGeneralDataChange}
-                            />
-                            <MultiChipInput
-                                label="Herramientas necesarias"
-                                name="tools"
-                                freeSolo
-                                options={toolsOptions}
-                                values={tools}
-                                onChange={(e, newValues) => handleAddTool(newValues)}
-                                handleRemoveValue={handleRemoveTool}
-                            />
-                            <div className={classes.space}></div>
-                        </FormPaperWithImageDropzone>
-                    </Grid>
-                    <div className={classes.space}></div>
-
-                    {/* FORM LEFT BOTTOM, INGREDIENTS */}
-
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Ingredientes">
-                            <Grid item container spacing={3}>
-                                {ingredientsVariants.map((variant, index) => (
-                                    <Grid item xs={12} key={index}>
-                                        <Grid item container alignItems="center">
-                                            <Grid item xs>
-                                                <Typography variant="subtitle1">
-                                                    Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
-                                                </Typography>
-                                            </Grid>
-                                            {index !== 0 && (
-                                                <Grid item>
-                                                    <IconButton onClick={() => _handleDeleteVariant(index)}>
-                                                        <Delete />
-                                                    </IconButton>
-                                                </Grid>
-                                            )}
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Ingredientes">
+                        <Grid container spacing={2}>
+                            {ingredientsVariants.map((variant, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Grid container alignItems="center">
+                                        <Grid item xs>
+                                        <Typography variant="body1" style={{ fontWeight: 600, marginBottom: theme.spacing(1)}}>
+                                                Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
+                                            </Typography>
                                         </Grid>
-                                        <Grid item container spacing={2} xs={12}>
-                                            <Grid item xs={3}>
-                                                <FormInput
-                                                    name={`ingredientsVariantsCode:${index}`}
-                                                    value={variant.sku}
-                                                    handleChange={(e) => handleVariantSkuChange(index, e.target.value)}
-                                                    label="SKU"
-                                                />
+                                        {index !== 0 && (
+                                            <Grid item>
+                                                <IconButton onClick={() => _handleDeleteVariant(index)}>
+                                                    <Delete />
+                                                </IconButton>
                                             </Grid>
-                                            <Grid item xs>
-                                                <MultiChipInput
-                                                    options={formData.ingredients}
-                                                    values={variant.ingredients}
-                                                    onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
-                                                    name={`variant:${index}`}
-                                                    handleRemoveValue={(ingredientToRemove) =>
-                                                        handleRemoveIngredientFromVariant(index, ingredientToRemove)
-                                                    }
-                                                />
-                                            </Grid>
+                                        )}
+                                    </Grid>
+                                    <Grid item container spacing={2} xs={12}>
+                                        <Grid item xs={3}>
+                                            <FormInput
+                                                name={`ingredientsVariantsCode:${index}`}
+                                                value={variant.sku}
+                                                handleChange={(e) => handleVariantSkuChange(index, e.target.value)}
+                                                label="SKU"
+                                            />
                                         </Grid>
-                                        <Grid item container xs={12}>
-                                            {formData.restrictions.map((variantRestriction, restrictionIndex) => (
-                                                <Grid item xs key={restrictionIndex}>
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                onChange={(e) =>
-                                                                    handleRestrictionsForVariants(
-                                                                        index,
-                                                                        e.target.name,
-                                                                        variant.restrictions.every(
-                                                                            (restriction) => restriction !== variantRestriction.value
-                                                                        )
-                                                                    )
-                                                                }
-                                                                name={variantRestriction.value}
-                                                                color="primary"
-                                                                value={variant.restrictions.some(
-                                                                    (restriction) => restriction === variantRestriction.value
-                                                                )}
-                                                                checked={variant.restrictions.some(
-                                                                    (restriction) => restriction === variantRestriction.value
-                                                                )}
-                                                            />
-                                                        }
-                                                        label={variantRestriction.label}
-                                                    />
-                                                </Grid>
-                                            ))}
+                                        <Grid item xs>
+                                            <MultiChipInput
+                                                options={formData.ingredients}
+                                                values={variant.ingredients}
+                                                onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
+                                                name={`variant:${index}`}
+                                                handleRemoveValue={(ingredientToRemove) =>
+                                                    handleRemoveIngredientFromVariant(index, ingredientToRemove)
+                                                }
+                                            />
                                         </Grid>
                                     </Grid>
-                                ))}
-                            </Grid>
-                            <div className={classes.space}></div>
-                            <div className={classes.space}></div>
-                            <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
-                                Agregar variante
-                            </Button>
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
+                                    <Grid item container xs={12}>
+                                        {formData.restrictions.map((variantRestriction, restrictionIndex) => (
+                                            <Grid item xs key={restrictionIndex}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            onChange={(e) =>
+                                                                handleRestrictionsForVariants(
+                                                                    index,
+                                                                    e.target.name,
+                                                                    variant.restrictions.every(
+                                                                        (restriction) => restriction !== variantRestriction.value
+                                                                    )
+                                                                )
+                                                            }
+                                                            name={variantRestriction.value}
+                                                            color="primary"
+                                                            value={variant.restrictions.some(
+                                                                (restriction) => restriction === variantRestriction.value
+                                                            )}
+                                                            checked={variant.restrictions.some(
+                                                                (restriction) => restriction === variantRestriction.value
+                                                            )}
+                                                        />
+                                                    }
+                                                    label={variantRestriction.label}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Grid>
+                            ))}
+                        </Grid>
+                        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                            Agregar variante
+                        </Button>
+                    </PaperWithTitleContainer>
                 </Grid>
-
-                {/* FORM  RIGHT */}
-                <Grid item xs={4} spacing={2}>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Tags en imagen">
-                            <MultiChipInput
-                                options={[]}
-                                freeSolo={true}
-                                values={imageTags}
-                                onChange={handleAddImageTag}
-                                name="imageTags"
-                                handleRemoveValue={handleRemoveImageTag}
-                            />
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Información nutricional">
-                            <NutritionalInformationGrid
-                                handleAddItem={handleAddNutritionalItem}
-                                handleRowEdit={handleEditNutritionalInformation}
-                                rows={nutritionalInformation}
-                            />
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormPaperWithEmptyState
-                            fullWidth={true}
-                            title={"Planes relacionados"}
-                            empty={formData.plans.length === 0}
-                            emptyText={"Aún no hay planes creados"}
-                        >
-                            <Box display="flex" flexDirection="column" alignItems="flex-start">
-                                {formData.plans.map((plan) => (
-                                    <Checkbox
-                                        key={plan.id}
-                                        label={plan.name}
-                                        onChange={handlePlansChange}
-                                        checked={plans.some((id) => id.toString() === plan.id.toString())}
-                                        value={plan.id}
-                                    />
-                                ))}
-                            </Box>
-                        </FormPaperWithEmptyState>
-                        <div className={classes.space}></div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Calendario">
-                            <MultiChipInput
-                                options={formData.weeks.map((week) => week.label)}
-                                values={weeks}
-                                onChange={handleAddWeek}
-                                handleRemoveValue={handleRemoveWeek}
-                                name="imageTags"
-                            />
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Meses de disponibilidad">
-                            <MultiChipInput
-                                options={formData.months}
-                                values={months}
-                                onChange={handleAddMonth}
-                                handleRemoveValue={handleRemoveMonth}
-                                name="months"
-                            />
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Tags">
-                            <MultiChipInput
-                                options={[]}
-                                freeSolo={true}
-                                values={tags}
-                                onChange={handleAddTag}
-                                name="tags"
-                                handleRemoveValue={handleRemoveTag}
-                            />
-                        </PaperWithTitleContainer>
-                        <div className={classes.space}></div>
-                    </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <BackAndCreateButtons
-                    backButtonHandler={() => ""}
-                    createButtonHandler={handleCreate}
-                    createButtonText="MODIFICAR RECETA"
-                    // isCreateButtonDisabled={!isFormOkForCreation()}
-                />
+
+            {/* FORM  RIGHT */}
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Tags en imagen">
+                        <MultiChipInput
+                            options={[]}
+                            freeSolo={true}
+                            values={imageTags}
+                            onChange={handleAddImageTag}
+                            name="imageTags"
+                            handleRemoveValue={handleRemoveImageTag}
+                        />
+                    </PaperWithTitleContainer>
+                </Grid>
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Información nutricional">
+                        <NutritionalInformationGrid
+                            handleAddItem={handleAddNutritionalItem}
+                            handleRowEdit={handleEditNutritionalInformation}
+                            rows={nutritionalInformation}
+                        />
+                    </PaperWithTitleContainer>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormPaperWithEmptyState
+                        fullWidth={true}
+                        title={"Planes relacionados"}
+                        empty={formData.plans.length === 0}
+                        emptyText={"Aún no hay planes creados"}
+                    >
+                        <Box display="flex" flexDirection="column" alignItems="flex-start">
+                            {formData.plans.map((plan) => (
+                                <Checkbox
+                                    key={plan.id}
+                                    label={plan.name}
+                                    onChange={handlePlansChange}
+                                    checked={plans.some((id) => id.toString() === plan.id.toString())}
+                                    value={plan.id}
+                                />
+                            ))}
+                        </Box>
+                    </FormPaperWithEmptyState>
+                </Grid>
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Calendario">
+                        <MultiChipInput
+                            options={formData.weeks.map((week) => week.label)}
+                            values={weeks}
+                            onChange={handleAddWeek}
+                            handleRemoveValue={handleRemoveWeek}
+                            name="imageTags"
+                        />
+                    </PaperWithTitleContainer>
+                </Grid>
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Meses de disponibilidad">
+                        <MultiChipInput
+                            options={formData.months}
+                            values={months}
+                            onChange={handleAddMonth}
+                            handleRemoveValue={handleRemoveMonth}
+                            name="months"
+                        />
+                    </PaperWithTitleContainer>
+                </Grid>
+                <Grid item xs={12}>
+                    <PaperWithTitleContainer fullWidth={true} title="Tags">
+                        <MultiChipInput
+                            options={[]}
+                            freeSolo={true}
+                            values={tags}
+                            onChange={handleAddTag}
+                            name="tags"
+                            handleRemoveValue={handleRemoveTag}
+                        />
+                    </PaperWithTitleContainer>
+                </Grid>
             </Grid>
         </Grid>
+
+        <Grid item xs={12}>
+            <BackAndCreateButtons
+                backButtonHandler={handleClickGoBack}
+                createButtonHandler={handleCreate}
+                createButtonText="MODIFICAR RECETA"
+            // isCreateButtonDisabled={!isFormOkForCreation()}
+            />
+        </Grid>
+        </>
     );
 };
 

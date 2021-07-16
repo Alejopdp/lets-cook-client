@@ -62,7 +62,7 @@ export const createCustomer = async (customer) => {
         const res = await Axios({
             headers: { "Content-Type": "multipart/form-data" },
             method: "POST",
-            url: `${apiUrl}`,
+            url: `${apiUrl}/create`,
             data: customer,
         });
 

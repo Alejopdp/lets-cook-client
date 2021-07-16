@@ -13,8 +13,6 @@ import Navbar from "../navbar/navbar";
 import FixedDrawer from "../drawers/fixedDrawer";
 import MobileDrawer from "../drawers/mobileDrawer";
 import DashboardContainer from "../dashboardContainer/dashboardContainer";
-//
-// import AuthContext from "../../contexts/auth/authContext";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LayoutFixedSidebar(props) {
     const classes = useStyles();
-    // const [token, settoken, isLoading, userInfo] = useContext(AuthContext);
     const [open, setOpen] = React.useState(false);
 
     const handleOpenDrawer = () => {

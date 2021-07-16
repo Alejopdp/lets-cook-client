@@ -52,7 +52,7 @@ const BillingData = (props) => {
 
     return (
         <>
-        <PaperWithTitleContainer title="Datos de facturación" height={"479px"} flex>
+        <PaperWithTitleContainer title="Datos de facturación" height={"479px"} flex fullWidth>
             <Typography variant="subtitle2">Dirección</Typography>
             <Typography variant="body1" paragraph>{props.customer.address}</Typography>
 
@@ -71,7 +71,7 @@ const BillingData = (props) => {
                 style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto"}}
                 onClick={() => setBillingDataModalOpen(true)}
             >
-                Modificar datos de facturación {" >"}
+                Modificar datos de facturación
             </Typography>
         </PaperWithTitleContainer>
 

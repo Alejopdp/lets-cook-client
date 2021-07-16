@@ -3,13 +3,11 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
+import cookies from "js-cookie";
 import axios from "axios";
 
 // Internal Hooks & Helpers
 import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
-import { USER_REQUEST_SETTINGS } from "../../hooks/useRequest/endpoints/user";
-import authToken from "../../helpers/serverRequests/authToken";
-import { verifyToken } from "../../helpers/serverRequests/user";
 import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 
 // External components
@@ -21,7 +19,6 @@ import RecipesDashboard from "../../components/organisms/recipesDashboard/";
 import UsersDashboard from "../../components/organisms/usersDashboard/usersDashboard";
 import PlansDashboard from "../../components/organisms/plansDashboard/plansDashboard";
 import CreatePlan from "../../components/organisms/createPlan/createPlan";
-import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import CreateUserDashboard from "../../components/organisms/createUserDashboard/createUserDashboard";
 import UpdateUserDashboard from "../../components/organisms/updateUserDashboard";
 import CreateRecipe from "../../components/organisms/createRecipe/createRecipe";
@@ -31,8 +28,17 @@ import CouponsForm from "../../components/organisms/coupons/couponsForm";
 import ShippingDashboard from "../../components/organisms/shippingDashboard";
 import CreateShippingZone from "../../components/organisms/createShippingZone/createShippingZone";
 import UpdateShippingZone from "../../components/organisms/updateShippingZone/updateShippingZone";
+import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
+import CouponsDashboard from "../../components/organisms/couponsDashboard";
+import CouponDetail from "../../components/organisms/couponDetail";
+import { useUserInfoStore } from "../../stores/auth";
+import OrdersDashboard from "../../components/organisms/ordersDashboard/";
+import PaymentOrderDetail from "../../components/organisms/paymentOrderDetail";
+import OrderDetail from "../../components/organisms/orderDetail";
+import SubscriptionsDashboard from "../../components/organisms/subscriptionsDashboard";
+import SubscriptionDetail from "../../components/organisms/subscriptionDetail";
 import CustomersDashboard from "../../components/organisms/customersDashboard/customersDashboard";
-import CreateCustomer from "../../components/organisms/createClient/createClient";
+import CreateCustomer from "../../components/organisms/createCustomer/createCustomer";
 import CustomerProfile from "../../components/organisms/customerProfile/customerProfile";
 
 const useStyles = makeStyles((theme) => ({
@@ -58,12 +64,19 @@ const useStyles = makeStyles((theme) => ({
 const Index = ({ token, ...props }) => {
     const route = useRouter();
     const classes = useStyles();
-    const { getFromLocalStorage } = useLocalStorage();
+    const { getFromLocalStorage, resetLocalStorage } = useLocalStorage();
+    const setuserInfo = useUserInfoStore((state) => state.setuserInfo);
 
     useEffect(() => {
-        const notIsLogged = token !== getFromLocalStorage(LOCAL_STORAGE_KEYS.token);
-        if (notIsLogged) {
-            route.replace("/");
+        const userInfo = getFromLocalStorage("userInfo");
+
+        if (!!userInfo) setuserInfo(userInfo);
+    }, []);
+
+    useEffect(() => {
+        if (props.status === 401) {
+            resetLocalStorage();
+            cookies.remove("token");
         }
     }, [route.asPath]);
 
@@ -107,8 +120,14 @@ const Index = ({ token, ...props }) => {
             case "planes/modificar":
                 return <UpdatePlan additionalPlans={props.additionalPlans} plan={props.plan} />;
 
+            case "cupon":
+                return <CouponDetail coupon={props.coupon} />;
+
             case "cupones":
-                return <CouponsForm lang={props.langs.couponsForm} />;
+                return <CouponsDashboard coupons={props.coupons} />;
+
+            case "cupones/crear":
+                return <CouponsForm lang={props.langs.couponsForm} plans={props.plans} />;
 
             case "gestion-de-envios":
                 return <ShippingDashboard shippingZones={props.shippingZones} />;
@@ -119,14 +138,28 @@ const Index = ({ token, ...props }) => {
             case "gestion-de-envios/modificar":
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
 
+            case "ordenes":
+                return <OrdersDashboard />;
+
+            case "ordenes/detalle-orden-de-pago":
+                return <PaymentOrderDetail />;
+
+            case "ordenes/detalle-orden":
+                return <OrderDetail />;
+
+            case "suscripciones":
+                return <SubscriptionsDashboard />;
+
+            case "suscripciones/detalle":
+                return <SubscriptionDetail />;
             case "gestion-de-clientes":
-                return <CustomersDashboard />
+                return <CustomersDashboard />;
 
             case "gestion-de-clientes/modificar":
-                return <CustomerProfile plans={props.plans} />
+                return <CustomerProfile plans={props.plans} />;
 
             case "gestion-de-clientes/crear":
-                return <CreateCustomer />
+                return <CreateCustomer />;
 
             default:
                 return (
@@ -147,21 +180,18 @@ const Index = ({ token, ...props }) => {
 
 Index.propTypes = {};
 
-export async function getServerSideProps({ locale, query, previewData }) {
-    let _token = await authToken(previewData);
-    if (!!!_token) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: true,
-            },
-        };
+export async function getServerSideProps(context) {
+    const langs = require("../../lang");
+    const token = context.req.cookies.token;
+
+    if (!token) {
+        return { props: { hasError: "Usuario no autorizado", status: 401 } };
     }
 
-    const langs = require("../../lang");
-    const props = await pagesPropsGetter(query, locale);
+    const props = await pagesPropsGetter(context.query, context.locale, context.req.cookies.token);
+
     return {
-        props: { ...props, langs: { ...langs }, token: _token },
+        props: { ...props, langs: { ...langs } },
     };
 }
 

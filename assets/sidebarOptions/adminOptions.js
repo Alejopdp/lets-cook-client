@@ -6,8 +6,8 @@ export default [
     },
     {
         icon: "assignment_turned_in",
-        text: "Pedidos",
-        path: "/pedidos",
+        text: "Ordenes",
+        path: "/ordenes",
     },
 
     {

@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 // External components
 import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 
@@ -245,24 +246,24 @@ const CustomerProfile = (props) => {
     }
 
     return (
-        <Container size="md">
+        <>
             <DashboardWithBackTitle title={`Perfil de ${customer.personalData.name} ${customer.personalData.lastName}`} />
-
-            <Box className={container}>
-                {crumbs.map((crumb, index) => (
-                    <Typography
-                        key={index}
-                        className={breadcrumb === crumb.key ? clsx(active, breadcrumbs) : breadcrumbs}
-                        variant="subtitle1"
-                        onClick={() => setBreadcrumb(crumb.key)}
-                    >
-                        {crumb.label}
-                    </Typography>
-                ))}
-            </Box>
-
+            <Grid item xs={12}>
+                <Box className={container}>
+                    {crumbs.map((crumb, index) => (
+                        <Typography
+                            key={index}
+                            className={breadcrumb === crumb.key ? clsx(active, breadcrumbs) : breadcrumbs}
+                            variant="subtitle1"
+                            onClick={() => setBreadcrumb(crumb.key)}
+                        >
+                            {crumb.label}
+                        </Typography>
+                    ))}
+                </Box>
+            </Grid>
             {currentCustomerInfo}
-        </Container>
+        </>
     );
 };
 

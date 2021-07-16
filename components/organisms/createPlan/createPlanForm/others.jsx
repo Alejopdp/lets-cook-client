@@ -20,7 +20,7 @@ const Others = (props) => {
     const lang = langs[router.locale];
 
     return (
-        <Grid container spacing={2}>
+        <>
             <Grid item xs={12}>
                 <PaperWithTitleContainer fullWidth={true} title={lang.stateTitle}>
                     <Autocomplete
@@ -60,7 +60,13 @@ const Others = (props) => {
                         label={lang.hasRecipesText}
                         value={props.data.hasRecipes}
                         checked={props.data.hasRecipes}
-                        onChange={props.handleHasRecipes}
+                        handleChange={props.handleHasRecipes}
+                    />
+                    <Checkbox
+                        label='El usuario podrá elegir recetas'
+                        value={props.data.abilityToChooseRecipes}
+                        checked={props.data.abilityToChooseRecipes}
+                        handleChange={props.handleAbilityToChooseRecipes}
                     />
                 </PaperWithTitleContainer>
             </Grid>
@@ -76,7 +82,7 @@ const Others = (props) => {
                             {props.additionalPlans.map((plan) => (
                                 <Checkbox
                                     label={plan.name}
-                                    onChange={props.handleAdditionalPlansChange}
+                                    handleChange={props.handleAdditionalPlansChange}
                                     checked={props.selectedAdditionalPlansIds.some((id) => id === plan.id)}
                                     value={plan.id}
                                 />
@@ -85,7 +91,7 @@ const Others = (props) => {
                     </FormPaperWithEmptyState>
                 </Grid>
             )}
-        </Grid>
+        </>
     );
 };
 

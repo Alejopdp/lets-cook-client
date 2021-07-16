@@ -2,66 +2,34 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { useStyles } from "./styles";
+import { useRouter } from "next/router";
 
 // External components
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import Hidden from "@material-ui/core/Hidden";
 import Image from "next/image";
 import Box from "@material-ui/core/Box";
 
 // Internal components
-import UserBox from "./userBox";
+import UserBoxDesktop from "./userBoxDesktop";
+import UserBoxMobile from "./userBoxMobile";
 
-const useStyles = makeStyles((theme) => ({
-    toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
-        display: "flex",
-        justifyContent: "space-between",
-    },
-    toolbarIcon: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        padding: "0 8px",
-        ...theme.mixins.toolbar,
-    },
-
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        backgroundColor: theme.palette.background.paper,
-        width: "100vw",
-        boxShadow: "none",
-    },
-
-    menuButton: {
-        marginRight: 36,
-    },
-
-    menuButtonHidden: {
-        display: "none",
-    },
-}));
 
 const Navbar = (props) => {
     const classes = useStyles();
+    const router = useRouter();
 
     return (
-        <AppBar position="fixed" className={clsx(classes.appBar)} elevation={8}>
+        <AppBar position="fixed" classes={{ root: classes.appBar }}>
             <Toolbar className={classes.toolbar}>
                 <Hidden mdUp>
                     <IconButton
                         edge="start"
-                        color="inherit"
+                        color="textSecondary"
                         aria-label="open drawer"
                         onClick={props.handleOpenDrawer}
                         className={clsx(classes.menuButton, props.opened && classes.menuButtonHidden)}
@@ -69,9 +37,16 @@ const Navbar = (props) => {
                         <MenuIcon />
                     </IconButton>
                 </Hidden>
-                <Image src="/logo.png" alt="logo" width={82} height={28} style={{ justifySelf: "center" }} />
+                <div style={{cursor: 'pointer'}}>
+                    <Image src="/logo.png" alt="logo" width={100} height={34} style={{ justifySelf: "center" }} onClick={() => router.push({ pathname: `/` })} />
+                </div>
                 <Box display="flex" alignItems="center">
-                    <UserBox />
+                    <Hidden smDown>
+                        <UserBoxDesktop />
+                    </Hidden>
+                    <Hidden mdUp>
+                        <UserBoxMobile />
+                    </Hidden>
                 </Box>
             </Toolbar>
         </AppBar>

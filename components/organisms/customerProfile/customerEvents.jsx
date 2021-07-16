@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 
 // External components
+import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
@@ -15,7 +16,7 @@ import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        marginTop: theme.spacing(4)
+        // marginTop: theme.spacing(2)
     },
     table: {
         minWidth: 500,
@@ -33,41 +34,43 @@ const CustomerEvents = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
 
     return (
-        <TableContainer component={Paper} className={tableContainer}>
-            <Table className={table} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={idCell}>
-                            <Typography variant="subtitle1">Fecha</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Usuario</Typography>
-                        </TableCell>
-
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Evento</Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-
-                <TableBody>
-                    {props.events.map((event, index) => (
-                        <TableRow key={index}>
+        <Grid item xs={12}>
+            <TableContainer component={Paper} className={tableContainer}>
+                <Table className={table} aria-label="custom pagination table">
+                    <TableHead>
+                        <TableRow>
                             <TableCell className={idCell}>
-                                <Typography variant="body1">{event.date}</Typography>
+                                <Typography variant="subtitle1">Fecha</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <Typography variant="body1">{event.performedBy}</Typography>
+                                <Typography variant="subtitle1">Usuario</Typography>
                             </TableCell>
+
                             <TableCell className={cells}>
-                                <Typography variant="body1">{event.event}</Typography>
+                                <Typography variant="subtitle1">Evento</Typography>
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+
+                    <TableBody>
+                        {props.events.map((event, index) => (
+                            <TableRow key={index}>
+                                <TableCell className={idCell}>
+                                    <Typography variant="body1">{event.date}</Typography>
+                                </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="body1">{event.performedBy}</Typography>
+                                </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="body1">{event.event}</Typography>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Grid>
     );
 };
 

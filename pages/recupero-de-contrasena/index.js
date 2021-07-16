@@ -11,14 +11,3 @@ const Recover = (props) => {
 };
 
 export default Recover;
-
-export async function getStaticProps(context) {
-    const langs = require("../../lang");
-    const locale = context.locale;
-
-    return {
-        props: {
-            lang: langs.recoverPassword[locale],
-        },
-    };
-}

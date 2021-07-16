@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: theme.spacing(3),
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(3),
-        margin: theme.spacing(2)
     },
     displayFlex: {
         display: "flex",
@@ -35,7 +34,7 @@ const PaperWithTitleContainer = (props) => {
 
     return (
         <Box className={root} width={props.fullWidth ? "100%" : props.width || 384}>
-            <Box className={props.flex ? clsx(paper, displayFlex) : paper} height={props.height}>
+            <Box className={props.flex ? clsx(paper, displayFlex) : paper} height={props.height} marginBottom={props.marginBottom}>
                 <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: theme.spacing(2) }}>
                     {props.title}
                 </Typography>
@@ -47,7 +46,14 @@ const PaperWithTitleContainer = (props) => {
 
 PaperWithTitleContainer.propTypes = {
     title: PropTypes.string.isRequired,
-    width: PropTypes.number,
+    width: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    marginBottom: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
     fullWidth: PropTypes.bool,
     flex: PropTypes.bool,
 };
