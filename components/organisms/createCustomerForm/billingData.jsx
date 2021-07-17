@@ -5,15 +5,16 @@ import PropTypes from "prop-types";
 // Internal components
 import Input from "../../atoms/input/input";
 import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import LocationSearchInput from "../../atoms/locationSearchInput/locationSearchInput";
 
 const BillingData = (props) => {
     return (
         <PaperWithTitleContainer width="70%" title="Dirección de facturación">
-            <Input
+            <LocationSearchInput
                 name="billingAddress"
                 label="Dirección de facturación"
                 value={props.formData.billingAddress}
-                handleChange={props.handleChange}
+                handleChange={props.handleGoogleInput}
             />
 
             <Input

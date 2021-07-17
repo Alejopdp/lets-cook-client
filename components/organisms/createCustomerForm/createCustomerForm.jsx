@@ -37,6 +37,8 @@ const CreateCustomerForm = (props) => {
         deliveryPreferredSchedule: "",
         // Billing
         billingAddress: "",
+        billingLatitude: "",
+        billingLongitude: "",
         billingClarifications: "",
         billingName: "",
         billingPersonalIdNumber: "",
@@ -49,14 +51,25 @@ const CreateCustomerForm = (props) => {
         });
     };
 
-    const handleGoogleInput = async (address) => {
+    const handleGoogleDeliveryInput = async (address) => {
         const geometry = await getGeometry(address.structured_formatting.main_text);
-        console.log("address:", address)
+        console.log("delivery address:", address)
         setFormData({
             ...formData,
             deliveryAddress: address.description,
             deliveryLatitude: geometry.lat,
             deliveryLongitude: geometry.lng,
+        });
+    };
+
+    const handleGoogleBillingInput = async (address) => {
+        const geometry = await getGeometry(address.structured_formatting.main_text);
+        console.log("billing address:", address)
+        setFormData({
+            ...formData,
+            billingAddress: address.description,
+            billingLatitude: geometry.lat,
+            billingLongitude: geometry.lng,
         });
     };
 
@@ -82,10 +95,10 @@ const CreateCustomerForm = (props) => {
     return (
         <Container>
             <Box>
-                {/* <PersonalData formData={formData} handleChange={handleChange} /> */}
-                {/* <AccountData formData={formData} handleChange={handleChange} /> */}
-                <DeliveryData formData={formData} handleChange={handleChange} handleGoogleInput={handleGoogleInput} />
-                {/* <BillingData formData={formData} handleChange={handleChange} /> */}
+                <PersonalData formData={formData} handleChange={handleChange} />
+                <AccountData formData={formData} handleChange={handleChange} />
+                <DeliveryData formData={formData} handleChange={handleChange} handleGoogleInput={handleGoogleDeliveryInput} />
+                <BillingData formData={formData} handleChange={handleChange} handleGoogleInput={handleGoogleBillingInput} />
             </Box>
 
             <Box>

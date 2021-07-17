@@ -26,13 +26,6 @@ const DeliveryData = (props) => {
 
     return (
         <PaperWithTitleContainer width="70%" title="Dirección de entrega" marginBottom="16px">
-            {/* <Input
-                name="deliveryAddress"
-                label="Dirección de entrega"
-                value={props.formData.deliveryAddress}
-                handleChange={props.handleChange}
-            /> */}
-
             <LocationSearchInput
                 name="deliveryAddress"
                 label="Dirección de entrega"
