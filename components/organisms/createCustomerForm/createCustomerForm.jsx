@@ -29,16 +29,14 @@ const CreateCustomerForm = (props) => {
         phone2: "",
         bornDate: new Date(),
         preferredLanguage: "",
-        // Delivery
         deliveryAddress: "",
-        deliveryLatitude: "",
-        deliveryLongitude: "",
+        latShipping: "",
+        longShipping: "",
         deliveryClarifications: "",
         deliveryPreferredSchedule: "",
-        // Billing
         billingAddress: "",
-        billingLatitude: "",
-        billingLongitude: "",
+        latBilling: "",
+        longBilling: "",
         billingClarifications: "",
         billingName: "",
         billingPersonalIdNumber: "",
@@ -57,8 +55,8 @@ const CreateCustomerForm = (props) => {
         setFormData({
             ...formData,
             deliveryAddress: address.description,
-            deliveryLatitude: geometry.lat,
-            deliveryLongitude: geometry.lng,
+            latShipping: geometry.lat,
+            longShipping: geometry.lng,
         });
     };
 
@@ -68,16 +66,17 @@ const CreateCustomerForm = (props) => {
         setFormData({
             ...formData,
             billingAddress: address.description,
-            billingLatitude: geometry.lat,
-            billingLongitude: geometry.lng,
+            latBilling: geometry.lat,
+            longBilling: geometry.lng,
         });
     };
 
     console.log("formdata:", formData)
 
     const handleSubmit = async () => {
-        // const res = await createCustomer(formData);
-        const res = { status: 200 };
+        const res = await createCustomer(formData);
+        // const res = { status: 200 };
+        console.log(res)
 
         if (res.status === 200) {
             enqueueSnackbar("Se ha creado el usuario correctamente", {
