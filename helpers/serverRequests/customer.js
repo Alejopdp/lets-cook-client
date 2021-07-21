@@ -16,6 +16,19 @@ export const getCustomerList = async () => {
         return error.response;
     }
 };
+export const searchCustomers = async (customerName) => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/by-name/${customerName}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};
 
 export const getCustomerById = async (id) => {
     try {

@@ -2,15 +2,14 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
+import { getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
 import PropTypes from "prop-types";
 
 // External components
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 
 // Internal components
-import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CustomersTable from "./customersTable/customersTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
@@ -73,16 +72,23 @@ const CustomersDashboard = (props) => {
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const handleExportToCSV = () => {
-        alert("Exportar a CSV")
-    }
-
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear")
     }
 
-    const handleDeleteCustomer = () => {
-        const res = { status: 404 }
+    const getCustomers = async () => {
+        const res = await getCustomerList();
+        console.log(res)
+        if (res.status === 200) {
+            setCustomers(res.data)
+        }
+    }
+
+    // getCustomers()
+    // console.log(customers)
+
+    const handleDeleteCustomer = async () => {
+        // const res = { status: 404 }
 
         if (res.status === 200) {
             setCustomers(customers.filter((customer) => customer.id !== selectedCustomer.id));

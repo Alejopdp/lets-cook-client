@@ -103,7 +103,7 @@ const CustomersTable = (props) => {
                                         <Typography variant="body1">{customer.email}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{customer.phone}</Typography>
+                                        <Typography variant="body1">{customer.phone1 || customer.phone1}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{customer.activeSubscriptions}</Typography>
