@@ -18,24 +18,24 @@ import OrdersTable from "./ordersTable/index";
 const OrdersDashboard = (props) => {
 
     const nextOrdersRows = [
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PENDING' },
     ]
 
     const processedOrdersRows = [
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'PAYMENT OK' },
     ]
 
     const refusedOrderRows = [
-        { chargeDate: '10/10/21', clientName: 'Alejo Scotti', paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'REFUSED' },
+        { chargeDate: '10/10/21', client: { name: 'Alejo Scotti', id: '1' }, paymentOrderId: '1', orderQuantity: '2', orderAmount: '30 EU', state: 'REFUSED' },
     ]
 
 

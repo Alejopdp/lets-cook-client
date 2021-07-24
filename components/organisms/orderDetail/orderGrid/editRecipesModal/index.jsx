@@ -14,8 +14,9 @@ const EditRecipesModal = (props) => {
 
 
     const getTotalRecipesSelected = () => {
-        return props.data.map(recipe => recipe.quantitySelected).reduce((prev, next) => prev + next);
+        return props.data.map(recipe => recipe.quantitySelected).reduce((prev, next) => prev + next, 0);
     }
+
     const disablePlusButton = () => {
         let total = getTotalRecipesSelected()
         if (total === props.recipesQuantity) {
