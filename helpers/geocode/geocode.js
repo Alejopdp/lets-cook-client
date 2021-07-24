@@ -1,6 +1,6 @@
 import Geocode from "react-geocode";
 
-Geocode.setApiKey("AIzaSyBjdaFuKAmhBmINwTignYPwQmzdVkld53Q");
+Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_KEY);
 Geocode.setLanguage("es");
 Geocode.setRegion("es");
 
