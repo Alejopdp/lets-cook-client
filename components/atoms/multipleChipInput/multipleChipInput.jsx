@@ -34,7 +34,7 @@ const Input = (props) => {
             <Autocomplete
                 style={{ marginBottom: theme.spacing(2) }}
                 multiple
-                options={props.options}
+                options={props.options.filter((option) => props.values.every((value) => value !== option))}
                 defaultValue={[]}
                 value={props.values}
                 freeSolo={props.freeSolo}

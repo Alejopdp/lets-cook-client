@@ -6,8 +6,8 @@ export default [
     },
     {
         icon: "assignment_turned_in",
-        text: "Pedidos",
-        path: "/pedidos",
+        text: "Ordenes",
+        path: "/ordenes",
     },
 
     {
@@ -18,7 +18,7 @@ export default [
     {
         icon: "account_circle",
         text: "Clientes",
-        path: "/clientes",
+        path: "/gestion-de-clientes",
     },
     {
         icon: "local_mall",

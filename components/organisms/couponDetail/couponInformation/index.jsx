@@ -1,5 +1,5 @@
 // Utils & config
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // External components
@@ -10,8 +10,55 @@ import GeneralData from "./generalData";
 import DateRange from "./dateRange";
 import State from "./state";
 import Application from "./applications";
+import CouponActions from "./couponActions";
+import DeactivateCouponModal from './deactivateCouponModal';
+import DeleteCouponModal from './deleteCouponModal';
 
 const CouponInformation = (props) => {
+    const [openDeactiveCouponModal, setOpenDeactiveCouponModal] = useState(false);
+    const [openDeleteCouponModal, setOpenDeleteCouponModal] = useState(false);
+
+
+    // const handleClickDeactivateCoupon = () => {
+    //     alert('desactive')
+    // }
+
+    // const handleClickDeleteCoupon = () => {
+    //     alert('delete')
+    // }
+
+
+    // Deactive Coupon Modal Functions
+
+    const handleClickOpenDeactiveCouponModal = () => {
+        setOpenDeactiveCouponModal(true);
+    };
+
+    const handleCloseDeactiveCouponModal = () => {
+        setOpenDeactiveCouponModal(false);
+    };
+
+    const handleDeactiveCoupon = () => {
+        alert('deactive')
+        setOpenDeactiveCouponModal(false);
+    }
+
+
+    // Delete Coupon Modal Functions
+
+    const handleClickOpenDeleteCouponModal = () => {
+        setOpenDeleteCouponModal(true);
+    };
+
+    const handleCloseDeleteCouponModal = () => {
+        setOpenDeleteCouponModal(false);
+    };
+
+    const handleDeleteCoupon = () => {
+        alert('deleted')
+        setOpenDeleteCouponModal(false);
+    }
+
     return (
         <>
             <Grid item xs={12} md={8}>
@@ -32,8 +79,19 @@ const CouponInformation = (props) => {
                 <Grid container item spacing={2}>
                     <State state={props.coupon.state} />
                     <Application />
+                    <CouponActions handleClickDeactivateCoupon={handleClickOpenDeactiveCouponModal} handleClickDeleteCoupon={handleClickOpenDeleteCouponModal} />
                 </Grid>
             </Grid>
+            <DeactivateCouponModal
+                open={openDeactiveCouponModal}
+                handleClose={handleCloseDeactiveCouponModal}
+                handlePrimaryButtonClick={handleDeactiveCoupon}
+            />
+            <DeleteCouponModal
+                open={openDeleteCouponModal}
+                handleClose={handleCloseDeleteCouponModal}
+                handlePrimaryButtonClick={handleDeleteCoupon}
+            />
         </>
     );
 };

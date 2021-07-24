@@ -25,6 +25,8 @@ import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 
 // Internal components
 import Image from "next/image";
@@ -86,75 +88,83 @@ const LoginForm = (props) => {
             router.push("/dashboard");
         } else {
             setserverError(res.data.message);
+            setisSubmitting(false);
         }
-        setisSubmitting(false);
     };
+
+
 
     return (
         <>
-            <div className={classes.image}>
+            {/* <div className={classes.image}>
                 <Image src="/logo.png" width={164} height={56} />
-            </div>
-
-            <div className={classes.center}>
-                <PaperWithTitleContainer title={lang.title}>
-                    <form className={classes.form} onSubmit={handleSubmit}>
-                        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                            <TextField
-                                id="outlined-basic"
-                                label={lang.emailPlaceholder}
-                                variant="outlined"
-                                type="email"
-                                onChange={handleChange("email")}
-                            />
-                        </FormControl>
-
-                        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">{lang.passwordPlaceholder}</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={values.showPassword ? "text" : "password"}
-                                value={values.password}
-                                onChange={handleChange("password")}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                labelWidth={85}
-                            />
-                        </FormControl>
-
-                        {serverError && (
-                            <Typography variant="body2" color="error" style={{ fontSize: 12 }}>
-                                {serverError}
-                            </Typography>
-                        )}
-
-                        <Typography variant="body2" color="primary" style={{ marginTop: theme.spacing(2) }}>
-                            <Link href="/recupero-de-contrasena">{lang.forgotPassword}</Link>
-                        </Typography>
-
-                        <div className={classes.btnDiv}>
-                            <Button
-                                variant="contained"
-                                size="large"
-                                disabled={!isEmail || !isPassword || isSubmitting}
-                                onClick={handleSubmit}
-                            >
-                                {lang.button}
-                            </Button>
+            </div> */}
+            <Container>
+                <Grid container spacing={4} style={{ height: '100vh', alignContent: 'center' }}>
+                    <Grid item xs={12} md={5} style={{ marginLeft: 'auto', marginRight: 'auto', paddingBottom: theme.spacing(10) }}>
+                        <div style={{ textAlign: 'center', marginBottom: theme.spacing(4) }}>
+                            <Image src="/logo.png" width={164} height={56} />
                         </div>
-                    </form>
-                </PaperWithTitleContainer>
-            </div>
+                        <PaperWithTitleContainer title={lang.title} fullWidth>
+                            <form className={classes.form} onSubmit={handleSubmit}>
+                                <FormControl style={{ marginBottom: theme.spacing(2), width: '100%' }} variant="outlined">
+                                    <TextField
+                                        id="outlined-basic"
+                                        label={lang.emailPlaceholder}
+                                        variant="outlined"
+                                        type="email"
+                                        onChange={handleChange("email")}
+                                    />
+                                </FormControl>
+
+                                <FormControl style={{ width: '100%' }} variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-password">{lang.passwordPlaceholder}</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={values.showPassword ? "text" : "password"}
+                                        value={values.password}
+                                        onChange={handleChange("password")}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        labelWidth={85}
+                                    />
+                                </FormControl>
+
+                                {serverError && (
+                                    <Typography variant="body2" color="error" style={{ fontSize: 12 }}>
+                                        {serverError}
+                                    </Typography>
+                                )}
+
+                                <Typography variant="body2" color="primary" style={{ marginTop: theme.spacing(2) }}>
+                                    <Link href="/recupero-de-contrasena">{lang.forgotPassword}</Link>
+                                </Typography>
+
+                                <div className={classes.btnDiv}>
+                                    <Button
+                                        variant="contained"
+                                        size="large"
+                                        disabled={!isEmail || !isPassword || isSubmitting}
+                                        onClick={handleSubmit}
+                                    >
+                                        {lang.button}
+                                    </Button>
+                                </div>
+                            </form>
+                        </PaperWithTitleContainer>
+                    </Grid>
+                </Grid>
+            </Container>
         </>
     );
 };

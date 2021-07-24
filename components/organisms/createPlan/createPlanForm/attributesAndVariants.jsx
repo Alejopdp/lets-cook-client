@@ -4,24 +4,69 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 const langs = require("../../../../lang").attributesAndVariants;
 import { useTheme } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
+import clsx from "clsx";
 
 // External components
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { DataGrid } from "@material-ui/data-grid";
 import Box from "@material-ui/core/Box";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, CallMerge } from "@material-ui/icons";
 
 // Internal components
-import CreateButton from "../../../atoms/createButton/createButton";
 import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
 
+const useStyles = makeStyles((theme) => {
+    return {
+        root: {
+            "& .data-grid-row--deleted": {
+                backgroundColor: "#C6C6C6",
+                "&:hover": {
+                    backgroundColor: "#C6C6C6",
+                },
+
+                "&:selected": {
+                    backgroundColor: "#C6C6C6",
+                },
+                "&:selected:hover": {
+                    backgroundColor: "#C6C6C6",
+                },
+            },
+        },
+        row: {
+            "& .data-grid-row--deleted": {
+                backgroundColor: "#C6C6C6",
+                "&:hover": {
+                    backgroundColor: "#C6C6C6",
+                },
+
+                "&:selected": {
+                    backgroundColor: "#C6C6C6",
+                },
+                "&:selected:hover": {
+                    backgroundColor: "#C6C6C6",
+                },
+            },
+        },
+    };
+});
+
 const AttributesAndVariants = (props) => {
-    const theme = useTheme()
+    const theme = useTheme();
     const router = useRouter();
     const lang = langs[router.locale];
     const isEmpty = props.attributes.length < 1;
+    const classes = useStyles();
+
+    const attributeKeyIsPersonasOrRecetas = (attr) => {
+        return attr[0] === "Personas" || attr[0] === "Recetas";
+    };
+
+    const planHasRecipesAndAttributeIsRecipes = (attr) => {
+        return attr[0] === "Recetas" && props.hasRecipes;
+    };
 
     return (
         <>
@@ -36,6 +81,14 @@ const AttributesAndVariants = (props) => {
                                     handleRemoveAttribute={() => props.handleRemoveAttribute(index)}
                                     keyValue={attr[0]}
                                     values={attr[1]}
+                                    isDeletable={
+                                        !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
+                                        !planHasRecipesAndAttributeIsRecipes(attr)
+                                    }
+                                    isKeyEditable={
+                                        !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
+                                        !planHasRecipesAndAttributeIsRecipes(attr)
+                                    }
                                     handleKeyChange={props.handleKeyChange}
                                     handleValuesChange={props.handleValuesChange}
                                     handleRemoveAttributeValue={props.handleRemoveAttributeValue}
@@ -43,9 +96,17 @@ const AttributesAndVariants = (props) => {
                             ))}
                         </Box>
                     )}
-                    <Button style={{ marginTop: theme.spacing(2) }} variant="contained" size="small" startIcon={<AddIcon />} onClick={props.handleAddAttribute}>
-                        {lang.addAttributeButton}
-                    </Button>
+                    {props.planType !== "Principal" && (
+                        <Button
+                            style={{ marginTop: theme.spacing(2) }}
+                            variant="contained"
+                            size="small"
+                            startIcon={<AddIcon />}
+                            onClick={props.handleAddAttribute}
+                        >
+                            {lang.addAttributeButton}
+                        </Button>
+                    )}
                 </FormPaperWithEmptyState>
             </Grid>
             <Grid item xs={12}>
@@ -57,7 +118,12 @@ const AttributesAndVariants = (props) => {
                 >
                     {props.variantsRows.length > 0 && (
                         <DataGrid
-                            onEditCellChangeCommitted={(params, e) => props.handleVariantsEdit(params, e)}
+                            classes={{ root: classes.root, row: classes.row }}
+                            onEditCellChangeCommitted={(params, e) => {
+                                e.preventDefault();
+                                props.handleVariantsEdit(params, e);
+                            }}
+                            getRowClassName={(params) => (params.row.deleted ? "data-grid-row--deleted" : "")}
                             autoHeight
                             disableColumnMenu
                             disableColumnSelector

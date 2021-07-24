@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { useStyles } from "./styles";
+import { useRouter } from "next/router";
 
 // External components
 import AppBar from "@material-ui/core/AppBar";
@@ -14,18 +15,21 @@ import Image from "next/image";
 import Box from "@material-ui/core/Box";
 
 // Internal components
-import UserBox from "./userBox";
+import UserBoxDesktop from "./userBoxDesktop";
+import UserBoxMobile from "./userBoxMobile";
+
 
 const Navbar = (props) => {
     const classes = useStyles();
+    const router = useRouter();
 
     return (
-        <AppBar position="fixed" className={clsx(classes.appBar)} elevation={8}>
+        <AppBar position="fixed" classes={{ root: classes.appBar }}>
             <Toolbar className={classes.toolbar}>
                 <Hidden mdUp>
                     <IconButton
                         edge="start"
-                        color="inherit"
+                        color="textSecondary"
                         aria-label="open drawer"
                         onClick={props.handleOpenDrawer}
                         className={clsx(classes.menuButton, props.opened && classes.menuButtonHidden)}
@@ -33,9 +37,16 @@ const Navbar = (props) => {
                         <MenuIcon />
                     </IconButton>
                 </Hidden>
-                <Image src="/logo.png" alt="logo" width={82} height={28} style={{ justifySelf: "center" }} />
+                <div style={{cursor: 'pointer'}}>
+                    <Image src="/logo.png" alt="logo" width={100} height={34} style={{ justifySelf: "center" }} onClick={() => router.push({ pathname: `/` })} />
+                </div>
                 <Box display="flex" alignItems="center">
-                    <UserBox />
+                    <Hidden smDown>
+                        <UserBoxDesktop />
+                    </Hidden>
+                    <Hidden mdUp>
+                        <UserBoxMobile />
+                    </Hidden>
                 </Box>
             </Toolbar>
         </AppBar>

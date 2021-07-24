@@ -331,9 +331,8 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
                     handleEditRecipe={_handlerEditRecipe}
                 />
             ) : (
-                <EmptyImage label="No se han encontrado recetas que coincidan con los términos de búsqueda" />
-            )}
-
+                    <EmptyImage label="No se han encontrado recetas que coincidan con los términos de búsqueda" />
+                )}
             {/* RECIPES MODALS */}
             {openDeleteDialog && (
                 <SimpleModal
@@ -344,7 +343,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
                     handleConfirmButton={_handlerConfirmDelete}
                     handleCancelButton={_handlerCloseDialogs}
                     open={openDeleteDialog}
-                    handleClose={() => {}}
+                    handleClose={() => { }}
                 />
             )}
             {openSchedulerDialog && (
@@ -356,7 +355,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
                     handleConfirmButton={_handlerConfirmSchedulerChange}
                     handleCancelButton={_handlerCloseDialogs}
                     open={openSchedulerDialog}
-                    handleClose={() => {}}
+                    handleClose={() => { }}
                     optionsSelected={recipeSelected.recipe.availableWeeks}
                 />
             )}

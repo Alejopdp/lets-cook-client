@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 const langs = require("../../../lang/components/organisms").planDashboard;
 
 // External components
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
@@ -14,7 +15,7 @@ import Chip from "@material-ui/core/Chip";
 // Internal components
 import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
-import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
+import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import PlansGrid from "./plansGrid";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
@@ -101,8 +102,8 @@ const PlansDashboard = (props) => {
     const filteredPlans =
         filtersBy.length > 0
             ? filterPlansBySearchValue().filter((plan) =>
-                  filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
-              )
+                filtersBy.some((filterItem) => plan.type === filterItem.code || plan.isActive === filterItem.code)
+            )
             : filterPlansBySearchValue();
 
     return (
@@ -123,7 +124,7 @@ const PlansDashboard = (props) => {
                             handlerOnConfirm={handleApplyFilters}
                         />
                     </Box>
-                    <SearchInputFIeld handlerOnChange={setsearchValue} placeholder="Buscar por nombre o SKU..." />
+                    <SearchInputField handlerOnChange={setsearchValue} placeholder="Buscar por nombre o SKU..." />
                 </Box>
             </Grid>
 
@@ -146,14 +147,14 @@ const PlansDashboard = (props) => {
             {filteredPlans.length > 0 ? (
                 <PlansGrid plans={filteredPlans} handleToggleState={handleOpenToggleStateModal} handleDelete={handleOpenDeleteModal} />
             ) : (
-                <EmptyImage
-                    label={
-                        filtersBy.length > 0 || !!searchValue
-                            ? "No se han encontrado planes que coincidan con los términos de búsqueda"
-                            : "Aún no se crearon planes"
-                    }
-                />
-            )}
+                    <EmptyImage
+                        label={
+                            filtersBy.length > 0 || !!searchValue
+                                ? "No se han encontrado planes que coincidan con los términos de búsqueda"
+                                : "Aún no se crearon planes"
+                        }
+                    />
+                )}
 
             {isToggleStateModalOpen && (
                 <SimpleModal

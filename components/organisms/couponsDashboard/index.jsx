@@ -10,9 +10,10 @@ import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
 
 // Internal components
+import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
 import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
-import SearchInputFIeld from "../../molecules/searchInputField/searchInputField";
+import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
 
@@ -38,18 +39,17 @@ const CouponsDashboard = (props) => {
     const filteredCoupons =
         filtersBy.length > 0
             ? filterCouponsBySearchValue().filter((coupon) =>
-                  filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
-              )
+                filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
+            )
             : filterCouponsBySearchValue();
+
+
+    const handleClickImport = () => alert('Import')
+    const handleClickExport = () => alert('Export')
 
     return (
         <>
-            <CreateDashboardTitle
-                createButtonText="CREAR CUPÓN"
-                dashboardTitle="Cupones"
-                handleCreateButton={() => router.push("/cupones/crear")}
-            />
-
+            <DashboardTitleWithButtonAndCSV title="Cupones" import export handleClickImport={handleClickImport} handleClickExport={handleClickExport} handleClick={() => router.push("/cupones/crear")} buttonText='CREAR CUPÓN' />
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
                     <Box marginRight={2}>
@@ -60,7 +60,7 @@ const CouponsDashboard = (props) => {
                             handlerOnConfirm={handleApplyFilters}
                         />
                     </Box>
-                    <SearchInputFIeld handlerOnChange={setsearchValue} placeholder="Buscar por código de cupón..." />
+                    <SearchInputField handlerOnChange={setsearchValue} placeholder="Buscar por código de cupón..." />
                 </Box>
             </Grid>
 
@@ -83,14 +83,14 @@ const CouponsDashboard = (props) => {
             {filteredCoupons.length > 0 ? (
                 <CuoponsTable coupons={filteredCoupons} />
             ) : (
-                <EmptyImage
-                    label={
-                        filtersBy.length > 0 || !!searchValue
-                            ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
-                            : "Aún no se crearon cupones"
-                    }
-                />
-            )}
+                    <EmptyImage
+                        label={
+                            filtersBy.length > 0 || !!searchValue
+                                ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
+                                : "Aún no se crearon cupones"
+                        }
+                    />
+                )}
         </>
     );
 };
@@ -113,20 +113,40 @@ const filterOptions = [
                 label: "Desactivo",
                 code: false,
             },
+            {
+                id: "Eliminado",
+                label: "Eliminado",
+                code: false,
+            },
+            {
+                id: "Expirado",
+                label: "Expirado",
+                code: false,
+            },
+            {
+                id: "Agotado",
+                label: "Agotado",
+                code: false,
+            },
         ],
     },
     {
         columnLabel: "Tipo de plan",
         items: [
             {
-                id: "Principal",
-                label: "Principal",
-                code: "Principal",
+                id: "fixed_price",
+                label: "Precio fijo",
+                code: "fixed_price",
             },
             {
-                id: "Adicional",
-                label: "Adicional",
-                code: "Adicional",
+                id: "percentage",
+                label: "Porcentaje",
+                code: "percentage",
+            },
+            {
+                id: "free_shipping",
+                label: "Envío gratis",
+                code: "free_shipping",
             },
         ],
     },

@@ -18,13 +18,13 @@ import Delete from "@material-ui/icons/Delete";
 const KeyValueInput = (props) => {
     return (
         <Box>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="subtitle2">
-                    {props.title}
-                </Typography>
-                <IconButton style={{ marginRight: -16 }} onClick={props.handleRemoveAttribute}>
-                    <Delete style={{ cursor: "pointer" }} />
-                </IconButton>
+            <Box display="flex" justifyContent="space-between" alignItems="center" minHeight={80}>
+                <Typography variant="subtitle2">{props.title}</Typography>
+                {props.isDeletable && (
+                    <IconButton style={{ marginRight: -16 }} onClick={props.handleRemoveAttribute}>
+                        <Delete style={{ cursor: "pointer" }} />
+                    </IconButton>
+                )}
             </Box>
             <Box display="flex" alignItems="center">
                 <Box minWidth="40%" marginRight={2} alignSelf="flex-start">
@@ -33,6 +33,7 @@ const KeyValueInput = (props) => {
                         label=""
                         value={props.keyValue}
                         handleChange={(e) => props.handleKeyChange(props.index, e)}
+                        disabled={!props.isKeyEditable}
                     />
                 </Box>
                 <MultipleChipInput
@@ -56,6 +57,8 @@ KeyValueInput.propTypes = {
     handleValuesChange: PropTypes.func.isRequired,
     handleRemoveAttributeValue: PropTypes.func.isRequired,
     handleRemoveAttribute: PropTypes.func.isRequired,
+    isKeyEditable: PropTypes.bool,
+    isDeletable: PropTypes.bool,
 };
 
 export default KeyValueInput;

@@ -1,14 +1,17 @@
 // Utils & config
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 import { useRouter } from "next/router";
 import { SnackbarProvider } from "notistack";
 import cookies from "js-cookie";
+import axios from "axios";
+
+// Internal Hooks & Helpers
 import useLocalStorage, { LOCAL_STORAGE_KEYS } from "../../hooks/useLocalStorage/localStorage";
+import { pagesPropsGetter } from "../../helpers/pagesPropsGetter/pagesPropsGetter";
 
 // External components
-import { Box, makeStyles, Typography } from "@material-ui/core";
+import { Box, Typography, makeStyles } from "@material-ui/core";
 
 // Internal components
 import LayoutFixedSidebar from "../../components/layout/layoutFixedSidebar/layoutFixedSidebar";
@@ -28,6 +31,15 @@ import UpdateShippingZone from "../../components/organisms/updateShippingZone/up
 import UpdatePlan from "../../components/organisms/updatePlan/updatePlan";
 import CouponsDashboard from "../../components/organisms/couponsDashboard";
 import CouponDetail from "../../components/organisms/couponDetail";
+import { useUserInfoStore } from "../../stores/auth";
+import OrdersDashboard from "../../components/organisms/ordersDashboard/";
+import PaymentOrderDetail from "../../components/organisms/paymentOrderDetail";
+import OrderDetail from "../../components/organisms/orderDetail";
+import SubscriptionsDashboard from "../../components/organisms/subscriptionsDashboard";
+import SubscriptionDetail from "../../components/organisms/subscriptionDetail";
+import CustomersDashboard from "../../components/organisms/customersDashboard/customersDashboard";
+import CreateCustomer from "../../components/organisms/createCustomer/createCustomer";
+import CustomerProfile from "../../components/organisms/customerProfile/customerProfile";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,6 +65,13 @@ const Index = ({ token, ...props }) => {
     const route = useRouter();
     const classes = useStyles();
     const { getFromLocalStorage, resetLocalStorage } = useLocalStorage();
+    const setuserInfo = useUserInfoStore((state) => state.setuserInfo);
+
+    useEffect(() => {
+        const userInfo = getFromLocalStorage("userInfo");
+
+        if (!!userInfo) setuserInfo(userInfo);
+    }, []);
 
     useEffect(() => {
         if (props.status === 401) {
@@ -62,7 +81,7 @@ const Index = ({ token, ...props }) => {
     }, [route.asPath]);
 
     const getSectionComponent = (path) => {
-        /* TODO: IMPORTANT!!! 
+        /* TODO: IMPORTANT!!!
             optimize the cases for return componet dynamically
         **/
         if (!!props.error) {
@@ -116,9 +135,31 @@ const Index = ({ token, ...props }) => {
             case "gestion-de-envios/crear":
                 return <CreateShippingZone />;
 
-            // Esta ruta debería ser “/gestion-de-envios/modificar/{id-zona}”
             case "gestion-de-envios/modificar":
                 return <UpdateShippingZone shippingZone={props.shippingZone} />;
+
+            case "ordenes":
+                return <OrdersDashboard />;
+
+            case "ordenes/detalle-orden-de-pago":
+                return <PaymentOrderDetail />;
+
+            case "ordenes/detalle-orden":
+                return <OrderDetail />;
+
+            case "suscripciones":
+                return <SubscriptionsDashboard />;
+
+            case "suscripciones/detalle":
+                return <SubscriptionDetail />;
+            case "gestion-de-clientes":
+                return <CustomersDashboard />;
+
+            case "gestion-de-clientes/modificar":
+                return <CustomerProfile plans={props.plans} />;
+
+            case "gestion-de-clientes/crear":
+                return <CreateCustomer />;
 
             default:
                 return (

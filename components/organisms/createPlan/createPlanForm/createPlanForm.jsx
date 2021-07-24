@@ -7,21 +7,26 @@ import { useRouter } from "next/router";
 
 // External components
 import Grid from "@material-ui/core/Grid";
+import RadioButton from "@material-ui/core/Radio";
 
 // Internal components
 import GeneralData from "./generalData";
 import AttributesAndVariants from "./attributesAndVariants";
 import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
+import EnabledOrDisabledIconButton from "../../../atoms/enabledOrDisabledIconButton/enabledOrDisabledIconButton";
 
 const CreatePlanForm = (props) => {
     const router = useRouter();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const [generalData, setgeneralData] = useState({
         name: "",
         description: "",
+        slug: "",
         sku: "",
         image: [],
+        iconColor: [],
+        iconByg: [],
     });
     const [attributes, setattributes] = useState([]);
     const [variants, setvariants] = useState([]);
@@ -29,6 +34,7 @@ const CreatePlanForm = (props) => {
         isActive: "",
         planType: "",
         hasRecipes: false,
+        abilityToChooseRecipes: false,
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
@@ -48,10 +54,39 @@ const CreatePlanForm = (props) => {
     };
 
     const handleOtherData = (propName, newValue) => {
+        if (isUserSelectingPlanTypePrincipal) {
+            addPersonasAndRecetasAttributes();
+            addSemanalFrequency();
+            setotherData({
+                ...otherData,
+                [propName]: newValue,
+                hasRecipes: true,
+            });
+
+            return;
+        }
+
         setotherData({
             ...otherData,
             [propName]: newValue,
         });
+    };
+
+    const isUserSelectingPlanTypePrincipal = (propName, newValue) => {
+        return propName === "planType" && newValue === "Principal";
+    };
+
+    const addPersonasAndRecetasAttributes = () => {
+        const attributesToAdd = [];
+        if (attributes.every((attr) => attr[0] !== "Personas")) attributesToAdd.push(["Personas", []]);
+        if (attributes.every((attr) => attr[0] !== "Recetas")) attributesToAdd.push(["Recetas", []]);
+
+        setattributes([...attributesToAdd, ...attributes]);
+    };
+
+    const addSemanalFrequency = () => {
+        if (frequency.some((freq) => freq === "Semanal")) return;
+        setfrequency(["Semanal", ...frequency]);
     };
 
     const handleAddAttribute = () => {
@@ -102,12 +137,15 @@ const CreatePlanForm = (props) => {
     };
 
     const handleFrequencyChange = (e, newValue) => {
-        if (newValue.length === 0) setfrequency(newValue);
+        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? ["Semanal"] : []);
         else if (newValue.every((newFreq) => frequency.some((stateFreq) => newFreq === stateFreq))) return;
         else setfrequency(newValue);
     };
 
+    const isPlanTypePrincipal = () => otherData.planType === "Principal";
+
     const handleRemoveFrequency = (freqToRemove) => {
+        if (freqToRemove === "Semanal" && isPlanTypePrincipal()) return;
         setfrequency(frequency.filter((freq) => freq !== freqToRemove));
     };
 
@@ -135,16 +173,45 @@ const CreatePlanForm = (props) => {
     };
 
     const handleHasRecipes = () => {
+        const newValue = !otherData.hasRecipes;
+
         setotherData({
             ...otherData,
-            hasRecipes: !otherData.hasRecipes,
+            hasRecipes: isPlanTypePrincipal() ? true : newValue,
+        });
+
+        if (newValue) addRecetasAttribute();
+    };
+
+    const addRecetasAttribute = () => {
+        if (attributes.every((attr) => attr[0] !== "Recetas")) setattributes([...attributes, ["Recetas", []]]);
+    };
+
+    const handleAbilityToChooseRecipes = () => {
+        setotherData({
+            ...otherData,
+            abilityToChooseRecipes: !otherData.abilityToChooseRecipes,
         });
     };
 
-    const handleDropFile = (files) => {
+    const handleDropFileImage = (files) => {
         setgeneralData({
             ...generalData,
             image: files,
+        });
+    };
+
+    const handleDropFileIconColor = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconColor: files,
+        });
+    };
+
+    const handleDropFileIconByg = (files) => {
+        setgeneralData({
+            ...generalData,
+            iconByg: files,
         });
     };
 
@@ -190,11 +257,57 @@ const CreatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
+        // e.preventDefault();
+        if (params.field === "isDefault") {
+            handleDefaultVariantChange(params);
+            return;
+        }
+
+        if (params.field === "deleted") {
+            handleDeleteVariantChange(params);
+            return;
+        }
+
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.props.value,
+                    [params.field]: params.field === "deleted" ? !variant.deleted || false : params.props.value,
+                };
+            } else {
+                return {
+                    ...variant,
+                };
+            }
+        });
+
+        setvariants(newVariants);
+    };
+
+    const handleDefaultVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    isDefault: true,
+                };
+            } else {
+                return {
+                    ...variant,
+                    isDefault: false,
+                };
+            }
+        });
+
+        setvariants(newVariants);
+    };
+    const handleDeleteVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    deleted: !variant.deleted || false,
+                    isDefault: !variant.deleted ? false : variant.isDefault,
                 };
             } else {
                 return {
@@ -208,17 +321,20 @@ const CreatePlanForm = (props) => {
 
     const handleCreate = async () => {
         setisSubmitting(true);
-        console.log("El stat de isACrive: ", otherData.isActive);
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
         formData.append("sku", generalData.sku);
         formData.append("planImage", generalData.image[0]);
+        formData.append("icon", generalData.iconByg[0]);
+        formData.append("iconWithColor", generalData.iconColor[0]);
+        formData.append("planSlug", generalData.slug);
+        formData.append("abilityToChooseRecipes", otherData.abilityToChooseRecipes);
         formData.append("isActive", JSON.stringify(otherData.isActive === "Activo"));
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
-        formData.append("variants", JSON.stringify(variants)); // Because it is an array
+        formData.append("variants", JSON.stringify(variants.filter((variant) => !variant.deleted))); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
 
         const res = await createPlan(formData);
@@ -249,14 +365,25 @@ const CreatePlanForm = (props) => {
         );
     };
 
+    const getVariantByRowId = (rowId) => {
+        return variants.find((variant) => variant.id === rowId);
+    };
     return (
         <>
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFile={handleDropFile} />
+                    <GeneralData
+                        data={generalData}
+                        handleChange={handleGeneralData}
+                        handleDropFileImage={handleDropFileImage}
+                        handleDropFileIconColor={handleDropFileIconColor}
+                        handleDropFileIconByg={handleDropFileIconByg}
+                    />
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
+                        planType={otherData.planType}
+                        hasRecipes={otherData.hasRecipes}
                         handleAddAttribute={handleAddAttribute}
                         handleRemoveAttribute={handleRemoveAttribute}
                         handleKeyChange={handleAttributeKeyChange}
@@ -269,24 +396,51 @@ const CreatePlanForm = (props) => {
                             { field: "price", headerName: "Precio lista", editable: true },
                             { field: "priceWithOffer", headerName: "Precio oferta", editable: true },
                             { field: "sku", headerName: "SKU", editable: true },
+                            { field: "description", headerName: "Descripción", editable: true },
+                            {
+                                field: "isDefault",
+                                headerName: "Default",
+                                renderCell: (params) => (
+                                    <RadioButton
+                                        style={{ margin: "auto" }}
+                                        checked={!!params.value}
+                                        onChange={(e) => handleDefaultVariantChange(params, e)}
+                                        value={!!params.value}
+                                    />
+                                ),
+                            },
+                            {
+                                field: "deleted",
+                                headerName: "Eliminar",
+                                type: "boolean",
+                                renderCell: (params) => (
+                                    <EnabledOrDisabledIconButton
+                                        enabled={getVariantByRowId(params.id).deleted}
+                                        onClick={(e) => handleVariantsEdit(params, e)}
+                                    />
+                                ),
+                            },
                         ]}
                         variantsRows={attributes.length > 0 ? variants : []}
                         handleVariantsEdit={handleVariantsEdit}
                     />
                 </Grid>
             </Grid>
-            <Grid item xs={12} md={4} spacing={2}>
-                <Others
-                    data={otherData}
-                    frequency={frequency}
-                    handleFrequencyChange={handleFrequencyChange}
-                    handleRemoveFrequency={handleRemoveFrequency}
-                    handleChange={handleOtherData}
-                    additionalPlans={props.additionalPlans}
-                    handleAdditionalPlansChange={handleAdditionalPlansChange}
-                    handleHasRecipes={handleHasRecipes}
-                    selectedAdditionalPlansIds={additionalPlans}
-                />
+            <Grid item xs={12} md={4}>
+                <Grid container spacing={2}>
+                    <Others
+                        data={otherData}
+                        frequency={frequency}
+                        handleFrequencyChange={handleFrequencyChange}
+                        handleRemoveFrequency={handleRemoveFrequency}
+                        handleChange={handleOtherData}
+                        additionalPlans={props.additionalPlans}
+                        handleAdditionalPlansChange={handleAdditionalPlansChange}
+                        handleHasRecipes={handleHasRecipes}
+                        handleAbilityToChooseRecipes={handleAbilityToChooseRecipes}
+                        selectedAdditionalPlansIds={additionalPlans}
+                    />
+                </Grid>
             </Grid>
             <Grid item xs={12}>
                 <BackAndCreateButtons
