@@ -10,10 +10,10 @@ import ShippingZoneForm from "../shippingZoneForm";
 
 const CreateShippingZone = () => {
     return (
-        <Container>
+        <>
             <DashboardWithBackTitle title="Crear zona de envío" />
             <ShippingZoneForm />
-        </Container>
+        </>
     );
 };
 
