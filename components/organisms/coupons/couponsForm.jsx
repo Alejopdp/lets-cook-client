@@ -193,7 +193,7 @@ const CouponsForm = ({ lang, ...props }) => {
         },
     ];
 
-    const _handleGoBack = () => { };
+    const _handleGoBack = () => { push('/cupones') };
 
     const _handleChangeLanguage = () => { };
 
@@ -225,7 +225,7 @@ const CouponsForm = ({ lang, ...props }) => {
                 <Grid container xs={12} md={9} spacing={2} direction="column">
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" justifyContent="space-between">
-                            <HeaderTitleWithBackButton title={lang[locale].title} handleClick={_handleGoBack} />
+                            <HeaderTitleWithBackButton title='Crear cupón' handleClick={_handleGoBack} />
                         </Box>
                     </Grid>
 

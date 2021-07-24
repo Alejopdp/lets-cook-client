@@ -100,7 +100,7 @@ const PaymentOrderGrid = (props) => {
                             <div>
                                 <Button size="medium" color='secondary' onClick={() => alert('paynow')}>
                                     PAGAR AHORA
-                                    </Button>
+                                </Button>
                             </div>
                         </PaperWithTitleContainer>
                     </Grid>

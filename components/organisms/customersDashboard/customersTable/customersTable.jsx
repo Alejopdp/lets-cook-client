@@ -46,9 +46,7 @@ const CustomersTable = (props) => {
     const router = useRouter();
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.customers.length - page * rowsPerPage);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -88,7 +86,6 @@ const CustomersTable = (props) => {
                             <TableCell />
                         </TableRow>
                     </TableHead>
-
                     <TableBody>
                         {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers).map(
                             (customer, index) => (
@@ -118,18 +115,11 @@ const CustomersTable = (props) => {
                                     </TableCell>
                                 </TableRow>
                             ))}
-
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
                     </TableBody>
-
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
                                 colSpan={5}
                                 count={props.customers.length}
                                 rowsPerPage={rowsPerPage}

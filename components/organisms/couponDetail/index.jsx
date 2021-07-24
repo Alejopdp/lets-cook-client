@@ -12,13 +12,9 @@ import CouponInformation from "./couponInformation";
 const CouponDetail = (props) => {
     const router = useRouter();
 
-    const goBackHandler = () => {
-        router.replace("/planes", "/planes", { locale: router.locale });
-    };
-
     return (
         <>
-            <DashboardTitle title="Detalle del cupón" handleClick={goBackHandler} />
+            <DashboardTitle title="Detalle del cupón" />
             <CouponInformation coupon={props.coupon} />
         </>
     );
