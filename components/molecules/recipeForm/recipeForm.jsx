@@ -61,7 +61,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
-        const newVariant = { ingredients: [], sku: "", restriction: "" };
+        const newVariant = {
+            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
+            sku: "",
+            restriction: "",
+        };
         const newVariants = [...ingredientsVariants, newVariant];
 
         setIngredientsVariants(newVariants);
