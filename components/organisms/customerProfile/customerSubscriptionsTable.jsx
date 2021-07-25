@@ -19,7 +19,7 @@ import { Typography } from "@material-ui/core";
 
 // Icons & Images
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 // Internal components
 import ComplexModal from "../../molecules/complexModal/complexModal";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: theme.spacing(5),
         paddingTop: theme.spacing(2),
         paddingBottom: theme.spacing(2),
-        cursor: "pointer"
-    }
+        cursor: "pointer",
+    },
 }));
 
 const CustomerSubscriptionsTable = (props) => {
@@ -64,27 +64,27 @@ const CustomerSubscriptionsTable = (props) => {
 
     const handlePlanSelect = (e) => {
         setSelectedPlan(e.target.value);
-    }
+    };
 
     const handleVariationSelect = (e) => {
         setSelectedVariation(e.target.value);
-    }
+    };
 
     var subscriptionToAdd = {
         subscriptionId: selectedPlan.id,
         plan: selectedPlan.name,
         variant: selectedVariation.name,
-        price: selectedVariation.price
-    }
+        price: selectedVariation.price,
+    };
 
     const handleSetSubscriptions = () => {
-        setSubscriptions([...subscriptions, subscriptionToAdd])
-    }
+        setSubscriptions([...subscriptions, subscriptionToAdd]);
+    };
 
     // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
     // console.log("Suscripciones:", subscriptions);
     // console.log("Planes:", props.plans)
-    console.log(selectedPlan)
+    console.log(selectedPlan);
     // console.log(selectedVariation)
 
     const handleAddPlan = () => {
@@ -96,14 +96,14 @@ const CustomerSubscriptionsTable = (props) => {
                 variant: "success",
             });
 
-            handleSetSubscriptions()
+            handleSetSubscriptions();
         } else {
             enqueueSnackbar("No se ha podido añadir el plan", {
                 variant: "error",
             });
             setAddPlanModalOpen(false);
         }
-    }
+    };
 
     return (
         <>
@@ -144,7 +144,7 @@ const CustomerSubscriptionsTable = (props) => {
                             {subscriptions.map((subscription, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
-                                        <Typography variant="body1">#{subscription.subscriptionId}</Typography>
+                                        <Typography variant="body1">#{subscription.id}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{subscription.plan}</Typography>
@@ -155,14 +155,21 @@ const CustomerSubscriptionsTable = (props) => {
                                     <TableCell className={cells}>
                                         <Typography variant="body1">€{subscription.price}</Typography>
                                     </TableCell>
-                                    <TableCell >
+                                    <TableCell>
                                         <Typography variant="body1">{subscription.frequency}</Typography>
                                     </TableCell>
-                                    <TableCell >
+                                    <TableCell>
                                         <Typography variant="body1">{subscription.status}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: subscription.subscriptionId } })}>
+                                        <IconButton
+                                            onClick={() =>
+                                                router.push({
+                                                    pathname: "/suscripciones/detalle",
+                                                    query: { subscriptionId: subscription.subscriptionId },
+                                                })
+                                            }
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>
@@ -171,19 +178,15 @@ const CustomerSubscriptionsTable = (props) => {
 
                             <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
                                 <AddCircleIcon color="primary" />
-                                <Typography
-                                    variant="subtitle1"
-                                    color="primary"
-                                    style={{ marginLeft: "8px", textTransform: "uppercase" }}
-                                >
+                                <Typography variant="subtitle1" color="primary" style={{ marginLeft: "8px", textTransform: "uppercase" }}>
                                     Agregar Plan
-                            </Typography>
+                                </Typography>
                             </TableRow>
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Grid>
-            {isAddPlanModalOpen &&
+            {isAddPlanModalOpen && (
                 <ComplexModal
                     title="Agregar Plan"
                     component={
@@ -201,7 +204,7 @@ const CustomerSubscriptionsTable = (props) => {
                     handleCancelButton={() => setAddPlanModalOpen(false)}
                     handleConfirmButton={handleAddPlan}
                 />
-            }
+            )}
         </>
     );
 };

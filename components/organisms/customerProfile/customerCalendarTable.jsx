@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
@@ -49,120 +49,127 @@ const CustomerCalendarTable = (props) => {
 
     const handleOpenModal = (order) => {
         setSelectedOrder(order);
-        setToggleStateModalOpen(true)
-    }
+        setToggleStateModalOpen(true);
+    };
 
     const handleToggleState = async () => {
-        // const res = await toggleWeekState(selectedOrder.orderId);
+        // const res = await toggleWeekState(selectedOrder.id);
 
         const res = { status: 200 };
 
         if (res.status === 200) {
-            setOrders(orders.map((order) => (order.orderId === selectedOrder.orderId ? { ...selectedOrder, active: !selectedOrder.active} : order)));
+            setOrders(orders.map((order) => (order.id === selectedOrder.id ? { ...selectedOrder, active: !selectedOrder.active } : order)));
             setSelectedOrder({});
-            setToggleStateModalOpen(false)
+            setToggleStateModalOpen(false);
             enqueueSnackbar(`Semana ${selectedOrder.active ? "salteada" : "reanudada"}`, {
                 variant: "success",
             });
         } else {
-            setToggleStateModalOpen(false)
+            setToggleStateModalOpen(false);
             enqueueSnackbar(`Error al ${selectedOrder.active ? "saltear la semana" : "reanudar la semana"}`, {
                 variant: "error",
             });
         }
-    }
+    };
 
     return (
         <>
-    <Grid item xs={12}>
-        <TableContainer component={Paper} className={tableContainer}>
-            <Table className={table} aria-label="custom pagination table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={idCell}>
-                            <Typography variant="subtitle1">Fecha</Typography>
-                        </TableCell>
+            <Grid item xs={12}>
+                <TableContainer component={Paper} className={tableContainer}>
+                    <Table className={table} aria-label="custom pagination table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className={idCell}>
+                                    <Typography variant="subtitle1">Fecha</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Order ID</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Order ID</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Plan</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Plan</Typography>
+                                </TableCell>
 
-                        <TableCell className={cells}>
-                            <Typography variant="subtitle1">Variación</Typography>
-                        </TableCell>
+                                <TableCell className={cells}>
+                                    <Typography variant="subtitle1">Variación</Typography>
+                                </TableCell>
 
-                        <TableCell>
-                            <Typography variant="subtitle1">Monto</Typography>
-                        </TableCell>
+                                <TableCell>
+                                    <Typography variant="subtitle1">Monto</Typography>
+                                </TableCell>
 
-                        <TableCell />
-                        <TableCell />
-                    </TableRow>
-                </TableHead>
+                                <TableCell />
+                                <TableCell />
+                            </TableRow>
+                        </TableHead>
 
-                <TableBody>
-                    {orders.map((order, index) => (
-                        <TableRow key={index}>
-                            <TableCell className={idCell}>
-                                <Typography variant="body1">{order.date}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{order.orderId}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{order.plan}</Typography>
-                            </TableCell>
-                            <TableCell className={cells}>
-                                <Typography variant="body1">{order.variation}</Typography>
-                            </TableCell>
-                            <TableCell >
-                                <Typography variant="body1">€{order.price}</Typography>
-                            </TableCell>
+                        <TableBody>
+                            {orders.map((order, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className={idCell}>
+                                        <Typography variant="body1">{order.date}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{order.id}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{order.plan}</Typography>
+                                    </TableCell>
+                                    <TableCell className={cells}>
+                                        <Typography variant="body1">{order.variation}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body1">€{order.price}</Typography>
+                                    </TableCell>
 
-                            <TableCell style={{ textTransform: "uppercase", cursor: "pointer" }}>
-                                {order.active
-                                    ?
-                                        <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
-                                            Saltar semana
-                                        </Typography>
-                                    :
-                                        <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" style={{color: "#F8961E"}}>
-                                            Reanudar semana
-                                        </Typography>
-                                }
-                            </TableCell>
+                                    <TableCell style={{ textTransform: "uppercase", cursor: "pointer" }}>
+                                        {order.active ? (
+                                            <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
+                                                Saltar semana
+                                            </Typography>
+                                        ) : (
+                                            <Typography
+                                                onClick={() => handleOpenModal(order)}
+                                                variant="subtitle1"
+                                                style={{ color: "#F8961E" }}
+                                            >
+                                                Reanudar semana
+                                            </Typography>
+                                        )}
+                                    </TableCell>
 
-                            <TableCell className={cells}>
-                                <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden", query: { orderId: order.orderId } })}>
-                                    <VisibilityIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    </Grid>
-        {isToggleStateModalOpen &&
-            <SimpleModal
-                title={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
-                cancelButtonText="Cancelar"
-                confirmButtonText={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
-                paragraphs={[
-                    selectedOrder.active === true ? "¿Estás seguro de que deseas saltar la siguiente semana?" : "¿Estás seguro de que deseas reanudar la siguiente semana?",
-                    `${selectedOrder.plan}`,
-                    `${selectedOrder.variation}`,
-                    `${selectedOrder.date}`
-                ]}
-                open={isToggleStateModalOpen}
-                handleCancelButton={() => setToggleStateModalOpen(false)}
-                handleConfirmButton={handleToggleState}
-            />
-        }
+                                    <TableCell className={cells}>
+                                        <IconButton
+                                            onClick={() => router.push({ pathname: "/ordenes/detalle-orden", query: { id: order.id } })}
+                                        >
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            {isToggleStateModalOpen && (
+                <SimpleModal
+                    title={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
+                    cancelButtonText="Cancelar"
+                    confirmButtonText={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
+                    paragraphs={[
+                        selectedOrder.active === true
+                            ? "¿Estás seguro de que deseas saltar la siguiente semana?"
+                            : "¿Estás seguro de que deseas reanudar la siguiente semana?",
+                        `${selectedOrder.plan}`,
+                        `${selectedOrder.variation}`,
+                        `${selectedOrder.date}`,
+                    ]}
+                    open={isToggleStateModalOpen}
+                    handleCancelButton={() => setToggleStateModalOpen(false)}
+                    handleConfirmButton={handleToggleState}
+                />
+            )}
         </>
     );
 };

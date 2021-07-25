@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
@@ -42,7 +42,6 @@ const CustomerPurchaseHistoryTable = (props) => {
     return (
         <>
             <Grid item xs={12}>
-
                 <TableContainer component={Paper} className={tableContainer}>
                     <Table className={table} aria-label="custom pagination table">
                         <TableHead>
@@ -72,13 +71,13 @@ const CustomerPurchaseHistoryTable = (props) => {
                         </TableHead>
 
                         <TableBody>
-                            {props.purchaseLogs.map((log, index) => (
+                            {props.paymentOrders.map((log, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
                                         <Typography variant="body1">{log.date}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">#{log.paymentOrderId}</Typography>
+                                        <Typography variant="body1">#{log.id}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{log.ordersQty}</Typography>
@@ -86,12 +85,19 @@ const CustomerPurchaseHistoryTable = (props) => {
                                     <TableCell className={cells}>
                                         <Typography variant="body1">€{log.price}</Typography>
                                     </TableCell>
-                                    <TableCell >
+                                    <TableCell>
                                         <Typography variant="body1">{log.status}</Typography>
                                     </TableCell>
 
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden-de-pago", query: { paymentOrderId: log.paymentOrderId } })}>
+                                        <IconButton
+                                            onClick={() =>
+                                                router.push({
+                                                    pathname: "/ordenes/detalle-orden-de-pago",
+                                                    query: { paymentOrderId: log.paymentOrderId },
+                                                })
+                                            }
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>

@@ -1,12 +1,12 @@
 import Axios from "axios";
 
-const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/subscription`;
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/restriction`;
 
-export const cancelSubscription = async (subscriptionId: string, locale: string = "es") => {
+export const getRestrictions = async (locale: string = "es") => {
     try {
         const res = await Axios({
-            method: "PUT",
-            url: `${apiUrl}/cancel/${subscriptionId}`,
+            method: "GET",
+            url: `${apiUrl}/`,
             params: {
                 locale,
             },
