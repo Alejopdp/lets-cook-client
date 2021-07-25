@@ -152,8 +152,16 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         settags(tags.filter((tag) => tag !== tagToRemove));
     };
 
+    function hasDuplicatedRestrictions() {
+        const selectedRestrictions = ingredientsVariants.map((variant) => variant.restriction);
+        return new Set(selectedRestrictions).size !== selectedRestrictions.length;
+    }
+
     const handleCreate = async () => {
         setisSubmitting(true);
+
+        if (hasDuplicatedRestrictions()) enqueueSnackbar("No pueden haber 2 o más variantes con la misma restricción", {variant: "error"});
+
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
         formDataToCreate.append("shortDescription", generalData.shortDescription);
