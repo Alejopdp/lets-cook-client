@@ -17,13 +17,13 @@ const PersonalData = (props) => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const [formData, setFormData] = useState({
-        name: props.customer.name || "",
-        lastName: props.customer.lastName || "",
-        email: props.customer.email || "",
-        phone1: props.customer.phone1 || "",
-        phone2: props.customer.phone2 || "",
-        bornDate: props.customer.bornDate || "",
-        preferredLanguage: props.customer.preferredLanguage || "",
+        name: props.personalData.name || "",
+        lastName: props.personalData.lastName || "",
+        email: props.personalData.email || "",
+        phone1: props.personalData.phone1 || "",
+        phone2: props.personalData.phone2 || "",
+        bornDate: props.personalData.bornDate || "",
+        preferredLanguage: props.personalData.preferredLanguage || "",
     });
 
     const handleChange = (e) => {
@@ -34,23 +34,7 @@ const PersonalData = (props) => {
     };
 
     const handleModifyPersonalData = async () => {
-        // const res = await updateCustomer(formDataToUpdate, props.customer.id);
-
-        const res = { status: 200 };
-
-        if (res.status === 200) {
-            setPersonalDataModalOpen(false);
-            enqueueSnackbar(`Cliente ${props.customer.name} ${props.customer.lastName} modificado`, {
-                variant: "success",
-            });
-
-            props.handleUpdatePersonalData(formData);
-        } else {
-            setPersonalDataModalOpen(false);
-            enqueueSnackbar(`Error al modificar el cliente ${props.customer.name} ${props.customer.lastName}`, {
-                variant: "error",
-            });
-        }
+        props.handleUpdatePersonalData(formData);
     };
 
     return (
@@ -58,32 +42,32 @@ const PersonalData = (props) => {
             <PaperWithTitleContainer title="Datos personales" fullWidth>
                 <Typography variant="subtitle2">Nombre completo</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.name} {props.customer.lastName}
+                    {props.personalData.name} {props.personalData.lastName}
                 </Typography>
 
                 <Typography variant="subtitle2">Teléfono (1)</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.phone1}
+                    {props.personalData.phone1}
                 </Typography>
 
                 <Typography variant="subtitle2">Teléfono (2)</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.phone2 || "Sin indicar"}
+                    {props.personalData.phone2 || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Fecha de nacimiento</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.bornDate || "Sin indicar"}
+                    {props.personalData.bornDate || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Idioma de preferencia</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.preferredLanguage}
+                    {props.personalData.preferredLanguage}
                 </Typography>
 
                 <Typography variant="subtitle2">Email</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.email}
+                    {props.personalData.email}
                 </Typography>
 
                 <Typography

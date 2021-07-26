@@ -143,11 +143,15 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
                 />
             )}
             renderOption={(option) => {
-                const matches = option.structured_formatting.main_text_matched_substrings;
-                const parts = parse(
-                    option.structured_formatting.main_text,
-                    matches.map((match) => [match.offset, match.offset + match.length])
-                );
+                var matches;
+                var parts;
+                if (option) {
+                    matches = option.structured_formatting.main_text_matched_substrings;
+                    parts = parse(
+                        option.structured_formatting.main_text,
+                        matches.map((match) => [match.offset, match.offset + match.length])
+                    );
+                }
 
                 return (
                     <Grid container alignItems="center">
@@ -162,7 +166,7 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
                             ))}
 
                             <Typography variant="body2" color="textSecondary">
-                                {option.structured_formatting.secondary_text}
+                                {option?.structured_formatting.secondary_text || ""}
                             </Typography>
                         </Grid>
                     </Grid>

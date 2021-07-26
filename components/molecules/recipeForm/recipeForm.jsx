@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { createRecipe } from "../../../helpers/serverRequests/recipe";
 
 // External components
-import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box } from "@material-ui/core";
+import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box, Radio, RadioGroup } from "@material-ui/core";
 import { Flag as FlagIcon, ArrowBack as BackIcon, Add as AddIcon, Delete } from "@material-ui/icons";
 
 // Internal components
@@ -61,7 +61,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
-        const newVariant = { ingredients: [], sku: "", restrictions: [] };
+        const newVariant = {
+            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
+            sku: "",
+            restriction: "",
+        };
         const newVariants = [...ingredientsVariants, newVariant];
 
         setIngredientsVariants(newVariants);
@@ -148,8 +152,16 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         settags(tags.filter((tag) => tag !== tagToRemove));
     };
 
+    function hasDuplicatedRestrictions() {
+        const selectedRestrictions = ingredientsVariants.map((variant) => variant.restriction);
+        return new Set(selectedRestrictions).size !== selectedRestrictions.length;
+    }
+
     const handleCreate = async () => {
         setisSubmitting(true);
+
+        if (hasDuplicatedRestrictions()) enqueueSnackbar("No pueden haber 2 o más variantes con la misma restricción", {variant: "error"});
+
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
         formDataToCreate.append("shortDescription", generalData.shortDescription);
@@ -227,14 +239,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         setIngredientsVariants(newVariants);
     };
 
-    const handleRestrictionsForVariants = (variantIndex, restrictionName, isBeingAdded) => {
+    const handleRestrictionsForVariants = (variantIndex, restriction) => {
         const newVariants = ingredientsVariants.map((variant, index) => {
             if (index === variantIndex) {
                 return {
                     ...variant,
-                    restrictions: isBeingAdded
-                        ? [...variant.restrictions, restrictionName]
-                        : variant.restrictions.filter((restriction) => restriction !== restrictionName),
+                    restriction,
                 };
             } else {
                 return variant;
@@ -289,7 +299,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <PaperWithTitleContainer title='Datos generales' fullWidth={true} >
+                        <PaperWithTitleContainer title="Datos generales" fullWidth={true}>
                             <FormInput
                                 label="Nombre de la receta"
                                 name="name"
@@ -343,7 +353,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 handleRemoveValue={handleRemoveTool}
                             />
                             <Dropzone
-                                title='Imagenes de la receta'
+                                title="Imagenes de la receta"
                                 maxFiles={10}
                                 handleDropFile={handleDropFile}
                                 files={generalData.image}
@@ -408,33 +418,22 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                                 xs={12}
                                                 style={{ display: "flex", justifyContent: "space-between", flexFlow: "wrap" }}
                                             >
-                                                {formData.restrictions.map((program, restrictionIndex) => (
-                                                    <FormControlLabel
-                                                        style={{ margin: "0px" }}
-                                                        control={
-                                                            <Checkbox
-                                                                handleChange={(e) =>
-                                                                    handleRestrictionsForVariants(
-                                                                        index,
-                                                                        e.target.name,
-                                                                        variant.restrictions.every(
-                                                                            (restriction) => restriction !== program.value
-                                                                        )
-                                                                    )
-                                                                }
-                                                                name={program.value}
-                                                                color="primary"
-                                                                value={variant.restrictions.some(
-                                                                    (restriction) => restriction === program.value
-                                                                )}
-                                                                checked={variant.restrictions.some(
-                                                                    (restriction) => restriction === program.value
-                                                                )}
-                                                            />
-                                                        }
-                                                        label={program.label}
-                                                    />
-                                                ))}
+                                                <RadioGroup
+                                                    aria-label="gender"
+                                                    name="Restrictions"
+                                                    value={variant.restriction}
+                                                    onChange={(e) => handleRestrictionsForVariants(index, e.target.value)}
+                                                    style={{ flexDirection: "row" }}
+                                                >
+                                                    {formData.restrictions.map((variantRestriction, restrictionIndex) => (
+                                                        <FormControlLabel
+                                                            key={restrictionIndex}
+                                                            value={variantRestriction.id}
+                                                            control={<Radio />}
+                                                            label={variantRestriction.label}
+                                                        />
+                                                    ))}
+                                                </RadioGroup>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -535,7 +534,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                     backButtonHandler={handleClickGoBack}
                     createButtonHandler={handleCreate}
                     createButtonText="CREAR RECETA"
-                // isCreateButtonDisabled={!isFormOkForCreation()}
+                    // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
         </>

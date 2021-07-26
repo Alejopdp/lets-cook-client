@@ -2,30 +2,28 @@
 import React from "react";
 import { useTheme } from "@material-ui/core/styles";
 
-
 // External Components
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
 
 // Internal components
 
-
-const DataDisplayEditable = props => {
+const DataDisplayEditable = (props) => {
     const theme = useTheme();
 
     return (
         <Box style={props.style}>
-            <Typography variant='subtitle2' color='textSecondary' style={{ fontSize: '14px'}}>
+            <Typography variant="subtitle2" color="textSecondary" style={{ fontSize: "14px" }}>
                 {props.title}
             </Typography>
-            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant='body2' color='textSecondary' style={{ fontSize: '16px' }}>
-                    {props.text}
+            <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Typography variant="body2" color="textSecondary" style={{ fontSize: "16px", fontStyle: props.text ? "normal" : "italic" }}>
+                    {props.text || "Sin indicar"}
                 </Typography>
                 <IconButton aria-label="edit" onClick={props.handleClick}>
-                    <EditIcon fontSize='small' />
+                    <EditIcon fontSize="small" />
                 </IconButton>
             </Box>
         </Box>
