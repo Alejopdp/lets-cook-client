@@ -220,7 +220,13 @@ const UpdatePlanForm = (props) => {
 
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
-                if (columnName === "price" || columnName === "priceWithOffer" || columnName === "sku") {
+                if (
+                    columnName === "price" ||
+                    columnName === "priceWithOffer" ||
+                    columnName === "sku" ||
+                    columnName === "description" ||
+                    columnName === "isDefault"
+                ) {
                     let variant = variants.find((variant) => variant.id === id);
                     row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
                 } else {
@@ -295,7 +301,13 @@ const UpdatePlanForm = (props) => {
         <>
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFileImage={handleDropFileImage} handleDropFileIconColor={handleDropFileIconColor} handleDropFileIconByg={handleDropFileIconByg}/>
+                    <GeneralData
+                        data={generalData}
+                        handleChange={handleGeneralData}
+                        handleDropFileImage={handleDropFileImage}
+                        handleDropFileIconColor={handleDropFileIconColor}
+                        handleDropFileIconByg={handleDropFileIconByg}
+                    />
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
