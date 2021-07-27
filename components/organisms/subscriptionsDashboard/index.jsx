@@ -1,8 +1,9 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { toggleZoneState, deleteZone } from "../../../helpers/serverRequests/shipping";
+import { getSubscriptions } from "../../../helpers/serverRequests/subscription";
 
 // External components
 import Container from "@material-ui/core/Container";
@@ -11,30 +12,32 @@ import Typography from "@material-ui/core/Typography";
 // Internal components
 import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
 import SubscriptionTable from "./subscriptionTable";
-
+import { useSnackbar } from "notistack";
 
 const SubscriptionsDashboard = (props) => {
+    const [subscriptions, setsubscriptions] = useState([]);
+    const { enqueueSnackbar } = useSnackbar();
 
-    const nextOrdersRows = [
-        { subscriptionId: '0', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '1', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '2', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '3', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '4', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '5', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '6', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '7', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '8', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '9', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-        { subscriptionId: '10', client: { name: 'Alejo Scotti', id: '1' }, planName: 'Plan Familiar', planVariationDescription: '3 recetas para 2 personas', frequency: 'semanal', amount: '30 EU', state: 'Activo' },
-    ]
+    useEffect(() => {
+        const getSubscriptionList = async () => {
+            const res = await getSubscriptions();
 
-    const handleClickExport = () => alert('Export')
+            if (res.status === 200) {
+                setsubscriptions(res.data);
+            } else {
+                enqueueSnackbar(res.data.message, { variant: "error" });
+            }
+        };
+
+        getSubscriptionList();
+    }, []);
+
+    const handleClickExport = () => alert("Export");
 
     return (
         <>
             <DashboardTitleWithCSV title="Suscripciones" export handleClickExport={handleClickExport} />
-            <SubscriptionTable rows={nextOrdersRows} />
+            <SubscriptionTable rows={subscriptions} />
         </>
     );
 };

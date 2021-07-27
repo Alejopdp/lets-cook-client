@@ -100,18 +100,18 @@ const SubscriptionTable = props => {
                             (row, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
-                                        <Typography variant="body1">{row.subscriptionId}</Typography>
+                                        <Typography variant="body1">{row.id}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Link onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: row.client.id } })} color='primary' style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} >
-                                            {row.client.name}
+                                        <Link onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: row.customerId } })} color='primary' style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} >
+                                            {row.clientName}
                                         </Link>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{row.planName}</Typography>
+                                        <Typography variant="body1">{row.plan}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{row.planVariationDescription}</Typography>
+                                        <Typography variant="body1">{row.planVariant}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{row.frequency}</Typography>
@@ -123,7 +123,7 @@ const SubscriptionTable = props => {
                                         <Typography variant="body1">{row.state}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: row.subscriptionId } })} >
+                                        <IconButton onClick={() => router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: row.id } })} >
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>
