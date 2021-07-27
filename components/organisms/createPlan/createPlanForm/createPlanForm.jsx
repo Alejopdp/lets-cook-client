@@ -301,6 +301,7 @@ const CreatePlanForm = (props) => {
 
         setvariants(newVariants);
     };
+
     const handleDeleteVariantChange = (params) => {
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
