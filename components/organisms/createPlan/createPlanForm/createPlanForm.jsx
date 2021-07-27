@@ -242,7 +242,13 @@ const CreatePlanForm = (props) => {
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
 
-                if (columnName === "price" || columnName === "priceWithOffer" || columnName === "sku") {
+                if (
+                    columnName === "price" ||
+                    columnName === "priceWithOffer" ||
+                    columnName === "sku" ||
+                    columnName === "description" ||
+                    columnName === "isDefault"
+                ) {
                     let variant = variants.find((variant) => variant.id === id);
                     row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
                 } else {
