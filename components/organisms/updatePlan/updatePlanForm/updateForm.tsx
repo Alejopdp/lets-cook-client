@@ -76,10 +76,10 @@ const UpdatePlanForm = (props) => {
             return;
         }
 
-        if (firstAttributesActualization.current) {
-            firstAttributesActualization.current = false;
-            return;
-        }
+        // if (firstAttributesActualization.current) {
+        //     firstAttributesActualization.current = false;
+        //     return;
+        // }
         setGridRows();
     }, [attributes]);
 
@@ -222,7 +222,14 @@ const UpdatePlanForm = (props) => {
     const setGridRows = () => {
         const cartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
         var rows = [];
-        var attributesWithFixedFields = [...attributes, ["price", 0], ["priceWithOffer", 0], ["sku", ""]];
+        var attributesWithFixedFields = [
+            ...attributes,
+            ["price", 0],
+            ["priceWithOffer", 0],
+            ["sku", ""],
+            ["description", ""],
+            ["isDefault", false],
+        ];
 
         for (let i = 0; i < cartesian.length; i++) {
             var row = {};
@@ -240,7 +247,11 @@ const UpdatePlanForm = (props) => {
                     columnName === "description" ||
                     columnName === "isDefault"
                 ) {
-                    let variant = variants.find((variant) => variant.id === id);
+                    let variant = variants.find((variant) => {
+                        const generatedId = generateVariantIdForUpdatingRow(variant);
+                        return generatedId === id;
+                    });
+
                     row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
                 } else {
                     row[columnName] = cartesian[i][j];
@@ -251,6 +262,16 @@ const UpdatePlanForm = (props) => {
         setvariants(rows);
 
         return rows;
+    };
+
+    const generateVariantIdForUpdatingRow = (variant) => {
+        if (!!!variant.attributes || !Array.isArray(variant.attributes)) return null;
+        var id = variant.attributes.reduce((acc, actualValue) => acc.toString() + actualValue[1].toString(), "");
+
+        if (!!variant.Personas) id = id + variant.Personas.toString();
+        if (!!variant.Recetas) id = id + variant.Recetas.toString();
+
+        return id;
     };
 
     const handleVariantsEdit = (params, e) => {

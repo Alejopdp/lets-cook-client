@@ -119,6 +119,7 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
             autoComplete
             includeInputInList
             filterSelectedOptions
+            disabled={props.disabled}
             value={props.value}
             noOptionsText={
                 !!props.value ? "No se encontró ninguna dirección" : "Comienze a escribir para ver las sugerencias de direcciones"
@@ -140,6 +141,7 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
                     label="Ingrese su dirección"
                     variant="outlined"
                     fullWidth
+                    disabled={props.disabled}
                 />
             )}
             renderOption={(option) => {
