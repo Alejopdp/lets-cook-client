@@ -11,22 +11,22 @@ import { DeliveryAddressModalProps } from "../../interface";
 const DeliveryAddressModal = (props: DeliveryAddressModalProps) => {
     const scheduleOptions = [
         {
-            value: "De 16 a 20",
+            value: "8 - 12",
             label: "De 8 a 12",
         },
         {
-            value: "De 16 a 20",
+            value: "12 - 16",
             label: "De 12 a 16",
         },
         {
-            value: "De 16 a 20",
+            value: "16 - 20",
             label: "De 16 a 20",
         },
     ];
 
     return (
         <>
-            <LocationSearchInput name="name" handleChange={props.handleGoogleInput} value={props.formData.name} />
+            <LocationSearchInput disabled={false} name="name" handleChange={props.handleGoogleInput} value={props.formData.name} />
             <Input name="details" label="Aclaraciones" value={props.formData.details} handleChange={props.handleChange} />
             <SelectInput
                 name="preferredSchedule"
