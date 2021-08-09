@@ -1,3 +1,5 @@
+import { PlanFrequencyValue } from "helpers/types/frequency";
+
 export interface ShippingAddress {
     details: string;
     name: string;
@@ -41,7 +43,7 @@ export interface Subscription {
     plan: string;
     variant: string;
     price: string;
-    frequency: string;
+    frequency: PlanFrequencyValue;
     status: string;
 }
 

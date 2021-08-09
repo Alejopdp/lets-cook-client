@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 import { createPlan } from "../../../../helpers/serverRequests/plan";
 import { useRouter } from "next/router";
+import { PlanFrequencyValue } from "../../../../helpers/types/frequency";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -85,8 +86,8 @@ const CreatePlanForm = (props) => {
     };
 
     const addSemanalFrequency = () => {
-        if (frequency.some((freq) => freq === "Semanal")) return;
-        setfrequency(["Semanal", ...frequency]);
+        if (frequency.some((freq) => freq === PlanFrequencyValue.WEEKLY)) return;
+        setfrequency([PlanFrequencyValue.WEEKLY, ...frequency]);
     };
 
     const handleAddAttribute = () => {
@@ -137,7 +138,7 @@ const CreatePlanForm = (props) => {
     };
 
     const handleFrequencyChange = (e, newValue) => {
-        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? ["Semanal"] : []);
+        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? [PlanFrequencyValue.WEEKLY] : []);
         else if (newValue.every((newFreq) => frequency.some((stateFreq) => newFreq === stateFreq))) return;
         else setfrequency(newValue);
     };
@@ -145,7 +146,7 @@ const CreatePlanForm = (props) => {
     const isPlanTypePrincipal = () => otherData.planType === "Principal";
 
     const handleRemoveFrequency = (freqToRemove) => {
-        if (freqToRemove === "Semanal" && isPlanTypePrincipal()) return;
+        if (freqToRemove === PlanFrequencyValue.WEEKLY && isPlanTypePrincipal()) return;
         setfrequency(frequency.filter((freq) => freq !== freqToRemove));
     };
 

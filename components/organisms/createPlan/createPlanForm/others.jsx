@@ -14,6 +14,7 @@ import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/
 import Autocomplete from "../../../atoms/autocomplete/autocomplete";
 import Checkbox from "../../../atoms/checkbox/checkbox";
 import MultipleChipInput from "../../../atoms/multipleChipInput/multipleChipInput";
+import { PlanFrequencyValue } from "helpers/types/frequency";
 
 const Others = (props) => {
     const router = useRouter();
@@ -63,7 +64,7 @@ const Others = (props) => {
                         handleChange={props.handleHasRecipes}
                     />
                     <Checkbox
-                        label='El usuario podrá elegir recetas'
+                        label="El usuario podrá elegir recetas"
                         value={props.data.abilityToChooseRecipes}
                         checked={props.data.abilityToChooseRecipes}
                         handleChange={props.handleAbilityToChooseRecipes}
@@ -119,4 +120,4 @@ const typeOptions = [
     { title: "Adicional", value: "Adicional" },
 ];
 
-const frequencyOptions = ["PorUnicaVez", "Semanal", "Quincenal", "Mensual"];
+const frequencyOptions = [PlanFrequencyValue.ONE_TIME, PlanFrequencyValue.WEEKLY, PlanFrequencyValue.BIWEEKLY, PlanFrequencyValue.MONTHLY];

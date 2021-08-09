@@ -18,6 +18,8 @@ import EditPlanVariantModal from "./editPlanVariantModal";
 import EditFrequencyModal from "./editFrequencyModal";
 import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
+import { PlanFrequencyValue } from "helpers/types/frequency";
+import { translateFrequency } from "helpers/i18n/i18n";
 
 const SubscriptionGrid = (props) => {
     const subscriptionDetail = {
@@ -27,7 +29,7 @@ const SubscriptionGrid = (props) => {
         planId: "1",
         planName: "Plan Familiar",
         planVariantDescription: "3 recetas para 3 personas",
-        frequency: "Semanal",
+        frequency: PlanFrequencyValue.WEEKLY,
         nextPaymentDate: "10/12/2021",
         paymentMethod: "Mastercard terminada en 1234",
         addressName: "Av. Fausto Elio 42, 46011, Valencia",
@@ -171,7 +173,7 @@ const SubscriptionGrid = (props) => {
                     />
                     <DataDisplayEditable
                         title="Frecuencia"
-                        text={props.subscription.frequency}
+                        text={translateFrequency(props.subscription.frequency)}
                         handleClick={handleClickOpenEditFrequencyModal}
                         style={{ marginBottom: theme.spacing(3) }}
                     />

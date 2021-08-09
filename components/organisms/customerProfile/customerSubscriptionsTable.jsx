@@ -24,6 +24,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 // Internal components
 import ComplexModal from "../../molecules/complexModal/complexModal";
 import AddPlanModal from "./customerProfileModals/addPlanModal";
+import { translateFrequency } from "helpers/i18n/i18n";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -156,7 +157,7 @@ const CustomerSubscriptionsTable = (props) => {
                                         <Typography variant="body1">€{subscription.price}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{subscription.frequency}</Typography>
+                                        <Typography variant="body1">{translateFrequency(subscription.frequency)}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{subscription.status}</Typography>

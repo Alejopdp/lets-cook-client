@@ -10,6 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import { translateFrequency } from "helpers/i18n/i18n";
 
 const OrdersDenseTable = (props) => {
     const router = useRouter();
@@ -30,7 +31,7 @@ const OrdersDenseTable = (props) => {
                             <TableCell align="left">{row.subscriptionId}</TableCell>
                             <TableCell align="left">{row.planName}</TableCell>
                             <TableCell align="left">{row.planVariant}</TableCell>
-                            <TableCell align="left">{row.frequency}</TableCell>
+                            <TableCell align="left">{translateFrequency(row.frequency)}</TableCell>
                             <TableCell align="right">{row.amount}</TableCell>
                             <TableCell align="right">
                                 <IconButton

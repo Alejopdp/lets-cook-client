@@ -25,14 +25,6 @@ const PaymentOrderGrid = (props) => {
         stripeTransactionId: "pi_1JAZcjH24hlkZqHlK0aiu9C4",
     };
 
-    const amountDetail = {
-        subtotal: 60,
-        shippingCost: 5,
-        discount: 5,
-        taxes: 6,
-        total: 60,
-    };
-
     const columns = [
         { align: "left", text: "Order ID" },
         { align: "left", text: "Plan" },
@@ -40,23 +32,6 @@ const PaymentOrderGrid = (props) => {
         { align: "left", text: "Frecuencia" },
         { align: "right", text: "Monto" },
         { align: "left", text: "" },
-    ];
-
-    const rows = [
-        {
-            orderId: "324",
-            planName: "Plan Familiar",
-            planVariantDescription: "3 recetas para 2 personas",
-            frequency: "Semanal",
-            orderAmount: "30 EU",
-        },
-        {
-            orderId: "325",
-            planName: "Plan Vinos",
-            planVariantDescription: "Pack mediano - Vino tinto",
-            frequency: "Por única vez",
-            orderAmount: "20 EU",
-        },
     ];
 
     const [amountToRefund, setAmountToRefund] = useState(0);

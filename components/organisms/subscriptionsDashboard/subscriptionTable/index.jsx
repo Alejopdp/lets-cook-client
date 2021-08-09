@@ -1,28 +1,27 @@
 // Utils & Config
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import { translateFrequency } from "../../../../helpers/i18n/i18n";
 
 // External Components
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableFooter from "@material-ui/core/TableFooter";
+import Link from "@material-ui/core/Link";
+import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import TablePagination from '@material-ui/core/TablePagination';
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import TablePagination from "@material-ui/core/TablePagination";
 
 // Internal components
 import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
-
-
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -33,16 +32,15 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
         // paddingRight: theme.spacing(5)
-    }
+    },
 }));
 
-
-const SubscriptionTable = props => {
+const SubscriptionTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
 
@@ -103,7 +101,16 @@ const SubscriptionTable = props => {
                                         <Typography variant="body1">{row.id}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Link onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: row.customerId } })} color='primary' style={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }} >
+                                        <Link
+                                            onClick={() =>
+                                                router.push({
+                                                    pathname: "/gestion-de-clientes/modificar",
+                                                    query: { customerId: row.customerId },
+                                                })
+                                            }
+                                            color="primary"
+                                            style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                                        >
                                             {row.clientName}
                                         </Link>
                                     </TableCell>
@@ -114,7 +121,7 @@ const SubscriptionTable = props => {
                                         <Typography variant="body1">{row.planVariant}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{row.frequency}</Typography>
+                                        <Typography variant="body1">{translateFrequency(row.frequency)}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{row.amount}</Typography>
@@ -123,12 +130,17 @@ const SubscriptionTable = props => {
                                         <Typography variant="body1">{row.state}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: row.id } })} >
+                                        <IconButton
+                                            onClick={() =>
+                                                router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: row.id } })
+                                            }
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )
+                        )}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
