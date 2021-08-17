@@ -438,6 +438,13 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                                         <FormControlLabel
                                                             key={restrictionIndex}
                                                             value={variantRestriction.id}
+                                                            disabled={
+                                                                (ingredientsVariants.some(
+                                                                    (variant) => variant.restriction === variantRestriction.id
+                                                                ) &&
+                                                                    variant.restriction !== variantRestriction.id) ||
+                                                                (index === 0 && variantRestriction.value !== "apto_todo")
+                                                            }
                                                             control={<Radio />}
                                                             label={variantRestriction.label}
                                                         />
