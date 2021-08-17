@@ -14,14 +14,14 @@ import { Flag as FlagIcon, ArrowBack as BackIcon, Add as AddIcon, Delete } from 
 import FormInput from "../../atoms/input/input";
 import Autocomplete from "../../atoms/autocomplete/autocomplete";
 import MultiChipInput from "../../atoms/multipleChipInput/multipleChipInput";
-import FormPaperWithImageDropzone from "../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
-import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import ButtonDropdownMenu from "../../molecules/buttonDropdownMenu/ButtonDropdownMenu";
-import FormPaperWithEmptyState from "../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
+import FormPaperWithImageDropzone from "../formPaperWithImageDropzone/formPaperWithImageDropzone";
+import PaperWithTitleContainer from "../paperWithTitleContainer/paperWithTitleContainer";
+import ButtonDropdownMenu from "../buttonDropdownMenu/ButtonDropdownMenu";
+import FormPaperWithEmptyState from "../formPaperWithEmptyState/formPaperWithEmptyState";
 import Checkbox from "../../atoms/checkbox/checkbox";
-import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
-import NutritionalInformationGrid from "../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
-import Dropzone from "../../molecules/dropzone/dropzone";
+import BackAndCreateButtons from "../backAndCreateButtons/backAndCreateButtons";
+import NutritionalInformationGrid from "../nutritionalInformationGrid/nutritionalInformationGrid";
+import Dropzone from "../dropzone/dropzone";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -57,7 +57,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
     const [plans, setplans] = useState([]);
-    const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
+    const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
@@ -160,7 +160,8 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const handleCreate = async () => {
         setisSubmitting(true);
 
-        if (hasDuplicatedRestrictions()) enqueueSnackbar("No pueden haber 2 o más variantes con la misma restricción", {variant: "error"});
+        if (hasDuplicatedRestrictions())
+            enqueueSnackbar("No pueden haber 2 o más variantes con la misma restricción", { variant: "error" });
 
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
@@ -183,6 +184,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             )
         );
         formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
+        formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
 
         const res = await createRecipe(formDataToCreate);
 
@@ -254,17 +256,22 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         setIngredientsVariants(newVariants);
     };
 
-    const handleEditNutritionalInformation = (params, e) => {
-        console.log("Params : ", params);
+    const handleEditNutritionalInformation = (index: number, keyName: string, value: string) => {
+        let tempAttr = [...nutritionalInformation];
+        tempAttr[index][keyName] = value;
+        setnutritionalInformation(tempAttr);
     };
 
     const handleAddNutritionalItem = () => {
-        const newRow = {
-            id: uuidv4(),
-            key: "",
-            value: "",
-        };
-        setnutritionalInformation([...nutritionalInformation, newRow]);
+        setnutritionalInformation([...nutritionalInformation, { key: "", value: "" }]);
+    };
+
+    const handleDeleteNutritionalInformationAttribute = (index: number) => {
+        const newAttributes = [...nutritionalInformation];
+
+        newAttributes.splice(index, 1);
+
+        setnutritionalInformation(newAttributes);
     };
 
     const handleAddTool = (newValues) => {
@@ -294,7 +301,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
 
     return (
         <>
-            {/* FORM */}
             {/* FORM LEFT */}
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
@@ -469,6 +475,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             <NutritionalInformationGrid
                                 handleAddItem={handleAddNutritionalItem}
                                 handleRowEdit={handleEditNutritionalInformation}
+                                handleDeleteAttribute={handleDeleteNutritionalInformationAttribute}
                                 rows={nutritionalInformation}
                             />
                         </PaperWithTitleContainer>

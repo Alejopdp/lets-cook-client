@@ -60,7 +60,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
     const [plans, setplans] = useState([]);
-    const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
+    const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
@@ -85,6 +85,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         settags(recipeData.backOfficeTags);
         setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
         setmonths(recipeData.availableMonths);
+        setnutritionalInformation(recipeData.nutritionalInfo);
         settools(recipeData.tools);
         setplans(recipeData.relatedPlans);
         setdifficultyLevel(recipeData.difficultyLevel);
@@ -194,6 +195,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                 formData.weeks.filter((week) => weeks.some((selectedWeek) => week.label === selectedWeek)).map((week) => week.id)
             )
         );
+        formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
         formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
 
         // const recipeToUpdate = {
@@ -276,19 +278,23 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         setIngredientsVariants(newVariants);
     };
 
-    const handleEditNutritionalInformation = (params, e) => {
-        console.log("Params : ", params);
+    const handleEditNutritionalInformation = (index: number, keyName: string, value: string) => {
+        let tempAttr = [...nutritionalInformation];
+        tempAttr[index][keyName] = value;
+        setnutritionalInformation(tempAttr);
     };
 
     const handleAddNutritionalItem = () => {
-        const newRow = {
-            id: uuidv4(),
-            key: "",
-            value: "",
-        };
-        setnutritionalInformation([...nutritionalInformation, newRow]);
+        setnutritionalInformation([...nutritionalInformation, { key: "", value: "" }]);
     };
 
+    const handleDeleteNutritionalInformationAttribute = (index: number) => {
+        const newAttributes = [...nutritionalInformation];
+
+        newAttributes.splice(index, 1);
+
+        setnutritionalInformation(newAttributes);
+    };
     const handleAddTool = (newValues) => {
         if (newValues.length < tools.length) return settools(tools.slice(0, -1));
         if (newValues.length === 0) settools(newValues);
@@ -490,6 +496,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             <NutritionalInformationGrid
                                 handleAddItem={handleAddNutritionalItem}
                                 handleRowEdit={handleEditNutritionalInformation}
+                                handleDeleteAttribute={handleDeleteNutritionalInformationAttribute}
                                 rows={nutritionalInformation}
                             />
                         </PaperWithTitleContainer>

@@ -9,30 +9,17 @@ import Button from "../../atoms/button/button";
 
 // Icon & images
 import Add from "@material-ui/icons/Add";
+import DynamicAttributesForm from "../dynamicAttributesForm/dynamicAttributesForm";
 
 const NutritionalInformationGrid = (props) => {
     return (
         <>
-            <DataGrid
-                isCellEditable={true}
-                onEditCellChangeCommitted={(params, e) => props.handleRowEdit(params, e)}
-                autoHeight
-                disableColumnMenu
-                disableColumnSelector
-                disableColumnFilter
-                disableColumnReorder
-                disableColumnResize
-                headerHeight={0}
-                showCellRightBorder
-                hideFooter
-                rows={props.rows}
-                columnBuffer={0}
-                density="compact"
-                columns={[
-                    { field: "key", headerName: "key", type: "string" },
-                    { field: "value", headerName: "value", type: "string" },
-                ]}
+            <DynamicAttributesForm
+                attributes={props.rows}
+                handleChange={props.handleRowEdit}
+                handleDeleteAttr={props.handleDeleteAttribute}
             />
+
             <Box marginTop={2}>
                 <Button variant="text" onClick={props.handleAddItem} startIcon={<Add />}>
                     AGREGAR INFORMACIÓN
