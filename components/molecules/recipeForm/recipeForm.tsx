@@ -64,7 +64,10 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         const newVariant = {
             ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
             sku: "",
-            restriction: "",
+            restriction:
+                ingredientsVariants.length > 0
+                    ? ""
+                    : formData.restrictions.find((restriction) => restriction.value === "apto_todo")?.id || "",
         };
         const newVariants = [...ingredientsVariants, newVariant];
 
