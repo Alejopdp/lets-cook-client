@@ -64,7 +64,14 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
-        const newVariant = { ingredients: [], sku: "", restriction: "" };
+        const newVariant = {
+            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
+            sku: "",
+            restriction:
+                ingredientsVariants.length > 0
+                    ? ""
+                    : formData.restrictions.find((restriction) => restriction.value === "apto_todo")?.id || "",
+        };
         const newVariants = [...ingredientsVariants, newVariant];
 
         setIngredientsVariants(newVariants);
@@ -330,15 +337,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        {/* <FormPaperWithImageDropzone
-                        title="Datos generales"
-                        maxFiles={1}
-                        handleDropFile={handleDropFile}
-                        files={generalData.image}
-                        filesTitle="Imagen"
-                        title={lang.paperTitle}
-                        fileName={generalData.name}
-                    > */}
                         <PaperWithTitleContainer title="Datos generales" fullWidth={true}>
                             <FormInput
                                 label="Nombre de la receta"
@@ -399,10 +397,8 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 files={generalData.image}
                                 fileName={generalData.name}
                             />
-                            {/* <div className={classes.space}></div> */}
                         </PaperWithTitleContainer>
                     </Grid>
-                    {/* <div className={classes.space}></div> */}
 
                     {/* FORM LEFT BOTTOM, INGREDIENTS */}
 
@@ -417,13 +413,13 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                                     Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
                                                 </Typography>
                                             </Grid>
-                                            {index !== 0 && (
+                                            {/* {index !== 0 && (
                                                 <Grid item>
                                                     <IconButton onClick={() => _handleDeleteVariant(index)}>
                                                         <Delete />
                                                     </IconButton>
                                                 </Grid>
-                                            )}
+                                            )} */}
                                         </Grid>
                                         <Grid item container spacing={2} xs={12}>
                                             <Grid item xs={3}>
@@ -458,6 +454,13 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                                     <FormControlLabel
                                                         key={restrictionIndex}
                                                         value={variantRestriction.id}
+                                                        disabled={
+                                                            (ingredientsVariants.some(
+                                                                (variant) => variant.restriction === variantRestriction.id
+                                                            ) &&
+                                                                variant.restriction !== variantRestriction.id) ||
+                                                            (index === 0 && variantRestriction.value !== "apto_todo")
+                                                        }
                                                         control={<Radio checked={variantRestriction.id === variant.restriction} />}
                                                         checked={variantRestriction.id === variant.restriction}
                                                         label={variantRestriction.label}
@@ -468,10 +471,10 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                     </Grid>
                                 ))}
                             </Grid>
-                            <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                            {ingredientsVariants.length < formData.restrictions.length && <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
                                 Agregar variante
                             </Button>
-                        </PaperWithTitleContainer>
+}                        </PaperWithTitleContainer>
                     </Grid>
                 </Grid>
             </Grid>
@@ -611,7 +614,6 @@ RecipeForm.propTypes = {
 
 export default RecipeForm;
 
-const ingredientsPrograms = ["Sin glúten", "Sin lactosa", "Apto vegetariano", "Acto vegano"];
 const difficultyLevelOptions = ["Fácil", "Media", "Alta"];
 const toolsOptions = [
     "Cuchillo",
@@ -640,38 +642,3 @@ const languages = [
         label: "Catalan",
     },
 ];
-
-{
-    /* <Grid item xs key={restrictionIndex}> */
-}
-{
-    /* <FormControl component="fieldset"> */
-}
-
-{
-    /* <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                handleChange={(e) =>
-                                                                    handleRestrictionsForVariants(
-                                                                        index,
-                                                                        e.target.name,
-                                                                        variant.restrictions.every(
-                                                                            (restriction) => restriction !== variantRestriction.value
-                                                                        )
-                                                                    )
-                                                                }
-                                                                name={variantRestriction.value}
-                                                                color="primary"
-                                                                value={variant.restrictions.some(
-                                                                    (restriction) => restriction === variantRestriction.value
-                                                                )}
-                                                                checked={variant.restrictions.some(
-                                                                    (restriction) => restriction === variantRestriction.value
-                                                                )}
-                                                            />
-                                                        }
-                                                        label={variantRestriction.label}
-                                                    />
-                                                </Grid> */
-}

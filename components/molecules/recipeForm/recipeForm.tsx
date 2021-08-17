@@ -456,9 +456,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 ))}
                             </Grid>
                             <Grid item xs={12} style={{ marginTop: theme.spacing(3) }}>
-                                <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
-                                    Agregar variante
-                                </Button>
+                                {ingredientsVariants.length < formData.restrictions.length && (
+                                    <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                                        Agregar variante
+                                    </Button>
+                                )}
                             </Grid>
                         </PaperWithTitleContainer>
                     </Grid>
