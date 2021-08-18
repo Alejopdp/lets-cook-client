@@ -62,7 +62,7 @@ const UpdatePlanForm = (props) => {
             hasRecipes: props.plan.hasRecipes,
             abilityToChooseRecipes: props.plan.abilityToChooseRecipes,
         });
-        setfrequency(props.plan.availablePlanFrecuencies);
+        setfrequency(props.plan.availablePlanFrecuencies.map((freq) => freq.value));
 
         setvariants(props.plan.variants);
         setadditionalPlans(props.plan.additionalPlans.map((plan) => plan.id));
