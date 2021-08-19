@@ -327,10 +327,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         );
     };
 
-    const goBackHandler = () => {
-        router.replace("/recetas", "/recetas", { locale: router.locale });
-    };
-
     return (
         <>
             {/* FORM LEFT */}
