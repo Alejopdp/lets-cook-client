@@ -39,6 +39,7 @@ const Input = (props) => {
                 value={props.values}
                 freeSolo={props.freeSolo}
                 onChange={props.onChange}
+                disableClearable={props.disableClearable}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                         <Chip
@@ -65,6 +66,7 @@ Input.propTypes = {
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string.isRequired,
     handleRemoveValue: PropTypes.func.isRequired,
+    disableClearable: PropTypes.bool,
 };
 
 export default Input;

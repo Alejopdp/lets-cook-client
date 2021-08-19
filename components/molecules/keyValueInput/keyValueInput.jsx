@@ -38,6 +38,7 @@ const KeyValueInput = (props) => {
                 </Box>
                 <MultipleChipInput
                     freeSolo={true}
+                    disableClearable={true}
                     options={[]}
                     values={props.values}
                     onChange={(e) => props.handleValuesChange(props.index, e)}

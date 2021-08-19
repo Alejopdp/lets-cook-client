@@ -123,7 +123,7 @@ const AttributesAndVariants = (props) => {
                                 e.preventDefault();
                                 props.handleVariantsEdit(params, e);
                             }}
-                            getRowClassName={(params) => (params.row.deleted ? "data-grid-row--deleted" : "")}
+                            getRowClassName={(params) => (params.row.isDeleted ? "data-grid-row--deleted" : "")}
                             autoHeight
                             disableColumnMenu
                             disableColumnSelector

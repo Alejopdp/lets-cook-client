@@ -63,7 +63,6 @@ const UpdatePlanForm = (props) => {
             abilityToChooseRecipes: props.plan.abilityToChooseRecipes,
         });
         setfrequency(props.plan.availablePlanFrecuencies.map((freq) => freq.value));
-
         setvariants(props.plan.variants);
         setadditionalPlans(props.plan.additionalPlans.map((plan) => plan.id));
     }, [props.plan]);
@@ -128,8 +127,7 @@ const UpdatePlanForm = (props) => {
     const handleAttributeValuesChange = (index, e) => {
         var updatedAttribute = [...attributes[index]];
         if (!e.target.value) {
-            updatedAttribute[1] = [];
-            updateAttributes(updatedAttribute, index);
+            return;
         } else if (updatedAttribute[1].every((value) => value !== e.target.value)) {
             updatedAttribute[1] = [...updatedAttribute[1], e.target.value];
             updateAttributes(updatedAttribute, index);
@@ -139,10 +137,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleRemoveAttributeValue = (index, value) => {
-        const updatedAttribute = [...attributes[index]];
-
-        updatedAttribute[1] = updatedAttribute[1].filter((val) => val !== value);
-        updateAttributes(updatedAttribute, index);
+        return;
     };
 
     const handleFrequencyChange = (e, newValue) => {
@@ -213,31 +208,40 @@ const UpdatePlanForm = (props) => {
         });
     };
 
-    const cartesianProduct = (...array) => {
+    const cartesianProduct = (...array): [string][] => {
         if (array.length === 0) return [];
 
         return array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat()))); // [[value1OfKey1, value1OfKey2], [value2OfKey1, value1OfKey2] ]
     };
 
     const setGridRows = () => {
-        const cartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        const baseCartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        // const cartesian = onlyOneAttributeWithValues() ? baseCartesian.map((item) => [item]) : baseCartesian;
         var rows = [];
-        var attributesWithFixedFields = [
+        var attributesWithFixedFields: [string, string | number | boolean][] = [
             ...attributes,
             ["price", 0],
             ["priceWithOffer", 0],
             ["sku", ""],
             ["description", ""],
             ["isDefault", false],
+            ["isDeleted", false],
         ];
 
-        for (let i = 0; i < cartesian.length; i++) {
+        for (let i = 0; i < baseCartesian.length; i++) {
             var row = {};
-            let id = Array.isArray(cartesian[i])
-                ? cartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
-                : [cartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
+            let id = Array.isArray(baseCartesian[i])
+                ? baseCartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
+                : [baseCartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
             row["id"] = id; // Obligatorio para data-grid
+            row["auxId"] = id;
 
+            let variant = variants.find((variant) => {
+                // const generatedId = generateVariantIdForUpdatingRow(variant);
+                return variant.auxId === id;
+            });
+
+            row["oldId"] = !!variant ? variant.oldId : "";
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
                 if (
@@ -245,16 +249,12 @@ const UpdatePlanForm = (props) => {
                     columnName === "priceWithOffer" ||
                     columnName === "sku" ||
                     columnName === "description" ||
-                    columnName === "isDefault"
+                    columnName === "isDefault" ||
+                    columnName === "isDeleted"
                 ) {
-                    let variant = variants.find((variant) => {
-                        const generatedId = generateVariantIdForUpdatingRow(variant);
-                        return generatedId === id;
-                    });
-
-                    row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
+                    row[columnName] = !!variant ? variant[columnName] : baseCartesian[i][j];
                 } else {
-                    row[columnName] = cartesian[i][j];
+                    row[columnName] = baseCartesian[i][j];
                 }
             }
             rows.push(row);
@@ -263,6 +263,7 @@ const UpdatePlanForm = (props) => {
 
         return rows;
     };
+    console.log("A VER LAS VARIANTS: ", variants);
 
     const generateVariantIdForUpdatingRow = (variant) => {
         if (!!!variant.attributes || !Array.isArray(variant.attributes)) return null;
@@ -280,7 +281,7 @@ const UpdatePlanForm = (props) => {
             return;
         }
 
-        if (params.field === "deleted") {
+        if (params.field === "isDeleted") {
             handleDeleteVariantChange(params);
             return;
         }
@@ -289,7 +290,7 @@ const UpdatePlanForm = (props) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.field === "deleted" ? !variant.deleted || false : params.props.value,
+                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.props.value,
                 };
             } else {
                 return {
@@ -306,8 +307,8 @@ const UpdatePlanForm = (props) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    deleted: !variant.deleted || false,
-                    isDefault: !variant.deleted ? false : variant.isDefault,
+                    isDeleted: !variant.isDeleted || false,
+                    isDefault: !variant.isDeleted ? false : variant.isDefault,
                 };
             } else {
                 return {
@@ -425,12 +426,12 @@ const UpdatePlanForm = (props) => {
                                 ),
                             },
                             {
-                                field: "deleted",
+                                field: "isDeleted",
                                 headerName: "Eliminar",
                                 type: "boolean",
                                 renderCell: (params) => (
                                     <EnabledOrDisabledIconButton
-                                        enabled={getVariantByRowId(params.id).deleted}
+                                        enabled={getVariantByRowId(params.id).isDeleted}
                                         onClick={(e) => handleVariantsEdit(params, e)}
                                     />
                                 ),
