@@ -65,7 +65,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
         const newVariant = {
-            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
+            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[ingredientsVariants.length - 1].ingredients] : [],
             sku: "",
             restriction:
                 ingredientsVariants.length > 0
@@ -471,10 +471,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                     </Grid>
                                 ))}
                             </Grid>
-                            {ingredientsVariants.length < formData.restrictions.length && <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
-                                Agregar variante
-                            </Button>
-}                        </PaperWithTitleContainer>
+                            {ingredientsVariants.length < formData.restrictions.length && (
+                                <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                                    Agregar variante
+                                </Button>
+                            )}{" "}
+                        </PaperWithTitleContainer>
                     </Grid>
                 </Grid>
             </Grid>

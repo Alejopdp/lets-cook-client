@@ -62,7 +62,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
         const newVariant = {
-            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
+            ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[ingredientsVariants.length - 1].ingredients] : [],
             sku: "",
             restriction:
                 ingredientsVariants.length > 0
