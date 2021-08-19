@@ -25,31 +25,31 @@ const shippingZoneTypeOptions = [
 const shippingDayOptions = [
     {
         value: 1,
-        label: 'Lunes',
+        label: "Lunes",
     },
     {
         value: 2,
-        label: 'Martes',
+        label: "Martes",
     },
     {
         value: 3,
-        label: 'Miercoles',
+        label: "Miercoles",
     },
     {
         value: 4,
-        label: 'Jueves',
+        label: "Jueves",
     },
     {
         value: 5,
-        label: 'Viernes',
+        label: "Viernes",
     },
     {
         value: 6,
-        label: 'Sábado',
+        label: "Sábado",
     },
     {
         value: 0,
-        label: 'Domingo',
+        label: "Domingo",
     },
 ];
 
@@ -69,11 +69,10 @@ const ShippingZoneForm = (props) => {
     });
 
     const handleChange = (prop) => (event) => {
-        setValues(
-            {
-                ...values,
-                [prop]: event.target.value
-            });
+        setValues({
+            ...values,
+            [prop]: event.target.value,
+        });
     };
 
     const handleCreate = async () => {
@@ -115,74 +114,72 @@ const ShippingZoneForm = (props) => {
     };
 
     return (
-        <>
-            <Grid container spacing={2} justify="center" direction="column">
-                <Grid item xs={12}>
-                    <PaperWithTitleContainer title="Detalles" width={600}>
-                        <Input label="Nombre" handleChange={handleChange("zoneName")} value={values.zoneName} />
-                        <Input label="Referencia" handleChange={handleChange("zoneRef")} value={values.zoneRef} />
-                    </PaperWithTitleContainer>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <PaperWithTitleContainer title="Coste de envío" width={600}>
-                        <Grid item style={{ marginBottom: theme.spacing(1) }}>
-                            <CustomRadioGroup
-                                handleChange={handleChange("type")}
-                                inputName="type"
-                                options={shippingZoneTypeOptions}
-                                value={values.type}
-                            />
-                        </Grid>
-                        {values.type === "pay" && (
-                            <Grid container direction="row" alignItems="center" spacing={2}>
-                                <Grid item>
-                                    <Input type="number" label="Valor" handleChange={handleChange("price")} value={values.price} />
-                                </Grid>
-                                <Grid item>
-                                    <Typography variant="body1" style={{ marginBottom: theme.spacing(2) }}>
-                                        €
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        )}
-                    </PaperWithTitleContainer>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <PaperWithTitleContainer title="Día de entrega" width={600}>
-                        <SelectInput
-                            name='shippingDay'
-                            label="Día de entrega"
-                            value={values.shippingDay}
-                            handleChange={handleChange("shippingDay")}
-                            options={shippingDayOptions}
-                        />
-                    </PaperWithTitleContainer>
-                </Grid>
-
-                <Grid item style={{ width: "618px", margin: "0 auto" }}>
-                    <FormPaperWithImageDropzone title="Subir archivo KML" handleDropFile={handleDropFile} maxFiles={1} files={values.file}>
-                        <Typography variant="body1">Puedes utilizar la siguiente herramienta para crear las zonas de envío:</Typography>
-
-                        <Typography variant="subtitle2" paragraph>
-                            <a href="https://mapsengine.google.com/map/" target="blank">
-                                https://mapsengine.google.com/map/
-                            </a>
-                        </Typography>
-                    </FormPaperWithImageDropzone>
-                </Grid>
+        <Grid container item spacing={2} justify="center">
+            <Grid item xs={12}>
+                <PaperWithTitleContainer title="Detalles" fullWidth>
+                    <Input label="Nombre" handleChange={handleChange("zoneName")} value={values.zoneName} />
+                    <Input label="Referencia" handleChange={handleChange("zoneRef")} value={values.zoneRef} />
+                </PaperWithTitleContainer>
             </Grid>
 
-            <Box width={600} display="flex" justifyContent="flex-end" margin="0 auto">
+            <Grid item xs={12}>
+                <PaperWithTitleContainer title="Coste de envío" fullWidth>
+                    <Grid item style={{ marginBottom: theme.spacing(1) }}>
+                        <CustomRadioGroup
+                            handleChange={handleChange("type")}
+                            inputName="type"
+                            options={shippingZoneTypeOptions}
+                            value={values.type}
+                        />
+                    </Grid>
+                    {values.type === "pay" && (
+                        <Grid container direction="row" alignItems="center" spacing={2}>
+                            <Grid item>
+                                <Input type="number" label="Valor" handleChange={handleChange("price")} value={values.price} />
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="body1" style={{ marginBottom: theme.spacing(2) }}>
+                                    €
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    )}
+                </PaperWithTitleContainer>
+            </Grid>
+
+            <Grid item xs={12}>
+                <PaperWithTitleContainer title="Día de entrega" fullWidth>
+                    <SelectInput
+                        name="shippingDay"
+                        label="Día de entrega"
+                        value={values.shippingDay}
+                        handleChange={handleChange("shippingDay")}
+                        options={shippingDayOptions}
+                    />
+                </PaperWithTitleContainer>
+            </Grid>
+
+            <Grid item xs={12}>
+                <FormPaperWithImageDropzone title="Subir archivo KML" handleDropFile={handleDropFile} maxFiles={1} files={values.file}>
+                    <Typography variant="body1">Puedes utilizar la siguiente herramienta para crear las zonas de envío:</Typography>
+
+                    <Typography variant="subtitle2" paragraph>
+                        <a href="https://mapsengine.google.com/map/" target="blank">
+                            https://mapsengine.google.com/map/
+                        </a>
+                    </Typography>
+                </FormPaperWithImageDropzone>
+            </Grid>
+
+            <Grid item xs={12} alignItems="flex-end">
                 <BackAndCreateButtons
                     isCreateButtonDisabled={!isValid()}
                     backButtonHandler={() => router.back()}
                     createButtonHandler={handleCreate}
                     createButtonText={`${props.update ? "Modificar" : "Crear"} zona de envío`}
                 />
-            </Box>
-        </>
+            </Grid>
+        </Grid>
     );
 };
 

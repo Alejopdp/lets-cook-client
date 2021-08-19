@@ -92,22 +92,17 @@ const LoginForm = (props) => {
         }
     };
 
-
-
     return (
         <>
-            {/* <div className={classes.image}>
-                <Image src="/logo.png" width={164} height={56} />
-            </div> */}
             <Container>
-                <Grid container spacing={4} style={{ height: '100vh', alignContent: 'center' }}>
-                    <Grid item xs={12} md={5} style={{ marginLeft: 'auto', marginRight: 'auto', paddingBottom: theme.spacing(10) }}>
-                        <div style={{ textAlign: 'center', marginBottom: theme.spacing(4) }}>
+                <Grid container spacing={4} style={{ height: "100vh", alignContent: "center" }}>
+                    <Grid item xs={12} md={5} style={{ marginLeft: "auto", marginRight: "auto", paddingBottom: theme.spacing(10) }}>
+                        <div style={{ textAlign: "center", marginBottom: theme.spacing(4) }}>
                             <Image src="/logo.png" width={164} height={56} />
                         </div>
                         <PaperWithTitleContainer title={lang.title} fullWidth>
                             <form className={classes.form} onSubmit={handleSubmit}>
-                                <FormControl style={{ marginBottom: theme.spacing(2), width: '100%' }} variant="outlined">
+                                <FormControl style={{ marginBottom: theme.spacing(2), width: "100%" }} variant="outlined">
                                     <TextField
                                         id="outlined-basic"
                                         label={lang.emailPlaceholder}
@@ -117,7 +112,7 @@ const LoginForm = (props) => {
                                     />
                                 </FormControl>
 
-                                <FormControl style={{ width: '100%' }} variant="outlined">
+                                <FormControl style={{ width: "100%" }} variant="outlined">
                                     <InputLabel htmlFor="outlined-adornment-password">{lang.passwordPlaceholder}</InputLabel>
                                     <OutlinedInput
                                         id="outlined-adornment-password"

@@ -37,6 +37,22 @@ export const getRecipeById = async (token, id, locale) => {
     }
 };
 
+export const getRecipesForOrder = async (orderId, locale = "es") => {
+    try {
+        const res = await axios({
+            method: "GET",
+            url: `${apiUrl}/for-order/${orderId}`,
+            params: {
+                locale,
+            },
+        });
+        return res;
+    } catch (error) {
+        console.log("***-> Recipe Oops!: ", error);
+        return error.response;
+    }
+};
+
 export const deleteRecipe = async (token, id) => {
     try {
         const res = await axios({

@@ -4,24 +4,27 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
-import { createRecipe } from "../../../helpers/serverRequests/recipe";
+import { updateRecipe } from "../../../../helpers/serverRequests/recipe";
 
 // External components
-import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box, Radio, RadioGroup } from "@material-ui/core";
-import { Flag as FlagIcon, ArrowBack as BackIcon, Add as AddIcon, Delete } from "@material-ui/icons";
+import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box, RadioGroup, Radio } from "@material-ui/core";
+import { Flag as FlagIcon, ArrowBack, Add as AddIcon, Delete } from "@material-ui/icons";
 
 // Internal components
-import FormInput from "../../atoms/input/input";
-import Autocomplete from "../../atoms/autocomplete/autocomplete";
-import MultiChipInput from "../../atoms/multipleChipInput/multipleChipInput";
-import FormPaperWithImageDropzone from "../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
-import PaperWithTitleContainer from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import ButtonDropdownMenu from "../../molecules/buttonDropdownMenu/ButtonDropdownMenu";
-import FormPaperWithEmptyState from "../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
-import Checkbox from "../../atoms/checkbox/checkbox";
-import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
-import NutritionalInformationGrid from "../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
-import Dropzone from "../../molecules/dropzone/dropzone";
+
+// Internal components
+import FormInput from "../../../atoms/input/input";
+import Autocomplete from "../../../atoms/autocomplete/autocomplete";
+import MultiChipInput from "../../../atoms/multipleChipInput/multipleChipInput";
+import FormPaperWithImageDropzone from "../../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
+import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
+import ButtonDropdownMenu from "../../../molecules/buttonDropdownMenu/ButtonDropdownMenu";
+import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
+import Checkbox from "../../../atoms/checkbox/checkbox";
+import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
+import NutritionalInformationGrid from "../../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
+import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
+import Dropzone from "../../../molecules/dropzone/dropzone";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -33,14 +36,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
-    const classes = useStyles();
     const theme = useTheme();
+    const classes = useStyles();
     const router = useRouter();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [lang, setLang] = useState(languages[0]);
     const [recipe, setRecipeData] = useState();
-    const [ingredientsVariants, setIngredientsVariants] = useState([]); // {ingredients: [], sku: ""}
+    const [ingredientsVariants, setIngredientsVariants] = useState([]); // {ingredients: [], sku: "", restrictions: []}
     const [imageTags, setimageTags] = useState([]);
     const [tags, settags] = useState([]);
     const [weeks, setweeks] = useState([]);
@@ -57,14 +60,17 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
     const [plans, setplans] = useState([]);
-    const [nutritionalInformation, setnutritionalInformation] = useState([]); // [[], []]
+    const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
         const newVariant = {
             ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[0].ingredients] : [],
             sku: "",
-            restriction: "",
+            restriction:
+                ingredientsVariants.length > 0
+                    ? ""
+                    : formData.restrictions.find((restriction) => restriction.value === "apto_todo")?.id || "",
         };
         const newVariants = [...ingredientsVariants, newVariant];
 
@@ -75,9 +81,31 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     };
 
     useEffect(() => {
-        setRecipeData(recipeData);
-    }, [recipeData]);
-
+        setIngredientsVariants(
+            recipeData.recipeVariants.map((variant) => ({
+                ingredients: variant.ingredients,
+                sku: variant.sku,
+                restriction: variant.restriction.id,
+            }))
+        );
+        setimageTags(recipeData.imageTags);
+        settags(recipeData.backOfficeTags);
+        setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
+        setmonths(recipeData.availableMonths);
+        setnutritionalInformation(recipeData.nutritionalInfo);
+        settools(recipeData.tools);
+        setplans(recipeData.relatedPlans);
+        setdifficultyLevel(recipeData.difficultyLevel);
+        setgeneralData({
+            name: recipeData.name,
+            cookDuration: recipeData.cookDurationNumberValue,
+            image: [recipeData.imageUrl], // TO DO: Save the file
+            longDescription: recipeData.longDescription,
+            shortDescription: recipeData.shortDescription,
+            sku: recipeData.sku,
+            weight: recipeData.weightNumberValue,
+        });
+    }, []);
     const handleGeneralDataChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -110,11 +138,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     };
 
     const handlePlansChange = (e) => {
-        const newPlan = e.target.value;
-        if (plans.every((plan) => plan !== newPlan)) {
-            setplans([...plans, newPlan]);
+        const newPlanId = e.target.value;
+        if (plans.every((id) => id !== newPlanId)) {
+            setplans([...plans, newPlanId]);
         } else {
-            setplans(plans.filter((plan) => plan !== newPlan));
+            setplans(plans.filter((id) => id !== newPlanId));
         }
     };
 
@@ -152,16 +180,8 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         settags(tags.filter((tag) => tag !== tagToRemove));
     };
 
-    function hasDuplicatedRestrictions() {
-        const selectedRestrictions = ingredientsVariants.map((variant) => variant.restriction);
-        return new Set(selectedRestrictions).size !== selectedRestrictions.length;
-    }
-
     const handleCreate = async () => {
         setisSubmitting(true);
-
-        if (hasDuplicatedRestrictions()) enqueueSnackbar("No pueden haber 2 o más variantes con la misma restricción", {variant: "error"});
-
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
         formDataToCreate.append("shortDescription", generalData.shortDescription);
@@ -182,16 +202,27 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                 formData.weeks.filter((week) => weeks.some((selectedWeek) => week.label === selectedWeek)).map((week) => week.id)
             )
         );
+        formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
         formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
 
-        const res = await createRecipe(formDataToCreate);
+        // const recipeToUpdate = {
+        //     ...generalData,
+        //     difficultyLevel,
+        //     tools,
+        //     imageTags,
+        //     backOfficeTags: tags,
+        //     planIds: plans,
+        //     availableMonths: months,
+        //     availableWeeks: weeks,
+        //     variants: ingredientsVariants,
+        // };
+
+        const res = await updateRecipe(recipeData.id, formDataToCreate, "");
 
         if (res.status === 200) {
-            enqueueSnackbar("Se ha creado la receta correctamente", {
+            enqueueSnackbar("Se ha modificado la receta correctamente", {
                 variant: "success",
             });
-
-            router.push("/recetas");
         } else {
             enqueueSnackbar(res.data.message, {
                 variant: "error",
@@ -254,19 +285,23 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         setIngredientsVariants(newVariants);
     };
 
-    const handleEditNutritionalInformation = (params, e) => {
-        console.log("Params : ", params);
+    const handleEditNutritionalInformation = (index: number, keyName: string, value: string) => {
+        let tempAttr = [...nutritionalInformation];
+        tempAttr[index][keyName] = value;
+        setnutritionalInformation(tempAttr);
     };
 
     const handleAddNutritionalItem = () => {
-        const newRow = {
-            id: uuidv4(),
-            key: "",
-            value: "",
-        };
-        setnutritionalInformation([...nutritionalInformation, newRow]);
+        setnutritionalInformation([...nutritionalInformation, { key: "", value: "" }]);
     };
 
+    const handleDeleteNutritionalInformationAttribute = (index: number) => {
+        const newAttributes = [...nutritionalInformation];
+
+        newAttributes.splice(index, 1);
+
+        setnutritionalInformation(newAttributes);
+    };
     const handleAddTool = (newValues) => {
         if (newValues.length < tools.length) return settools(tools.slice(0, -1));
         if (newValues.length === 0) settools(newValues);
@@ -292,9 +327,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         );
     };
 
+    const goBackHandler = () => {
+        router.replace("/recetas", "/recetas", { locale: router.locale });
+    };
+
     return (
         <>
-            {/* FORM */}
             {/* FORM LEFT */}
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
@@ -303,31 +341,30 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             <FormInput
                                 label="Nombre de la receta"
                                 name="name"
-                                value={recipeData && recipeData.name}
+                                value={generalData.name}
                                 handleChange={handleGeneralDataChange}
                             />
-                            <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
+                            <FormInput label="SKU" name="sku" value={generalData.sku} handleChange={handleGeneralDataChange} />
                             <FormInput
                                 label="Descripción corta"
                                 name="shortDescription"
                                 rows={3}
                                 multiline={true}
-                                value={recipeData && recipeData.shortDescription}
+                                value={generalData.shortDescription}
                                 handleChange={handleGeneralDataChange}
                             />
                             <FormInput
                                 label="Descripción larga"
                                 name="longDescription"
-                                rows={6}
+                                rows={5}
                                 multiline={true}
-                                value={recipeData && recipeData.largeDescription}
+                                value={generalData.longDescription}
                                 handleChange={handleGeneralDataChange}
                             />
                             <FormInput
                                 label="Tiempo de cocina"
                                 name="cookDuration"
-                                type="number"
-                                value={recipeData && recipeData.cookDuration}
+                                value={generalData.cookDuration}
                                 handleChange={handleGeneralDataChange}
                             />
                             <Autocomplete
@@ -337,10 +374,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 value={difficultyLevel}
                                 onChange={(e, newDifficultyLevel) => setdifficultyLevel(newDifficultyLevel)}
                             />
+
                             <FormInput
                                 label="Peso del plato"
                                 name="weight"
-                                value={recipeData && recipeData.weight}
+                                value={generalData.weight}
                                 handleChange={handleGeneralDataChange}
                             />
                             <MultiChipInput
@@ -369,29 +407,22 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             <Grid container spacing={2}>
                                 {ingredientsVariants.map((variant, index) => (
                                     <Grid item xs={12} key={index}>
-                                        <Grid container>
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "space-between",
-                                                    marginBottom: theme.spacing(1),
-                                                }}
-                                            >
-                                                <Typography variant="subtitle2">
+                                        <Grid container alignItems="center">
+                                            <Grid item xs>
+                                                <Typography variant="body1" style={{ fontWeight: 600, marginBottom: theme.spacing(1) }}>
                                                     Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
                                                 </Typography>
-                                                {index !== 0 && (
-                                                    <IconButton style={{ padding: "4px" }} onClick={() => _handleDeleteVariant(index)}>
+                                            </Grid>
+                                            {/* {index !== 0 && (
+                                                <Grid item>
+                                                    <IconButton onClick={() => _handleDeleteVariant(index)}>
                                                         <Delete />
                                                     </IconButton>
-                                                )}
-                                            </Grid>
+                                                </Grid>
+                                            )} */}
                                         </Grid>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={4}>
+                                        <Grid item container spacing={2} xs={12}>
+                                            <Grid item xs={3}>
                                                 <FormInput
                                                     name={`ingredientsVariantsCode:${index}`}
                                                     value={variant.sku}
@@ -399,52 +430,51 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                                     label="SKU"
                                                 />
                                             </Grid>
-                                            <Grid item xs={8}>
+                                            <Grid item xs>
                                                 <MultiChipInput
                                                     options={formData.ingredients}
                                                     values={variant.ingredients}
                                                     onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
                                                     name={`variant:${index}`}
-                                                    label="Ingredientes"
                                                     handleRemoveValue={(ingredientToRemove) =>
                                                         handleRemoveIngredientFromVariant(index, ingredientToRemove)
                                                     }
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid container>
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                style={{ display: "flex", justifyContent: "space-between", flexFlow: "wrap" }}
+                                        <Grid item container xs={12}>
+                                            <RadioGroup
+                                                aria-label="gender"
+                                                name="Restrictions"
+                                                value={variant.restriction}
+                                                onChange={(e) => handleRestrictionsForVariants(index, e.target.value)}
+                                                style={{ flexDirection: "row" }}
                                             >
-                                                <RadioGroup
-                                                    aria-label="gender"
-                                                    name="Restrictions"
-                                                    value={variant.restriction}
-                                                    onChange={(e) => handleRestrictionsForVariants(index, e.target.value)}
-                                                    style={{ flexDirection: "row" }}
-                                                >
-                                                    {formData.restrictions.map((variantRestriction, restrictionIndex) => (
-                                                        <FormControlLabel
-                                                            key={restrictionIndex}
-                                                            value={variantRestriction.id}
-                                                            control={<Radio />}
-                                                            label={variantRestriction.label}
-                                                        />
-                                                    ))}
-                                                </RadioGroup>
-                                            </Grid>
+                                                {formData.restrictions.map((variantRestriction, restrictionIndex) => (
+                                                    <FormControlLabel
+                                                        key={restrictionIndex}
+                                                        value={variantRestriction.id}
+                                                        disabled={
+                                                            (ingredientsVariants.some(
+                                                                (variant) => variant.restriction === variantRestriction.id
+                                                            ) &&
+                                                                variant.restriction !== variantRestriction.id) ||
+                                                            (index === 0 && variantRestriction.value !== "apto_todo")
+                                                        }
+                                                        control={<Radio checked={variantRestriction.id === variant.restriction} />}
+                                                        checked={variantRestriction.id === variant.restriction}
+                                                        label={variantRestriction.label}
+                                                    />
+                                                ))}
+                                            </RadioGroup>
                                         </Grid>
                                     </Grid>
                                 ))}
                             </Grid>
-                            <Grid item xs={12} style={{ marginTop: theme.spacing(3) }}>
-                                <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
-                                    Agregar variante
-                                </Button>
-                            </Grid>
-                        </PaperWithTitleContainer>
+                            {ingredientsVariants.length < formData.restrictions.length && <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={_handleAddVariant}>
+                                Agregar variante
+                            </Button>
+}                        </PaperWithTitleContainer>
                     </Grid>
                 </Grid>
             </Grid>
@@ -469,6 +499,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             <NutritionalInformationGrid
                                 handleAddItem={handleAddNutritionalItem}
                                 handleRowEdit={handleEditNutritionalInformation}
+                                handleDeleteAttribute={handleDeleteNutritionalInformationAttribute}
                                 rows={nutritionalInformation}
                             />
                         </PaperWithTitleContainer>
@@ -486,7 +517,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                         key={plan.id}
                                         label={plan.name}
                                         handleChange={handlePlansChange}
-                                        checked={plans.some((id) => id === plan.id.toString())}
+                                        checked={plans.some((id) => id.toString() === plan.id.toString())}
                                         value={plan.id}
                                     />
                                 ))}
@@ -529,11 +560,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                     </Grid>
                 </Grid>
             </Grid>
+
             <Grid item xs={12}>
                 <BackAndCreateButtons
                     backButtonHandler={handleClickGoBack}
                     createButtonHandler={handleCreate}
-                    createButtonText="CREAR RECETA"
+                    createButtonText="MODIFICAR RECETA"
                     // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
@@ -582,13 +614,7 @@ RecipeForm.propTypes = {
 
 export default RecipeForm;
 
-// const ingredientsPrograms = [
-//     { label: "Sin glúten", value: "SinGluten" },
-//     { label: "Sin lactosa", value: "SinLactosa" },
-//     { label: "Apto vegetariano", value: "Vegetariano" },
-//     { label: "Acto vegano", value: "Vegano" },
-// ];
-const difficultyLevelOptions = ["Facil", "Media", "Alta"];
+const difficultyLevelOptions = ["Fácil", "Media", "Alta"];
 const toolsOptions = [
     "Cuchillo",
     "Tabla de cortar",
@@ -602,7 +628,6 @@ const toolsOptions = [
     "Rallador",
     "Minipimer",
 ];
-
 const languages = [
     {
         code: "es",

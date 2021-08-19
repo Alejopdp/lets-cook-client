@@ -6,6 +6,7 @@ import { updatePlan } from "../../../../helpers/serverRequests/plan";
 import { useRouter } from "next/router";
 
 // External components
+import RadioButton from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 
 // Internal components
@@ -13,6 +14,7 @@ import GeneralData from "../../createPlan/createPlanForm/generalData";
 import AttributesAndVariants from "../../createPlan/createPlanForm/attributesAndVariants";
 import Others from "../../createPlan/createPlanForm/others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
+import EnabledOrDisabledIconButton from "../../../atoms/enabledOrDisabledIconButton/enabledOrDisabledIconButton";
 
 const UpdatePlanForm = (props) => {
     const router = useRouter();
@@ -39,6 +41,7 @@ const UpdatePlanForm = (props) => {
     const [additionalPlans, setadditionalPlans] = useState([]);
     const [isSubmitting, setisSubmitting] = useState(false);
     const isFirstRender = useRef(true);
+    const firstAttributesActualization = useRef(true);
 
     useEffect(() => {
         // console.log("A VER: ", window.URL.createObjectURL(props.plan.imageUrl));
@@ -48,16 +51,18 @@ const UpdatePlanForm = (props) => {
             description: props.plan.description,
             sku: props.plan.sku,
             image: [props.plan.imageUrl],
+            slug: props.plan.slug,
+            iconByg: [props.plan.icon],
+            iconColor: [props.plan.iconWithColor],
         });
 
         setotherData({
             isActive: props.plan.isActive ? "Activo" : "No activo",
             planType: props.plan.type,
             hasRecipes: props.plan.hasRecipes,
+            abilityToChooseRecipes: props.plan.abilityToChooseRecipes,
         });
-        setfrequency(props.plan.availablePlanFrecuencies);
-
-        setattributes(props.plan.attributes);
+        setfrequency(props.plan.availablePlanFrecuencies.map((freq) => freq.value));
         setvariants(props.plan.variants);
         setadditionalPlans(props.plan.additionalPlans.map((plan) => plan.id));
     }, [props.plan]);
@@ -65,8 +70,15 @@ const UpdatePlanForm = (props) => {
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
+            setattributes(props.plan.attributes);
+
             return;
         }
+
+        // if (firstAttributesActualization.current) {
+        //     firstAttributesActualization.current = false;
+        //     return;
+        // }
         setGridRows();
     }, [attributes]);
 
@@ -115,8 +127,7 @@ const UpdatePlanForm = (props) => {
     const handleAttributeValuesChange = (index, e) => {
         var updatedAttribute = [...attributes[index]];
         if (!e.target.value) {
-            updatedAttribute[1] = [];
-            updateAttributes(updatedAttribute, index);
+            return;
         } else if (updatedAttribute[1].every((value) => value !== e.target.value)) {
             updatedAttribute[1] = [...updatedAttribute[1], e.target.value];
             updateAttributes(updatedAttribute, index);
@@ -126,10 +137,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleRemoveAttributeValue = (index, value) => {
-        const updatedAttribute = [...attributes[index]];
-
-        updatedAttribute[1] = updatedAttribute[1].filter((val) => val !== value);
-        updateAttributes(updatedAttribute, index);
+        return;
     };
 
     const handleFrequencyChange = (e, newValue) => {
@@ -200,31 +208,53 @@ const UpdatePlanForm = (props) => {
         });
     };
 
-    const cartesianProduct = (...array) => {
+    const cartesianProduct = (...array): [string][] => {
         if (array.length === 0) return [];
 
         return array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat()))); // [[value1OfKey1, value1OfKey2], [value2OfKey1, value1OfKey2] ]
     };
 
     const setGridRows = () => {
-        const cartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        const baseCartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
+        // const cartesian = onlyOneAttributeWithValues() ? baseCartesian.map((item) => [item]) : baseCartesian;
         var rows = [];
-        var attributesWithFixedFields = [...attributes, ["price", 0], ["priceWithOffer", 0], ["sku", ""]];
+        var attributesWithFixedFields: [string, string | number | boolean][] = [
+            ...attributes,
+            ["price", 0],
+            ["priceWithOffer", 0],
+            ["sku", ""],
+            ["description", ""],
+            ["isDefault", false],
+            ["isDeleted", false],
+        ];
 
-        for (let i = 0; i < cartesian.length; i++) {
+        for (let i = 0; i < baseCartesian.length; i++) {
             var row = {};
-            let id = Array.isArray(cartesian[i])
-                ? cartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
-                : [cartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
+            let id = Array.isArray(baseCartesian[i])
+                ? baseCartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
+                : [baseCartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
             row["id"] = id; // Obligatorio para data-grid
+            row["auxId"] = id;
 
+            let variant = variants.find((variant) => {
+                // const generatedId = generateVariantIdForUpdatingRow(variant);
+                return variant.auxId === id;
+            });
+
+            row["oldId"] = !!variant ? variant.oldId : "";
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
-                if (columnName === "price" || columnName === "priceWithOffer" || columnName === "sku") {
-                    let variant = variants.find((variant) => variant.id === id);
-                    row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
+                if (
+                    columnName === "price" ||
+                    columnName === "priceWithOffer" ||
+                    columnName === "sku" ||
+                    columnName === "description" ||
+                    columnName === "isDefault" ||
+                    columnName === "isDeleted"
+                ) {
+                    row[columnName] = !!variant ? variant[columnName] : baseCartesian[i][j];
                 } else {
-                    row[columnName] = cartesian[i][j];
+                    row[columnName] = baseCartesian[i][j];
                 }
             }
             rows.push(row);
@@ -233,13 +263,52 @@ const UpdatePlanForm = (props) => {
 
         return rows;
     };
+    console.log("A VER LAS VARIANTS: ", variants);
+
+    const generateVariantIdForUpdatingRow = (variant) => {
+        if (!!!variant.attributes || !Array.isArray(variant.attributes)) return null;
+        var id = variant.attributes.reduce((acc, actualValue) => acc.toString() + actualValue[1].toString(), "");
+
+        if (!!variant.Personas) id = id + variant.Personas.toString();
+        if (!!variant.Recetas) id = id + variant.Recetas.toString();
+
+        return id;
+    };
 
     const handleVariantsEdit = (params, e) => {
+        if (params.field === "isDefault") {
+            handleDefaultVariantChange(params);
+            return;
+        }
+
+        if (params.field === "isDeleted") {
+            handleDeleteVariantChange(params);
+            return;
+        }
+
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.props.value,
+                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.props.value,
+                };
+            } else {
+                return {
+                    ...variant,
+                };
+            }
+        });
+
+        setvariants(newVariants);
+    };
+
+    const handleDeleteVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    isDeleted: !variant.isDeleted || false,
+                    isDefault: !variant.isDeleted ? false : variant.isDefault,
                 };
             } else {
                 return {
@@ -264,6 +333,8 @@ const UpdatePlanForm = (props) => {
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
         formData.append("variants", JSON.stringify(variants)); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
+        formData.append("abilityToChooseRecipes", JSON.stringify(otherData.abilityToChooseRecipes));
+        formData.append("planSlug", generalData.slug);
 
         const res = await updatePlan(formData, generalData.id, router.locale);
 
@@ -291,14 +362,44 @@ const UpdatePlanForm = (props) => {
         );
     };
 
+    const handleDefaultVariantChange = (params) => {
+        const newVariants = variants.map((variant) => {
+            if (variant.id === params.id) {
+                return {
+                    ...variant,
+                    isDefault: true,
+                };
+            } else {
+                return {
+                    ...variant,
+                    isDefault: false,
+                };
+            }
+        });
+        console.log(" AV ERS ESAS NEW VATIANS: ", newVariants);
+        setvariants(newVariants);
+    };
+
+    const getVariantByRowId = (rowId) => {
+        return variants.find((variant) => variant.id === rowId);
+    };
+
     return (
         <>
             <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
-                    <GeneralData data={generalData} handleChange={handleGeneralData} handleDropFileImage={handleDropFileImage} handleDropFileIconColor={handleDropFileIconColor} handleDropFileIconByg={handleDropFileIconByg}/>
+                    <GeneralData
+                        data={generalData}
+                        handleChange={handleGeneralData}
+                        handleDropFileImage={handleDropFileImage}
+                        handleDropFileIconColor={handleDropFileIconColor}
+                        handleDropFileIconByg={handleDropFileIconByg}
+                    />
                     <AttributesAndVariants
                         attributes={attributes}
                         variants={variants}
+                        planType={otherData.planType}
+                        hasRecipes={otherData.hasRecipes}
                         handleAddAttribute={handleAddAttribute}
                         handleRemoveAttribute={handleRemoveAttribute}
                         handleKeyChange={handleAttributeKeyChange}
@@ -311,6 +412,30 @@ const UpdatePlanForm = (props) => {
                             { field: "price", headerName: "Precio lista", editable: true },
                             { field: "priceWithOffer", headerName: "Precio oferta", editable: true },
                             { field: "sku", headerName: "SKU", editable: true },
+                            { field: "description", headerName: "Descripción", editable: true },
+                            {
+                                field: "isDefault",
+                                headerName: "Default",
+                                renderCell: (params) => (
+                                    <RadioButton
+                                        style={{ margin: "auto" }}
+                                        checked={!!params.value}
+                                        onChange={(e) => handleDefaultVariantChange(params, e)}
+                                        value={!!params.value}
+                                    />
+                                ),
+                            },
+                            {
+                                field: "isDeleted",
+                                headerName: "Eliminar",
+                                type: "boolean",
+                                renderCell: (params) => (
+                                    <EnabledOrDisabledIconButton
+                                        enabled={getVariantByRowId(params.id).isDeleted}
+                                        onClick={(e) => handleVariantsEdit(params, e)}
+                                    />
+                                ),
+                            },
                         ]}
                         variantsRows={attributes.length > 0 ? variants : []}
                         handleVariantsEdit={handleVariantsEdit}

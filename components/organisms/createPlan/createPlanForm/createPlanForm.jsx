@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 import { createPlan } from "../../../../helpers/serverRequests/plan";
 import { useRouter } from "next/router";
+import { PlanFrequencyValue } from "../../../../helpers/types/frequency";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -85,8 +86,8 @@ const CreatePlanForm = (props) => {
     };
 
     const addSemanalFrequency = () => {
-        if (frequency.some((freq) => freq === "Semanal")) return;
-        setfrequency(["Semanal", ...frequency]);
+        if (frequency.some((freq) => freq === PlanFrequencyValue.WEEKLY)) return;
+        setfrequency([PlanFrequencyValue.WEEKLY, ...frequency]);
     };
 
     const handleAddAttribute = () => {
@@ -137,7 +138,7 @@ const CreatePlanForm = (props) => {
     };
 
     const handleFrequencyChange = (e, newValue) => {
-        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? ["Semanal"] : []);
+        if (newValue.length === 0) setfrequency(isPlanTypePrincipal() ? [PlanFrequencyValue.WEEKLY] : []);
         else if (newValue.every((newFreq) => frequency.some((stateFreq) => newFreq === stateFreq))) return;
         else setfrequency(newValue);
     };
@@ -145,7 +146,7 @@ const CreatePlanForm = (props) => {
     const isPlanTypePrincipal = () => otherData.planType === "Principal";
 
     const handleRemoveFrequency = (freqToRemove) => {
-        if (freqToRemove === "Semanal" && isPlanTypePrincipal()) return;
+        if (freqToRemove === PlanFrequencyValue.WEEKLY && isPlanTypePrincipal()) return;
         setfrequency(frequency.filter((freq) => freq !== freqToRemove));
     };
 
@@ -242,7 +243,13 @@ const CreatePlanForm = (props) => {
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
 
-                if (columnName === "price" || columnName === "priceWithOffer" || columnName === "sku") {
+                if (
+                    columnName === "price" ||
+                    columnName === "priceWithOffer" ||
+                    columnName === "sku" ||
+                    columnName === "description" ||
+                    columnName === "isDefault"
+                ) {
                     let variant = variants.find((variant) => variant.id === id);
                     row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
                 } else {
@@ -263,7 +270,7 @@ const CreatePlanForm = (props) => {
             return;
         }
 
-        if (params.field === "deleted") {
+        if (params.field === "isDeleted") {
             handleDeleteVariantChange(params);
             return;
         }
@@ -272,7 +279,7 @@ const CreatePlanForm = (props) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.field === "deleted" ? !variant.deleted || false : params.props.value,
+                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.props.value,
                 };
             } else {
                 return {
@@ -301,13 +308,14 @@ const CreatePlanForm = (props) => {
 
         setvariants(newVariants);
     };
+
     const handleDeleteVariantChange = (params) => {
         const newVariants = variants.map((variant) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    deleted: !variant.deleted || false,
-                    isDefault: !variant.deleted ? false : variant.isDefault,
+                    isDeleted: !variant.isDeleted || false,
+                    isDefault: !variant.isDeleted ? false : variant.isDefault,
                 };
             } else {
                 return {
@@ -334,7 +342,8 @@ const CreatePlanForm = (props) => {
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
-        formData.append("variants", JSON.stringify(variants.filter((variant) => !variant.deleted))); // Because it is an array
+        // formData.append("variants", JSON.stringify(variants.filter((variant) => !variant.isDeleted))); // Because it is an array
+        formData.append("variants", JSON.stringify(variants)); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
 
         const res = await createPlan(formData);
@@ -410,12 +419,12 @@ const CreatePlanForm = (props) => {
                                 ),
                             },
                             {
-                                field: "deleted",
+                                field: "isDeleted",
                                 headerName: "Eliminar",
                                 type: "boolean",
                                 renderCell: (params) => (
                                     <EnabledOrDisabledIconButton
-                                        enabled={getVariantByRowId(params.id).deleted}
+                                        enabled={getVariantByRowId(params.id).isDeleted}
                                         onClick={(e) => handleVariantsEdit(params, e)}
                                     />
                                 ),
