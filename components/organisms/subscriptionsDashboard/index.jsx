@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { toggleZoneState, deleteZone } from "../../../helpers/serverRequests/shipping";
-import { getSubscriptions } from "../../../helpers/serverRequests/subscription";
+import { exportSubscriptions, getSubscriptions } from "../../../helpers/serverRequests/subscription";
 
 // External components
 import Container from "@material-ui/core/Container";
@@ -32,7 +32,13 @@ const SubscriptionsDashboard = (props) => {
         getSubscriptionList();
     }, []);
 
-    const handleClickExport = () => alert("Export");
+    const handleClickExport = async () => {
+        const res = await exportSubscriptions()
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(res.data, {variant: "error"})
+        }
+    }
 
     return (
         <>

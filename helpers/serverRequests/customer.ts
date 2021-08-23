@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { BillingData, Personaldata, ShippingAddress } from "components/organisms/customerProfile/interface";
+import FileDownload from "js-file-download";
 
 // const serverUrl = "http://localhost:3001/api/v1";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/customer`;
@@ -189,6 +190,21 @@ export const changeDefaultPaymentMethod = async (paymentMethodId: string, custom
             },
         });
 
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const exportCustomers = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Clientes.xlsx");
         return res;
     } catch (error) {
         return error.response;
