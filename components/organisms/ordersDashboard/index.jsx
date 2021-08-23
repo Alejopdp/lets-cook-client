@@ -3,21 +3,22 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { getPaymentOrders } from "../../../helpers/serverRequests/paymentOrder";
+import { useSnackbar } from "notistack";
 
 // External components
 
 // Internal components
-// import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
 import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
 import Tabs from "../../molecules/tabs/tabs";
 import OrdersTable from "./ordersTable/index";
+import { exportOrdersWithRecipesSelection } from "../../../helpers/serverRequests/order";
 
 const OrdersDashboard = (props) => {
-    const router = useRouter()
+    const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
     const [nextOrdersRows, setnextOrdersRows] = useState([]);
     const [processedOrdersRows, setprocessedOrdersRows] = useState([]);
     const [refusedOrderRows, setrefusedOrdersRows] = useState([]);
-
     const [tabValue, setTabValue] = useState(0);
 
     useEffect(() => {
@@ -48,7 +49,13 @@ const OrdersDashboard = (props) => {
     const content = [nextOrders, processedOrders, refusedOrder];
 
     const handleClickImport = () => alert("Import");
-    const handleClickExport = () => alert("Export");
+    const handleClickExport = async () => {
+        const res = await exportOrdersWithRecipesSelection();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(res.data, { variant: "error" });
+        }
+    };
 
     return (
         <>

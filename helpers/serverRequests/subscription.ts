@@ -1,4 +1,5 @@
 import Axios from "axios";
+import FileDownload from "js-file-download";
 
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/subscription`;
 
@@ -67,6 +68,21 @@ export const getSubscriptions = async (locale: string) => {
         return res;
     } catch (error) {
         console.log(error);
+        return error.response;
+    }
+};
+
+export const exportSubscriptions = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Suscripciones.xlsx");
+        return res;
+    } catch (error) {
         return error.response;
     }
 };
