@@ -53,7 +53,7 @@ const OrdersDashboard = (props) => {
         const res = await exportOrdersWithRecipesSelection();
 
         if (!!!res || res.status !== 200) {
-            enqueueSnackbar(res.data, { variant: "error" });
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
     };
 

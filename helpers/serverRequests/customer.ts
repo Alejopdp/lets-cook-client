@@ -179,6 +179,7 @@ export const updateBillingData = async (id: string, data: BillingData) => {
         return error.response;
     }
 };
+
 export const changeDefaultPaymentMethod = async (paymentMethodId: string, customerId: string) => {
     try {
         const res = await Axios({
@@ -205,6 +206,23 @@ export const exportCustomers = async () => {
         });
 
         FileDownload(res.data, "Clientes.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
+
+export const addNewPaymentMethod = async (customerId: string, stripePaymentMethodId: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/add-payment-method/${customerId}`,
+            data: {
+                stripePaymentMethodId,
+            },
+        });
+
         return res;
     } catch (error) {
         return error.response;

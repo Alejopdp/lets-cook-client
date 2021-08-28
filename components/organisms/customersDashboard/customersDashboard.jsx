@@ -81,7 +81,7 @@ const CustomersDashboard = (props) => {
         const res = await exportCustomers();
 
         if (!!!res || res.status !== 200) {
-            enqueueSnackbar(res.data.message, { variant: "error" });
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
     };
 

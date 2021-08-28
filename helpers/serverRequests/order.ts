@@ -84,6 +84,7 @@ export const exportOrdersWithRecipesSelection = async () => {
         FileDownload(res.data, "Selección de recetas.xlsx");
         return res;
     } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
         return error.response;
     }
 };
