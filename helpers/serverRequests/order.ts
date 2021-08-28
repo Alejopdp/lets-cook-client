@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SkippableOrder } from "helpers/types/order";
+import FileDownload from "js-file-download";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/order`;
 
 export const getOrderById = async (orderId: string, locale: string = "es") => {
@@ -68,6 +69,22 @@ export const skipOrReactivateOrder = async (order: SkippableOrder) => {
 
         return res;
     } catch (error) {
+        return error.response;
+    }
+};
+
+export const exportOrdersWithRecipesSelection = async () => {
+    try {
+        const res = await axios({
+            method: "GET",
+            url: `${apiUrl}/export-next-with-recipes-selection`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Selección de recetas.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
         return error.response;
     }
 };

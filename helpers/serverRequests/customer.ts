@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { BillingData, Personaldata, ShippingAddress } from "components/organisms/customerProfile/interface";
+import FileDownload from "js-file-download";
 
 // const serverUrl = "http://localhost:3001/api/v1";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/customer`;
@@ -178,6 +179,7 @@ export const updateBillingData = async (id: string, data: BillingData) => {
         return error.response;
     }
 };
+
 export const changeDefaultPaymentMethod = async (paymentMethodId: string, customerId: string) => {
     try {
         const res = await Axios({
@@ -186,6 +188,38 @@ export const changeDefaultPaymentMethod = async (paymentMethodId: string, custom
             data: {
                 id: paymentMethodId,
                 isDefault: true,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const exportCustomers = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Clientes.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
+
+export const addNewPaymentMethod = async (customerId: string, stripePaymentMethodId: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/add-payment-method/${customerId}`,
+            data: {
+                stripePaymentMethodId,
             },
         });
 

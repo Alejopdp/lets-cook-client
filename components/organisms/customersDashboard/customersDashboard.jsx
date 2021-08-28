@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import { getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
+import { exportCustomers, getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
 import PropTypes from "prop-types";
 
 // External components
@@ -77,7 +77,13 @@ const CustomersDashboard = (props) => {
         return customer.fullName.toLowerCase().includes(searchValue.toLowerCase());
     });
 
-    const handleClickExport = () => alert("Export");
+    const handleClickExport = async () => {
+        const res = await exportCustomers();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
+    };
 
     return (
         <>
