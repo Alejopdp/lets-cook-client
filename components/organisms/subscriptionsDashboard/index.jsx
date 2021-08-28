@@ -33,12 +33,12 @@ const SubscriptionsDashboard = (props) => {
     }, []);
 
     const handleClickExport = async () => {
-        const res = await exportSubscriptions()
+        const res = await exportSubscriptions();
 
         if (!!!res || res.status !== 200) {
-            enqueueSnackbar(res.data, {variant: "error"})
+            enqueueSnackbar(res.data.message, { variant: "error" });
         }
-    }
+    };
 
     return (
         <>
