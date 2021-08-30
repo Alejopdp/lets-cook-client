@@ -83,7 +83,8 @@ const AttributesAndVariants = (props) => {
                                     values={attr[1]}
                                     isDeletable={
                                         !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
-                                        !planHasRecipesAndAttributeIsRecipes(attr)
+                                        !planHasRecipesAndAttributeIsRecipes(attr) &&
+                                        !props.arentAttributesDeletable
                                     }
                                     isKeyEditable={
                                         !(props.planType === "Principal" && attributeKeyIsPersonasOrRecetas(attr)) &&
