@@ -396,6 +396,7 @@ const UpdatePlanForm = (props) => {
                         handleDropFileIconByg={handleDropFileIconByg}
                     />
                     <AttributesAndVariants
+                        arentAttributesDeletable={true}
                         attributes={attributes}
                         variants={variants}
                         planType={otherData.planType}

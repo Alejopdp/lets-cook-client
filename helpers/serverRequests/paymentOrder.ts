@@ -52,3 +52,17 @@ export const updatePaymentOrderState = async (paymentOrderId: string, state: Pay
         return error.response;
     }
 };
+
+export const chargeOnePaymentOrder = async (paymentOrderId: string) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/charge/${paymentOrderId}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};
