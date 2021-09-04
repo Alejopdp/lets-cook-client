@@ -241,7 +241,7 @@ const UpdatePlanForm = (props) => {
                 return variant.auxId === id;
             });
 
-            row["oldId"] = !!variant ? variant.oldId : "";
+            row["oldId"] = !!variant && variant.oldId ? variant.oldId : id;
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
                 if (
@@ -364,6 +364,7 @@ const UpdatePlanForm = (props) => {
 
     const handleDefaultVariantChange = (params) => {
         const newVariants = variants.map((variant) => {
+            console.log("VARIANT: ", variant);
             if (variant.id === params.id) {
                 return {
                     ...variant,
