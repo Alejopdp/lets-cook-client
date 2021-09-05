@@ -11,6 +11,7 @@ export enum ExportOrdersFilterOptions {
     SEMANAS = "SEMANAS",
     FECHA_DE_ENTREGA = "FECHA DE ENTREGA",
     FECHA_DE_COBRO = "FECHA DE COBRO",
+    CLIENTES = "CLIENTES",
 }
 
 interface ExportModalProps {
@@ -18,7 +19,7 @@ interface ExportModalProps {
     weekOptions: FilterOption[];
     shippingDateOptions: FilterOption[];
     billingDateOptions: FilterOption[];
-    optionsSelected: FilterOption[];
+    customerOptions: FilterOption[];
     cancelButtonText: string;
     confirmButtonText: string;
     handleConfirmButton: (optionsSelected: FilterOption[], filterSelected: ExportOrdersFilterOptions) => void;
@@ -32,7 +33,7 @@ const ExportModal = ({
     weekOptions = [],
     shippingDateOptions = [],
     billingDateOptions = [],
-    optionsSelected = [],
+    customerOptions = [],
     cancelButtonText,
     confirmButtonText,
     handleConfirmButton = ([]) => {},
@@ -40,7 +41,7 @@ const ExportModal = ({
     open,
     handleClose = () => {},
 }: ExportModalProps) => {
-    const [_optionsSelected, setOptionsSelected] = useState(optionsSelected);
+    const [_optionsSelected, setOptionsSelected] = useState([]);
     const [tabValue, setTabValue] = useState(0);
 
     const handleChecked = (itemFilter, checked) => {
@@ -125,6 +126,33 @@ const ExportModal = ({
         </Grid>
     );
 
+    const customerFilters = (
+        <Grid container direction="column">
+            {customerOptions.map((item, key) => (
+                <Grid item xs key={key}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                onChange={(e) => handleChecked(item, e.target.checked)}
+                                name={item.value.toString()}
+                                color="primary"
+                                checked={_optionsSelected.some(({ value }) => item.value === value)}
+                            />
+                        }
+                        label={item.label}
+                    />
+                </Grid>
+            ))}
+        </Grid>
+    );
+
+    // const options = [
+    //     ExportOrdersFilterOptions.SEMANAS,
+    //     ExportOrdersFilterOptions.FECHA_DE_ENTREGA,
+    //     ExportOrdersFilterOptions.FECHA_DE_COBRO,
+    //     ExportOrdersFilterOptions.CLIENTES,
+    // ];
+    // const content = [weekFilters, shippingDateFilters, billingDateFilters, customerFilters];
     const options = [
         ExportOrdersFilterOptions.SEMANAS,
         ExportOrdersFilterOptions.FECHA_DE_ENTREGA,
@@ -133,7 +161,7 @@ const ExportModal = ({
     const content = [weekFilters, shippingDateFilters, billingDateFilters];
 
     return (
-        <Dialog open={open} onClose={handleClose} style={{ minWidth: 342 }}>
+        <Dialog open={open} onClose={handleClose} style={{ minWidth: 342 }} maxWidth={false}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <FormGroup row>

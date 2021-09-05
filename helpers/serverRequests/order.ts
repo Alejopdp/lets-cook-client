@@ -25,6 +25,9 @@ export const chooseRecipesForOrder = async (orderId: string, subscriptionId: str
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/update-recipes/${orderId}`,
+            headers: {
+                authorization: JSON.parse(window.localStorage.getItem("token")),
+            },
             data: {
                 recipeSelection,
                 subscriptionId,
@@ -77,6 +80,7 @@ interface ExportOrdersWithRecipesSelection {
     weeks: string[];
     shippingDates: string[];
     billingDates: string[];
+    customers: string[];
 }
 
 export const exportOrdersWithRecipesSelection = async (filters: ExportOrdersWithRecipesSelection) => {

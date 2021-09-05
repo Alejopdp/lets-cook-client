@@ -30,7 +30,8 @@ const OrdersDashboard = (props) => {
         weeks: FilterOption[];
         shippingDates: FilterOption[];
         billingDates: FilterOption[];
-    }>({ weeks: [], shippingDates: [], billingDates: [] });
+        customers: FilterOption[];
+    }>({ weeks: [], shippingDates: [], billingDates: [], customers: [] });
     const [isExportModalOpen, setisExportModalOpen] = useState(false);
 
     useEffect(() => {
@@ -50,7 +51,12 @@ const OrdersDashboard = (props) => {
             const res = await getExportOrdersWithRecipesSelectionFilters();
 
             if (res && res.status === 200) {
-                setfilterOptions({ weeks: res.data.weeks, billingDates: res.data.billingDates, shippingDates: res.data.shippingDates });
+                setfilterOptions({
+                    weeks: res.data.weeks,
+                    billingDates: res.data.billingDates,
+                    shippingDates: res.data.shippingDates,
+                    customers: res.data.customers,
+                });
             }
         };
 
@@ -74,6 +80,7 @@ const OrdersDashboard = (props) => {
         var weeks: string[] = [];
         var shippingDates: string[] = [];
         var billingDates: string[] = [];
+        var customers: string[] = [];
 
         switch (selectedFilter) {
             case ExportOrdersFilterOptions.SEMANAS:
@@ -85,9 +92,12 @@ const OrdersDashboard = (props) => {
             case ExportOrdersFilterOptions.FECHA_DE_COBRO:
                 billingDates = filters.map((item) => item.value);
                 break;
+            case ExportOrdersFilterOptions.CLIENTES:
+                customers = filters.map((item) => item.value);
+                break;
         }
 
-        const res = await exportOrdersWithRecipesSelection({ weeks, shippingDates, billingDates });
+        const res = await exportOrdersWithRecipesSelection({ weeks, shippingDates, billingDates, customers });
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
@@ -114,7 +124,7 @@ const OrdersDashboard = (props) => {
                 weekOptions={filterOptions.weeks}
                 shippingDateOptions={filterOptions.shippingDates}
                 billingDateOptions={filterOptions.billingDates}
-                optionsSelected={[]}
+                customerOptions={filterOptions.customers}
                 title="Exportar pedidos"
             />
         </>
