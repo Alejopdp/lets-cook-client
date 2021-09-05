@@ -66,7 +66,7 @@ const OrderGrid = (props) => {
 
         if (res.status === 200) {
             setOpenEditRecipesModal(false);
-            enqueueSnackbar("Recetas actualizadas correctamente", { variant: "error" });
+            enqueueSnackbar("Recetas actualizadas correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }

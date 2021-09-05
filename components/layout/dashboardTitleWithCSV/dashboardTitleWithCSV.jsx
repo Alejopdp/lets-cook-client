@@ -13,8 +13,8 @@ import Button from "@material-ui/core/Button";
 import CustomButton from "../../atoms/button/button";
 
 // Images & icons
-import GetAppIcon from '@material-ui/icons/GetApp';
-import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from "@material-ui/icons/GetApp";
+import PublishIcon from "@material-ui/icons/Publish";
 
 const DashboardTitleWithCSV = (props) => {
     const theme = useTheme();
@@ -23,32 +23,31 @@ const DashboardTitleWithCSV = (props) => {
     return (
         <Grid item xs={12}>
             <Box display="flex" alignItems="center" justifyContent="space-between" width="lg" marginBottom={4}>
-                <Typography variant="h5" color="textSecondary">{props.title}</Typography>
+                <Typography variant="h5" color="textSecondary">
+                    {props.title}
+                </Typography>
                 <div>
                     {props.import && (
-                        <Button size="large" startIcon={<PublishIcon />} onClick={props.handleClickImport} style={{ marginRight: theme.spacing(2) }}>
+                        <Button
+                            size="large"
+                            startIcon={<PublishIcon />}
+                            onClick={props.handleClickImport}
+                            style={{ marginRight: theme.spacing(2) }}
+                        >
                             Importar CSV
-                    </Button>
+                        </Button>
                     )}
                     {props.export && (
-                        <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport} >
+                        <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport}>
                             Exportar CSV
-                    </Button>
+                        </Button>
                     )}
                 </div>
-                {/* <CustomButton
-                onClick={props.handleClick}
-                startIcon={props.startIcon ? <AddIcon /> : null}
-            >
-                {props.buttonText}
-            </CustomButton> */}
             </Box>
         </Grid>
     );
 };
 
-DashboardTitleWithCSV.propTypes = {
-
-};
+DashboardTitleWithCSV.propTypes = {};
 
 export default DashboardTitleWithCSV;
