@@ -73,18 +73,38 @@ export const skipOrReactivateOrder = async (order: SkippableOrder) => {
     }
 };
 
-export const exportOrdersWithRecipesSelection = async () => {
+interface ExportOrdersWithRecipesSelection {
+    weeks: string[];
+    shippingDates: string[];
+    billingDates: string[];
+}
+
+export const exportOrdersWithRecipesSelection = async (filters: ExportOrdersWithRecipesSelection) => {
     try {
         const res = await axios({
-            method: "GET",
+            method: "POST",
             url: `${apiUrl}/export-next-with-recipes-selection`,
             responseType: "blob",
+            data: filters,
         });
 
         FileDownload(res.data, "Selección de recetas.xlsx");
         return res;
     } catch (error) {
         error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
+
+export const getExportOrdersWithRecipesSelectionFilters = async () => {
+    try {
+        const res = await axios({
+            method: "GET",
+            url: `${apiUrl}/export-next-with-recipes-selection-filters`,
+        });
+
+        return res;
+    } catch (error) {
         return error.response;
     }
 };
