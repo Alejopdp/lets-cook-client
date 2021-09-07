@@ -146,19 +146,19 @@ const ExportModal = ({
         </Grid>
     );
 
-    // const options = [
-    //     ExportOrdersFilterOptions.SEMANAS,
-    //     ExportOrdersFilterOptions.FECHA_DE_ENTREGA,
-    //     ExportOrdersFilterOptions.FECHA_DE_COBRO,
-    //     ExportOrdersFilterOptions.CLIENTES,
-    // ];
-    // const content = [weekFilters, shippingDateFilters, billingDateFilters, customerFilters];
     const options = [
         ExportOrdersFilterOptions.SEMANAS,
         ExportOrdersFilterOptions.FECHA_DE_ENTREGA,
         ExportOrdersFilterOptions.FECHA_DE_COBRO,
+        ExportOrdersFilterOptions.CLIENTES,
     ];
-    const content = [weekFilters, shippingDateFilters, billingDateFilters];
+    const content = [weekFilters, shippingDateFilters, billingDateFilters, customerFilters];
+    // const options = [
+    //     ExportOrdersFilterOptions.SEMANAS,
+    //     ExportOrdersFilterOptions.FECHA_DE_ENTREGA,
+    //     ExportOrdersFilterOptions.FECHA_DE_COBRO,
+    // ];
+    // const content = [weekFilters, shippingDateFilters, billingDateFilters];
 
     return (
         <Dialog open={open} onClose={handleClose} style={{ minWidth: 342 }} maxWidth={false}>
