@@ -13,6 +13,7 @@ import DeliveryAddressModal from "./customerInfoModals/deliveryAddressModal";
 import ComplexModal from "../../../molecules/complexModal/complexModal";
 import { DeliveryAddressProps } from "../interface";
 import { getGeometry } from "helpers/geocode/geocode";
+import { translateShippíngHour } from "helpers/i18n/i18n";
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
@@ -75,7 +76,7 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
 
                 <Typography variant="subtitle2">Horario de preferencia</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.shippingAddress.preferredShippingHour || "Sin indicar"}
+                    {translateShippíngHour(props.shippingAddress.preferredShippingHour) || "Sin indicar"}
                 </Typography>
 
                 <Typography

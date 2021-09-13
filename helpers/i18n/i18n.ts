@@ -15,6 +15,16 @@ export const translateFrequency = (planFrequencyValue: string, locale: string = 
     }
 };
 
+export const translateShippíngHour = (value: string, locale: string = "es") => {
+    const shippingHourMap = {
+        "15 - 18": { es: "de 15 a 18 hs", ca: "de 15 a 18 hs", en: "3 to 6 pm" },
+        "17 - 20": { es: "de 17 a 20 hs", ca: "de 17 a 20 hs", en: "5 to 8 pm" },
+        "19 - 22": { es: "de 19 a 22 hs", ca: "de 19 a 22 hs", en: "7 to 10 pm" },
+    };
+
+    return shippingHourMap[value] ? shippingHourMap[value][locale] : value;
+};
+
 const one_time = {
     es: "Por única vez",
     en: "One time",
