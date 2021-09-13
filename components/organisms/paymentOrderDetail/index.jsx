@@ -35,7 +35,7 @@ const PaymentOrderDetail = (props) => {
     return (
         <>
             <DashboardWithBackTitle title="Detalle de la orden de pago" />
-            {!isLoading && <PaymentOrderGrid paymentOrder={paymentOrder} />}
+            {!isLoading && <PaymentOrderGrid paymentOrder={paymentOrder} setpaymentOrder={setpaymentOrder} />}
         </>
     );
 };

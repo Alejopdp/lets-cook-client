@@ -14,13 +14,18 @@ import AmountDetails from "../../../molecules/amountDetails";
 import Refund from "./refund";
 import RefundModal from "./refundModal";
 import { useSnackbar } from "notistack";
-import { chargeOnePaymentOrder } from "helpers/serverRequests/paymentOrder";
+import { chargeOnePaymentOrder, refundPaymentOrder } from "helpers/serverRequests/paymentOrder";
+import { PaymentOrderState } from "helpers/types/paymentOrderState";
 
 const PaymentOrderGrid = (props) => {
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar();
     const [paymentOrderDataAfterPayment, setpaymentOrderDataAfterPayment] = useState({
         paymentIntentId: "",
+        state: "",
+    });
+    const [paymentOrderDataAfterRefund, setpaymentOrderDataAfterRefund] = useState({
+        quantityRefunded: 0,
         state: "",
     });
     const [isSubmitting, setisSubmitting] = useState(false);
@@ -52,9 +57,16 @@ const PaymentOrderGrid = (props) => {
         setOpenRefundModal(false);
     };
 
-    const handleRefund = () => {
-        alert("refunded");
-        setOpenRefundModal(false);
+    const handleRefund = async () => {
+        const res = await refundPaymentOrder(props.paymentOrder.id, parseFloat(amountToRefund));
+
+        if (res && res.status === 200) {
+            enqueueSnackbar("Reembolso aplicado correctamenta", { variant: "success" });
+            props.setpaymentOrder({ ...props.paymentOrder, state: res.data.state, quantityRefunded: res.data.quantityRefunded });
+            setOpenRefundModal(false);
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
     };
 
     const handleChargePaymentOrder = async () => {
@@ -62,7 +74,7 @@ const PaymentOrderGrid = (props) => {
         const res = await chargeOnePaymentOrder(props.paymentOrder.id);
 
         if (res && res.status === 200) {
-            setpaymentOrderDataAfterPayment({ paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
+            props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
             enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
@@ -77,18 +89,12 @@ const PaymentOrderGrid = (props) => {
                     <DataDisplay title="Payment Order ID" text={props.paymentOrder.id} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Cliente" text={props.paymentOrder.customerName} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de cobro" text={props.paymentOrder.billingDate} style={{ marginBottom: theme.spacing(3) }} />
-                    <DataDisplay
-                        title="Estado"
-                        text={props.paymentOrder.state || paymentOrderDataAfterPayment.state}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    {(!!props.paymentOrder.paymentIntentId || !!paymentOrderDataAfterPayment.paymentIntentId) && (
+                    <DataDisplay title="Estado" text={props.paymentOrder.state} style={{ marginBottom: theme.spacing(3) }} />
+                    {!!props.paymentOrder.paymentIntentId && (
                         <DataDisplayLink
                             title="Stripe Transaction ID"
-                            text={props.paymentOrder.paymentIntentId || paymentOrderDataAfterPayment.paymentIntentId}
-                            link={`https://dashboard.stripe.com/payments/${
-                                props.paymentOrder.paymentIntentId || paymentOrderDataAfterPayment.paymentIntentId
-                            }`}
+                            text={props.paymentOrder.paymentIntentId}
+                            link={`https://dashboard.stripe.com/payments/${props.paymentOrder.paymentIntentId}`}
                             style={{ marginBottom: theme.spacing(3) }}
                         />
                     )}
@@ -110,28 +116,31 @@ const PaymentOrderGrid = (props) => {
                             />
                         </PaperWithTitleContainer>
                     </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Reembolso">
-                            <Refund
-                                handleClick={handleClickOpenRefundModal}
-                                totalAmount={props.paymentOrder.totalAmount}
-                                value={amountToRefund}
-                                handleChange={handleChangeRefundInput}
-                            />
-                        </PaperWithTitleContainer>
-                    </Grid>
-                    {props.paymentOrder.state === "Activa" &&
-                        paymentOrderDataAfterPayment.state !== "PAYMENT_ORDER_BILLED" && ( // TO DO: Use enum with PAYMENY_ORDER_ACTIVE value
+                    {props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_ACTIVE &&
+                        props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_REFUNDED && (
                             <Grid item xs={12}>
-                                <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                                    <div>
-                                        <Button size="medium" color="secondary" onClick={handleChargePaymentOrder} disabled={isSubmitting}>
-                                            PAGAR AHORA
-                                        </Button>
-                                    </div>
+                                <PaperWithTitleContainer fullWidth={true} title="Reembolso">
+                                    <Refund
+                                        handleClick={handleClickOpenRefundModal}
+                                        totalAmount={props.paymentOrder.totalAmount}
+                                        value={amountToRefund}
+                                        handleChange={handleChangeRefundInput}
+                                        quantityRefunded={props.paymentOrder.quantityRefunded}
+                                    />
                                 </PaperWithTitleContainer>
                             </Grid>
                         )}
+                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_ACTIVE && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" color="secondary" onClick={handleChargePaymentOrder} disabled={isSubmitting}>
+                                        PAGAR AHORA
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
             <RefundModal
