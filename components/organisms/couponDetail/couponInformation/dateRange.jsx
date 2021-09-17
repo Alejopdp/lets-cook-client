@@ -13,8 +13,8 @@ const DateRange = (props) => {
     return (
         <Grid item xs={12}>
             <PaperWithTitleContainer title="Rango de fechas" fullWidth>
-                <InformationItem itemName="Fecha de inicio" itemValue={props.couponCode} />
-                <InformationItem itemName="Fecha de expiración" itemValue={props.discount_type_label} />
+                <InformationItem itemName="Fecha de inicio" itemValue={props.startDate} />
+                <InformationItem itemName="Fecha de expiración" itemValue={props.endDate || "Este cupón no tiene fecha de expiración"} />
             </PaperWithTitleContainer>
         </Grid>
     );

@@ -14,7 +14,7 @@ const GeneralData = (props) => {
     return (
         <Grid item xs={12}>
             <PaperWithTitleContainer title="Estado" fullWidth>
-                <Chip title={props.state} />
+                <Chip label={props.state} />
             </PaperWithTitleContainer>
         </Grid>
     );

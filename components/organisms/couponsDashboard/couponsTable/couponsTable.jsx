@@ -95,7 +95,9 @@ const CouponsTable = (props) => {
                                         <Typography variant="body1">{coupon.date_rage.expire}</Typography>
                                     </TableCell>
                                     <TableCell className={classes.cells}>
-                                        <Typography variant="body1">Hardcoded in the front</Typography>
+                                        <Typography variant="body1">{`${coupon.quantityApplied} de ${
+                                            coupon.limites.find((limit) => limit.type === "limit_qty")?.value || "∞"
+                                        }`}</Typography>
                                     </TableCell>
                                     <TableCell className={classes.cells}>
                                         <Typography variant="body1">{coupon.state}</Typography>
