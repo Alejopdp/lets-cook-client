@@ -71,22 +71,22 @@ const CustomerPurchaseHistoryTable = (props) => {
                         </TableHead>
 
                         <TableBody>
-                            {props.paymentOrders.map((log, index) => (
+                            {props.paymentOrders.map((paymentOrder, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
-                                        <Typography variant="body1">{log.date}</Typography>
+                                        <Typography variant="body1">{paymentOrder.date}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">#{log.id}</Typography>
+                                        <Typography variant="body1">#{paymentOrder.id}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{log.ordersQty}</Typography>
+                                        <Typography variant="body1">{paymentOrder.ordersQty}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">€{log.price}</Typography>
+                                        <Typography variant="body1">€{paymentOrder.price}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{log.status}</Typography>
+                                        <Typography variant="body1">{paymentOrder.status}</Typography>
                                     </TableCell>
 
                                     <TableCell className={cells}>
@@ -94,7 +94,7 @@ const CustomerPurchaseHistoryTable = (props) => {
                                             onClick={() =>
                                                 router.push({
                                                     pathname: "/ordenes/detalle-orden-de-pago",
-                                                    query: { paymentOrderId: log.paymentOrderId },
+                                                    query: { paymentOrderId: paymentOrder.id },
                                                 })
                                             }
                                         >

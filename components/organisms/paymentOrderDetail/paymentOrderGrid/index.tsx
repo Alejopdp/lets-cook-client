@@ -20,14 +20,6 @@ import { PaymentOrderState } from "helpers/types/paymentOrderState";
 const PaymentOrderGrid = (props) => {
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar();
-    const [paymentOrderDataAfterPayment, setpaymentOrderDataAfterPayment] = useState({
-        paymentIntentId: "",
-        state: "",
-    });
-    const [paymentOrderDataAfterRefund, setpaymentOrderDataAfterRefund] = useState({
-        quantityRefunded: 0,
-        state: "",
-    });
     const [isSubmitting, setisSubmitting] = useState(false);
 
     const columns = [
@@ -63,6 +55,7 @@ const PaymentOrderGrid = (props) => {
         if (res && res.status === 200) {
             enqueueSnackbar("Reembolso aplicado correctamenta", { variant: "success" });
             props.setpaymentOrder({ ...props.paymentOrder, state: res.data.state, quantityRefunded: res.data.quantityRefunded });
+            setAmountToRefund(0);
             setOpenRefundModal(false);
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
@@ -110,8 +103,9 @@ const PaymentOrderGrid = (props) => {
                                     subtotal: props.paymentOrder.subtotal,
                                     shippingCost: props.paymentOrder.shippingCost,
                                     discount: props.paymentOrder.discountAmount,
-                                    total: props.paymentOrder.totalAmount,
+                                    total: props.paymentOrder.totalAmount - props.paymentOrder.quantityRefunded,
                                     taxes: props.paymentOrder.taxes,
+                                    quantityRefunded: props.paymentOrder.quantityRefunded,
                                 }}
                             />
                         </PaperWithTitleContainer>

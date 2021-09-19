@@ -14,14 +14,14 @@ const Applications = (props) => {
         <Grid item xs={12}>
             <PaperWithTitleContainer title="Aplicaciones" fullWidth>
                 <Typography variant="body1" color="initial">
-                    {props.applications || "10 de ∞"}
+                    {`${props.quantityApplied} de ${props.limites?.find((limit) => limit.type === "limit_qty")?.value || "∞"}`}
                 </Typography>
                 <Typography variant="body1" color="initial">
-                    10 clientes han aplicado este cupón
+                    {props.quantityOfCustomersWhoHaveApplied} clientes han aplicado este cupón
                 </Typography>
-                <Typography variant="body1" color="initial">
+                {/* <Typography variant="body1" color="initial">
                     No hay límite en la cantidad de clientes que pueden utilizarlo
-                </Typography>
+                </Typography> */}
             </PaperWithTitleContainer>
         </Grid>
     );

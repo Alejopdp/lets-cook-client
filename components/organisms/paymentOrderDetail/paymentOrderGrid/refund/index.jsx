@@ -44,11 +44,6 @@ const Refund = (props) => {
                         APLICAR
                     </Button>
                 </Box>
-                {props.quantityRefunded > 0 && (
-                    <Typography style={{ width: "100%", fontSize: 14 }}>
-                        Cantidad reembolsada: <b>{props.quantityRefunded} €</b>
-                    </Typography>
-                )}
             </div>
         </Box>
     );
