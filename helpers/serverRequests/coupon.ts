@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { CouponState } from "types/coupon/couponState";
 
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/coupon`;
 
@@ -36,6 +37,21 @@ export const getCouponById = async (couponId) => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/${couponId}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};
+
+export const updateCouponState = async (state: CouponState, couponId: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/${couponId}`,
+            data: { state },
         });
 
         return res;
