@@ -167,7 +167,7 @@ const CustomerSubscriptionsTable = (props) => {
                                             onClick={() =>
                                                 router.push({
                                                     pathname: "/suscripciones/detalle",
-                                                    query: { subscriptionId: subscription.subscriptionId },
+                                                    query: { subscriptionId: subscription.id },
                                                 })
                                             }
                                         >

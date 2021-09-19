@@ -21,7 +21,7 @@ const OrderDetail = (props) => {
 
     useEffect(() => {
         const getOrder = async () => {
-            const res = await getOrderById(router.query.orderId, router.locale);
+            const res = await getOrderById(router.query.id, router.locale);
 
             if (res.status === 200) {
                 setorder(res.data);
@@ -31,7 +31,7 @@ const OrderDetail = (props) => {
                 return;
             }
 
-            const weekRes = await getRecipesForOrder(router.query.orderId);
+            const weekRes = await getRecipesForOrder(router.query.id);
 
             if (weekRes.status === 200) {
                 setweekRecipes(weekRes.data.recipes);
