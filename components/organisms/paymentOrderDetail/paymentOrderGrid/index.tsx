@@ -23,7 +23,7 @@ const PaymentOrderGrid = (props) => {
     const [isSubmitting, setisSubmitting] = useState(false);
 
     const columns = [
-        { align: "left", text: "Order ID" },
+        { align: "left", text: "Número de pedido" },
         { align: "left", text: "Plan" },
         { align: "left", text: "Variante" },
         { align: "left", text: "Frecuencia" },

@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { toggleWeekState } from "../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
+import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -84,7 +85,7 @@ const CustomerCalendarTable = (props) => {
                                 </TableCell>
 
                                 <TableCell className={cells}>
-                                    <Typography variant="subtitle1">Order ID</Typography>
+                                    <Typography variant="subtitle1">Número de pedido</Typography>
                                 </TableCell>
 
                                 <TableCell className={cells}>
@@ -111,7 +112,11 @@ const CustomerCalendarTable = (props) => {
                                         <Typography variant="body1">{order.date}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{order.id}</Typography>
+                                        <Typography variant="body1">
+                                            {!!order.orderNumber && order.orderNumber !== 0
+                                                ? presentNumberWithHashtagAndDotSeparator(order.orderNumber)
+                                                : order.id}
+                                        </Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{order.plan}</Typography>
