@@ -69,10 +69,18 @@ const ShippingZoneForm = (props) => {
     });
 
     const handleChange = (prop) => (event) => {
-        setValues({
+        var newValues = {
             ...values,
             [prop]: event.target.value,
-        });
+        };
+
+        if (prop === "type" && event.target.value === "free") {
+            newValues = {
+                ...newValues,
+                price: 0,
+            };
+        }
+        setValues(newValues);
     };
 
     const handleCreate = async () => {
