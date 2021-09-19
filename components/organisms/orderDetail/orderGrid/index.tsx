@@ -16,6 +16,7 @@ import EditRecipesModal from "./editRecipesModal";
 import ActualWeekRecipesDetail from "./actualWeekRecipesDetail";
 import { chooseRecipesForOrder, skipOrReactivateOrder } from "helpers/serverRequests/order";
 import { useSnackbar } from "notistack";
+import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
 
 const columns = [
     { align: "left", text: "Subscription ID" },
@@ -134,7 +135,15 @@ const OrderGrid = (props) => {
         <>
             <Grid item xs={12} md={8}>
                 <PaperWithTitleContainer fullWidth={true} title="Información general">
-                    <DataDisplay title="Order ID" text={props.order.id} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay
+                        title="Número de pedido"
+                        text={
+                            props.order.number && props.order.number !== 0
+                                ? presentNumberWithHashtagAndDotSeparator(props.order.number)
+                                : props.order.id
+                        }
+                        style={{ marginBottom: theme.spacing(3) }}
+                    />
                     <DataDisplay title="Cliente" text={props.order.customerName} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de cobro" text={props.order.billingDate} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de envío" text={props.order.shippingDate} style={{ marginBottom: theme.spacing(3) }} />
