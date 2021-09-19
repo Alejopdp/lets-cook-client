@@ -10,6 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
 
 const OrdersDenseTable = (props) => {
     const router = useRouter();
@@ -27,7 +28,9 @@ const OrdersDenseTable = (props) => {
                 <TableBody>
                     {props.rows.map((row) => (
                         <TableRow key={row.id}>
-                            <TableCell align="left">{row.id}</TableCell>
+                            <TableCell align="left">
+                                {row.number && row.number !== 0 ? presentNumberWithHashtagAndDotSeparator(row.number) : row.id}
+                            </TableCell>
                             <TableCell align="left">{row.planName}</TableCell>
                             <TableCell align="left">{row.planVariant}</TableCell>
                             <TableCell align="left">{row.frequency}</TableCell>
