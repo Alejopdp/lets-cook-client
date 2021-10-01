@@ -21,6 +21,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 // Internal components
 import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
+import { roundTwoDecimals } from "helpers/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -116,7 +117,7 @@ const OrdersTable = (props) => {
                                         <Typography variant="body1">{row.orderQuantity}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{row.amount}</Typography>
+                                        <Typography variant="body1">{roundTwoDecimals(row.amount)}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{row.state}</Typography>
