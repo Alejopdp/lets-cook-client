@@ -276,6 +276,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
+        console.log("Params: ", params);
         if (params.field === "isDefault") {
             handleDefaultVariantChange(params);
             return;
