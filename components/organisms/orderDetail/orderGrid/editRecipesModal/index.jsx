@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Selector from "./selector";
 
 const EditRecipesModal = (props) => {
+    console.log("props.recipesQuantity: ", props.recipesQuantity);
     const theme = useTheme();
 
     const getTotalRecipesSelected = () => {
