@@ -276,6 +276,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
+        console.log("A VERGABRIEL: ", params);
         if (params.field === "isDefault") {
             handleDefaultVariantChange(params);
             return;
@@ -290,7 +291,7 @@ const UpdatePlanForm = (props) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.props.value,
+                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.value,
                 };
             } else {
                 return {

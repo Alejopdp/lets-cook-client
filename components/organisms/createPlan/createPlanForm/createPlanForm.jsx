@@ -279,7 +279,7 @@ const CreatePlanForm = (props) => {
             if (variant.id === params.id) {
                 return {
                     ...variant,
-                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.props.value,
+                    [params.field]: params.field === "isDeleted" ? !variant.isDeleted || false : params.value,
                 };
             } else {
                 return {
