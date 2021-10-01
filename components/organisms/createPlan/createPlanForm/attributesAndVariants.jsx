@@ -120,7 +120,11 @@ const AttributesAndVariants = (props) => {
                     {props.variantsRows.length > 0 && (
                         <DataGrid
                             classes={{ root: classes.root, row: classes.row }}
-                            onEditCellChangeCommitted={(params, e) => {
+                            // onEditCellChangeCommitted={(params, e) => {
+                            //     e.preventDefault();
+                            //     props.handleVariantsEdit(params, e);
+                            // }}
+                            onCellEditCommit={(params, e) => {
                                 e.preventDefault();
                                 props.handleVariantsEdit(params, e);
                             }}
