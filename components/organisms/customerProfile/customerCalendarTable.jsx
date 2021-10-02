@@ -22,6 +22,7 @@ import { Typography } from "@material-ui/core";
 // Icons & Images
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
+import { skipOrReactivateOrder } from "helpers/serverRequests/order";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -53,24 +54,24 @@ const CustomerCalendarTable = (props) => {
         setToggleStateModalOpen(true);
     };
 
-    const handleToggleState = async () => {
-        // const res = await toggleWeekState(selectedOrder.id);
-
-        const res = { status: 200 };
+    const handleSkipWeek = async () => {
+        const res = await skipOrReactivateOrder(selectedOrder);
 
         if (res.status === 200) {
-            setOrders(orders.map((order) => (order.id === selectedOrder.id ? { ...selectedOrder, active: !selectedOrder.active } : order)));
-            setSelectedOrder({});
-            setToggleStateModalOpen(false);
-            enqueueSnackbar(`Semana ${selectedOrder.active ? "salteada" : "reanudada"}`, {
+            enqueueSnackbar(selectedOrder.isSkipped ? "Semana reanudada correctamente " : "Semana saltada correctamente", {
                 variant: "success",
             });
-        } else {
+            const updatedOrder = {
+                ...selectedOrder,
+                isSkipped: !selectedOrder.isSkipped,
+                active: selectedOrder.isSkipped ? true : false,
+            };
+            setOrders(orders.map((order) => (order.id === selectedOrder.id ? { ...updatedOrder } : order)));
             setToggleStateModalOpen(false);
-            enqueueSnackbar(`Error al ${selectedOrder.active ? "saltear la semana" : "reanudar la semana"}`, {
-                variant: "error",
-            });
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
         }
+        setToggleStateModalOpen(false);
     };
 
     return (
@@ -172,7 +173,7 @@ const CustomerCalendarTable = (props) => {
                     ]}
                     open={isToggleStateModalOpen}
                     handleCancelButton={() => setToggleStateModalOpen(false)}
-                    handleConfirmButton={handleToggleState}
+                    handleConfirmButton={handleSkipWeek}
                 />
             )}
         </>
