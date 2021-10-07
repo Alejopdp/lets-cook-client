@@ -111,7 +111,7 @@ const SubscriptionTable = (props) => {
                                             color="primary"
                                             style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
                                         >
-                                            {row.clientName}
+                                            {row.customerName}
                                         </Link>
                                     </TableCell>
                                     <TableCell className={cells}>
