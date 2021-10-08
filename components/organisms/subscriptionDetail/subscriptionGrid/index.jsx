@@ -1,6 +1,7 @@
 // Utils & Config
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 
 // External components
 import { Grid } from "@material-ui/core";
@@ -20,6 +21,7 @@ import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
 import { PlanFrequencyValue } from "helpers/types/frequency";
 import { translateFrequency } from "helpers/i18n/i18n";
+import { cancelSubscription } from "helpers/serverRequests/subscription";
 
 const SubscriptionGrid = (props) => {
     const subscriptionDetail = {
@@ -43,6 +45,7 @@ const SubscriptionGrid = (props) => {
     const [openEditNextChargeDateModal, setOpenEditNextChargeDateModal] = useState(false);
     const [openEditRestrictionsModal, setOpenEditRestrictionsModal] = useState(false);
     const [couponCode, setCouponCode] = useState("");
+    const { enqueueSnackbar } = useSnackbar();
 
     // Cancel Subscription Modal Functions
 
@@ -54,9 +57,22 @@ const SubscriptionGrid = (props) => {
         setOpenCancelSubscriptionModal(false);
     };
 
-    const handleCancelSubscription = (reason, comments) => {
-        alert(`cancel: ${JSON.stringify(reason)}, ${comments}`);
-        setOpenCancelSubscriptionModal(false);
+    const handleCancelSubscription = async (reason, comments) => {
+        console.log(`Cancelling subscription ${props.subscription.subscriptionId} for reason ${reason} with comment ${comments}`);
+        const res = await cancelSubscription(props.subscription.subscriptionId, reason, comments);
+
+        if (res && res.status === 200) {
+            enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
+            props.setsubscription({ ...props.subscription, state: "SUBSCRIPTION_CANCELLED" });
+            setOpenCancelSubscriptionModal(false);
+        } else {
+            enqueueSnackbar(
+                res && res.data
+                    ? res.data.message || "Ocurrió un error inesperado, por favor intente nuevamente"
+                    : "Ocurrió un error inesperado, por favor intente nuevamente",
+                { variant: "error" }
+            );
+        }
     };
 
     // Edit Plan Modal Functions
@@ -213,20 +229,28 @@ const SubscriptionGrid = (props) => {
                             <AmountDetails data={props.subscription.amountDetails} />
                         </PaperWithTitleContainer>
                     </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
-                            <ApplyCoupon handleChange={handleChangeCouponInput} handleClick={handleClickApplyCoupon} value={couponCode} />
-                        </PaperWithTitleContainer>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                            <div>
-                                <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelSubscriptionModal}>
-                                    CANCELAR SUSCRIPCIÓN
-                                </Button>
-                            </div>
-                        </PaperWithTitleContainer>
-                    </Grid>
+                    {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
+                                <ApplyCoupon
+                                    handleChange={handleChangeCouponInput}
+                                    handleClick={handleClickApplyCoupon}
+                                    value={couponCode}
+                                />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
+                    {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelSubscriptionModal}>
+                                        CANCELAR SUSCRIPCIÓN
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
             <CancelSubscriptionModal
