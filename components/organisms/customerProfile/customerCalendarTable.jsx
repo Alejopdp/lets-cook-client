@@ -23,6 +23,7 @@ import { Typography } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import { skipOrReactivateOrder } from "helpers/serverRequests/order";
+import { OrderState } from "helpers/types/order";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -129,8 +130,15 @@ const CustomerCalendarTable = (props) => {
                                         <Typography variant="body1">€{order.price}</Typography>
                                     </TableCell>
 
-                                    <TableCell style={{ textTransform: "uppercase", cursor: "pointer" }}>
-                                        {order.active ? (
+                                    <TableCell
+                                        style={{
+                                            textTransform: "uppercase",
+                                            cursor: !order.isSkippable ? "default" : "pointer",
+                                        }}
+                                    >
+                                        {!order.isSkippable ? (
+                                            <></>
+                                        ) : order.active ? (
                                             <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
                                                 Saltar semana
                                             </Typography>
