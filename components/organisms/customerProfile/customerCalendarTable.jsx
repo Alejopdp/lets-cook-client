@@ -133,10 +133,10 @@ const CustomerCalendarTable = (props) => {
                                     <TableCell
                                         style={{
                                             textTransform: "uppercase",
-                                            cursor: order.state === OrderState.ORDER_BILLED ? "default" : "pointer",
+                                            cursor: !order.isSkippable ? "default" : "pointer",
                                         }}
                                     >
-                                        {order.state === OrderState.ORDER_BILLED ? (
+                                        {!order.isSkippable ? (
                                             <></>
                                         ) : order.active ? (
                                             <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
