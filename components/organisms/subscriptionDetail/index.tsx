@@ -70,6 +70,7 @@ const SubscriptionDetail = (props) => {
             {!!!isLoading && !!!error && (
                 <SubscriptionGrid
                     subscription={subscription}
+                    setsubscription={setsubscription}
                     restrictions={restrictions}
                     handleSubmitRestriction={handleSubmitRestriction}
                 />

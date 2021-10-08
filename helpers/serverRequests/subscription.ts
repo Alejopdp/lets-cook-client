@@ -3,7 +3,7 @@ import FileDownload from "js-file-download";
 
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/subscription`;
 
-export const cancelSubscription = async (subscriptionId: string, locale: string = "es") => {
+export const cancelSubscription = async (subscriptionId: string, reason: string, comment: string, locale: string = "es") => {
     try {
         const res = await Axios({
             method: "PUT",
@@ -11,11 +11,14 @@ export const cancelSubscription = async (subscriptionId: string, locale: string 
             params: {
                 locale,
             },
+            data: {
+                cancellationReason: reason,
+                cancellationComment: comment,
+            },
         });
 
         return res;
     } catch (error) {
-        console.log(error);
         return error.response;
     }
 };
