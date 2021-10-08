@@ -99,6 +99,7 @@ const PaymentOrderGrid = (props) => {
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
                             <AmountDetails
+                                hasRefund
                                 data={{
                                     subtotal: props.paymentOrder.subtotal,
                                     shippingCost: props.paymentOrder.shippingCost,
