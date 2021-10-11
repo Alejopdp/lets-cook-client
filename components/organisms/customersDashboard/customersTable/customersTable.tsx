@@ -17,7 +17,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import { TableFooter, Typography } from "@material-ui/core";
+import { TableFooter, TableSortLabel, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
 // Icons & Images
@@ -33,18 +33,30 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
         // paddingRight: theme.spacing(5)
-    }
+    },
 }));
+
+enum OrderType {
+    ASC = "asc",
+    DESC = "desc",
+}
+
+enum CustomerOrderByOptions {
+    CUSTOMER_NAME = "fullName",
+    CUSTOMER_EMAIL = "email",
+    ACTIVE_SUBSCRIPTIONS = "activeSubscriptions",
+}
 
 const CustomersTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
-
+    const [order, setOrder] = useState<OrderType>(OrderType.ASC);
+    const [orderBy, setOrderBy] = useState<CustomerOrderByOptions>("");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
 
@@ -57,6 +69,26 @@ const CustomersTable = (props) => {
         setPage(0);
     };
 
+    const handleRequestSort = (event, property: CustomerOrderByOptions) => {
+        const isAsc = orderBy === property && order === OrderType.ASC;
+        setOrder(isAsc ? OrderType.DESC : OrderType.ASC);
+        setOrderBy(property);
+    };
+
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    const getComparator = (order, orderBy) => {
+        return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    };
+
     return (
         <Grid item xs={12}>
             <TableContainer component={Paper} className={tableContainer}>
@@ -67,28 +99,47 @@ const CustomersTable = (props) => {
                                 <Typography variant="subtitle1">#</Typography>
                             </TableCell>
 
-                            <TableCell className={cells}>
-                                <Typography variant="subtitle1">Nombre completo</Typography>
+                            <TableCell className={cells} sortDirection={orderBy === CustomerOrderByOptions.CUSTOMER_NAME ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === CustomerOrderByOptions.CUSTOMER_NAME}
+                                    direction={orderBy === CustomerOrderByOptions.CUSTOMER_NAME ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, CustomerOrderByOptions.CUSTOMER_NAME)}
+                                >
+                                    <Typography variant="subtitle1">Nombre completo</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
-                            <TableCell className={cells}>
-                                <Typography variant="subtitle1">Correo electrónico</Typography>
+                            <TableCell className={cells} sortDirection={orderBy === CustomerOrderByOptions.CUSTOMER_EMAIL ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === CustomerOrderByOptions.CUSTOMER_EMAIL}
+                                    direction={orderBy === CustomerOrderByOptions.CUSTOMER_EMAIL ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, CustomerOrderByOptions.CUSTOMER_EMAIL)}
+                                >
+                                    <Typography variant="subtitle1">Correo electrónico</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell className={cells}>
                                 <Typography variant="subtitle1">Teléfono</Typography>
                             </TableCell>
 
-                            <TableCell>
-                                <Typography variant="subtitle1">Suscripciones activas</Typography>
+                            <TableCell sortDirection={orderBy === CustomerOrderByOptions.ACTIVE_SUBSCRIPTIONS ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === CustomerOrderByOptions.ACTIVE_SUBSCRIPTIONS}
+                                    direction={orderBy === CustomerOrderByOptions.ACTIVE_SUBSCRIPTIONS ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, CustomerOrderByOptions.ACTIVE_SUBSCRIPTIONS)}
+                                >
+                                    <Typography variant="subtitle1">Suscripciones activas</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers).map(
-                            (customer, index) => (
+                        {(rowsPerPage > 0 ? props.customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.customers)
+                            .sort(getComparator(order, orderBy))
+                            .map((customer, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
                                         <Typography variant="body1">{customer.id}</Typography>
@@ -106,7 +157,14 @@ const CustomersTable = (props) => {
                                         <Typography variant="body1">{customer.activeSubscriptions}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton onClick={() => router.push({ pathname: "/gestion-de-clientes/modificar", query: { customerId: customer.id } })}>
+                                        <IconButton
+                                            onClick={() =>
+                                                router.push({
+                                                    pathname: "/gestion-de-clientes/modificar",
+                                                    query: { customerId: customer.id },
+                                                })
+                                            }
+                                        >
                                             <VisibilityIcon />
                                         </IconButton>
                                         <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
