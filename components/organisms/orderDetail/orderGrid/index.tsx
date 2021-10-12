@@ -147,6 +147,9 @@ const OrderGrid = (props) => {
                     <DataDisplay title="Cliente" text={props.order.customerName} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de cobro" text={props.order.billingDate} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de envío" text={props.order.shippingDate} style={{ marginBottom: theme.spacing(3) }} />
+                    {props.order.couponCode && (
+                        <DataDisplay title="Cupón utilizado" text={props.order.couponCode} style={{ marginBottom: theme.spacing(3) }} />
+                    )}
                     <DataDisplay title="Estado" text={props.order.state} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplayOrderTable
                         title="Subscripción relacionada"

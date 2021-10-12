@@ -1,6 +1,6 @@
 // Utils & Config
 import React, { useState } from "react";
-import { useTheme } from "@material-ui/core";
+import { Typography, useTheme } from "@material-ui/core";
 
 // External components
 import { Grid, Button } from "@material-ui/core";
@@ -111,6 +111,15 @@ const PaymentOrderGrid = (props) => {
                             />
                         </PaperWithTitleContainer>
                     </Grid>
+                    {(props.paymentOrder.couponCodes.length || []) > 0 && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Cupones utilizados">
+                                {props.paymentOrder.couponCodes.map((couponCode) => (
+                                    <Typography>{couponCode}</Typography>
+                                ))}
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                     {props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_ACTIVE &&
                         props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_REFUNDED && (
                             <Grid item xs={12}>
