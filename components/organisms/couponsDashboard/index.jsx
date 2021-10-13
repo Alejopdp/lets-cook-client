@@ -16,6 +16,7 @@ import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown"
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
+import { exportCoupons } from "helpers/serverRequests/coupon";
 
 const CouponsDashboard = (props) => {
     const router = useRouter();
@@ -39,17 +40,30 @@ const CouponsDashboard = (props) => {
     const filteredCoupons =
         filtersBy.length > 0
             ? filterCouponsBySearchValue().filter((coupon) =>
-                filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
-            )
+                  filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
+              )
             : filterCouponsBySearchValue();
 
+    const handleClickImport = () => alert("Import");
+    const handleClickExport = async () => {
+        const res = await exportCoupons();
 
-    const handleClickImport = () => alert('Import')
-    const handleClickExport = () => alert('Export')
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
+    };
 
     return (
         <>
-            <DashboardTitleWithButtonAndCSV title="Cupones" import export handleClickImport={handleClickImport} handleClickExport={handleClickExport} handleClick={() => router.push("/cupones/crear")} buttonText='CREAR CUPÓN' />
+            <DashboardTitleWithButtonAndCSV
+                title="Cupones"
+                import
+                export
+                handleClickImport={handleClickImport}
+                handleClickExport={handleClickExport}
+                handleClick={() => router.push("/cupones/crear")}
+                buttonText="CREAR CUPÓN"
+            />
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
                     <Box marginRight={2}>
@@ -83,14 +97,14 @@ const CouponsDashboard = (props) => {
             {filteredCoupons.length > 0 ? (
                 <CuoponsTable coupons={filteredCoupons} />
             ) : (
-                    <EmptyImage
-                        label={
-                            filtersBy.length > 0 || !!searchValue
-                                ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
-                                : "Aún no se crearon cupones"
-                        }
-                    />
-                )}
+                <EmptyImage
+                    label={
+                        filtersBy.length > 0 || !!searchValue
+                            ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
+                            : "Aún no se crearon cupones"
+                    }
+                />
+            )}
         </>
     );
 };
