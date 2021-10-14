@@ -59,7 +59,7 @@ const OrdersTable = (props) => {
     const [order, setOrder] = useState<OrderType>(OrderType.ASC);
     const [orderBy, setOrderBy] = useState<PaymentOrderOrderByOptions>("");
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [rowsPerPage, setRowsPerPage] = React.useState(100);
 
     const handleRequestSort = (event, property: PaymentOrderOrderByOptions) => {
         const isAsc = orderBy === property && order === OrderType.ASC;
@@ -205,7 +205,7 @@ const OrdersTable = (props) => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
+                                rowsPerPageOptions={[50, 100, 250, 500, 1000, { label: "Todos", value: -1 }]}
                                 colSpan={5}
                                 count={props.rows.length}
                                 rowsPerPage={rowsPerPage}
