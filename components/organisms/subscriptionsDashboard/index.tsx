@@ -23,7 +23,7 @@ const SubscriptionsDashboard = (props) => {
             const res = await getSubscriptions("es");
 
             if (res.status === 200) {
-                setsubscriptions(res.data);
+                setsubscriptions(res.data.filter((sub) => sub.state !== "SUBSCRIPTION_CANCELLED"));
             } else {
                 enqueueSnackbar(res.data.message, { variant: "error" });
             }
