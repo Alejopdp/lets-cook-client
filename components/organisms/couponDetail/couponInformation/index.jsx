@@ -69,8 +69,8 @@ const CouponInformation = (props) => {
                         apply_to={props.coupon.apply_to}
                         couponCode={props.coupon.code}
                         discount_type={props.coupon.discount_type}
-                        has_first_order={props.coupon.has_first_order}
-                        has_one_per_client={props.coupon.has_one_per_client}
+                        has_first_order={props.coupon.limites.some((limit) => limit.type === "first_order")}
+                        has_one_per_client={props.coupon.limites.some((limit) => limit.type === "limit_one_customer")}
                         minimum_requirement={props.coupon.minimum_requirement}
                         coupons_by_subscription={props.coupon.coupons_by_subscription}
                     />

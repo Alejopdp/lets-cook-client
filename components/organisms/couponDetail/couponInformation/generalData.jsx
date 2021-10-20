@@ -56,7 +56,7 @@ const GeneralData = (props) => {
                 <InformationItem
                     itemName="Aplicaciones en suscripción"
                     itemValue={`${getCouponsBySubscriptionLabel(props.coupons_by_subscription.type)}${
-                        props.coupons_by_subscription.type === "more_one_fee" ? `(${props.coupons_by_subscription.value} cargos)` : ""
+                        props.coupons_by_subscription.type === "more_one_fee" ? ` (${props.coupons_by_subscription.value} cargos)` : ""
                     }`}
                 />
             </PaperWithTitleContainer>
