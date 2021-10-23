@@ -81,3 +81,17 @@ export const refundPaymentOrder = async (paymentOrderId: string, amount: number)
         return error.response;
     }
 };
+
+export const retryPayment = async (paymentOrderId: string) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/retry-payment/${paymentOrderId}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};

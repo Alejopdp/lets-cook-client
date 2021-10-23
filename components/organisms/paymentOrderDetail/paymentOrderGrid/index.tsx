@@ -14,7 +14,7 @@ import AmountDetails from "../../../molecules/amountDetails";
 import Refund from "./refund";
 import RefundModal from "./refundModal";
 import { useSnackbar } from "notistack";
-import { chargeOnePaymentOrder, refundPaymentOrder } from "helpers/serverRequests/paymentOrder";
+import { chargeOnePaymentOrder, refundPaymentOrder, retryPayment } from "helpers/serverRequests/paymentOrder";
 import { PaymentOrderState } from "helpers/types/paymentOrderState";
 
 const PaymentOrderGrid = (props) => {
@@ -75,6 +75,19 @@ const PaymentOrderGrid = (props) => {
         setisSubmitting(false);
     };
 
+    const handleRetryPayment = async () => {
+        setisSubmitting(true);
+        const res = await retryPayment(props.paymentOrder.id);
+
+        if (res && res.status === 200) {
+            props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
+            enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+        setisSubmitting(false);
+    };
+
     return (
         <>
             <Grid item xs={12} md={8}>
@@ -120,8 +133,8 @@ const PaymentOrderGrid = (props) => {
                             </PaperWithTitleContainer>
                         </Grid>
                     )}
-                    {props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_ACTIVE &&
-                        props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_REFUNDED && (
+                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_BILLED &&
+                        props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_PARTIALLY_REFUNDED && (
                             <Grid item xs={12}>
                                 <PaperWithTitleContainer fullWidth={true} title="Reembolso">
                                     <Refund
@@ -140,6 +153,18 @@ const PaymentOrderGrid = (props) => {
                                 <div>
                                     <Button size="medium" color="secondary" onClick={handleChargePaymentOrder} disabled={isSubmitting}>
                                         PAGAR AHORA
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
+
+                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_REJECTED && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" color="secondary" onClick={handleRetryPayment} disabled={isSubmitting}>
+                                        REINTENTAR COBRO
                                     </Button>
                                 </div>
                             </PaperWithTitleContainer>
