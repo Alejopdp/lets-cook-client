@@ -89,3 +89,21 @@ export const exportSubscriptions = async () => {
         return error.response;
     }
 };
+
+export const applyCouponToSubscription = async (subscriptionId: string, couponCode: string, customerId: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/apply-coupon/${subscriptionId}`,
+            data: {
+                couponCode,
+                customerId,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+};

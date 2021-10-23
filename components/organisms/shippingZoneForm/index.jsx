@@ -64,7 +64,7 @@ const ShippingZoneForm = (props) => {
         zoneRef: props.shippingZone ? props.shippingZone.reference : "",
         price: props.shippingZone ? props.shippingZone.cost : 0,
         type: props.shippingZone && props.shippingZone.cost > 0 ? "pay" : "free",
-        shippingDay: props.shippingDay ? props.shippingDay : 2,
+        shippingDay: props.shippingZone ? props.shippingZone.shippingDayOfWeek : 2,
         file: [],
     });
 

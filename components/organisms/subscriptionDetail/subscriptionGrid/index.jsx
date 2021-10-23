@@ -21,7 +21,7 @@ import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
 import { PlanFrequencyValue } from "helpers/types/frequency";
 import { translateFrequency } from "helpers/i18n/i18n";
-import { cancelSubscription } from "helpers/serverRequests/subscription";
+import { applyCouponToSubscription, cancelSubscription } from "helpers/serverRequests/subscription";
 
 const SubscriptionGrid = (props) => {
     const subscriptionDetail = {
@@ -159,9 +159,15 @@ const SubscriptionGrid = (props) => {
         setCouponCode(event.target.value);
     };
 
-    const handleClickApplyCoupon = () => {
-        alert(`apply coupon ${couponCode}`);
-        setCouponCode("");
+    const handleClickApplyCoupon = async () => {
+        const res = await applyCouponToSubscription(props.subscription.subscriptionId, couponCode, props.subscription.customerId);
+
+        if (res && res.status === 200) {
+            setCouponCode("");
+            enqueueSnackbar("Cupón aplicado", { variant: "success" });
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error, intenta nuevamente", { variant: "error" });
+        }
     };
 
     return (
