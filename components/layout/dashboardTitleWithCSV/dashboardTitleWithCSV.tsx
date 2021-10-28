@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 // Internal components
 import CustomButton from "../../atoms/button/button";
@@ -16,7 +17,18 @@ import CustomButton from "../../atoms/button/button";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
 
-const DashboardTitleWithCSV = (props) => {
+interface DashboardTitleWithCSVProps {
+    title: string;
+    import: boolean;
+    export: boolean;
+    importText?: string;
+    exportText?: string;
+    handleClickImport: (e: any) => void;
+    handleClickExport: () => void;
+    importFile: any;
+}
+
+const DashboardTitleWithCSV = (props: DashboardTitleWithCSVProps) => {
     const theme = useTheme();
     // TODO: Usar este componente en usersDashboard.jsx
 
@@ -31,15 +43,17 @@ const DashboardTitleWithCSV = (props) => {
                         <Button
                             size="large"
                             startIcon={<PublishIcon />}
-                            onClick={props.handleClickImport}
+                            // onClick={props.handleClickImport}
                             style={{ marginRight: theme.spacing(2) }}
+                            component="label"
                         >
-                            Importar CSV
+                            {props.importText || "Importar CSV"}
+                            <input type="file" hidden onChange={props.handleClickImport} value={props.importFile} />
                         </Button>
                     )}
                     {props.export && (
                         <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport}>
-                            Exportar CSV
+                            {props.exportText || "Exportar CSV"}
                         </Button>
                     )}
                 </div>
@@ -47,7 +61,5 @@ const DashboardTitleWithCSV = (props) => {
         </Grid>
     );
 };
-
-DashboardTitleWithCSV.propTypes = {};
 
 export default DashboardTitleWithCSV;

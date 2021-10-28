@@ -112,3 +112,19 @@ export const getExportOrdersWithRecipesSelectionFilters = async () => {
         return error.response;
     }
 };
+
+export const importRecipeSelectionForManyOrders = async (data) => {
+    console.log("DATA: ", data);
+    try {
+        const res = await axios({
+            method: "PUT",
+            headers: { "Content-Type": "multipart/form-data" },
+            url: `${apiUrl}/update-recipes`,
+            data,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
