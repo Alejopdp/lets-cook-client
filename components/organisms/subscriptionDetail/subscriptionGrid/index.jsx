@@ -222,7 +222,7 @@ const SubscriptionGrid = (props) => {
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Restricciones">
                             <DataDisplayEditable
-                                title="Rescricción"
+                                title="Restricción"
                                 text={props.subscription.restriction.text}
                                 handleClick={handleClickOpenEditRestrictionsModal}
                                 style={{ marginBottom: theme.spacing(2) }}

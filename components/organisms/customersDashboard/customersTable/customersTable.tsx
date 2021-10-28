@@ -154,7 +154,7 @@ const CustomersTable = (props) => {
                                         <Typography variant="body1">{customer.phone1 || customer.phone1}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{customer.activeSubscriptions}</Typography>
+                                        <Typography variant="body1">{customer.activeSubscriptions || 0}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <IconButton

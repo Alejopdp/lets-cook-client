@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { getPaymentOrders } from "../../../helpers/serverRequests/paymentOrder";
 import { useSnackbar } from "notistack";
+import { importRecipeSelectionForManyOrders } from "../../../helpers/serverRequests/order";
 
 // External components
 import { Box, Grid } from "@material-ui/core";
@@ -15,6 +16,7 @@ import OrdersTable from "./ordersTable/index";
 import { exportOrdersWithRecipesSelection, getExportOrdersWithRecipesSelectionFilters } from "../../../helpers/serverRequests/order";
 import ExportModal, { ExportOrdersFilterOptions } from "./exportModal/exportModal";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
+import ImportErrorModal from "./importErrorModal/importErrorModal";
 
 interface FilterOption {
     value: string | number;
@@ -36,6 +38,12 @@ const OrdersDashboard = (props) => {
         customers: FilterOption[];
     }>({ weeks: [], shippingDates: [], billingDates: [], customers: [] });
     const [isExportModalOpen, setisExportModalOpen] = useState(false);
+    const [isImportErrorModalOpen, setIsImportModalOpen] = useState(false);
+    const [importErrorData, setImportErrorData] = useState<{
+        inconsistentCustomerEmails: string[];
+        notOwnerOfOrderCustomerEmails: string[];
+    }>({ inconsistentCustomerEmails: [], notOwnerOfOrderCustomerEmails: [] });
+    const [importFile, setImportFile] = useState("");
 
     useEffect(() => {
         const getPaymentOrdersList = async () => {
@@ -93,7 +101,24 @@ const OrdersDashboard = (props) => {
     const options = ["PRÓXIMAS ORDENES", "ORDENES PROCESADAS", "PAGOS RECHAZADOS"];
     const content = [nextOrders, processedOrders, refusedOrder];
 
-    const handleClickImport = () => alert("Import");
+    const handleClickImport = async (e) => {
+        const data = new FormData();
+
+        data.append("recipeSelection", e.target.files[0]);
+        const res = await importRecipeSelectionForManyOrders(data);
+
+        if (res && res.status === 200) {
+            if (res.data.inconsistentCustomerEmails.length > 0 || res.data.notOwnerOfOrderCustomerEmails.length > 0) {
+                setImportErrorData(res.data);
+                setIsImportModalOpen(true);
+            } else {
+                enqueueSnackbar("Todas las recetas fueron cargadas correctamente", { variant: "success" });
+            }
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado", { variant: "error" });
+        }
+        setImportFile("");
+    };
     const handleClickExport = async (filters: { value: string; label: string }[], selectedFilter: ExportOrdersFilterOptions) => {
         var weeks: string[] = [];
         var shippingDates: string[] = [];
@@ -127,6 +152,8 @@ const OrdersDashboard = (props) => {
             <DashboardTitleWithCSV
                 title="Ordenes"
                 import
+                importFile={importFile}
+                importText="Importar selección de recetas"
                 export
                 handleClickImport={handleClickImport}
                 handleClickExport={() => setisExportModalOpen(true)}
@@ -150,6 +177,13 @@ const OrdersDashboard = (props) => {
                 billingDateOptions={filterOptions.billingDates}
                 customerOptions={filterOptions.customers}
                 title="Exportar pedidos"
+            />
+
+            <ImportErrorModal
+                handleCancelButton={() => setIsImportModalOpen(false)}
+                inconsistentCustomerEmails={importErrorData.inconsistentCustomerEmails}
+                notOwnerOfOrderCustomerEmails={importErrorData.notOwnerOfOrderCustomerEmails}
+                open={isImportErrorModalOpen}
             />
         </>
     );
