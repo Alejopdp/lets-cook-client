@@ -133,20 +133,20 @@ const PaymentOrderGrid = (props) => {
                             </PaperWithTitleContainer>
                         </Grid>
                     )}
-                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_BILLED &&
-                        props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_PARTIALLY_REFUNDED && (
-                            <Grid item xs={12}>
-                                <PaperWithTitleContainer fullWidth={true} title="Reembolso">
-                                    <Refund
-                                        handleClick={handleClickOpenRefundModal}
-                                        totalAmount={props.paymentOrder.totalAmount}
-                                        value={amountToRefund}
-                                        handleChange={handleChangeRefundInput}
-                                        quantityRefunded={props.paymentOrder.quantityRefunded}
-                                    />
-                                </PaperWithTitleContainer>
-                            </Grid>
-                        )}
+                    {(props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_BILLED ||
+                        props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_PARTIALLY_REFUNDED) && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Reembolso">
+                                <Refund
+                                    handleClick={handleClickOpenRefundModal}
+                                    totalAmount={props.paymentOrder.totalAmount}
+                                    value={amountToRefund}
+                                    handleChange={handleChangeRefundInput}
+                                    quantityRefunded={props.paymentOrder.quantityRefunded}
+                                />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                     {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_ACTIVE && (
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
