@@ -52,6 +52,7 @@ const CouponsDashboard = (props) => {
         const res = await importManyCoupons(data);
 
         if (res && res.status === 200) {
+            setcoupons([...res.data, ...coupons]);
             enqueueSnackbar("Todos los cupones fueron cargados correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado", { variant: "error" });
