@@ -90,3 +90,20 @@ export const deleteCoupon = async (couponId) => {
         return error.response;
     }
 };
+
+export const importManyCoupons = async (data) => {
+    try {
+        const res = await Axios({
+            method: "POST",
+            url: `${apiUrl}/import`,
+            headers: {
+                "Content-type": "multipart/form-data",
+            },
+            data,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
