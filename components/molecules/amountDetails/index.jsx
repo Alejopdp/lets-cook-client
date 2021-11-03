@@ -44,7 +44,7 @@ const AmountDetails = (props) => {
                     Impuestos (incluido):
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                    {roundTwoDecimals(props.data.taxes)} €
+                    {props.data.taxes} €
                 </Typography>
             </div>
             {props.hasRefund && (

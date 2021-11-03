@@ -107,3 +107,18 @@ export const applyCouponToSubscription = async (subscriptionId: string, couponCo
         return error.response;
     }
 };
+
+export const exportCancellations = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export-cancellations`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Cancelaciones.xlsx");
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
