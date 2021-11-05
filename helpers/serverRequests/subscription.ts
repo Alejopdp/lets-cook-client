@@ -1,13 +1,18 @@
 import Axios from "axios";
 import FileDownload from "js-file-download";
-
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/subscription`;
+
+const { getFromLocalStorage } = useLocalStorage();
 
 export const cancelSubscription = async (subscriptionId: string, reason: string, comment: string, locale: string = "es") => {
     try {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/cancel/${subscriptionId}`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             params: {
                 locale,
             },
@@ -27,6 +32,9 @@ export const getSubscriptionById = async (id: string, locale: string = "es") => 
     try {
         const res = await Axios({
             method: "GET",
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             url: `${apiUrl}/information-as-admin/${id}`,
             params: {
                 locale,
@@ -44,6 +52,9 @@ export const updateSubscriptionRestriction = async (subscriptionId: string, newR
     try {
         const res = await Axios({
             method: "PUT",
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             url: `${apiUrl}/update-restriction/${subscriptionId}`,
             data: {
                 restrictionId: newRestrictionId,
@@ -62,6 +73,9 @@ export const getSubscriptions = async (locale: string) => {
     try {
         const res = await Axios({
             method: "GET",
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             url: `${apiUrl}/`,
             params: {
                 locale,
@@ -80,6 +94,9 @@ export const exportSubscriptions = async () => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             responseType: "blob",
         });
 
@@ -94,6 +111,9 @@ export const applyCouponToSubscription = async (subscriptionId: string, couponCo
     try {
         const res = await Axios({
             method: "PUT",
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             url: `${apiUrl}/apply-coupon/${subscriptionId}`,
             data: {
                 couponCode,
@@ -113,6 +133,9 @@ export const exportCancellations = async () => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export-cancellations`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             responseType: "blob",
         });
 

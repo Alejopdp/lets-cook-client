@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-
+import { useRouter } from "next/router";
 // External components
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
@@ -36,7 +37,7 @@ const SubscriptionGrid = (props) => {
         paymentMethod: "Mastercard terminada en 1234",
         addressName: "Av. Fausto Elio 42, 46011, Valencia",
     };
-
+    const router = useRouter();
     const theme = useTheme();
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
     const [openEditPlanModal, setOpenEditPlanModal] = useState(false);
@@ -238,11 +239,26 @@ const SubscriptionGrid = (props) => {
                     {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
-                                <ApplyCoupon
-                                    handleChange={handleChangeCouponInput}
-                                    handleClick={handleClickApplyCoupon}
-                                    value={couponCode}
-                                />
+                                {!!props.subscription.coupon?.id ? (
+                                    <Link
+                                        onClick={() =>
+                                            router.push({
+                                                pathname: "/cupon",
+                                                query: { id: props.subscription.coupon.id },
+                                            })
+                                        }
+                                        color="primary"
+                                        style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                                    >
+                                        {props.subscription.coupon.code}
+                                    </Link>
+                                ) : (
+                                    <ApplyCoupon
+                                        handleChange={handleChangeCouponInput}
+                                        handleClick={handleClickApplyCoupon}
+                                        value={couponCode}
+                                    />
+                                )}
                             </PaperWithTitleContainer>
                         </Grid>
                     )}
