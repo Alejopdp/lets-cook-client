@@ -59,6 +59,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     });
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
+    const [orderPriority, setOrderPriority] = useState("");
     const [plans, setplans] = useState([]);
     const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
@@ -89,6 +90,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             }))
         );
         setimageTags(recipeData.imageTags);
+        setOrderPriority(recipeData.orderPriority);
         settags(recipeData.backOfficeTags);
         setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
         setmonths(recipeData.availableMonths);
@@ -196,6 +198,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         formDataToCreate.append("planIds", JSON.stringify(plans));
         formDataToCreate.append("availableMonths", JSON.stringify(months));
         formDataToCreate.append("backOfficeTags", JSON.stringify(tags));
+        formDataToCreate.append("orderPriority", orderPriority);
         formDataToCreate.append(
             "availableWeeksIds",
             JSON.stringify(
@@ -553,6 +556,17 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 onChange={handleAddTag}
                                 name="tags"
                                 handleRemoveValue={handleRemoveTag}
+                            />
+                        </PaperWithTitleContainer>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <PaperWithTitleContainer fullWidth={true} title="Orden">
+                            <FormInput
+                                name="orderPriority"
+                                value={orderPriority}
+                                handleChange={(e) => setOrderPriority(e.target.value)}
+                                label=""
+                                type="number"
                             />
                         </PaperWithTitleContainer>
                     </Grid>
