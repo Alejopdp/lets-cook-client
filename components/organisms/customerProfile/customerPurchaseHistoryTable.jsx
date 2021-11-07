@@ -78,7 +78,7 @@ const CustomerPurchaseHistoryTable = (props) => {
                                         <Typography variant="body1">{paymentOrder.date}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">#{paymentOrder.id}</Typography>
+                                        <Typography variant="body1">{paymentOrder.humanId}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{paymentOrder.ordersQty}</Typography>
