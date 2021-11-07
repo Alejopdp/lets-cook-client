@@ -92,7 +92,7 @@ const PaymentOrderGrid = (props) => {
         <>
             <Grid item xs={12} md={8}>
                 <PaperWithTitleContainer fullWidth={true} title="Información general">
-                    <DataDisplay title="Payment Order ID" text={props.paymentOrder.id} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title="Payment Order ID" text={props.paymentOrder.humanId} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Cliente" text={props.paymentOrder.customerName} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de cobro" text={props.paymentOrder.billingDate} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Estado" text={props.paymentOrder.state} style={{ marginBottom: theme.spacing(3) }} />

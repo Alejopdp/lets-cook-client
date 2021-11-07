@@ -176,7 +176,7 @@ const OrdersTable = (props) => {
                                         </Link>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{row.id}</Typography>
+                                        <Typography variant="body1">{row.humanId}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{row.orderQuantity}</Typography>

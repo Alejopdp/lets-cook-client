@@ -159,7 +159,7 @@ const OrderGrid = (props) => {
                     />
                     <DataDisplay
                         title="Payment Order ID relacionada"
-                        text={props.order.paymentOrderId}
+                        text={props.order.paymentOrderHumanId}
                         style={{ marginBottom: theme.spacing(3) }}
                     />
                 </PaperWithTitleContainer>
