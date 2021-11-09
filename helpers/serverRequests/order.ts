@@ -128,3 +128,16 @@ export const importRecipeSelectionForManyOrders = async (data) => {
         return error.response;
     }
 };
+
+export const moveOrderShippingDate = async (orderId: string) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/move-shipping-date/${orderId}`,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response
+    }
+};
