@@ -14,9 +14,10 @@ import CancelOrderModal from "./cancelOrderModal";
 import SkipWeekModal from "./skipWeekModal";
 import EditRecipesModal from "./editRecipesModal";
 import ActualWeekRecipesDetail from "./actualWeekRecipesDetail";
-import { chooseRecipesForOrder, skipOrReactivateOrder } from "helpers/serverRequests/order";
+import { chooseRecipesForOrder, moveOrderShippingDate, skipOrReactivateOrder } from "helpers/serverRequests/order";
 import { useSnackbar } from "notistack";
 import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
+import MoveShippingDateModal from "./moveShippingDateModal/moveShippingDateModal";
 
 const columns = [
     { align: "left", text: "Subscription ID" },
@@ -35,6 +36,7 @@ const OrderGrid = (props) => {
     const [recipesSelection, setRecipesSelection] = useState<[{ recipeId: string; quantity: number; recipeVariant: string; name: string }]>(
         []
     );
+    const [openMoveOrderShippingDateModal, setOpenMoveOrderShippingDateModal] = useState(false);
 
     useEffect(() => {
         const baseSelection = [];
@@ -131,6 +133,21 @@ const OrderGrid = (props) => {
         setOpenCancelOrderModal(false);
     };
 
+    const handleMoveShippingDate = async () => {
+        const res = await moveOrderShippingDate(props.order.id);
+
+        if (res && res.status === 200) {
+            enqueueSnackbar("Orden adelantada correctamente", { variant: "success" });
+            props.setorder({
+                ...props.order,
+                shippingDate: res.data.shippingDate,
+            });
+            setOpenMoveOrderShippingDateModal(false);
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intenta nuevamente", { variant: "error" });
+        }
+    };
+
     return (
         <>
             <Grid item xs={12} md={8}>
@@ -176,11 +193,22 @@ const OrderGrid = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                            <div>
+                            {/* <div>
                                 <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelOrderModal}>
                                     CANCELAR ORDEN
                                 </Button>
-                            </div>
+                            </div> */}
+                            {props.order.isFirstOrderOfSubscription && (
+                                <div>
+                                    <Button
+                                        size="medium"
+                                        style={{ color: theme.palette.secondary.main }}
+                                        onClick={() => setOpenMoveOrderShippingDateModal(true)}
+                                    >
+                                        ADELANTAR ORDEN
+                                    </Button>
+                                </div>
+                            )}
                             <div>
                                 <Button
                                     size="medium"
@@ -199,7 +227,12 @@ const OrderGrid = (props) => {
                 handleClose={handleCloseCancelOrderModal}
                 handlePrimaryButtonClick={handleCancelOrder}
             />
-            <SkipWeekModal open={openSkipWeekModal} handleClose={handleCloseSkipWeekModal} handlePrimaryButtonClick={handleSkipWeek} />
+            <SkipWeekModal
+                open={openSkipWeekModal}
+                handleClose={handleCloseSkipWeekModal}
+                handlePrimaryButtonClick={handleSkipWeek}
+                isOrderSkipped={props.order.isSkipped}
+            />
             <EditRecipesModal
                 open={openEditRecipesModal}
                 handleClose={handleCloseEditRecipesModal}
@@ -207,6 +240,11 @@ const OrderGrid = (props) => {
                 handleEditRecipeQuantity={handleEditRecipeQuantity}
                 data={recipesSelection}
                 recipesQuantity={props.order.numberOfRecipes}
+            />
+            <MoveShippingDateModal
+                open={openMoveOrderShippingDateModal}
+                handleClose={() => setOpenMoveOrderShippingDateModal(false)}
+                handlePrimaryButtonClick={handleMoveShippingDate}
             />
         </>
     );
