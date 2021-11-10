@@ -25,6 +25,8 @@ import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAn
 import NutritionalInformationGrid from "../../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
 import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
 import Dropzone from "../../../molecules/dropzone/dropzone";
+import FIleDraggable from "components/molecules/fileDraggableDropZone/fileDraggableDropZone";
+import { getImagesFilesFromUrl } from "helpers/utils/images";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -55,8 +57,11 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         longDescription: "",
         cookDuration: "",
         weight: "",
-        image: [],
+        // image: [],
+        images: [],
+        previousImages: [],
     });
+    const [isLoading, setIsLoading] = useState(true);
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
     const [orderPriority, setOrderPriority] = useState("");
@@ -82,31 +87,40 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     };
 
     useEffect(() => {
-        setIngredientsVariants(
-            recipeData.recipeVariants.map((variant) => ({
-                ingredients: variant.ingredients,
-                sku: variant.sku,
-                restriction: variant.restriction.id,
-            }))
-        );
-        setimageTags(recipeData.imageTags);
-        setOrderPriority(recipeData.orderPriority);
-        settags(recipeData.backOfficeTags);
-        setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
-        setmonths(recipeData.availableMonths);
-        setnutritionalInformation(recipeData.nutritionalInfo);
-        settools(recipeData.tools);
-        setplans(recipeData.relatedPlans);
-        setdifficultyLevel(recipeData.difficultyLevel);
-        setgeneralData({
-            name: recipeData.name,
-            cookDuration: recipeData.cookDurationNumberValue,
-            image: [recipeData.imageUrl], // TO DO: Save the file
-            longDescription: recipeData.longDescription,
-            shortDescription: recipeData.shortDescription,
-            sku: recipeData.sku,
-            weight: recipeData.weightNumberValue,
-        });
+        const initializeRecipe = async () => {
+            const recipeImages = await getImagesFilesFromUrl(recipeData.imagesUrls);
+            setIngredientsVariants(
+                recipeData.recipeVariants.map((variant) => ({
+                    ingredients: variant.ingredients,
+                    sku: variant.sku,
+                    restriction: variant.restriction.id,
+                }))
+            );
+            setimageTags(recipeData.imageTags);
+            setOrderPriority(recipeData.orderPriority);
+            settags(recipeData.backOfficeTags);
+            setweeks(recipeData.availableWeeks.map((week) => week.label)); // TO DO: Handle the whole structure instead of lables
+            setmonths(recipeData.availableMonths);
+            setnutritionalInformation(recipeData.nutritionalInfo);
+            settools(recipeData.tools);
+            setplans(recipeData.relatedPlans);
+            setdifficultyLevel(recipeData.difficultyLevel);
+            setgeneralData({
+                name: recipeData.name,
+                cookDuration: recipeData.cookDurationNumberValue,
+                // image: [recipeData.imageUrl], // TO DO: Save the file
+                longDescription: recipeData.longDescription,
+                shortDescription: recipeData.shortDescription,
+                sku: recipeData.sku,
+                weight: recipeData.weightNumberValue,
+                images: recipeImages,
+                previousImages: recipeImages,
+            });
+
+            setIsLoading(false);
+        };
+
+        initializeRecipe();
     }, []);
     const handleGeneralDataChange = (event) => {
         const name = event.target.name;
@@ -132,12 +146,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         setimageTags(imageTags.filter((tag) => tag !== imageTagToRemove));
     };
 
-    const handleDropFile = (files) => {
-        setgeneralData({
-            ...generalData,
-            image: files,
-        });
-    };
+    // const handleDropFile = (files) => {
+    //     setgeneralData({
+    //         ...generalData,
+    //         image: files,
+    //     });
+    // };
 
     const handlePlansChange = (e) => {
         const newPlanId = e.target.value;
@@ -192,7 +206,9 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
         formDataToCreate.append("weight", generalData.weight);
-        formDataToCreate.append("recipeImage", generalData.image[0]);
+        generalData.images.forEach((image) => {
+            formDataToCreate.append("recipeImages", image);
+        });
         formDataToCreate.append("tools", JSON.stringify(tools));
         formDataToCreate.append("imageTags", JSON.stringify(imageTags));
         formDataToCreate.append("planIds", JSON.stringify(plans));
@@ -330,7 +346,9 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         );
     };
 
-    return (
+    return isLoading ? (
+        <></>
+    ) : (
         <>
             {/* FORM LEFT */}
             <Grid item xs={12} md={8}>
@@ -389,12 +407,19 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 onChange={(e, newValues) => handleAddTool(newValues)}
                                 handleRemoveValue={handleRemoveTool}
                             />
-                            <Dropzone
+                            {/* <Dropzone
                                 title="Imagenes de la receta"
                                 maxFiles={10}
                                 handleDropFile={handleDropFile}
                                 files={generalData.image}
                                 fileName={generalData.name}
+                            /> */}
+                            <FIleDraggable
+                                handleData={(name, files) => setgeneralData({ ...generalData, [name]: files })}
+                                previousImages={generalData.previousImages}
+                                hasPreviousImages={false}
+                                name="images"
+                                files={generalData.images}
                             />
                         </PaperWithTitleContainer>
                     </Grid>
