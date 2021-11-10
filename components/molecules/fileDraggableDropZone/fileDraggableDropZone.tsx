@@ -88,9 +88,9 @@ const SortableItem = SortableElement(({ value, src }) => {
 
 const SortableList = SortableContainer(({ items, onDelete }) => {
     const classes = styles();
-    console.log("ITEMS: ", items);
+
     return (
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
             {items.map((value, index) => (
                 <div style={{ position: "relative", marginRight: "10px" }} key={`item-${value.size} ${index}`}>
                     <SortableItem index={index} src={value.url} value={value} />
@@ -159,9 +159,7 @@ const FIleDraggable = (props: FileDraggableProps) => {
     // }, [files]);
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
-        console.log("Files before distri: ", files);
         let filesDistribution = arrayMove(files, oldIndex, newIndex);
-        console.log("File distri: ", filesDistribution);
         setFiles(filesDistribution);
         props.handleData(props.name, filesDistribution);
     };
