@@ -90,6 +90,7 @@ const ShippingZoneForm = (props) => {
         formData.append("reference", values.zoneRef);
         formData.append("cost", values.price);
         formData.append("map", values.file[0]);
+        formData.append("shippingDayOfWeek", values.shippingDay);
 
         const res = props.update ? await updateZone(formData, props.shippingZone.id) : await createZone(formData);
 

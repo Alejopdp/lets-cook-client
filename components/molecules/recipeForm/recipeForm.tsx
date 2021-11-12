@@ -618,7 +618,7 @@ export default RecipeForm;
 //     { label: "Apto vegetariano", value: "Vegetariano" },
 //     { label: "Acto vegano", value: "Vegano" },
 // ];
-const difficultyLevelOptions = ["Facil", "Media", "Alta"];
+const difficultyLevelOptions = ["Facil", "Media", "Dificil"];
 const toolsOptions = [
     "Cuchillo",
     "Tabla de cortar",
