@@ -651,7 +651,7 @@ RecipeForm.propTypes = {
 
 export default RecipeForm;
 
-const difficultyLevelOptions = ["Fácil", "Media", "Alta"];
+const difficultyLevelOptions = ["Facil", "Media", "Dificil"];
 const toolsOptions = [
     "Cuchillo",
     "Tabla de cortar",
