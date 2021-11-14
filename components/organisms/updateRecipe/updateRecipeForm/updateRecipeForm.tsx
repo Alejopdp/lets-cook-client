@@ -236,7 +236,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         //     variants: ingredientsVariants,
         // };
 
-        const res = await updateRecipe(recipeData.id, formDataToCreate, "");
+        const res = await updateRecipe(recipeData.id, formDataToCreate, router.locale);
 
         if (res.status === 200) {
             enqueueSnackbar("Se ha modificado la receta correctamente", {
