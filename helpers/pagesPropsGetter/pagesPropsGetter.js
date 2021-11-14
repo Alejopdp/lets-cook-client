@@ -25,15 +25,15 @@ export const pagesPropsGetter = async (params, locale, token) => {
                 hasError: res.data.message || null,
             };
 
-        case "recetas/modificar":
-            res = await getRecipeById("", params.id, locale);
-            const formDataRes = await getRecipeFormData("", locale);
+        // case "recetas/modificar":
+        //     res = await getRecipeById("", params.id, locale);
+        //     const formDataRes = await getRecipeFormData("", locale);
 
-            return {
-                formData: formDataRes.data,
-                recipeData: res.data,
-                hasError: res.data.message || formDataRes.data.message || null,
-            };
+        //     return {
+        //         formData: formDataRes.data,
+        //         recipeData: res.data,
+        //         hasError: res.data.message || formDataRes.data.message || null,
+        //     };
         case "gestion-de-usuarios":
             res = await getUserList();
 

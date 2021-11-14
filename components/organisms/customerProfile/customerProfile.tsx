@@ -82,6 +82,10 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         ],
     });
 
+    // useEffect(() => {
+
+    // }, [])
+
     const handleUpdatePersonalData = async (formData: Personaldata) => {
         const res = await updateCustomerPersonalData({ ...formData, id: props.data.personalData.id });
 
