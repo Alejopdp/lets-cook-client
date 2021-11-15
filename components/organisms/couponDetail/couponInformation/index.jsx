@@ -16,14 +16,20 @@ import DeleteCouponModal from "./deleteCouponModal";
 import { CouponState } from "types/coupon/couponState";
 import { useSnackbar } from "notistack";
 import { updateCouponState } from "helpers/serverRequests/coupon";
+import ActivateCouponModal from "./activateCouponModal";
 
 const CouponInformation = (props) => {
     const { enqueueSnackbar } = useSnackbar();
+    const [openActiveCouponModal, setOpenActiveCouponModal] = useState(false);
     const [openDeactiveCouponModal, setOpenDeactiveCouponModal] = useState(false);
     const [openDeleteCouponModal, setOpenDeleteCouponModal] = useState(false);
     const [coupon, setCoupon] = useState({ ...props.coupon });
 
     // Deactive Coupon Modal Functions
+
+    const handleClickOpenActiveCouponModal = () => {
+        setOpenActiveCouponModal(true);
+    };
 
     const handleClickOpenDeactiveCouponModal = () => {
         setOpenDeactiveCouponModal(true);
@@ -31,6 +37,18 @@ const CouponInformation = (props) => {
 
     const handleCloseDeactiveCouponModal = () => {
         setOpenDeactiveCouponModal(false);
+    };
+
+    const handleActiveCoupon = async () => {
+        const res = await updateCouponState(CouponState.ACTIVE, props.coupon.id);
+
+        if (res.status === 200) {
+            enqueueSnackbar("Cupón activo correctamente", { variant: "success" });
+            setCoupon({ ...coupon, state: CouponState.ACTIVE });
+            setOpenActiveCouponModal(false);
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
     };
 
     const handleDeactiveCoupon = async () => {
@@ -49,6 +67,10 @@ const CouponInformation = (props) => {
 
     const handleClickOpenDeleteCouponModal = () => {
         setOpenDeleteCouponModal(true);
+    };
+
+    const handleCloseActivateCouponModal = () => {
+        setOpenActiveCouponModal(false);
     };
 
     const handleCloseDeleteCouponModal = () => {
@@ -89,9 +111,15 @@ const CouponInformation = (props) => {
                         state={coupon.state}
                         handleClickDeactivateCoupon={handleClickOpenDeactiveCouponModal}
                         handleClickDeleteCoupon={handleClickOpenDeleteCouponModal}
+                        handleClickActivateCoupon={handleClickOpenActiveCouponModal}
                     />
                 </Grid>
             </Grid>
+            <ActivateCouponModal
+                open={openActiveCouponModal}
+                handleClose={handleCloseActivateCouponModal}
+                handlePrimaryButtonClick={handleActiveCoupon}
+            />
             <DeactivateCouponModal
                 open={openDeactiveCouponModal}
                 handleClose={handleCloseDeactiveCouponModal}

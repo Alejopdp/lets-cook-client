@@ -16,6 +16,13 @@ const CouponActions = (props) => {
     return (
         <Grid item xs={12}>
             <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                {props.state === CouponState.INACTIVE && (
+                    <div>
+                        <Button size="medium" style={{ color: theme.palette.primary.main }} onClick={props.handleClickActivateCoupon}>
+                            Activar cupón
+                        </Button>
+                    </div>
+                )}
                 {props.state === CouponState.ACTIVE && (
                     <div>
                         <Button size="medium" style={{ color: theme.palette.secondary.main }} onClick={props.handleClickDeactivateCoupon}>
