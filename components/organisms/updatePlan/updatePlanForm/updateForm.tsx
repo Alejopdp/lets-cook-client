@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 import { updatePlan } from "../../../../helpers/serverRequests/plan";
 import { useRouter } from "next/router";
+import { PlanVariant } from "types/plan/plan";
 
 // External components
 import RadioButton from "@material-ui/core/Radio";
@@ -29,8 +30,8 @@ const UpdatePlanForm = (props) => {
         iconColor: [],
         iconByg: [],
     });
-    const [attributes, setattributes] = useState([]);
-    const [variants, setvariants] = useState([]);
+    const [attributes, setattributes] = useState<[string, string[]][]>([]);
+    const [variants, setvariants] = useState<PlanVariant[]>([]);
     const [otherData, setotherData] = useState({
         isActive: null,
         planType: "",
@@ -44,7 +45,6 @@ const UpdatePlanForm = (props) => {
     const firstAttributesActualization = useRef(true);
 
     useEffect(() => {
-        // console.log("A VER: ", window.URL.createObjectURL(props.plan.imageUrl));
         setgeneralData({
             id: props.plan.id,
             name: props.plan.name,
@@ -99,7 +99,7 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleAddAttribute = () => {
-        setattributes([...attributes, [[], []]]);
+        setattributes([...attributes, ["", []]]);
     };
 
     const handleRemoveAttribute = (index) => {
@@ -125,9 +125,10 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleAttributeValuesChange = (index, e) => {
-        var updatedAttribute = [...attributes[index]];
+        var updatedAttribute: [string, string[]] = [...attributes[index]];
+
         if (!e.target.value) {
-            return;
+            return; // Because if i delete an attribute, i can lose an existing variant
         } else if (updatedAttribute[1].every((value) => value !== e.target.value)) {
             updatedAttribute[1] = [...updatedAttribute[1], e.target.value];
             updateAttributes(updatedAttribute, index);
@@ -214,11 +215,20 @@ const UpdatePlanForm = (props) => {
         return array.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat()))); // [[value1OfKey1, value1OfKey2], [value2OfKey1, value1OfKey2] ]
     };
 
+    const onlyOneAttributeWithValues = () => {
+        return attributes.filter((attr) => attr[1].length > 0).length === 1;
+    };
+
+    const findVariantByAttributesGeneratedId = (attributesGeneratedId: string): PlanVariant | undefined => {
+        return variants.find((variant) => variant.auxId === attributesGeneratedId);
+    };
+
     const setGridRows = () => {
         const baseCartesian = cartesianProduct(...attributes.filter((attr) => attr[1].length > 0).map((attr) => attr[1]));
-        // const cartesian = onlyOneAttributeWithValues() ? baseCartesian.map((item) => [item]) : baseCartesian;
-        var rows = [];
-        var attributesWithFixedFields: [string, string | number | boolean][] = [
+        const cartesian = onlyOneAttributeWithValues() ? baseCartesian.map((item) => [item]) : baseCartesian;
+        var rows: PlanVariant[] = [];
+
+        var attributesWithFixedFields: [string, string | number | boolean | string[]][] = [
             ...attributes,
             ["price", 0],
             ["priceWithOffer", 0],
@@ -228,20 +238,23 @@ const UpdatePlanForm = (props) => {
             ["isDeleted", false],
         ];
 
-        for (let i = 0; i < baseCartesian.length; i++) {
+        for (let i = 0; i < cartesian.length; i++) {
             var row = {};
-            let id = Array.isArray(baseCartesian[i])
-                ? baseCartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
-                : [baseCartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
-            row["id"] = id; // Obligatorio para data-grid
-            row["auxId"] = id;
+            let attributesId = Array.isArray(cartesian[i])
+                ? cartesian[i].reduce((acc, actualValue) => acc + actualValue, "")
+                : [cartesian[i]].reduce((acc, actualValue) => acc + actualValue, "");
 
-            let variant = variants.find((variant) => {
-                // const generatedId = generateVariantIdForUpdatingRow(variant);
-                return variant.auxId === id;
-            });
+            const actualVariant = findVariantByAttributesGeneratedId(attributesId);
+            row["id"] = actualVariant ? actualVariant.id : attributesId; // Obligatorio para data-grid
+            row["auxId"] = attributesId; // row["auxId"] = id;
+            // let variant = variants.find((variant) => {
+            //     // const generatedId = generateVariantIdForUpdatingRow(variant);
+            //     return variant.auxId === id;
+            // });
 
-            row["oldId"] = !!variant && variant.oldId ? variant.oldId : id;
+            // row["oldId"] = !!variant && variant.oldId ? variant.oldId : id;
+            let variant = variants.find((variant) => variant.id === row.id);
+
             for (let j = 0; j < attributesWithFixedFields.length; j++) {
                 let columnName = attributesWithFixedFields[j][0];
                 if (
@@ -252,9 +265,9 @@ const UpdatePlanForm = (props) => {
                     columnName === "isDefault" ||
                     columnName === "isDeleted"
                 ) {
-                    row[columnName] = !!variant ? variant[columnName] : baseCartesian[i][j];
+                    row[columnName] = !!variant ? variant[columnName] : cartesian[i][j];
                 } else {
-                    row[columnName] = baseCartesian[i][j];
+                    row[columnName] = cartesian[i][j];
                 }
             }
             rows.push(row);
@@ -263,7 +276,6 @@ const UpdatePlanForm = (props) => {
 
         return rows;
     };
-    console.log("A VER LAS VARIANTS: ", variants);
 
     const generateVariantIdForUpdatingRow = (variant) => {
         if (!!!variant.attributes || !Array.isArray(variant.attributes)) return null;
@@ -276,7 +288,6 @@ const UpdatePlanForm = (props) => {
     };
 
     const handleVariantsEdit = (params, e) => {
-        console.log("A VERGABRIEL: ", params);
         if (params.field === "isDefault") {
             handleDefaultVariantChange(params);
             return;
@@ -323,6 +334,14 @@ const UpdatePlanForm = (props) => {
 
     const handleUpdate = async () => {
         setisSubmitting(true);
+        const variantsToSave = [...variants];
+        variantsToSave.forEach((variant) => {
+            if (variant.id === variant.auxId) {
+                variant.id = "";
+            }
+            delete variant.auxId;
+        });
+
         const formData = new FormData();
         formData.append("name", generalData.name);
         formData.append("description", generalData.description);
@@ -332,7 +351,7 @@ const UpdatePlanForm = (props) => {
         formData.append("availablePlanFrecuencies", JSON.stringify(frequency)); // Because it is an array
         formData.append("type", otherData.planType);
         formData.append("hasRecipes", JSON.stringify(otherData.hasRecipes));
-        formData.append("variants", JSON.stringify(variants)); // Because it is an array
+        formData.append("variants", JSON.stringify(variantsToSave)); // Because it is an array
         formData.append("additionalPlans", JSON.stringify(additionalPlans)); // Because it is an array
         formData.append("abilityToChooseRecipes", JSON.stringify(otherData.abilityToChooseRecipes));
         formData.append("planSlug", generalData.slug);
@@ -343,6 +362,7 @@ const UpdatePlanForm = (props) => {
             enqueueSnackbar("Se ha modificado el plan correctamente", {
                 variant: "success",
             });
+            router.reload();
         } else {
             enqueueSnackbar(res.data.message, {
                 variant: "error",
@@ -365,7 +385,6 @@ const UpdatePlanForm = (props) => {
 
     const handleDefaultVariantChange = (params) => {
         const newVariants = variants.map((variant) => {
-            console.log("VARIANT: ", variant);
             if (variant.id === params.id) {
                 return {
                     ...variant,
@@ -378,7 +397,6 @@ const UpdatePlanForm = (props) => {
                 };
             }
         });
-        console.log(" AV ERS ESAS NEW VATIANS: ", newVariants);
         setvariants(newVariants);
     };
 
@@ -398,6 +416,7 @@ const UpdatePlanForm = (props) => {
                         handleDropFileIconByg={handleDropFileIconByg}
                     />
                     <AttributesAndVariants
+                        hideAddAttributeButton
                         arentAttributesDeletable={true}
                         attributes={attributes}
                         variants={variants}
