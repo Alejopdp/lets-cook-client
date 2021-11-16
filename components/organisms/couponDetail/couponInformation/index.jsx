@@ -15,7 +15,7 @@ import DeactivateCouponModal from "./deactivateCouponModal";
 import DeleteCouponModal from "./deleteCouponModal";
 import { CouponState } from "types/coupon/couponState";
 import { useSnackbar } from "notistack";
-import { updateCouponState } from "helpers/serverRequests/coupon";
+import { deleteCoupon, updateCouponState } from "helpers/serverRequests/coupon";
 
 const CouponInformation = (props) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -36,7 +36,7 @@ const CouponInformation = (props) => {
     const handleDeactiveCoupon = async () => {
         const res = await updateCouponState(CouponState.INACTIVE, props.coupon.id);
 
-        if (res.status === 200) {
+        if (res && res.status === 200) {
             enqueueSnackbar("Cupón desactivado correctamente", { variant: "success" });
             setCoupon({ ...coupon, state: CouponState.INACTIVE });
             setOpenDeactiveCouponModal(false);
@@ -55,9 +55,16 @@ const CouponInformation = (props) => {
         setOpenDeleteCouponModal(false);
     };
 
-    const handleDeleteCoupon = () => {
-        alert("deleted");
-        setOpenDeleteCouponModal(false);
+    const handleDeleteCoupon = async () => {
+        const res = await deleteCoupon(props.coupon.id);
+
+        if (res && res.status === 200) {
+            enqueueSnackbar("Cupón eliminado correctamente", { variant: "success" });
+            setCoupon({ ...coupon, state: CouponState.DELETED });
+            setOpenDeleteCouponModal(false);
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
     };
 
     return (
