@@ -30,11 +30,13 @@ const CouponActions = (props) => {
                         </Button>
                     </div>
                 )}
-                <div>
-                    <Button size="medium" style={{ color: "#FC1919" }} onClick={props.handleClickDeleteCoupon}>
-                        Eliminar cupón
-                    </Button>
-                </div>
+                {props.state !== CouponState.DELETED && (
+                    <div>
+                        <Button size="medium" style={{ color: "#FC1919" }} onClick={props.handleClickDeleteCoupon}>
+                            Eliminar cupón
+                        </Button>
+                    </div>
+                )}
             </PaperWithTitleContainer>
         </Grid>
     );
