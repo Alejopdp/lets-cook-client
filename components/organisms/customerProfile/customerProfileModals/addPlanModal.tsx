@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 
@@ -11,6 +11,7 @@ import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import { Typography } from "@material-ui/core";
 import { translateFrequency } from "helpers/i18n/i18n";
+import { PlanType, PlanVariant } from "types/plan/plan";
 
 const useStyles = makeStyles((theme) => ({
     selectField: {
@@ -21,6 +22,16 @@ const useStyles = makeStyles((theme) => ({
 
 const AddPlanModal = (props) => {
     const { selectField } = useStyles();
+
+    // const planAndPlanVariantMap: { [planId: string]: PlanVariant[] } = useMemo(() => {
+    //     const map: { [planId: string]: PlanVariant[] } = {};
+
+    //     for (let plan of props.plans) {
+    //         map[plan.id] = plan.planVariants;
+    //     }
+
+    //     return map;
+    // }, [props.plans]);
 
     return (
         <Box minWidth="400px">
@@ -40,26 +51,24 @@ const AddPlanModal = (props) => {
                 <Select value={props.selectedVariation} onChange={props.handleVariationSelect} label="Variante">
                     {props.selectedPlan.variants.map((variant, index) => (
                         <MenuItem value={variant} key={index}>
-                            {variant.name}
+                            {variant.descriptionWithPrice}
                         </MenuItem>
                     ))}
                 </Select>
             </FormControl>
 
-            <FormControl className={selectField} variant="outlined">
-                <InputLabel>Frecuencia</InputLabel>
-                <Select
-                    value={props.selectedPlan.availablePlanFrecuencies}
-                    // onChange={props.handleVariationSelect}
-                    label="Frecuencia"
-                >
-                    {props.selectedPlan.availablePlanFrecuencies.map((frequency, index) => (
-                        <MenuItem value={frequency} key={index}>
-                            {translateFrequency(frequency)}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            {!!props.selectedPlan && !!props.selectedPlan.id && props.selectedPlan.type !== PlanType.Principal && (
+                <FormControl className={selectField} variant="outlined">
+                    <InputLabel>Frecuencia</InputLabel>
+                    <Select value={props.selectedFrequency} onChange={props.handleChangeFrequency} label="Frecuencia">
+                        {props.selectedPlan.availablePlanFrecuencies.map((frequency, index) => (
+                            <MenuItem value={frequency} key={index}>
+                                {translateFrequency(frequency)}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            )}
 
             {props.selectedPlan.description && <Typography variant="body1">{props.selectedPlan.description}</Typography>}
         </Box>

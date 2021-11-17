@@ -5,6 +5,27 @@ const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/subscription`;
 
 const { getFromLocalStorage } = useLocalStorage();
 
+export const createSubscription = async (data) => {
+    try {
+        const res = await Axios({
+            method: "POST",
+            url: `${apiUrl}/as-admin`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
+            params: {
+                locale: "es",
+            },
+
+            data,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
 export const cancelSubscription = async (subscriptionId: string, reason: string, comment: string, locale: string = "es") => {
     try {
         const res = await Axios({
