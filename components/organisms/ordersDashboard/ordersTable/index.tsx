@@ -21,6 +21,8 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 // Internal components
 import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
+import { roundTwoDecimals } from "helpers/utils/utils";
+import { TableSortLabel } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -39,12 +41,45 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+enum OrderType {
+    ASC = "asc",
+    DESC = "desc",
+}
+
+enum PaymentOrderOrderByOptions {
+    BILLING_DATE = "billingDate",
+    CUSTOMER_NAME = "customerName",
+    AMOUNT = "amount",
+    STATE = "state",
+}
+
 const OrdersTable = (props) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
-
+    const [order, setOrder] = useState<OrderType>(OrderType.ASC);
+    const [orderBy, setOrderBy] = useState<PaymentOrderOrderByOptions>("");
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [rowsPerPage, setRowsPerPage] = React.useState(100);
+
+    const handleRequestSort = (event, property: PaymentOrderOrderByOptions) => {
+        const isAsc = orderBy === property && order === OrderType.ASC;
+        setOrder(isAsc ? OrderType.DESC : OrderType.ASC);
+        setOrderBy(property);
+    };
+
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    const getComparator = (order, orderBy) => {
+        return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -61,12 +96,30 @@ const OrdersTable = (props) => {
                 <Table className={table} aria-label="custom pagination table">
                     <TableHead>
                         <TableRow>
-                            <TableCell className={idCell}>
+                            <TableCell
+                                className={idCell}
+                                // sortDirection={orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order : false}
+                            >
+                                {/* <TableSortLabel
+                                    active={orderBy === PaymentOrderOrderByOptions.BILLING_DATE}
+                                    direction={orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.BILLING_DATE)}
+                                > */}
                                 <Typography variant="subtitle1">Fecha de cobro</Typography>
+                                {/* </TableSortLabel> */}
                             </TableCell>
 
-                            <TableCell className={cells}>
-                                <Typography variant="subtitle1">Cliente</Typography>
+                            <TableCell
+                                className={cells}
+                                sortDirection={orderBy === PaymentOrderOrderByOptions.CUSTOMER_NAME ? order : false}
+                            >
+                                <TableSortLabel
+                                    active={orderBy === PaymentOrderOrderByOptions.CUSTOMER_NAME}
+                                    direction={orderBy === PaymentOrderOrderByOptions.CUSTOMER_NAME ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.CUSTOMER_NAME)}
+                                >
+                                    <Typography variant="subtitle1">Cliente</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell className={cells}>
@@ -77,20 +130,33 @@ const OrdersTable = (props) => {
                                 <Typography variant="subtitle1"># ordenes</Typography>
                             </TableCell>
 
-                            <TableCell>
-                                <Typography variant="subtitle1">Monto</Typography>
+                            <TableCell sortDirection={orderBy === PaymentOrderOrderByOptions.AMOUNT ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === PaymentOrderOrderByOptions.AMOUNT}
+                                    direction={orderBy === PaymentOrderOrderByOptions.AMOUNT ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.AMOUNT)}
+                                >
+                                    <Typography variant="subtitle1">Monto</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
-                            <TableCell>
-                                <Typography variant="subtitle1">Estado</Typography>
+                            <TableCell sortDirection={orderBy === PaymentOrderOrderByOptions.STATE ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === PaymentOrderOrderByOptions.STATE}
+                                    direction={orderBy === PaymentOrderOrderByOptions.STATE ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.STATE)}
+                                >
+                                    <Typography variant="subtitle1">Estado</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(rowsPerPage > 0 ? props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.rows).map(
-                            (row, index) => (
+                        {(rowsPerPage > 0 ? props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.rows)
+                            .sort(getComparator(order, orderBy))
+                            .map((row, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
                                         <Typography variant="body1">{row.billingDate}</Typography>
@@ -110,13 +176,13 @@ const OrdersTable = (props) => {
                                         </Link>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">{row.id}</Typography>
+                                        <Typography variant="body1">{row.humanId}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{row.orderQuantity}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body1">{row.amount}</Typography>
+                                        <Typography variant="body1">{roundTwoDecimals(row.amount)}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{row.state}</Typography>
@@ -134,13 +200,12 @@ const OrdersTable = (props) => {
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
-                            )
-                        )}
+                            ))}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
+                                rowsPerPageOptions={[50, 100, 250, 500, 1000, { label: "Todos", value: -1 }]}
                                 colSpan={5}
                                 count={props.rows.length}
                                 rowsPerPage={rowsPerPage}

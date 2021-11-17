@@ -1,10 +1,12 @@
 // Utils & Config
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core";
-
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 // External components
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
@@ -20,6 +22,7 @@ import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
 import { PlanFrequencyValue } from "helpers/types/frequency";
 import { translateFrequency } from "helpers/i18n/i18n";
+import { applyCouponToSubscription, cancelSubscription } from "helpers/serverRequests/subscription";
 
 const SubscriptionGrid = (props) => {
     const subscriptionDetail = {
@@ -34,7 +37,7 @@ const SubscriptionGrid = (props) => {
         paymentMethod: "Mastercard terminada en 1234",
         addressName: "Av. Fausto Elio 42, 46011, Valencia",
     };
-
+    const router = useRouter();
     const theme = useTheme();
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
     const [openEditPlanModal, setOpenEditPlanModal] = useState(false);
@@ -43,6 +46,7 @@ const SubscriptionGrid = (props) => {
     const [openEditNextChargeDateModal, setOpenEditNextChargeDateModal] = useState(false);
     const [openEditRestrictionsModal, setOpenEditRestrictionsModal] = useState(false);
     const [couponCode, setCouponCode] = useState("");
+    const { enqueueSnackbar } = useSnackbar();
 
     // Cancel Subscription Modal Functions
 
@@ -54,9 +58,22 @@ const SubscriptionGrid = (props) => {
         setOpenCancelSubscriptionModal(false);
     };
 
-    const handleCancelSubscription = (reason, comments) => {
-        alert(`cancel: ${JSON.stringify(reason)}, ${comments}`);
-        setOpenCancelSubscriptionModal(false);
+    const handleCancelSubscription = async (reason, comments) => {
+        console.log(`Cancelling subscription ${props.subscription.subscriptionId} for reason ${reason} with comment ${comments}`);
+        const res = await cancelSubscription(props.subscription.subscriptionId, reason, comments);
+
+        if (res && res.status === 200) {
+            enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
+            props.setsubscription({ ...props.subscription, state: "SUBSCRIPTION_CANCELLED" });
+            setOpenCancelSubscriptionModal(false);
+        } else {
+            enqueueSnackbar(
+                res && res.data
+                    ? res.data.message || "Ocurrió un error inesperado, por favor intente nuevamente"
+                    : "Ocurrió un error inesperado, por favor intente nuevamente",
+                { variant: "error" }
+            );
+        }
     };
 
     // Edit Plan Modal Functions
@@ -143,9 +160,15 @@ const SubscriptionGrid = (props) => {
         setCouponCode(event.target.value);
     };
 
-    const handleClickApplyCoupon = () => {
-        alert(`apply coupon ${couponCode}`);
-        setCouponCode("");
+    const handleClickApplyCoupon = async () => {
+        const res = await applyCouponToSubscription(props.subscription.subscriptionId, couponCode, props.subscription.customerId);
+
+        if (res && res.status === 200) {
+            setCouponCode("");
+            enqueueSnackbar("Cupón aplicado", { variant: "success" });
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error, intenta nuevamente", { variant: "error" });
+        }
     };
 
     return (
@@ -200,7 +223,7 @@ const SubscriptionGrid = (props) => {
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Restricciones">
                             <DataDisplayEditable
-                                title="Rescricción"
+                                title="Restricción"
                                 text={props.subscription.restriction.text}
                                 handleClick={handleClickOpenEditRestrictionsModal}
                                 style={{ marginBottom: theme.spacing(2) }}
@@ -213,20 +236,43 @@ const SubscriptionGrid = (props) => {
                             <AmountDetails data={props.subscription.amountDetails} />
                         </PaperWithTitleContainer>
                     </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
-                            <ApplyCoupon handleChange={handleChangeCouponInput} handleClick={handleClickApplyCoupon} value={couponCode} />
-                        </PaperWithTitleContainer>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                            <div>
-                                <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelSubscriptionModal}>
-                                    CANCELAR SUSCRIPCIÓN
-                                </Button>
-                            </div>
-                        </PaperWithTitleContainer>
-                    </Grid>
+                    {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
+                                {!!props.subscription.coupon?.id ? (
+                                    <Link
+                                        onClick={() =>
+                                            router.push({
+                                                pathname: "/cupon",
+                                                query: { id: props.subscription.coupon.id },
+                                            })
+                                        }
+                                        color="primary"
+                                        style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                                    >
+                                        {props.subscription.coupon.code}
+                                    </Link>
+                                ) : (
+                                    <ApplyCoupon
+                                        handleChange={handleChangeCouponInput}
+                                        handleClick={handleClickApplyCoupon}
+                                        value={couponCode}
+                                    />
+                                )}
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
+                    {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelSubscriptionModal}>
+                                        CANCELAR SUSCRIPCIÓN
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
             <CancelSubscriptionModal

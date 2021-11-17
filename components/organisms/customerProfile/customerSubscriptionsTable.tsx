@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
@@ -25,6 +25,9 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import ComplexModal from "../../molecules/complexModal/complexModal";
 import AddPlanModal from "./customerProfileModals/addPlanModal";
 import { translateFrequency } from "helpers/i18n/i18n";
+import { PlanType } from "types/plan/plan";
+import { createSubscription } from "helpers/serverRequests/subscription";
+import { PlanFrequencyValue } from "helpers/types/frequency";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -57,11 +60,11 @@ const CustomerSubscriptionsTable = (props) => {
 
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+    const [isAddPlanSubmitting, setIsAddPlanSubmitting] = useState(false);
     const [subscriptions, setSubscriptions] = useState([...props.subscriptions] || []);
     const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
     const [selectedVariation, setSelectedVariation] = useState({});
-    // const [selectedFrequency, setSelectedFrequency] = useState({ availablePlanFrecuencies: [] });
+    const [selectedFrequency, setSelectedFrequency] = useState("");
 
     const handlePlanSelect = (e) => {
         setSelectedPlan(e.target.value);
@@ -69,6 +72,10 @@ const CustomerSubscriptionsTable = (props) => {
 
     const handleVariationSelect = (e) => {
         setSelectedVariation(e.target.value);
+    };
+
+    const handleChangeFrequency = (e) => {
+        setSelectedFrequency(e.target.value);
     };
 
     var subscriptionToAdd = {
@@ -82,28 +89,29 @@ const CustomerSubscriptionsTable = (props) => {
         setSubscriptions([...subscriptions, subscriptionToAdd]);
     };
 
-    // console.log(`Plan seleccionado: ${selectedPlan.name}, Variante seleccionada: ${selectedVariation.name}`)
-    // console.log("Suscripciones:", subscriptions);
-    // console.log("Planes:", props.plans)
-    console.log(selectedPlan);
-    // console.log(selectedVariation)
-
-    const handleAddPlan = () => {
-        const res = { status: 200 };
+    const handleAddPlan = async () => {
+        setIsAddPlanSubmitting(true);
+        const data = {
+            customerId: props.customerId, // Get customer id from zustand
+            planId: selectedPlan.id,
+            planVariantId: selectedVariation.id,
+            planFrequency: selectedPlan.type === PlanType.Principal ? PlanFrequencyValue.WEEKLY : selectedFrequency,
+        };
+        const res = await createSubscription(data);
 
         if (res.status === 200) {
             setAddPlanModalOpen(false);
-            enqueueSnackbar("Plan añadido", {
+            enqueueSnackbar("Plan añadido correctamente", {
                 variant: "success",
             });
 
-            handleSetSubscriptions();
+            // handleSetSubscriptions();
         } else {
             enqueueSnackbar("No se ha podido añadir el plan", {
                 variant: "error",
             });
-            setAddPlanModalOpen(false);
         }
+        setIsAddPlanSubmitting(false);
     };
 
     return (
@@ -197,6 +205,8 @@ const CustomerSubscriptionsTable = (props) => {
                             handleVariationSelect={handleVariationSelect}
                             selectedPlan={selectedPlan}
                             selectedVariation={selectedVariation}
+                            selectedFrequency={selectedFrequency}
+                            handleChangeFrequency={handleChangeFrequency}
                         />
                     }
                     open={isAddPlanModalOpen}
@@ -204,6 +214,7 @@ const CustomerSubscriptionsTable = (props) => {
                     confirmButtonText="Agregar Plan"
                     handleCancelButton={() => setAddPlanModalOpen(false)}
                     handleConfirmButton={handleAddPlan}
+                    isConfirmButtonDisabled={isAddPlanSubmitting}
                 />
             )}
         </>

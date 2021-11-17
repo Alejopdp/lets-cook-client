@@ -1,13 +1,5 @@
-import PropTypes from 'prop-types';
-import {
-    Button,
-    makeStyles,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-} from "@material-ui/core";
+import PropTypes from "prop-types";
+import { Button, makeStyles, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     primaryColor: {
@@ -35,26 +27,25 @@ const ComplexModal = ({
     handleCancelButton = () => {},
     open,
     handleClose = () => {},
+    isConfirmButtonDisabled,
 }) => {
     const classes = useStyles();
 
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
-                {component}
-            </DialogContent>
+            <DialogContent>{component}</DialogContent>
             <DialogActions>
                 <Button onClick={handleCancelButton} color="default" autoFocus>
                     {cancelButtonText}
                 </Button>
-                <Button onClick={handleConfirmButton} className={classes.primaryColor}>
+                <Button onClick={handleConfirmButton} className={classes.primaryColor} disabled={isConfirmButtonDisabled}>
                     {confirmButtonText}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 ComplexModal.propTypes = {
     title: PropTypes.string,
@@ -65,7 +56,6 @@ ComplexModal.propTypes = {
     handleCancelButton: PropTypes.func,
     open: PropTypes.bool,
     handleClose: PropTypes.func,
-
 };
 
 export default ComplexModal;

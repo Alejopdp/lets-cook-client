@@ -11,6 +11,7 @@ import { roundTwoDecimals } from "helpers/utils/utils";
 
 const AmountDetails = (props) => {
     const theme = useTheme();
+    console.log(props.data);
 
     return (
         <Box style={props.style}>
@@ -43,17 +44,19 @@ const AmountDetails = (props) => {
                     Impuestos (incluido):
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                    {roundTwoDecimals(props.data.taxes)} €
+                    {props.data.taxes} €
                 </Typography>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
-                <Typography variant="body1" color="textSecondary">
-                    Reembolsado:
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                    {roundTwoDecimals(props.data.quantityRefunded)} €
-                </Typography>
-            </div>
+            {props.hasRefund && (
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: theme.spacing(2) }}>
+                    <Typography variant="body1" color="textSecondary">
+                        Reembolsado:
+                    </Typography>
+                    <Typography variant="body1" color="textSecondary">
+                        {roundTwoDecimals(props.data.quantityRefunded)} €
+                    </Typography>
+                </div>
+            )}
             <div
                 style={{
                     display: "flex",

@@ -18,6 +18,7 @@ import { Typography } from "@material-ui/core";
 
 // Icons & Images
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import { roundTwoDecimals } from "helpers/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -77,13 +78,13 @@ const CustomerPurchaseHistoryTable = (props) => {
                                         <Typography variant="body1">{paymentOrder.date}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">#{paymentOrder.id}</Typography>
+                                        <Typography variant="body1">{paymentOrder.humanId}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Typography variant="body1">{paymentOrder.ordersQty}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <Typography variant="body1">€{paymentOrder.price}</Typography>
+                                        <Typography variant="body1">€{roundTwoDecimals(paymentOrder.price)}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body1">{paymentOrder.status}</Typography>

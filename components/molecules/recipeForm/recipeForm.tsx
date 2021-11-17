@@ -22,6 +22,7 @@ import Checkbox from "../../atoms/checkbox/checkbox";
 import BackAndCreateButtons from "../backAndCreateButtons/backAndCreateButtons";
 import NutritionalInformationGrid from "../nutritionalInformationGrid/nutritionalInformationGrid";
 import Dropzone from "../dropzone/dropzone";
+import FIleDraggable from "../fileDraggableDropZone/fileDraggableDropZone";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -53,6 +54,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         cookDuration: "",
         weight: "",
         image: [],
+        images: [],
     });
     const [tools, settools] = useState([]);
     const [difficultyLevel, setdifficultyLevel] = useState("");
@@ -174,7 +176,9 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
         formDataToCreate.append("weight", generalData.weight);
-        formDataToCreate.append("recipeImage", generalData.image[0]);
+        generalData.images.forEach((image) => {
+            formDataToCreate.append("recipeImages", image);
+        });
         formDataToCreate.append("tools", JSON.stringify(tools));
         formDataToCreate.append("imageTags", JSON.stringify(imageTags));
         formDataToCreate.append("planIds", JSON.stringify(plans));
@@ -361,12 +365,19 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 onChange={(e, newValues) => handleAddTool(newValues)}
                                 handleRemoveValue={handleRemoveTool}
                             />
-                            <Dropzone
+                            {/* <Dropzone
                                 title="Imagenes de la receta"
                                 maxFiles={10}
                                 handleDropFile={handleDropFile}
-                                files={generalData.image}
+                                files={generalData.images}
                                 fileName={generalData.name}
+                            /> */}
+                            <FIleDraggable
+                                handleData={(name, files) => setgeneralData({ ...generalData, [name]: files })}
+                                previousImages={[]}
+                                hasPreviousImages={false}
+                                name="images"
+                                files={generalData.images}
                             />
                         </PaperWithTitleContainer>
                     </Grid>
@@ -607,7 +618,7 @@ export default RecipeForm;
 //     { label: "Apto vegetariano", value: "Vegetariano" },
 //     { label: "Acto vegano", value: "Vegano" },
 // ];
-const difficultyLevelOptions = ["Facil", "Media", "Alta"];
+const difficultyLevelOptions = ["Facil", "Media", "Dificil"];
 const toolsOptions = [
     "Cuchillo",
     "Tabla de cortar",

@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 // Internal components
 import CustomButton from "../../atoms/button/button";
@@ -16,9 +17,25 @@ import CustomButton from "../../atoms/button/button";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
 
-const DashboardTitleWithCSV = (props) => {
+interface ExportOption {
+    title: string;
+    handler: () => void;
+}
+
+interface DashboardTitleWithManyCSVProps {
+    title: string;
+    import: boolean;
+    exports: ExportOption[];
+    importText?: string;
+    handleClickImport: (e: any) => void;
+    importFile: any;
+}
+
+const DashboardTitleWithManyCSV = (props: DashboardTitleWithManyCSVProps) => {
     const theme = useTheme();
     // TODO: Usar este componente en usersDashboard.jsx
+
+    console.log("A ver las porps. ", props.exports);
 
     return (
         <Grid item xs={12}>
@@ -31,23 +48,25 @@ const DashboardTitleWithCSV = (props) => {
                         <Button
                             size="large"
                             startIcon={<PublishIcon />}
-                            onClick={props.handleClickImport}
+                            // onClick={props.handleClickImport}
                             style={{ marginRight: theme.spacing(2) }}
+                            component="label"
                         >
-                            Importar CSV
+                            {props.importText || "Importar CSV"}
+                            <input type="file" hidden onChange={props.handleClickImport} value={props.importFile} />
                         </Button>
                     )}
-                    {props.export && (
-                        <Button size="large" startIcon={<GetAppIcon />} onClick={props.handleClickExport}>
-                            Exportar CSV
-                        </Button>
-                    )}
+                    <Box display="flex" alignItems="center">
+                        {props.exports.map((option, index) => (
+                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={option.handler}>
+                                {option.title || "Exportar CSV"}
+                            </Button>
+                        ))}
+                    </Box>
                 </div>
             </Box>
         </Grid>
     );
 };
 
-DashboardTitleWithCSV.propTypes = {};
-
-export default DashboardTitleWithCSV;
+export default DashboardTitleWithManyCSV;

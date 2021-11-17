@@ -10,13 +10,14 @@ import clsx from "clsx";
 // External components
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid, GridColumns } from "@material-ui/data-grid";
 import Box from "@material-ui/core/Box";
 import { Add as AddIcon, CallMerge } from "@material-ui/icons";
 
 // Internal components
 import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
 import KeyValueInput from "../../../molecules/keyValueInput/keyValueInput";
+import { PlanVariant } from "types/plan/plan";
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -52,6 +53,18 @@ const useStyles = makeStyles((theme) => {
         },
     };
 });
+
+interface AttributesAndVariants {
+    attributes: [string, string[]][];
+    variants: PlanVariant[];
+    handleKeyChange: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleValuesChange: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleAddAttribute: () => void;
+    handleRemoveAttributeValue: (index: number, value: any) => void;
+    variantsRows: PlanVariant[];
+    variantsColumns: GridColumns;
+    hideAddAttributeButton: boolean;
+}
 
 const AttributesAndVariants = (props) => {
     const theme = useTheme();
@@ -97,7 +110,7 @@ const AttributesAndVariants = (props) => {
                             ))}
                         </Box>
                     )}
-                    {props.planType !== "Principal" && (
+                    {props.planType !== "Principal" && !props.hideAddAttributeButton && (
                         <Button
                             style={{ marginTop: theme.spacing(2) }}
                             variant="contained"
@@ -120,7 +133,11 @@ const AttributesAndVariants = (props) => {
                     {props.variantsRows.length > 0 && (
                         <DataGrid
                             classes={{ root: classes.root, row: classes.row }}
-                            onEditCellChangeCommitted={(params, e) => {
+                            // onEditCellChangeCommitted={(params, e) => {
+                            //     e.preventDefault();
+                            //     props.handleVariantsEdit(params, e);
+                            // }}
+                            onCellEditCommit={(params, e) => {
                                 e.preventDefault();
                                 props.handleVariantsEdit(params, e);
                             }}

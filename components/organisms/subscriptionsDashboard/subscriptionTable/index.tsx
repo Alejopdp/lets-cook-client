@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { translateFrequency } from "../../../../helpers/i18n/i18n";
+import { visuallyHidden } from "@material-ui/utils";
 
 // External Components
 import Grid from "@material-ui/core/Grid";
@@ -22,6 +23,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 
 // Internal components
 import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
+import { Box, TableSortLabel } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -40,12 +42,34 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SubscriptionTable = (props) => {
+enum OrderType {
+    ASC = "asc",
+    DESC = "desc",
+}
+
+enum SubscriptionOrderByOptions {
+    STATE = "state",
+    CUSTOMER_NAME = "customerName",
+    AMOUNT = "amount",
+}
+
+interface SubscriptionTableProps {
+    rows: any;
+}
+
+const SubscriptionTable = (props: SubscriptionTableProps) => {
     const { tableContainer, table, cells, idCell } = useStyles();
     const router = useRouter();
-
+    const [order, setOrder] = useState<OrderType>(OrderType.ASC);
+    const [orderBy, setOrderBy] = useState<SubscriptionOrderByOptions>("");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
+
+    const handleRequestSort = (event, property: SubscriptionOrderByOptions) => {
+        const isAsc = orderBy === property && order === OrderType.ASC;
+        setOrder(isAsc ? OrderType.DESC : OrderType.ASC);
+        setOrderBy(property);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -54,6 +78,20 @@ const SubscriptionTable = (props) => {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+    };
+
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    const getComparator = (order, orderBy) => {
+        return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
     };
 
     return (
@@ -66,8 +104,17 @@ const SubscriptionTable = (props) => {
                                 <Typography variant="subtitle1">Subscription Id</Typography>
                             </TableCell>
 
-                            <TableCell className={cells}>
-                                <Typography variant="subtitle1">Cliente</Typography>
+                            <TableCell
+                                className={cells}
+                                sortDirection={orderBy === SubscriptionOrderByOptions.CUSTOMER_NAME ? order : false}
+                            >
+                                <TableSortLabel
+                                    active={orderBy === SubscriptionOrderByOptions.CUSTOMER_NAME}
+                                    direction={orderBy === SubscriptionOrderByOptions.CUSTOMER_NAME ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, SubscriptionOrderByOptions.CUSTOMER_NAME)}
+                                >
+                                    <Typography variant="subtitle1">Cliente</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell className={cells}>
@@ -82,20 +129,33 @@ const SubscriptionTable = (props) => {
                                 <Typography variant="subtitle1">Frecuencia</Typography>
                             </TableCell>
 
-                            <TableCell>
-                                <Typography variant="subtitle1">Monto</Typography>
+                            <TableCell sortDirection={orderBy === SubscriptionOrderByOptions.AMOUNT ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === SubscriptionOrderByOptions.AMOUNT}
+                                    direction={orderBy === SubscriptionOrderByOptions.AMOUNT ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, SubscriptionOrderByOptions.AMOUNT)}
+                                >
+                                    <Typography variant="subtitle1">Monto</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
-                            <TableCell>
-                                <Typography variant="subtitle1">Estado</Typography>
+                            <TableCell sortDirection={orderBy === SubscriptionOrderByOptions.STATE ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === SubscriptionOrderByOptions.STATE}
+                                    direction={orderBy === SubscriptionOrderByOptions.STATE ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, SubscriptionOrderByOptions.STATE)}
+                                >
+                                    <Typography variant="subtitle1">Estado</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {(rowsPerPage > 0 ? props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.rows).map(
-                            (row, index) => (
+                        {(rowsPerPage > 0 ? props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : props.rows)
+                            .sort(getComparator(order, orderBy))
+                            .map((row, index) => (
                                 <TableRow key={index}>
                                     <TableCell className={idCell}>
                                         <Typography variant="body1">{row.id}</Typography>
@@ -111,7 +171,7 @@ const SubscriptionTable = (props) => {
                                             color="primary"
                                             style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
                                         >
-                                            {row.clientName}
+                                            {row.customerName}
                                         </Link>
                                     </TableCell>
                                     <TableCell className={cells}>
@@ -139,8 +199,7 @@ const SubscriptionTable = (props) => {
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
-                            )
-                        )}
+                            ))}
                     </TableBody>
                     <TableFooter>
                         <TableRow>

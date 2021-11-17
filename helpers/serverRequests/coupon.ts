@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { CouponState } from "types/coupon/couponState";
+import FileDownload from "js-file-download";
 
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/coupon`;
 
@@ -46,6 +47,22 @@ export const getCouponById = async (couponId) => {
     }
 };
 
+export const exportCoupons = async () => {
+    try {
+        const res = await Axios({
+            method: "POST",
+            url: `${apiUrl}/export`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Cupones.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
+
 export const updateCouponState = async (state: CouponState, couponId: string) => {
     try {
         const res = await Axios({
@@ -66,6 +83,23 @@ export const deleteCoupon = async (couponId) => {
         const res = await Axios({
             method: "DELETE",
             url: `${apiUrl}/${couponId}`,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const importManyCoupons = async (data) => {
+    try {
+        const res = await Axios({
+            method: "POST",
+            url: `${apiUrl}/import`,
+            headers: {
+                "Content-type": "multipart/form-data",
+            },
+            data,
         });
 
         return res;

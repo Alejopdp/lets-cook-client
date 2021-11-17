@@ -25,15 +25,15 @@ export const pagesPropsGetter = async (params, locale, token) => {
                 hasError: res.data.message || null,
             };
 
-        case "recetas/modificar":
-            res = await getRecipeById("", params.id, locale);
-            const formDataRes = await getRecipeFormData("", locale);
+        // case "recetas/modificar":
+        //     res = await getRecipeById("", params.id, locale);
+        //     const formDataRes = await getRecipeFormData("", locale);
 
-            return {
-                formData: formDataRes.data,
-                recipeData: res.data,
-                hasError: res.data.message || formDataRes.data.message || null,
-            };
+        //     return {
+        //         formData: formDataRes.data,
+        //         recipeData: res.data,
+        //         hasError: res.data.message || formDataRes.data.message || null,
+        //     };
         case "gestion-de-usuarios":
             res = await getUserList();
 
@@ -92,8 +92,9 @@ export const pagesPropsGetter = async (params, locale, token) => {
             return { plans: res.data || [], error: res.data.message || null };
         case "gestion-de-clientes/modificar":
             res = await getCustomerInformation(params.customerId, locale);
+            const plansRes = await getPlanList(locale);
 
-            return { data: res.data || [], error: res.data.message || null };
+            return { data: res.data || [], error: res.data.message || null, plans: plansRes.data };
 
         default:
             return null;

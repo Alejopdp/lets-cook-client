@@ -28,6 +28,9 @@ export const getRecipeById = async (token, id, locale) => {
             headers: {
                 Authorization: token,
             },
+            params: {
+                locale,
+            },
             url: `${apiUrl}/${id}`,
         });
         return res;

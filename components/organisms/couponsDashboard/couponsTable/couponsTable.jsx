@@ -43,7 +43,7 @@ const CouponsTable = (props) => {
     const classes = useStyles();
     const router = useRouter();
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(Math.min(100, props.coupons.length));
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.coupons.length - page * rowsPerPage);
 
@@ -121,7 +121,7 @@ const CouponsTable = (props) => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                rowsPerPageOptions={[50, 100, 250, 500, 1000, { label: "All", value: -1 }]}
                                 colSpan={5}
                                 count={props.coupons.length}
                                 rowsPerPage={rowsPerPage}

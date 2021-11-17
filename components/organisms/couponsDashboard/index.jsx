@@ -16,12 +16,14 @@ import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown"
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
+import { exportCoupons, importManyCoupons } from "helpers/serverRequests/coupon";
 
 const CouponsDashboard = (props) => {
     const router = useRouter();
     const [coupons, setcoupons] = useState([...props.coupons] || []);
     const [filtersBy, setfiltersBy] = useState([]);
     const [searchValue, setsearchValue] = useState("");
+    const [importFile, setImportFile] = useState("");
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleApplyFilters = (filters = []) => {
@@ -39,17 +41,45 @@ const CouponsDashboard = (props) => {
     const filteredCoupons =
         filtersBy.length > 0
             ? filterCouponsBySearchValue().filter((coupon) =>
-                filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
-            )
+                  filtersBy.some((filterItem) => coupon.type === filterItem.code || coupon.isActive === filterItem.code)
+              )
             : filterCouponsBySearchValue();
 
+    const handleClickImport = async (e) => {
+        const data = new FormData();
 
-    const handleClickImport = () => alert('Import')
-    const handleClickExport = () => alert('Export')
+        data.append("coupons", e.target.files[0]);
+        const res = await importManyCoupons(data);
+
+        if (res && res.status === 200) {
+            setcoupons([...res.data, ...coupons]);
+            enqueueSnackbar("Todos los cupones fueron cargados correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado", { variant: "error" });
+        }
+        setImportFile("");
+    };
+    const handleClickExport = async () => {
+        const res = await exportCoupons();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
+    };
 
     return (
         <>
-            <DashboardTitleWithButtonAndCSV title="Cupones" import export handleClickImport={handleClickImport} handleClickExport={handleClickExport} handleClick={() => router.push("/cupones/crear")} buttonText='CREAR CUPÓN' />
+            <DashboardTitleWithButtonAndCSV
+                title="Cupones"
+                import
+                export
+                importFile={importFile}
+                handleClickImport={handleClickImport}
+                handleClickExport={handleClickExport}
+                handleClick={() => router.push("/cupones/crear")}
+                buttonText="CREAR CUPÓN"
+                multipleImportFiles={false}
+            />
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
                     <Box marginRight={2}>
@@ -83,14 +113,14 @@ const CouponsDashboard = (props) => {
             {filteredCoupons.length > 0 ? (
                 <CuoponsTable coupons={filteredCoupons} />
             ) : (
-                    <EmptyImage
-                        label={
-                            filtersBy.length > 0 || !!searchValue
-                                ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
-                                : "Aún no se crearon cupones"
-                        }
-                    />
-                )}
+                <EmptyImage
+                    label={
+                        filtersBy.length > 0 || !!searchValue
+                            ? "No se han encontrado cupones que coincidan con los términos de búsqueda"
+                            : "Aún no se crearon cupones"
+                    }
+                />
+            )}
         </>
     );
 };

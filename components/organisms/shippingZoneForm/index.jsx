@@ -64,7 +64,7 @@ const ShippingZoneForm = (props) => {
         zoneRef: props.shippingZone ? props.shippingZone.reference : "",
         price: props.shippingZone ? props.shippingZone.cost : 0,
         type: props.shippingZone && props.shippingZone.cost > 0 ? "pay" : "free",
-        shippingDay: props.shippingDay ? props.shippingDay : 2,
+        shippingDay: props.shippingZone ? props.shippingZone.shippingDayOfWeek : 2,
         file: [],
     });
 
@@ -90,6 +90,7 @@ const ShippingZoneForm = (props) => {
         formData.append("reference", values.zoneRef);
         formData.append("cost", values.price);
         formData.append("map", values.file[0]);
+        formData.append("shippingDayOfWeek", values.shippingDay);
 
         const res = props.update ? await updateZone(formData, props.shippingZone.id) : await createZone(formData);
 

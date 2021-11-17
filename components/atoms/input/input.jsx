@@ -35,6 +35,7 @@ const Input = (props) => {
                 rows={props.rows || 1}
                 helperText={props.helperText}
                 {...props.customProps}
+                onWheel={(e) => e.target.blur()}
             />
         </FormControl>
     );

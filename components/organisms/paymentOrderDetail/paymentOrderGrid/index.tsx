@@ -1,6 +1,6 @@
 // Utils & Config
 import React, { useState } from "react";
-import { useTheme } from "@material-ui/core";
+import { Typography, useTheme } from "@material-ui/core";
 
 // External components
 import { Grid, Button } from "@material-ui/core";
@@ -14,7 +14,7 @@ import AmountDetails from "../../../molecules/amountDetails";
 import Refund from "./refund";
 import RefundModal from "./refundModal";
 import { useSnackbar } from "notistack";
-import { chargeOnePaymentOrder, refundPaymentOrder } from "helpers/serverRequests/paymentOrder";
+import { chargeOnePaymentOrder, refundPaymentOrder, retryPayment } from "helpers/serverRequests/paymentOrder";
 import { PaymentOrderState } from "helpers/types/paymentOrderState";
 
 const PaymentOrderGrid = (props) => {
@@ -75,11 +75,24 @@ const PaymentOrderGrid = (props) => {
         setisSubmitting(false);
     };
 
+    const handleRetryPayment = async () => {
+        setisSubmitting(true);
+        const res = await retryPayment(props.paymentOrder.id);
+
+        if (res && res.status === 200) {
+            props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
+            enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+        setisSubmitting(false);
+    };
+
     return (
         <>
             <Grid item xs={12} md={8}>
                 <PaperWithTitleContainer fullWidth={true} title="Información general">
-                    <DataDisplay title="Payment Order ID" text={props.paymentOrder.id} style={{ marginBottom: theme.spacing(3) }} />
+                    <DataDisplay title="Payment Order ID" text={props.paymentOrder.humanId} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Cliente" text={props.paymentOrder.customerName} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Fecha de cobro" text={props.paymentOrder.billingDate} style={{ marginBottom: theme.spacing(3) }} />
                     <DataDisplay title="Estado" text={props.paymentOrder.state} style={{ marginBottom: theme.spacing(3) }} />
@@ -99,6 +112,7 @@ const PaymentOrderGrid = (props) => {
                     <Grid item xs={12}>
                         <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
                             <AmountDetails
+                                hasRefund
                                 data={{
                                     subtotal: props.paymentOrder.subtotal,
                                     shippingCost: props.paymentOrder.shippingCost,
@@ -110,26 +124,47 @@ const PaymentOrderGrid = (props) => {
                             />
                         </PaperWithTitleContainer>
                     </Grid>
-                    {props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_ACTIVE &&
-                        props.paymentOrder.state !== PaymentOrderState.PAYMENT_ORDER_REFUNDED && (
-                            <Grid item xs={12}>
-                                <PaperWithTitleContainer fullWidth={true} title="Reembolso">
-                                    <Refund
-                                        handleClick={handleClickOpenRefundModal}
-                                        totalAmount={props.paymentOrder.totalAmount}
-                                        value={amountToRefund}
-                                        handleChange={handleChangeRefundInput}
-                                        quantityRefunded={props.paymentOrder.quantityRefunded}
-                                    />
-                                </PaperWithTitleContainer>
-                            </Grid>
-                        )}
+                    {(props.paymentOrder.couponCodes.length || []) > 0 && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Cupones utilizados">
+                                {props.paymentOrder.couponCodes.map((couponCode) => (
+                                    <Typography>{couponCode}</Typography>
+                                ))}
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
+                    {(props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_BILLED ||
+                        props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_PARTIALLY_REFUNDED) && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Reembolso">
+                                <Refund
+                                    handleClick={handleClickOpenRefundModal}
+                                    totalAmount={props.paymentOrder.totalAmount}
+                                    value={amountToRefund}
+                                    handleChange={handleChangeRefundInput}
+                                    quantityRefunded={props.paymentOrder.quantityRefunded}
+                                />
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                     {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_ACTIVE && (
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
                                 <div>
                                     <Button size="medium" color="secondary" onClick={handleChargePaymentOrder} disabled={isSubmitting}>
                                         PAGAR AHORA
+                                    </Button>
+                                </div>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
+
+                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_REJECTED && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                <div>
+                                    <Button size="medium" color="secondary" onClick={handleRetryPayment} disabled={isSubmitting}>
+                                        REINTENTAR COBRO
                                     </Button>
                                 </div>
                             </PaperWithTitleContainer>

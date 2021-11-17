@@ -74,7 +74,10 @@ const CustomersDashboard = (props) => {
     };
 
     const filteredCustomers = customers.filter((customer) => {
-        return customer.fullName.toLowerCase().includes(searchValue.toLowerCase());
+        return (
+            customer.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            customer.email.toLowerCase().includes(searchValue.toLowerCase())
+        );
     });
 
     const handleClickExport = async () => {
@@ -97,7 +100,7 @@ const CustomersDashboard = (props) => {
 
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
-                    <SearchInputField handlerOnChange={setSearchValue} placeholder="Buscar por nombre..." />
+                    <SearchInputField handlerOnChange={setSearchValue} placeholder="Buscar por nombre o correo..." />
                 </Box>
             </Grid>
 

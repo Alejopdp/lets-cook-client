@@ -21,7 +21,7 @@ const SkipWeekModal = (props) => {
             secondaryButtonText='cancelar'
         >
             <Typography variant='body1' color='textSecondary' style={{ fontSize: '16px' }}>
-                ¿Estás seguro de que deseas saltar la semana?
+                ¿Estás seguro de que deseas {props.isOrderSkipped ? "reactivar" : "saltar"} la semana?
             </Typography>
         </Modal>
     );

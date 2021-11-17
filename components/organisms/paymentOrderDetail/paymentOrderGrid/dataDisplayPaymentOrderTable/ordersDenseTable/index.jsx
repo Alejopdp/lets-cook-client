@@ -36,7 +36,7 @@ const OrdersDenseTable = (props) => {
                             <TableCell align="left">{row.frequency}</TableCell>
                             <TableCell align="right">{row.amount}</TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden", query: { orderId: row.id } })}>
+                                <IconButton onClick={() => router.push({ pathname: "/ordenes/detalle-orden", query: { id: row.id } })}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </TableCell>

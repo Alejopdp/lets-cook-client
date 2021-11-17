@@ -1,11 +1,13 @@
 // Utils & Config
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { getPaymentOrders } from "../../../helpers/serverRequests/paymentOrder";
 import { useSnackbar } from "notistack";
+import { importRecipeSelectionForManyOrders } from "../../../helpers/serverRequests/order";
 
 // External components
+import { Box, Grid } from "@material-ui/core";
 
 // Internal components
 import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
@@ -13,6 +15,8 @@ import Tabs from "../../molecules/tabs/tabs";
 import OrdersTable from "./ordersTable/index";
 import { exportOrdersWithRecipesSelection, getExportOrdersWithRecipesSelectionFilters } from "../../../helpers/serverRequests/order";
 import ExportModal, { ExportOrdersFilterOptions } from "./exportModal/exportModal";
+import SearchInputField from "../../molecules/searchInputField/searchInputField";
+import ImportErrorModal from "./importErrorModal/importErrorModal";
 
 interface FilterOption {
     value: string | number;
@@ -25,6 +29,7 @@ const OrdersDashboard = (props) => {
     const [nextOrdersRows, setnextOrdersRows] = useState([]);
     const [processedOrdersRows, setprocessedOrdersRows] = useState([]);
     const [refusedOrderRows, setrefusedOrdersRows] = useState([]);
+    const [searchValue, setSearchValue] = useState("");
     const [tabValue, setTabValue] = useState(0);
     const [filterOptions, setfilterOptions] = useState<{
         weeks: FilterOption[];
@@ -33,6 +38,12 @@ const OrdersDashboard = (props) => {
         customers: FilterOption[];
     }>({ weeks: [], shippingDates: [], billingDates: [], customers: [] });
     const [isExportModalOpen, setisExportModalOpen] = useState(false);
+    const [isImportErrorModalOpen, setIsImportModalOpen] = useState(false);
+    const [importErrorData, setImportErrorData] = useState<{
+        inconsistentCustomerEmails: string[];
+        notOwnerOfOrderCustomerEmails: string[];
+    }>({ inconsistentCustomerEmails: [], notOwnerOfOrderCustomerEmails: [] });
+    const [importFile, setImportFile] = useState("");
 
     useEffect(() => {
         const getPaymentOrdersList = async () => {
@@ -68,14 +79,46 @@ const OrdersDashboard = (props) => {
         setTabValue(newValue);
     };
 
-    const nextOrders = <OrdersTable rows={nextOrdersRows} />;
-    const processedOrders = <OrdersTable rows={processedOrdersRows} />;
-    const refusedOrder = <OrdersTable rows={refusedOrderRows} />;
+    const filterOrders = (paymentOrders) => {
+        return !!searchValue
+            ? paymentOrders.filter((paymentOrder) => {
+                  return (
+                      paymentOrder.customerName.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      paymentOrder.customerEmail.toLowerCase().includes(searchValue.toLowerCase())
+                  );
+              })
+            : paymentOrders;
+    };
+
+    const [filteredNextOrders, filteredProcessedOrders, filteredRefusedOrders] = useMemo(
+        () => [filterOrders(nextOrdersRows), filterOrders(processedOrdersRows), filterOrders(refusedOrderRows)],
+        [searchValue, nextOrdersRows, processedOrdersRows, refusedOrderRows]
+    );
+    const nextOrders = <OrdersTable rows={filteredNextOrders} />;
+    const processedOrders = <OrdersTable rows={filteredProcessedOrders} />;
+    const refusedOrder = <OrdersTable rows={filteredRefusedOrders} />;
 
     const options = ["PRÓXIMAS ORDENES", "ORDENES PROCESADAS", "PAGOS RECHAZADOS"];
     const content = [nextOrders, processedOrders, refusedOrder];
 
-    const handleClickImport = () => alert("Import");
+    const handleClickImport = async (e) => {
+        const data = new FormData();
+
+        data.append("recipeSelection", e.target.files[0]);
+        const res = await importRecipeSelectionForManyOrders(data);
+
+        if (res && res.status === 200) {
+            if (res.data.inconsistentCustomerEmails.length > 0 || res.data.notOwnerOfOrderCustomerEmails.length > 0) {
+                setImportErrorData(res.data);
+                setIsImportModalOpen(true);
+            } else {
+                enqueueSnackbar("Todas las recetas fueron cargadas correctamente", { variant: "success" });
+            }
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado", { variant: "error" });
+        }
+        setImportFile("");
+    };
     const handleClickExport = async (filters: { value: string; label: string }[], selectedFilter: ExportOrdersFilterOptions) => {
         var weeks: string[] = [];
         var shippingDates: string[] = [];
@@ -109,10 +152,18 @@ const OrdersDashboard = (props) => {
             <DashboardTitleWithCSV
                 title="Ordenes"
                 import
+                importFile={importFile}
+                importText="Importar selección de recetas"
                 export
                 handleClickImport={handleClickImport}
                 handleClickExport={() => setisExportModalOpen(true)}
             />
+            <Grid item xs={12}>
+                <Box display="flex" alignItems="center" marginY={2}>
+                    <SearchInputField handlerOnChange={setSearchValue} placeholder="Buscar por nombre de cliente o correo..." />
+                </Box>
+            </Grid>
+
             <Tabs options={options} content={content} handleChange={handleChangeTab} value={tabValue} />
             <ExportModal
                 open={isExportModalOpen}
@@ -126,6 +177,13 @@ const OrdersDashboard = (props) => {
                 billingDateOptions={filterOptions.billingDates}
                 customerOptions={filterOptions.customers}
                 title="Exportar pedidos"
+            />
+
+            <ImportErrorModal
+                handleCancelButton={() => setIsImportModalOpen(false)}
+                inconsistentCustomerEmails={importErrorData.inconsistentCustomerEmails}
+                notOwnerOfOrderCustomerEmails={importErrorData.notOwnerOfOrderCustomerEmails}
+                open={isImportErrorModalOpen}
             />
         </>
     );
