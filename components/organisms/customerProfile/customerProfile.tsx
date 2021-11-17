@@ -82,10 +82,6 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         ],
     });
 
-    // useEffect(() => {
-
-    // }, [])
-
     const handleUpdatePersonalData = async (formData: Personaldata) => {
         const res = await updateCustomerPersonalData({ ...formData, id: props.data.personalData.id });
 
@@ -144,7 +140,13 @@ const CustomerProfile = (props: CustomerProfileProps) => {
 
     switch (true) {
         case breadcrumb === "subscriptions":
-            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />;
+            currentCustomerInfo = (
+                <CustomerSubscriptionsTable
+                    subscriptions={customer.subscriptions}
+                    plans={props.plans}
+                    customerId={customer.personalData.id}
+                />
+            );
             break;
 
         case breadcrumb === "calendar":
@@ -173,7 +175,13 @@ const CustomerProfile = (props: CustomerProfileProps) => {
             break;
 
         default:
-            currentCustomerInfo = <CustomerSubscriptionsTable subscriptions={customer.subscriptions} />;
+            currentCustomerInfo = (
+                <CustomerSubscriptionsTable
+                    subscriptions={customer.subscriptions}
+                    plans={props.plans}
+                    customerId={customer.personalData.id}
+                />
+            );
     }
 
     return (

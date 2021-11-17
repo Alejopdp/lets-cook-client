@@ -92,8 +92,9 @@ export const pagesPropsGetter = async (params, locale, token) => {
             return { plans: res.data || [], error: res.data.message || null };
         case "gestion-de-clientes/modificar":
             res = await getCustomerInformation(params.customerId, locale);
+            const plansRes = await getPlanList(locale);
 
-            return { data: res.data || [], error: res.data.message || null };
+            return { data: res.data || [], error: res.data.message || null, plans: plansRes.data };
 
         default:
             return null;
