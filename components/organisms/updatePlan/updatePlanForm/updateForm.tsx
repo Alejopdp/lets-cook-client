@@ -65,6 +65,7 @@ const UpdatePlanForm = (props) => {
         setfrequency(props.plan.availablePlanFrecuencies.map((freq) => freq.value));
         setvariants(props.plan.variants);
         setadditionalPlans(props.plan.additionalPlans.map((plan) => plan.id));
+        console.log("Attributes use effect");
     }, [props.plan]);
 
     useEffect(() => {
@@ -80,7 +81,7 @@ const UpdatePlanForm = (props) => {
         //     return;
         // }
         setGridRows();
-    }, [attributes]);
+    }, [attributes, props.plan]);
 
     const handleGeneralData = (e) => {
         e.preventDefault();
