@@ -30,7 +30,7 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
     const _getAvailableWeeksTag = () => {
         if (Boolean(item.availableWeeks)) {
             if (item.availableWeeks.length > 0) {
-                return item.availableWeeks.reduce( (text, week) => `${text} ${week.label}` , '');
+                return item.availableWeeks.reduce((text, week) => `${text} ${week.label}`, "");
             } else {
                 return "Sin programar";
             }
@@ -46,9 +46,6 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
                 </Typography>
                 <Typography noWrap={true} color="textSecondary" variant="subtitle1">
                     {item.name}
-                </Typography>
-                <Typography className={classes.paragraphTrunc} color="textSecondary" variant="body1">
-                    {item.shortDescription}
                 </Typography>
 
                 <div style={{ display: "flex", alignItems: "center" }}>
