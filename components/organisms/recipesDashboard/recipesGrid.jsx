@@ -31,7 +31,6 @@ RecipesGrid.propTypes = {
             id: PropTypes.number,
             name: PropTypes.string,
             sku: PropTypes.string,
-            shortDescription: PropTypes.string,
             longDescription: PropTypes.string,
             cookDuration: PropTypes.string,
             difficultyLevel: PropTypes.string,

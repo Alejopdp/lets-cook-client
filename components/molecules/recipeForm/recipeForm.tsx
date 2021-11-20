@@ -49,7 +49,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [generalData, setgeneralData] = useState({
         name: "",
         sku: "",
-        shortDescription: "",
         longDescription: "",
         cookDuration: "",
         weight: "",
@@ -170,7 +169,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
 
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
-        formDataToCreate.append("shortDescription", generalData.shortDescription);
         formDataToCreate.append("longDescription", generalData.longDescription);
         formDataToCreate.append("cookDuration", generalData.cookDuration);
         formDataToCreate.append("difficultyLevel", difficultyLevel);
@@ -320,14 +318,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 handleChange={handleGeneralDataChange}
                             />
                             <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
-                            <FormInput
-                                label="Descripción corta"
-                                name="shortDescription"
-                                rows={3}
-                                multiline={true}
-                                value={recipeData && recipeData.shortDescription}
-                                handleChange={handleGeneralDataChange}
-                            />
+
                             <FormInput
                                 label="Descripción larga"
                                 name="longDescription"
@@ -576,7 +567,6 @@ RecipeForm.propTypes = {
         id: PropTypes.number,
         name: PropTypes.string,
         sku: PropTypes.string,
-        shortDescription: PropTypes.string,
         longDescription: PropTypes.string,
         cookDuration: PropTypes.string,
         difficultyLevel: PropTypes.string,
