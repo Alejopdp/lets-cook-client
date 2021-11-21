@@ -110,7 +110,7 @@ const PaymentOrderGrid = (props) => {
             <Grid item xs={12} md={4}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
+                        <PaperWithTitleContainer fullWidth={true} title="Detalle del importe">
                             <AmountDetails
                                 hasRefund
                                 data={{
