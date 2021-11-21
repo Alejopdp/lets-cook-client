@@ -7,12 +7,10 @@ export const couponsForm = {
         value: "Value",
         minimumRequirement: "Minimum requirement",
         minimum_requirement_type: ["None", "Minimum purchase amount"],
-        minimumRequirementMessage: "This restriction would apply to a single charge per customer. If the coupon has other restrictions, they must first be met and then the minimum amount will be validated.",
+        minimumRequirementMessage:
+            "This restriction would apply to a single charge per customer. If the coupon has other restrictions, they must first be met and then the minimum amount will be validated.",
         appliyTo: "Apply to",
-        apply_to_type: [
-            "All products",
-            "Specific products"
-        ],
+        apply_to_type: ["All products", "Specific products"],
     },
     es: {
         title: "Cupones",
@@ -22,11 +20,9 @@ export const couponsForm = {
         value: "Valor",
         minimumRequirement: "Requerimientos mínimos",
         minimum_requirement_type: ["Ninguno", "Monto minimo de compra"],
-        minimumRequirementMessage: "Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero, y luego se validará el monto mínimo.",
+        minimumRequirementMessage:
+            "Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero, y luego se validará el importe mínimo.",
         appliyTo: "Aplica a",
-        apply_to_type: [
-            "Todos los productos",
-            "Productos específicos"
-        ],
+        apply_to_type: ["Todos los productos", "Productos específicos"],
     },
 };

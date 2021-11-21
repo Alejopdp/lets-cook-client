@@ -232,7 +232,7 @@ const SubscriptionGrid = (props) => {
                         </PaperWithTitleContainer>
                     </Grid>
                     <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Detalle del monto">
+                        <PaperWithTitleContainer fullWidth={true} title="Detalle del importe">
                             <AmountDetails data={props.subscription.amountDetails} />
                         </PaperWithTitleContainer>
                     </Grid>

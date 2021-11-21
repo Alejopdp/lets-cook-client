@@ -41,7 +41,7 @@ const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () 
         </Grid>
         <Alert severity="info" color="success">
             Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero,
-            y luego se validará el monto mínimo.
+            y luego se validará el importe mínimo.
         </Alert>
     </>
 );
