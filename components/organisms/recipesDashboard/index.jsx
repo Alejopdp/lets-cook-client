@@ -134,7 +134,10 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
             let hasTags = false;
 
             // Filter by name or SKU
-            if (recipe.name.toLowerCase().includes(_textToFilter) || recipe.sku.toLowerCase().includes(_textToFilter)) {
+            if (
+                recipe.name.toLowerCase().includes(_textToFilter.toLowerCase()) ||
+                recipe.sku.toLowerCase().includes(_textToFilter.toLowerCase())
+            ) {
                 hasText = true;
             }
             if (_filters.length === 0) {

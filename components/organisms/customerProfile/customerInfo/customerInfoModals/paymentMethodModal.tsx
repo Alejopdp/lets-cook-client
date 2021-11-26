@@ -45,7 +45,7 @@ const PaymentMethodModal = (props: PaymentMethodsModalProps) => {
 
             <div style={{ display: "flex", marginTop: ".7rem", alignItems: "center" }}>
                 <ErrorOutlineIcon style={{ color: "red" }} />
-                <i style={{ marginLeft: ".2rem", fontStyle: "italic" }}>El metodo de pago se modificara en todos los planes activos</i>
+                <i style={{ marginLeft: ".2rem", fontStyle: "italic" }}>El método de pago se modificara en todos los planes activos</i>
             </div>
         </Box>
     );
