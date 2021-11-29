@@ -104,7 +104,11 @@ const PaymentOrderGrid = (props) => {
                             style={{ marginBottom: theme.spacing(3) }}
                         />
                     )}
-                    <DataDisplayPaymentOrderTable title="Ordenes relacionadas" columns={columns} rows={props.paymentOrder.orders} />
+                    <DataDisplayPaymentOrderTable
+                        title="Ordenes relacionadas"
+                        columns={columns}
+                        rows={props.paymentOrder.orders.filter((order) => order.state !== "ORDER_CANCELLED")}
+                    />
                 </PaperWithTitleContainer>
             </Grid>
             <Grid item xs={12} md={4}>
