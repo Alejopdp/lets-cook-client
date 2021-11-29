@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
+    console.log("Ingredientes: ", formData.ingredients);
     const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
@@ -188,7 +189,10 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                 formData.weeks.filter((week) => weeks.some((selectedWeek) => week.label === selectedWeek)).map((week) => week.id)
             )
         );
-        formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
+        formDataToCreate.append(
+            "variants",
+            JSON.stringify(ingredientsVariants.map((variant) => ({ ...variant, ingredients: variant.ingredients.map((ing) => ing.id) })))
+        ); // Because it is an array
         formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
 
         const res = await createRecipe(formDataToCreate);
@@ -412,6 +416,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                             </Grid>
                                             <Grid item xs={8}>
                                                 <MultiChipInput
+                                                    complexOptions={true}
                                                     options={formData.ingredients}
                                                     values={variant.ingredients}
                                                     onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}

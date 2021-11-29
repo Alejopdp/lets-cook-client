@@ -34,10 +34,13 @@ const Input = (props) => {
             <Autocomplete
                 style={{ marginBottom: theme.spacing(2) }}
                 multiple
-                options={props.options.filter((option) => props.values.every((value) => value !== option))}
+                options={props.options.filter((option) =>
+                    props.values.every((value) => (props.complexOptions ? value.id !== option.id : value !== option))
+                )}
                 defaultValue={[]}
                 value={props.values}
                 freeSolo={props.freeSolo}
+                getOptionLabel={(option) => (props.complexOptions ? option.name : option)}
                 onChange={props.onChange}
                 disableClearable={props.disableClearable}
                 renderTags={(value, getTagProps) =>
@@ -47,7 +50,7 @@ const Input = (props) => {
                             style={{ color: "#fffff" }}
                             classes={{ deleteIconColorPrimary: classes.deleteIconColorPrimary }}
                             color="primary"
-                            label={option}
+                            label={props.complexOptions ? option.name : option}
                             {...getTagProps({ index })}
                             onDelete={() => props.handleRemoveValue(option)}
                         />
@@ -67,6 +70,7 @@ Input.propTypes = {
     placeholder: PropTypes.string.isRequired,
     handleRemoveValue: PropTypes.func.isRequired,
     disableClearable: PropTypes.bool,
+    complexOptions: PropTypes.bool,
 };
 
 export default Input;

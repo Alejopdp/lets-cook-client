@@ -44,7 +44,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const { enqueueSnackbar } = useSnackbar();
 
     const [lang, setLang] = useState(languages[0]);
-    const [recipe, setRecipeData] = useState();
     const [ingredientsVariants, setIngredientsVariants] = useState([]); // {ingredients: [], sku: "", restrictions: []}
     const [imageTags, setimageTags] = useState([]);
     const [tags, settags] = useState([]);
@@ -56,7 +55,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         longDescription: "",
         cookDuration: "",
         weight: "",
-        // image: [],
         images: [],
         previousImages: [],
     });
@@ -67,7 +65,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [plans, setplans] = useState([]);
     const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
-    const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
         const newVariant = {
             ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[ingredientsVariants.length - 1].ingredients] : [],
@@ -90,7 +87,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             const recipeImages = await getImagesFilesFromUrl(recipeData.imagesUrls);
             setIngredientsVariants(
                 recipeData.recipeVariants.map((variant) => ({
-                    ingredients: variant.ingredients,
+                    ingredients: variant.rawIngredients,
                     sku: variant.sku,
                     restriction: variant.restriction.id,
                 }))
@@ -219,19 +216,10 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             )
         );
         formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
-        formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
-
-        // const recipeToUpdate = {
-        //     ...generalData,
-        //     difficultyLevel,
-        //     tools,
-        //     imageTags,
-        //     backOfficeTags: tags,
-        //     planIds: plans,
-        //     availableMonths: months,
-        //     availableWeeks: weeks,
-        //     variants: ingredientsVariants,
-        // };
+        formDataToCreate.append(
+            "variants",
+            JSON.stringify(ingredientsVariants.map((variant) => ({ ...variant, ingredients: variant.ingredients.map((ing) => ing.id) })))
+        ); // Because it is an array
 
         const res = await updateRecipe(recipeData.id, formDataToCreate, router.locale);
 
@@ -248,6 +236,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     };
 
     const handleAddIngredientsToVariant = (variantIndex, newIngredients) => {
+        console.log("New ingredient: ", newIngredients);
         const newVariants = ingredientsVariants.map((variant, index) => {
             if (index === variantIndex) {
                 if (newIngredients.length < variant.ingredients.length) {
@@ -446,6 +435,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                             </Grid>
                                             <Grid item xs>
                                                 <MultiChipInput
+                                                    complexOptions={true}
                                                     options={formData.ingredients}
                                                     values={variant.ingredients}
                                                     onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
