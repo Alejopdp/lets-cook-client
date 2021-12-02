@@ -152,3 +152,17 @@ export const updateRecipe = async (recipeId, recipe, locale) => {
         return error.response;
     }
 };
+
+export const deleteRecipeVariant = async (recipeVariantSku) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/delete-variant/${recipeVariantSku}`,
+        });
+
+        return res;
+    } catch (error) {
+        console.log("Error: ", error);
+        return error.response;
+    }
+};

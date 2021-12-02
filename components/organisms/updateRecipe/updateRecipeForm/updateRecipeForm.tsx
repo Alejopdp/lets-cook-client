@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
-import { updateRecipe } from "../../../../helpers/serverRequests/recipe";
+import { deleteRecipeVariant, updateRecipe } from "../../../../helpers/serverRequests/recipe";
 
 // External components
 import { Button, IconButton, Grid, makeStyles, useTheme, Typography, FormControlLabel, Box, RadioGroup, Radio } from "@material-ui/core";
@@ -27,6 +27,8 @@ import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
 import Dropzone from "../../../molecules/dropzone/dropzone";
 import FIleDraggable from "components/molecules/fileDraggableDropZone/fileDraggableDropZone";
 import { getImagesFilesFromUrl } from "helpers/utils/images";
+import RecipeVariantEditor from "components/molecules/recipeForm/recipeVariantEditor";
+import DeleteRecipeVariantModal from "./deleteRecipeVariantModal";
 
 const useStyles = makeStyles((theme) => ({
     height100: {
@@ -44,19 +46,19 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const { enqueueSnackbar } = useSnackbar();
 
     const [lang, setLang] = useState(languages[0]);
-    const [recipe, setRecipeData] = useState();
     const [ingredientsVariants, setIngredientsVariants] = useState([]); // {ingredients: [], sku: "", restrictions: []}
     const [imageTags, setimageTags] = useState([]);
+    const [selectedRecipeVariant, setSelectedRecipeVariant] = useState(null);
     const [tags, settags] = useState([]);
     const [weeks, setweeks] = useState([]);
     const [months, setmonths] = useState([]);
+    const [isDeleteVariantModalOpen, setIsDeleteVariantModalOpen] = useState(false);
     const [generalData, setgeneralData] = useState({
         name: "",
         sku: "",
         longDescription: "",
         cookDuration: "",
         weight: "",
-        // image: [],
         images: [],
         previousImages: [],
     });
@@ -67,7 +69,6 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [plans, setplans] = useState([]);
     const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
-    const _handleSelectLang = (lang) => setLang(lang);
     const _handleAddVariant = ($event) => {
         const newVariant = {
             ingredients: ingredientsVariants.length > 0 ? [...ingredientsVariants[ingredientsVariants.length - 1].ingredients] : [],
@@ -81,8 +82,29 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
 
         setIngredientsVariants(newVariants);
     };
-    const _handleDeleteVariant = (variantIndex) => {
+
+    const handleDeleteVariantClick = (recipeVariant) => {
+        setIsDeleteVariantModalOpen(true);
+        setSelectedRecipeVariant(recipeVariant);
+    };
+
+    const _handleDeleteVariant = async (variantIndex) => {
+        console.log("SELECTED: ", selectedRecipeVariant);
+        const res = await deleteRecipeVariant(selectedRecipeVariant.sku);
+
+        if (res && res.status === 200) {
+            setIsDeleteVariantModalOpen(false);
+            setSelectedRecipeVariant(null);
+            enqueueSnackbar("La variante se ha eliminado correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intente nuevamente", { variant: "error" });
+        }
         setIngredientsVariants(ingredientsVariants.filter((variant, index) => index !== variantIndex));
+    };
+
+    const handleDeleteVariantModalClose = () => {
+        setIsDeleteVariantModalOpen(false);
+        setSelectedRecipeVariant(null);
     };
 
     useEffect(() => {
@@ -90,7 +112,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             const recipeImages = await getImagesFilesFromUrl(recipeData.imagesUrls);
             setIngredientsVariants(
                 recipeData.recipeVariants.map((variant) => ({
-                    ingredients: variant.ingredients,
+                    ingredients: variant.rawIngredients,
                     sku: variant.sku,
                     restriction: variant.restriction.id,
                 }))
@@ -219,19 +241,10 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             )
         );
         formDataToCreate.append("nutritionalInfo", JSON.stringify(nutritionalInformation));
-        formDataToCreate.append("variants", JSON.stringify(ingredientsVariants)); // Because it is an array
-
-        // const recipeToUpdate = {
-        //     ...generalData,
-        //     difficultyLevel,
-        //     tools,
-        //     imageTags,
-        //     backOfficeTags: tags,
-        //     planIds: plans,
-        //     availableMonths: months,
-        //     availableWeeks: weeks,
-        //     variants: ingredientsVariants,
-        // };
+        formDataToCreate.append(
+            "variants",
+            JSON.stringify(ingredientsVariants.map((variant) => ({ ...variant, ingredients: variant.ingredients.map((ing) => ing.id) })))
+        ); // Because it is an array
 
         const res = await updateRecipe(recipeData.id, formDataToCreate, router.locale);
 
@@ -420,69 +433,18 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                         <PaperWithTitleContainer fullWidth={true} title="Ingredientes">
                             <Grid container spacing={2}>
                                 {ingredientsVariants.map((variant, index) => (
-                                    <Grid item xs={12} key={index}>
-                                        <Grid container alignItems="center">
-                                            <Grid item xs>
-                                                <Typography variant="body1" style={{ fontWeight: 600, marginBottom: theme.spacing(1) }}>
-                                                    Variante {`${index + 1}`} {index === 0 && "- Por defecto"}
-                                                </Typography>
-                                            </Grid>
-                                            {/* {index !== 0 && (
-                                                <Grid item>
-                                                    <IconButton onClick={() => _handleDeleteVariant(index)}>
-                                                        <Delete />
-                                                    </IconButton>
-                                                </Grid>
-                                            )} */}
-                                        </Grid>
-                                        <Grid item container spacing={2} xs={12}>
-                                            <Grid item xs={3}>
-                                                <FormInput
-                                                    name={`ingredientsVariantsCode:${index}`}
-                                                    value={variant.sku}
-                                                    handleChange={(e) => handleVariantSkuChange(index, e.target.value)}
-                                                    label="SKU"
-                                                />
-                                            </Grid>
-                                            <Grid item xs>
-                                                <MultiChipInput
-                                                    options={formData.ingredients}
-                                                    values={variant.ingredients}
-                                                    onChange={(e, newIngredient) => handleAddIngredientsToVariant(index, newIngredient)}
-                                                    name={`variant:${index}`}
-                                                    handleRemoveValue={(ingredientToRemove) =>
-                                                        handleRemoveIngredientFromVariant(index, ingredientToRemove)
-                                                    }
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item container xs={12}>
-                                            <RadioGroup
-                                                aria-label="gender"
-                                                name="Restrictions"
-                                                value={variant.restriction}
-                                                onChange={(e) => handleRestrictionsForVariants(index, e.target.value)}
-                                                style={{ flexDirection: "row" }}
-                                            >
-                                                {formData.restrictions.map((variantRestriction, restrictionIndex) => (
-                                                    <FormControlLabel
-                                                        key={restrictionIndex}
-                                                        value={variantRestriction.id}
-                                                        disabled={
-                                                            (ingredientsVariants.some(
-                                                                (variant) => variant.restriction === variantRestriction.id
-                                                            ) &&
-                                                                variant.restriction !== variantRestriction.id) ||
-                                                            (index === 0 && variantRestriction.value !== "apto_todo")
-                                                        }
-                                                        control={<Radio checked={variantRestriction.id === variant.restriction} />}
-                                                        checked={variantRestriction.id === variant.restriction}
-                                                        label={variantRestriction.label}
-                                                    />
-                                                ))}
-                                            </RadioGroup>
-                                        </Grid>
-                                    </Grid>
+                                    <RecipeVariantEditor
+                                        index={index}
+                                        handleDeleteVariantClick={handleDeleteVariantClick}
+                                        handleVariantSkuChange={handleVariantSkuChange}
+                                        handleAddIngredientsToVariant={handleAddIngredientsToVariant}
+                                        handleRemoveIngredientFromVariant={handleRemoveIngredientFromVariant}
+                                        handleRestrictionsForVariants={handleRestrictionsForVariants}
+                                        variant={variant}
+                                        restrictions={formData.restrictions}
+                                        ingredients={formData.ingredients}
+                                        ingredientsVariants={ingredientsVariants}
+                                    />
                                 ))}
                             </Grid>
                             {ingredientsVariants.length < formData.restrictions.length && (
@@ -596,6 +558,12 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                     // isCreateButtonDisabled={!isFormOkForCreation()}
                 />
             </Grid>
+
+            <DeleteRecipeVariantModal
+                handleClose={handleDeleteVariantModalClose}
+                handleConfirmButton={_handleDeleteVariant}
+                open={isDeleteVariantModalOpen}
+            />
         </>
     );
 };
