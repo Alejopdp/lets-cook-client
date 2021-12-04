@@ -77,29 +77,33 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                 ingredientsVariants.length > 0
                     ? ""
                     : formData.restrictions.find((restriction) => restriction.value === "apto_todo")?.id || "",
+            isNew: true,
         };
         const newVariants = [...ingredientsVariants, newVariant];
 
         setIngredientsVariants(newVariants);
     };
 
-    const handleDeleteVariantClick = (recipeVariant) => {
-        setIsDeleteVariantModalOpen(true);
-        setSelectedRecipeVariant(recipeVariant);
+    const handleDeleteVariantClick = (recipeVariant, variantIndex) => {
+        if (!recipeVariant.isNew) {
+            setIsDeleteVariantModalOpen(true);
+            setSelectedRecipeVariant(recipeVariant);
+        } else {
+            setIngredientsVariants(ingredientsVariants.filter((variant, index) => index !== variantIndex));
+        }
     };
 
-    const _handleDeleteVariant = async (variantIndex) => {
-        console.log("SELECTED: ", selectedRecipeVariant);
+    const _handleDeleteVariant = async () => {
         const res = await deleteRecipeVariant(selectedRecipeVariant.sku);
 
         if (res && res.status === 200) {
             setIsDeleteVariantModalOpen(false);
             setSelectedRecipeVariant(null);
             enqueueSnackbar("La variante se ha eliminado correctamente", { variant: "success" });
+            setIngredientsVariants(ingredientsVariants.filter((variant, index) => index !== selectedRecipeVariant.index));
         } else {
             enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intente nuevamente", { variant: "error" });
         }
-        setIngredientsVariants(ingredientsVariants.filter((variant, index) => index !== variantIndex));
     };
 
     const handleDeleteVariantModalClose = () => {
@@ -252,6 +256,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
             enqueueSnackbar("Se ha modificado la receta correctamente", {
                 variant: "success",
             });
+            setIngredientsVariants(ingredientsVariants.map((variant) => ({ ...variant, isNew: false })));
         } else {
             enqueueSnackbar(res.data.message, {
                 variant: "error",

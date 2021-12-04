@@ -16,7 +16,7 @@ interface RecipeVariantEditorProps {
     restrictions: any;
     ingredients: any;
     ingredientsVariants: any;
-    handleDeleteVariantClick: (variant: any) => void;
+    handleDeleteVariantClick: (variant: any, index: number) => void;
     handleVariantSkuChange: (index: number, value: string) => void;
     handleAddIngredientsToVariant: (index: number, ingredient: any) => void;
     handleRemoveIngredientFromVariant: (index: number, ingredientToRemove: any) => void;
@@ -36,7 +36,7 @@ const RecipeVariantEditor = (props: RecipeVariantEditorProps) => {
                 </Grid>
                 {props.index !== 0 && (
                     <Grid item>
-                        <IconButton onClick={() => props.handleDeleteVariantClick(props.variant)}>
+                        <IconButton onClick={() => props.handleDeleteVariantClick({ ...props.variant, index: props.index }, props.index)}>
                             <Delete />
                         </IconButton>
                     </Grid>
