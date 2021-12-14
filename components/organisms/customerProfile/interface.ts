@@ -1,4 +1,5 @@
 import { PlanFrequencyValue } from "helpers/types/frequency";
+import { Log } from "helpers/types/log";
 
 export interface ShippingAddress {
     details: string;
@@ -73,6 +74,7 @@ export interface CustomerInformation {
 
 export interface CustomerProfileProps {
     data: CustomerInformation;
+    logs: Log[];
 }
 
 export interface CustomerInfoProps {

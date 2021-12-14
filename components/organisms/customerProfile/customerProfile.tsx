@@ -20,6 +20,7 @@ import CustomerInfo from "./customerInfo/customerInfo";
 import CustomerEvents from "./customerEvents";
 import { updateCustomer, updateCustomerPersonalData } from "helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
+import { Log } from "helpers/types/log";
 
 const crumbs = [
     {
@@ -52,6 +53,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         subscriptions: Subscription[];
         orders: Order[];
         paymentOrders: PaymentOrder[];
+        events: Log[];
     }>({
         personalData: props.data.personalData || { shippingAddress: {}, billingData: {}, paymentMethods: [] },
         // Subscriptions table
@@ -63,23 +65,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         // Purchase history table
         paymentOrders: props.data.paymentOrders,
         // Events table
-        events: [
-            {
-                date: "09/08/2021 15:30 hs.",
-                performedBy: "Usuario",
-                event: "Se ha realizado un cambio de plan a Plan Ahorro",
-            },
-            {
-                date: "09/08/2021 15:30 hs.",
-                performedBy: "Usuario",
-                event: "Se ha realizado un cambio en la dirección de entrega",
-            },
-            {
-                date: "09/08/2021 15:30 hs.",
-                performedBy: "Administrador",
-                event: "Se ha realizado un cambio de plan a Plan Ahorro",
-            },
-        ],
+        events: props.logs,
     });
 
     const handleUpdatePersonalData = async (formData: Personaldata) => {
