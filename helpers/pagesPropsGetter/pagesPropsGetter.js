@@ -5,6 +5,7 @@ import { getRecipes, getRecipesFilterOptions, getRecipeFormData, getRecipeById }
 import { getZoneById, getZonesList } from "../serverRequests/shipping";
 import { getCouponById, getCouponList } from "../serverRequests/coupon";
 import { getCustomerInformation } from "../serverRequests/customer";
+import { getLogs } from "helpers/serverRequests/logs";
 
 export const pagesPropsGetter = async (params, locale, token) => {
     // Use locale for the API calls
@@ -92,9 +93,9 @@ export const pagesPropsGetter = async (params, locale, token) => {
             return { plans: res.data || [], error: res.data.message || null };
         case "gestion-de-clientes/modificar":
             res = await getCustomerInformation(params.customerId, locale);
-            const plansRes = await getPlanList(locale);
+            const [plansRes, logsRes] = await Promise.all([getPlanList(locale), getLogs(params.customerId)]);
 
-            return { data: res.data || [], error: res.data.message || null, plans: plansRes.data };
+            return { data: res.data || [], error: res.data.message || null, plans: plansRes.data, logs: logsRes.data };
 
         default:
             return null;

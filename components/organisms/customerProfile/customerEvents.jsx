@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cells: {
         padding: theme.spacing(0.5),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
     },
     idCell: {
         paddingLeft: theme.spacing(6),
@@ -57,13 +57,13 @@ const CustomerEvents = (props) => {
                         {props.events.map((event, index) => (
                             <TableRow key={index}>
                                 <TableCell className={idCell}>
-                                    <Typography variant="body1">{event.date}</Typography>
+                                    <Typography variant="body1">{event.timestamp}</Typography>
                                 </TableCell>
                                 <TableCell className={cells}>
-                                    <Typography variant="body1">{event.performedBy}</Typography>
+                                    <Typography variant="body1">{event.role}</Typography>
                                 </TableCell>
                                 <TableCell className={cells}>
-                                    <Typography variant="body1">{event.event}</Typography>
+                                    <Typography variant="body1">{event.action}</Typography>
                                 </TableCell>
                             </TableRow>
                         ))}
