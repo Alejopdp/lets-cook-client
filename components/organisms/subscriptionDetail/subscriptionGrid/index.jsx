@@ -53,7 +53,7 @@ const SubscriptionGrid = (props) => {
     // Delete Subscription Modal Functions
 
     const handleCloseDeleteSubscriptionModal = () => {
-        setOpenDeleteSubscriptionModal(true);
+        setOpenDeleteSubscriptionModal(false);
     };
 
     const handleDeleteSubscription = async () => {
