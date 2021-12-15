@@ -166,3 +166,17 @@ export const exportCancellations = async () => {
         return error.response;
     }
 };
+
+export const deleteSubscription = async (id: string) => {
+    try {
+        const res = await Axios({
+            method: "DELETE",
+            url: `${apiUrl}/${id}`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
+        });
+
+        return res;
+    } catch (error) {}
+};
