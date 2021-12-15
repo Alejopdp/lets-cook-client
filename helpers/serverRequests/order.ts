@@ -64,6 +64,9 @@ export const skipOrReactivateOrder = async (order: SkippableOrder) => {
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/skip`,
+            headers: {
+                authorization: JSON.parse(window.localStorage.getItem("token")),
+            },
             data: {
                 ordersToSkip,
                 ordersToReactivate,
@@ -138,6 +141,6 @@ export const moveOrderShippingDate = async (orderId: string) => {
 
         return res;
     } catch (error) {
-        return error.response
+        return error.response;
     }
 };
