@@ -1,7 +1,9 @@
 import Axios from "axios";
 import { BillingData, Personaldata, ShippingAddress } from "components/organisms/customerProfile/interface";
 import FileDownload from "js-file-download";
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
 
+const { getFromLocalStorage } = useLocalStorage();
 // const serverUrl = "http://localhost:3001/api/v1";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/customer`;
 
@@ -144,10 +146,14 @@ export const updateShippingAddress = async (id: string, shippingAddress: Shippin
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/update-shipping/${id}`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             data: {
                 lat: shippingAddress.latitude,
                 long: shippingAddress.longitude,
                 name: shippingAddress.name,
+                details: shippingAddress.details,
                 full_name: shippingAddress.name,
                 delivery_time: shippingAddress.preferredShippingHour,
             },
@@ -164,6 +170,9 @@ export const updateBillingData = async (id: string, data: BillingData) => {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/update-billing/${id}`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             data: {
                 lat: data.latitude,
                 long: data.longitude,
@@ -185,6 +194,9 @@ export const changeDefaultPaymentMethod = async (paymentMethodId: string, custom
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/update-payment/${customerId}`,
+            headers: {
+                Authorization: getFromLocalStorage("token"),
+            },
             data: {
                 id: paymentMethodId,
                 isDefault: true,
