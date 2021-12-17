@@ -16,8 +16,11 @@ import RefundModal from "./refundModal";
 import { useSnackbar } from "notistack";
 import { chargeOnePaymentOrder, refundPaymentOrder, retryPayment } from "helpers/serverRequests/paymentOrder";
 import { PaymentOrderState } from "helpers/types/paymentOrderState";
+import { cancelAPaymentOrder } from "helpers/serverRequests/paymentOrder";
+import { useRouter } from "next/router";
 
 const PaymentOrderGrid = (props) => {
+    const router = useRouter();
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar();
     const [isSubmitting, setisSubmitting] = useState(false);
@@ -82,6 +85,19 @@ const PaymentOrderGrid = (props) => {
         if (res && res.status === 200) {
             props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
             enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+        setisSubmitting(false);
+    };
+
+    const handleCancelPayment = async () => {
+        setisSubmitting(true);
+        const res = await cancelAPaymentOrder(props.paymentOrder.id);
+
+        if (res && res.status === 200) {
+            router.push("/ordenes");
+            enqueueSnackbar("Orden cancelada correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
@@ -169,6 +185,11 @@ const PaymentOrderGrid = (props) => {
                                 <div>
                                     <Button size="medium" color="secondary" onClick={handleRetryPayment} disabled={isSubmitting}>
                                         REINTENTAR COBRO
+                                    </Button>
+                                </div>
+                                <div>
+                                    <Button size="medium" color="secondary" onClick={handleCancelPayment} disabled={isSubmitting}>
+                                        CANCELAR PAGO
                                     </Button>
                                 </div>
                             </PaperWithTitleContainer>

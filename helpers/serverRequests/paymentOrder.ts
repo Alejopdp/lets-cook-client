@@ -95,3 +95,16 @@ export const retryPayment = async (paymentOrderId: string) => {
         return error.response;
     }
 };
+
+export const cancelAPaymentOrder = async (orderId: string) => {
+    try {
+        const res = await axios({
+            method: "PUT",
+            url: `${apiUrl}/cancel/${orderId}`,
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
