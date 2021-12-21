@@ -253,12 +253,13 @@ const SubscriptionGrid = (props) => {
                                 handleClick={handleClickOpenEditPlanModal}
                                 style={{ marginBottom: theme.spacing(3) }}
                             />
-                            {/* <DataDisplayEditable
+                            <DataDisplayEditable
                                 title="Variante"
                                 text={subscription.plan.planVariantDescription}
                                 handleClick={handleClickOpenEditPlanVariantModal}
                                 style={{ marginBottom: theme.spacing(3) }}
-                            /> */}
+                                hideEditButton
+                            />
                             <DataDisplayEditable
                                 title="Frecuencia"
                                 text={translateFrequency(subscription.frequency)}
