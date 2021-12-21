@@ -180,3 +180,38 @@ export const deleteSubscription = async (id: string) => {
         return res;
     } catch (error) {}
 };
+
+export const getDataForSwappingAPlan = async (subscriptionId: string, locale?: string) => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            headers: { authorization: JSON.parse(window.localStorage.getItem("token")) },
+            url: `${process.env.NEXT_PUBLIC_API_URL}/plan/data-for-swapping/${subscriptionId}`,
+            params: {
+                locale,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
+
+export const swapPlan = async (subscriptionId: string, newPlanId: string, newPlanVariantId: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            headers: { authorization: JSON.parse(window.localStorage.getItem("token")) },
+            url: `${apiUrl}/swap-plan/${subscriptionId}`,
+            data: {
+                newPlanId,
+                newPlanVariantId,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
