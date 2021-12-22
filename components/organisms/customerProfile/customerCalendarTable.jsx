@@ -65,7 +65,8 @@ const CustomerCalendarTable = (props) => {
             const updatedOrder = {
                 ...selectedOrder,
                 isSkipped: !selectedOrder.isSkipped,
-                active: selectedOrder.isSkipped ? true : false,
+                isSkippable: !selectedOrder.isSkippable,
+                isReanudable: !selectedOrder.isReanudable,
             };
             setOrders(orders.map((order) => (order.id === selectedOrder.id ? { ...updatedOrder } : order)));
             setToggleStateModalOpen(false);
@@ -133,16 +134,14 @@ const CustomerCalendarTable = (props) => {
                                     <TableCell
                                         style={{
                                             textTransform: "uppercase",
-                                            cursor: !order.isSkippable ? "default" : "pointer",
+                                            cursor: order.isSkippable || order.isReanudable ? "pointer" : "default",
                                         }}
                                     >
-                                        {!order.isSkippable ? (
-                                            <></>
-                                        ) : order.active ? (
+                                        {order.isSkippable ? (
                                             <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
                                                 Saltar semana
                                             </Typography>
-                                        ) : (
+                                        ) : order.isReanudable ? (
                                             <Typography
                                                 onClick={() => handleOpenModal(order)}
                                                 variant="subtitle1"
@@ -150,6 +149,8 @@ const CustomerCalendarTable = (props) => {
                                             >
                                                 Reanudar semana
                                             </Typography>
+                                        ) : (
+                                            <></>
                                         )}
                                     </TableCell>
 
@@ -168,11 +169,11 @@ const CustomerCalendarTable = (props) => {
             </Grid>
             {isToggleStateModalOpen && (
                 <SimpleModal
-                    title={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
+                    title={selectedOrder.isSkippable ? "Saltar semana" : "Reanudar semana"}
                     cancelButtonText="Cancelar"
-                    confirmButtonText={selectedOrder.active === true ? "Saltar semana" : "Reanudar semana"}
+                    confirmButtonText={selectedOrder.isSkippable ? "Saltar semana" : "Reanudar semana"}
                     paragraphs={[
-                        selectedOrder.active === true
+                        selectedOrder.isSkippable
                             ? "¿Estás seguro de que deseas saltar la siguiente semana?"
                             : "¿Estás seguro de que deseas reanudar la siguiente semana?",
                         `${selectedOrder.plan}`,
