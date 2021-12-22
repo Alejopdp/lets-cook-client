@@ -22,7 +22,14 @@ import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
 import { PlanFrequencyValue } from "helpers/types/frequency";
 import { translateFrequency } from "helpers/i18n/i18n";
-import { applyCouponToSubscription, cancelSubscription, deleteSubscription } from "helpers/serverRequests/subscription";
+import {
+    applyCouponToSubscription,
+    cancelSubscription,
+    deleteSubscription,
+    getDataForSwappingAPlan,
+    getSubscriptionById,
+    swapPlan,
+} from "helpers/serverRequests/subscription";
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
 
 const SubscriptionGrid = (props) => {
@@ -40,6 +47,8 @@ const SubscriptionGrid = (props) => {
     };
     const router = useRouter();
     const theme = useTheme();
+    const [isLoading, setIsLoading] = useState(true);
+    const [subscription, setsubscription] = useState({});
     const [openDeleteSubscriptionModal, setOpenDeleteSubscriptionModal] = useState(false);
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
     const [openEditPlanModal, setOpenEditPlanModal] = useState(false);
@@ -48,7 +57,30 @@ const SubscriptionGrid = (props) => {
     const [openEditNextChargeDateModal, setOpenEditNextChargeDateModal] = useState(false);
     const [openEditRestrictionsModal, setOpenEditRestrictionsModal] = useState(false);
     const [couponCode, setCouponCode] = useState("");
+    const [swapPlanData, setSwapPlanData] = useState({});
+    const [reloadCounter, setReloadCounter] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        const getInitialData = async () => {
+            const [subscriptionRes, swapPlanres] = await Promise.all([
+                getSubscriptionById(router.query.subscriptionId),
+                getDataForSwappingAPlan(router.query.subscriptionId, router.locale),
+            ]);
+
+            if (subscriptionRes && subscriptionRes.status === 200) {
+                setsubscription(subscriptionRes.data);
+            }
+
+            if (swapPlanres && swapPlanres.status === 200) {
+                setSwapPlanData(swapPlanres.data);
+            }
+
+            setIsLoading(false);
+        };
+
+        getInitialData();
+    }, [reloadCounter]);
 
     // Delete Subscription Modal Functions
 
@@ -57,7 +89,7 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleDeleteSubscription = async () => {
-        const res = await deleteSubscription(props.subscription.subscriptionId);
+        const res = await deleteSubscription(subscription.subscriptionId);
 
         if (res && res.status === 200) {
             enqueueSnackbar("Suscripción eliminada correctamente", { variant: "success" });
@@ -84,11 +116,11 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleCancelSubscription = async (reason, comments) => {
-        const res = await cancelSubscription(props.subscription.subscriptionId, reason, comments);
+        const res = await cancelSubscription(subscription.subscriptionId, reason, comments);
 
         if (res && res.status === 200) {
             enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
-            props.setsubscription({ ...props.subscription, state: "SUBSCRIPTION_CANCELLED" });
+            props.setsubscription({ ...subscription, state: "SUBSCRIPTION_CANCELLED" });
             setOpenCancelSubscriptionModal(false);
         } else {
             enqueueSnackbar(
@@ -110,9 +142,17 @@ const SubscriptionGrid = (props) => {
         setOpenEditPlanModal(false);
     };
 
-    const handleEditPlan = (newPlanId, newPlanVariantId) => {
-        alert(`new plan: ${newPlanId}, ${newPlanVariantId}`);
-        setOpenEditPlanModal(false);
+    const handleEditPlan = async (newPlanId, newPlanVariantId) => {
+        const res = await swapPlan(subscription.subscriptionId, newPlanId, newPlanVariantId);
+
+        if (res && res.status === 200) {
+            setReloadCounter(reloadCounter + 1);
+            setOpenEditPlanModal(false);
+            enqueueSnackbar("Plan cambiado correctamente", { variant: "success" });
+        } else {
+            setOpenEditPlanModal(false);
+            enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intenta nuevamente", { variant: "error" });
+        }
     };
 
     // Edit Plan Variant Modal Functions
@@ -125,10 +165,10 @@ const SubscriptionGrid = (props) => {
         setOpenEditPlanVariantModal(false);
     };
 
-    const handleEditPlanVariant = (planId, newPlanVariantId) => {
-        alert(`new plan: ${planId}, ${newPlanVariantId}`);
-        setOpenEditPlanVariantModal(false);
-    };
+    // const handleEditPlanVariant = (planId, newPlanVariantId) => {
+    //     alert(`new plan: ${planId}, ${newPlanVariantId}`);
+    //     setOpenEditPlanVariantModal(false);
+    // };
 
     // Edit Frequency Modal Functions
 
@@ -156,7 +196,6 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleChangeNextChargeDate = (date) => {
-        alert(`new date: ${date}`);
         setOpenEditNextChargeDateModal(false);
     };
 
@@ -185,7 +224,7 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleClickApplyCoupon = async () => {
-        const res = await applyCouponToSubscription(props.subscription.subscriptionId, couponCode, props.subscription.customerId);
+        const res = await applyCouponToSubscription(subscription.subscriptionId, couponCode, subscription.customerId);
 
         if (res && res.status === 200) {
             setCouponCode("");
@@ -197,147 +236,168 @@ const SubscriptionGrid = (props) => {
 
     return (
         <>
-            <Grid item xs={12} md={8}>
-                <PaperWithTitleContainer fullWidth={true} title="Información general">
-                    <DataDisplay
-                        title="Subscription ID"
-                        text={props.subscription.subscriptionId}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplay title="Cliente" text={props.subscription.customerName} style={{ marginBottom: theme.spacing(3) }} />
-                    <DataDisplay title="Estado" text={props.subscription.state} style={{ marginBottom: theme.spacing(3) }} />
-                    <DataDisplayEditable
-                        title="Plan"
-                        text={props.subscription.plan.planName}
-                        handleClick={handleClickOpenEditPlanModal}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplayEditable
-                        title="Variante"
-                        text={props.subscription.plan.planVariantDescription}
-                        handleClick={handleClickOpenEditPlanVariantModal}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplayEditable
-                        title="Frecuencia"
-                        text={translateFrequency(props.subscription.frequency)}
-                        handleClick={handleClickOpenEditFrequencyModal}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplayEditable
-                        title="Próximo cobro"
-                        text={props.subscription.nextBillingDate}
-                        handleClick={handleClickOpenEditNextChargeDateModal}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplay
-                        title="Método de pago"
-                        text={props.subscription.paymentMethod}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                    <DataDisplay
-                        title="Dirección de entrega"
-                        text={props.subscription.shippingAddress}
-                        style={{ marginBottom: theme.spacing(3) }}
-                    />
-                </PaperWithTitleContainer>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Restricciones">
-                            <DataDisplayEditable
-                                title="Restricción"
-                                text={props.subscription.restriction.text}
-                                handleClick={handleClickOpenEditRestrictionsModal}
-                                style={{ marginBottom: theme.spacing(2) }}
+            {!isLoading && (
+                <>
+                    <Grid item xs={12} md={8}>
+                        <PaperWithTitleContainer fullWidth={true} title="Información general">
+                            <DataDisplay
+                                title="Subscription ID"
+                                text={subscription.subscriptionId}
+                                style={{ marginBottom: theme.spacing(3) }}
                             />
-                            <DataDisplay title="Comentarios" text={props.subscription.restrictionComment} />
+                            <DataDisplay title="Cliente" text={subscription.customerName} style={{ marginBottom: theme.spacing(3) }} />
+                            <DataDisplay title="Estado" text={subscription.state} style={{ marginBottom: theme.spacing(3) }} />
+                            <DataDisplayEditable
+                                title="Plan"
+                                text={subscription.plan.planName}
+                                handleClick={handleClickOpenEditPlanModal}
+                                style={{ marginBottom: theme.spacing(3) }}
+                            />
+                            <DataDisplayEditable
+                                title="Variante"
+                                text={subscription.plan.planVariantDescription}
+                                handleClick={handleClickOpenEditPlanVariantModal}
+                                style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton
+                            />
+                            <DataDisplayEditable
+                                title="Frecuencia"
+                                text={translateFrequency(subscription.frequency)}
+                                handleClick={handleClickOpenEditFrequencyModal}
+                                style={{ marginBottom: theme.spacing(3) }}
+                            />
+                            <DataDisplayEditable
+                                title="Próximo cobro"
+                                text={subscription.nextBillingDate}
+                                handleClick={handleClickOpenEditNextChargeDateModal}
+                                style={{ marginBottom: theme.spacing(3) }}
+                            />
+                            <DataDisplay
+                                title="Método de pago"
+                                text={subscription.paymentMethod}
+                                style={{ marginBottom: theme.spacing(3) }}
+                            />
+                            <DataDisplay
+                                title="Dirección de entrega"
+                                text={subscription.shippingAddress}
+                                style={{ marginBottom: theme.spacing(3) }}
+                            />
                         </PaperWithTitleContainer>
                     </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Detalle del importe">
-                            <AmountDetails data={props.subscription.amountDetails} />
-                        </PaperWithTitleContainer>
-                    </Grid>
-                    {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
-                        <Grid item xs={12}>
-                            <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
-                                {!!props.subscription.coupon?.id ? (
-                                    <Link
-                                        onClick={() =>
-                                            router.push({
-                                                pathname: "/cupon",
-                                                query: { id: props.subscription.coupon.id },
-                                            })
-                                        }
-                                        color="primary"
-                                        style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
-                                    >
-                                        {props.subscription.coupon.code}
-                                    </Link>
-                                ) : (
-                                    <ApplyCoupon
-                                        handleChange={handleChangeCouponInput}
-                                        handleClick={handleClickApplyCoupon}
-                                        value={couponCode}
+                    <Grid item xs={12} md={4}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <PaperWithTitleContainer fullWidth={true} title="Restricciones">
+                                    <DataDisplayEditable
+                                        title="Restricción"
+                                        text={subscription.restriction.text}
+                                        handleClick={handleClickOpenEditRestrictionsModal}
+                                        style={{ marginBottom: theme.spacing(2) }}
                                     />
-                                )}
-                            </PaperWithTitleContainer>
-                        </Grid>
-                    )}
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                            {props.subscription.state !== "SUBSCRIPTION_CANCELLED" && (
-                                <div>
-                                    <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelSubscriptionModal}>
-                                        CANCELAR SUSCRIPCIÓN
-                                    </Button>
-                                </div>
+                                    <DataDisplay title="Comentarios" text={subscription.restrictionComment} />
+                                </PaperWithTitleContainer>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <PaperWithTitleContainer fullWidth={true} title="Detalle del importe">
+                                    <AmountDetails data={subscription.amountDetails} />
+                                </PaperWithTitleContainer>
+                            </Grid>
+                            {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                                <Grid item xs={12}>
+                                    <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
+                                        {!!subscription.coupon?.id ? (
+                                            <Link
+                                                onClick={() =>
+                                                    router.push({
+                                                        pathname: "/cupon",
+                                                        query: { id: subscription.coupon.id },
+                                                    })
+                                                }
+                                                color="primary"
+                                                style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                                            >
+                                                {subscription.coupon.code}
+                                            </Link>
+                                        ) : (
+                                            <ApplyCoupon
+                                                handleChange={handleChangeCouponInput}
+                                                handleClick={handleClickApplyCoupon}
+                                                value={couponCode}
+                                            />
+                                        )}
+                                    </PaperWithTitleContainer>
+                                </Grid>
                             )}
-                            <div>
-                                <Button size="medium" style={{ color: "#FC1919" }} onClick={() => setOpenDeleteSubscriptionModal(true)}>
-                                    ELIMINAR SUSCRIPCIÓN
-                                </Button>
-                            </div>
-                        </PaperWithTitleContainer>
+                            <Grid item xs={12}>
+                                <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                    {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                                        <div>
+                                            <Button
+                                                size="medium"
+                                                style={{ color: "#FC1919" }}
+                                                onClick={handleClickOpenCancelSubscriptionModal}
+                                            >
+                                                CANCELAR SUSCRIPCIÓN
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <div>
+                                        <Button
+                                            size="medium"
+                                            style={{ color: "#FC1919" }}
+                                            onClick={() => setOpenDeleteSubscriptionModal(true)}
+                                        >
+                                            ELIMINAR SUSCRIPCIÓN
+                                        </Button>
+                                    </div>
+                                </PaperWithTitleContainer>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Grid>
-            <CancelSubscriptionModal
-                open={openCancelSubscriptionModal}
-                handleClose={handleCloseCancelSubscriptionModal}
-                handlePrimaryButtonClick={handleCancelSubscription}
-            />
-            <DeleteSubscriptionModal
-                open={openDeleteSubscriptionModal}
-                handleClose={handleCloseDeleteSubscriptionModal}
-                handlePrimaryButtonClick={handleDeleteSubscription}
-            />
-            <EditPlanModal open={openEditPlanModal} handleClose={handleCloseEditPlanModal} handlePrimaryButtonClick={handleEditPlan} />
-            <EditPlanVariantModal
-                open={openEditPlanVariantModal}
-                handleClose={handleCloseEditPlanVariantModal}
-                handlePrimaryButtonClick={handleEditPlanVariant}
-                planId={subscriptionDetail.planId}
-            />
-            <EditFrequencyModal
-                open={openEditFrequencyModal}
-                handleClose={handleCloseEditFrequencyModal}
-                handlePrimaryButtonClick={handleEditFrequency}
-            />
-            <EditRestrictionsModal
-                actualRestriction={props.subscription.restriction}
-                restrictions={props.restrictions}
-                open={openEditRestrictionsModal}
-                handleClose={handleCloseEditRestrictionsModal}
-                handlePrimaryButtonClick={handleEditRestrictions}
-            />
-            <EditNextChargeDateModal
-                open={openEditNextChargeDateModal}
-                handleClose={handleCloseEditNextChargeDateModal}
-                handlePrimaryButtonClick={handleChangeNextChargeDate}
-            />
+                    <CancelSubscriptionModal
+                        open={openCancelSubscriptionModal}
+                        handleClose={handleCloseCancelSubscriptionModal}
+                        handlePrimaryButtonClick={handleCancelSubscription}
+                    />
+                    <DeleteSubscriptionModal
+                        open={openDeleteSubscriptionModal}
+                        handleClose={handleCloseDeleteSubscriptionModal}
+                        handlePrimaryButtonClick={handleDeleteSubscription}
+                    />
+                    {openEditPlanModal && (
+                        <EditPlanModal
+                            open={openEditPlanModal}
+                            handleClose={handleCloseEditPlanModal}
+                            handlePrimaryButtonClick={handleEditPlan}
+                            subscription={subscription}
+                            swapPlanData={swapPlanData}
+                        />
+                    )}
+                    {/* <EditPlanVariantModal
+                        open={openEditPlanVariantModal}
+                        handleClose={handleCloseEditPlanVariantModal}
+                        handlePrimaryButtonClick={handleEditPlanVariant}
+                        planId={subscriptionDetail.planId}
+                    /> */}
+                    <EditFrequencyModal
+                        open={openEditFrequencyModal}
+                        handleClose={handleCloseEditFrequencyModal}
+                        handlePrimaryButtonClick={handleEditFrequency}
+                    />
+                    <EditRestrictionsModal
+                        actualRestriction={subscription.restriction}
+                        restrictions={props.restrictions}
+                        open={openEditRestrictionsModal}
+                        handleClose={handleCloseEditRestrictionsModal}
+                        handlePrimaryButtonClick={handleEditRestrictions}
+                    />
+                    <EditNextChargeDateModal
+                        open={openEditNextChargeDateModal}
+                        handleClose={handleCloseEditNextChargeDateModal}
+                        handlePrimaryButtonClick={handleChangeNextChargeDate}
+                    />
+                </>
+            )}{" "}
         </>
     );
 };
