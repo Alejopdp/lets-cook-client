@@ -65,6 +65,7 @@ const CustomerSubscriptionsTable = (props) => {
     const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
     const [selectedVariation, setSelectedVariation] = useState({});
     const [selectedFrequency, setSelectedFrequency] = useState("");
+    const [couponCode, setCouponCode] = useState("");
 
     const handlePlanSelect = (e) => {
         setSelectedPlan(e.target.value);
@@ -96,6 +97,7 @@ const CustomerSubscriptionsTable = (props) => {
             planId: selectedPlan.id,
             planVariantId: selectedVariation.id,
             planFrequency: selectedPlan.type === PlanType.Principal ? PlanFrequencyValue.WEEKLY : selectedFrequency,
+            couponCode,
         };
         const res = await createSubscription(data);
 
@@ -104,10 +106,10 @@ const CustomerSubscriptionsTable = (props) => {
             enqueueSnackbar("Plan añadido correctamente", {
                 variant: "success",
             });
-
+            router.push({ pathname: "/suscripciones/detalle", query: { subscriptionId: res.data.subscriptionId } });
             // handleSetSubscriptions();
         } else {
-            enqueueSnackbar("No se ha podido añadir el plan", {
+            enqueueSnackbar(!!res && !!res.data ? res.data.message : "No se ha podido añadir el plan", {
                 variant: "error",
             });
         }
@@ -207,6 +209,8 @@ const CustomerSubscriptionsTable = (props) => {
                             selectedVariation={selectedVariation}
                             selectedFrequency={selectedFrequency}
                             handleChangeFrequency={handleChangeFrequency}
+                            coupon={couponCode}
+                            handleCouponChange={(e) => setCouponCode(e.target.value)}
                         />
                     }
                     open={isAddPlanModalOpen}

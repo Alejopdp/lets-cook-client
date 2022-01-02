@@ -1,6 +1,6 @@
 // Utils & Config
 import React, { useEffect, useState } from "react";
-import { useTheme } from "@material-ui/core";
+import { Box, useTheme } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 // External components
@@ -33,21 +33,10 @@ import {
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
 
 const SubscriptionGrid = (props) => {
-    const subscriptionDetail = {
-        subscriptionId: "123",
-        clientName: "Alejo Scotti",
-        state: "Activo",
-        planId: "1",
-        planName: "Plan Familiar",
-        planVariantDescription: "3 recetas para 3 personas",
-        frequency: PlanFrequencyValue.WEEKLY,
-        nextPaymentDate: "10/12/2021",
-        paymentMethod: "Mastercard terminada en 1234",
-        addressName: "Av. Fausto Elio 42, 46011, Valencia",
-    };
     const router = useRouter();
     const theme = useTheme();
     const [isLoading, setIsLoading] = useState(true);
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
     const [subscription, setsubscription] = useState({});
     const [openDeleteSubscriptionModal, setOpenDeleteSubscriptionModal] = useState(false);
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
@@ -122,6 +111,7 @@ const SubscriptionGrid = (props) => {
             enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
             props.setsubscription({ ...subscription, state: "SUBSCRIPTION_CANCELLED" });
             setOpenCancelSubscriptionModal(false);
+            setReloadCounter(reloadCounter + 1);
         } else {
             enqueueSnackbar(
                 res && res.data
@@ -224,14 +214,17 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleClickApplyCoupon = async () => {
+        setIsApplyingCoupon(true);
         const res = await applyCouponToSubscription(subscription.subscriptionId, couponCode, subscription.customerId);
 
         if (res && res.status === 200) {
             setCouponCode("");
             enqueueSnackbar("Cupón aplicado", { variant: "success" });
+            setReloadCounter(reloadCounter + 1);
         } else {
             enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error, intenta nuevamente", { variant: "error" });
         }
+        setIsApplyingCoupon(false);
     };
 
     return (
@@ -305,26 +298,28 @@ const SubscriptionGrid = (props) => {
                             {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
                                 <Grid item xs={12}>
                                     <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
-                                        {!!subscription.coupon?.id ? (
-                                            <Link
-                                                onClick={() =>
-                                                    router.push({
-                                                        pathname: "/cupon",
-                                                        query: { id: subscription.coupon.id },
-                                                    })
-                                                }
-                                                color="primary"
-                                                style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
-                                            >
-                                                {subscription.coupon.code}
-                                            </Link>
-                                        ) : (
-                                            <ApplyCoupon
-                                                handleChange={handleChangeCouponInput}
-                                                handleClick={handleClickApplyCoupon}
-                                                value={couponCode}
-                                            />
+                                        {!!subscription.coupon?.id && (
+                                            <Box marginBottom={2}>
+                                                <Link
+                                                    onClick={() =>
+                                                        router.push({
+                                                            pathname: "/cupon",
+                                                            query: { id: subscription.coupon.id },
+                                                        })
+                                                    }
+                                                    color="primary"
+                                                    style={{ textDecoration: "none", cursor: "pointer", fontWeight: 600 }}
+                                                >
+                                                    {subscription.coupon.code}
+                                                </Link>
+                                            </Box>
                                         )}
+                                        <ApplyCoupon
+                                            handleChange={handleChangeCouponInput}
+                                            handleClick={handleClickApplyCoupon}
+                                            value={couponCode}
+                                            isSubmitting={isApplyingCoupon}
+                                        />
                                     </PaperWithTitleContainer>
                                 </Grid>
                             )}
@@ -341,15 +336,17 @@ const SubscriptionGrid = (props) => {
                                             </Button>
                                         </div>
                                     )}
-                                    <div>
-                                        <Button
-                                            size="medium"
-                                            style={{ color: "#FC1919" }}
-                                            onClick={() => setOpenDeleteSubscriptionModal(true)}
-                                        >
-                                            ELIMINAR SUSCRIPCIÓN
-                                        </Button>
-                                    </div>
+                                    {subscription.state === "SUBSCRIPTION_CANCELLED" && (
+                                        <div>
+                                            <Button
+                                                size="medium"
+                                                style={{ color: "#FC1919" }}
+                                                onClick={() => setOpenDeleteSubscriptionModal(true)}
+                                            >
+                                                ELIMINAR SUSCRIPCIÓN
+                                            </Button>
+                                        </div>
+                                    )}
                                 </PaperWithTitleContainer>
                             </Grid>
                         </Grid>

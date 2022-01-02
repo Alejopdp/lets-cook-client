@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 
 // External components
+import Input from "../../../atoms/input/input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -22,16 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 const AddPlanModal = (props) => {
     const { selectField } = useStyles();
-
-    // const planAndPlanVariantMap: { [planId: string]: PlanVariant[] } = useMemo(() => {
-    //     const map: { [planId: string]: PlanVariant[] } = {};
-
-    //     for (let plan of props.plans) {
-    //         map[plan.id] = plan.planVariants;
-    //     }
-
-    //     return map;
-    // }, [props.plans]);
 
     return (
         <Box minWidth="400px">
@@ -55,6 +46,11 @@ const AddPlanModal = (props) => {
                         </MenuItem>
                     ))}
                 </Select>
+            </FormControl>
+
+            <FormControl className={selectField} variant="outlined">
+                {/* <InputLabel>Cupón</InputLabel> */}
+                <Input handleChange={props.handleCouponChange} helperText="" label="Cupón" name="coupon" value={props.coupon} />
             </FormControl>
 
             {!!props.selectedPlan && !!props.selectedPlan.id && props.selectedPlan.type !== PlanType.Principal && (
