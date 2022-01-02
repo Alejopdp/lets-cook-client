@@ -111,6 +111,7 @@ const SubscriptionGrid = (props) => {
             enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
             props.setsubscription({ ...subscription, state: "SUBSCRIPTION_CANCELLED" });
             setOpenCancelSubscriptionModal(false);
+            setReloadCounter(reloadCounter + 1);
         } else {
             enqueueSnackbar(
                 res && res.data
@@ -335,15 +336,17 @@ const SubscriptionGrid = (props) => {
                                             </Button>
                                         </div>
                                     )}
-                                    <div>
-                                        <Button
-                                            size="medium"
-                                            style={{ color: "#FC1919" }}
-                                            onClick={() => setOpenDeleteSubscriptionModal(true)}
-                                        >
-                                            ELIMINAR SUSCRIPCIÓN
-                                        </Button>
-                                    </div>
+                                    {subscription.state === "SUBSCRIPTION_CANCELLED" && (
+                                        <div>
+                                            <Button
+                                                size="medium"
+                                                style={{ color: "#FC1919" }}
+                                                onClick={() => setOpenDeleteSubscriptionModal(true)}
+                                            >
+                                                ELIMINAR SUSCRIPCIÓN
+                                            </Button>
+                                        </div>
+                                    )}
                                 </PaperWithTitleContainer>
                             </Grid>
                         </Grid>
