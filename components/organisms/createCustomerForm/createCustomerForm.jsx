@@ -50,8 +50,8 @@ const CreateCustomerForm = (props) => {
     };
 
     const handleGoogleDeliveryInput = async (address) => {
-        const geometry = await getGeometry(address.structured_formatting.main_text);
-        console.log("delivery address:", address)
+        const geometry = await getGeometry(address.description);
+
         setFormData({
             ...formData,
             deliveryAddress: address.description,
@@ -61,8 +61,8 @@ const CreateCustomerForm = (props) => {
     };
 
     const handleGoogleBillingInput = async (address) => {
-        const geometry = await getGeometry(address.structured_formatting.main_text);
-        console.log("billing address:", address)
+        const geometry = await getGeometry(address.description);
+
         setFormData({
             ...formData,
             billingAddress: address.description,
@@ -71,12 +71,12 @@ const CreateCustomerForm = (props) => {
         });
     };
 
-    console.log("formdata:", formData)
+    console.log("formdata:", formData);
 
     const handleSubmit = async () => {
         const res = await createCustomer(formData);
         // const res = { status: 200 };
-        console.log(res)
+        console.log(res);
 
         if (res.status === 200) {
             enqueueSnackbar("Se ha creado el usuario correctamente", {

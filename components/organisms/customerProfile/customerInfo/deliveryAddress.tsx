@@ -51,7 +51,7 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
     };
 
     const handleGoogleInput = async (address) => {
-        const geometry = await getGeometry(address.structured_formatting.main_text);
+        const geometry = await getGeometry(address.description);
 
         setFormData({
             ...formData,
