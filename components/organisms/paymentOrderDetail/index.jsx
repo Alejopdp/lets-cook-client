@@ -15,6 +15,7 @@ const PaymentOrderDetail = (props) => {
     const router = useRouter();
     const [paymentOrder, setpaymentOrder] = useState({});
     const [isLoading, setisLoading] = useState(true);
+    const [reloadCounter, setReloadCounter] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
@@ -31,11 +32,17 @@ const PaymentOrderDetail = (props) => {
         };
 
         getPaymentOrderById();
-    }, []);
+    }, [reloadCounter]);
     return (
         <>
             <DashboardWithBackTitle title="Detalle de la orden de pago" />
-            {!isLoading && <PaymentOrderGrid paymentOrder={paymentOrder} setpaymentOrder={setpaymentOrder} />}
+            {!isLoading && (
+                <PaymentOrderGrid
+                    paymentOrder={paymentOrder}
+                    setpaymentOrder={setpaymentOrder}
+                    reload={() => setReloadCounter(reloadCounter + 1)}
+                />
+            )}
         </>
     );
 };

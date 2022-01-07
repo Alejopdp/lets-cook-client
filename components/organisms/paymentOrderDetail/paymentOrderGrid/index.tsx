@@ -66,11 +66,12 @@ const PaymentOrderGrid = (props) => {
     };
 
     const handleChargePaymentOrder = async () => {
+        return;
         setisSubmitting(true);
         const res = await chargeOnePaymentOrder(props.paymentOrder.id);
 
         if (res && res.status === 200) {
-            props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
+            props.reload();
             enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
@@ -83,7 +84,7 @@ const PaymentOrderGrid = (props) => {
         const res = await retryPayment(props.paymentOrder.id);
 
         if (res && res.status === 200) {
-            props.setpaymentOrder({ ...props.paymentOrder, paymentIntentId: res.data.paymentIntentId, state: res.data.paymentOrderState });
+            props.reload();
             enqueueSnackbar("Orden cobrada correctamente", { variant: "success" });
         } else {
             enqueueSnackbar(res.data.message, { variant: "error" });
