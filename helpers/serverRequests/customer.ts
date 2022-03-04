@@ -28,7 +28,6 @@ export const searchCustomers = async (customerName) => {
 
         return res;
     } catch (error) {
-        console.log(error);
         return error.response;
     }
 };
