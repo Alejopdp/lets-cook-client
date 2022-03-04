@@ -16,7 +16,6 @@ export const getCustomerList = async () => {
 
         return res;
     } catch (error) {
-        console.log(error);
         return error.response;
     }
 };
