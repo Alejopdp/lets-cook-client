@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 
 // Internal components
 import TablePaginationActions from "../../../molecules/tablePaginationActions/tablePaginationActions";
 
 // External components
+import Box from "@material-ui/core/Box";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableHead from "@material-ui/core/TableHead";
@@ -17,12 +19,15 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
+import GetAppIcon from "@material-ui/icons/GetApp";
 import { TableFooter, TableSortLabel, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import Popover from "@material-ui/core/Popover";
 
 // Icons & Images
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import { exportCustomerActions } from "helpers/serverRequests/customer";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -59,6 +64,18 @@ const CustomersTable = (props) => {
     const [orderBy, setOrderBy] = useState<CustomerOrderByOptions>("");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
+    const { enqueueSnackbar } = useSnackbar();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -87,6 +104,13 @@ const CustomersTable = (props) => {
 
     const getComparator = (order, orderBy) => {
         return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    };
+
+    const handleExportCustomerActions = async (customerId: string) => {
+        const res = await exportCustomerActions(customerId);
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
     };
 
     return (
@@ -157,19 +181,24 @@ const CustomersTable = (props) => {
                                         <Typography variant="body1">{customer.activeSubscriptions || 0}</Typography>
                                     </TableCell>
                                     <TableCell className={cells}>
-                                        <IconButton
-                                            onClick={() =>
-                                                router.push({
-                                                    pathname: "/gestion-de-clientes/modificar",
-                                                    query: { customerId: customer.id },
-                                                })
-                                            }
-                                        >
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        <Box display="flex">
+                                            <IconButton
+                                                onClick={() =>
+                                                    router.push({
+                                                        pathname: "/gestion-de-clientes/modificar",
+                                                        query: { customerId: customer.id },
+                                                    })
+                                                }
+                                            >
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => handleExportCustomerActions(customer.id)}>
+                                                <GetAppIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
                                     </TableCell>
                                 </TableRow>
                             ))}

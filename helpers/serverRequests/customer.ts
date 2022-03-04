@@ -240,3 +240,19 @@ export const addNewPaymentMethod = async (customerId: string, stripePaymentMetho
         return error.response;
     }
 };
+
+export const exportCustomerActions = async (customerId: string) => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export-actions/${customerId}`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Acciones de cliente.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
