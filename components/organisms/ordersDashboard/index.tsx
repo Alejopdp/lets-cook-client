@@ -84,7 +84,8 @@ const OrdersDashboard = (props) => {
             ? paymentOrders.filter((paymentOrder) => {
                   return (
                       paymentOrder.customerName.toLowerCase().includes(searchValue.toLowerCase()) ||
-                      paymentOrder.customerEmail.toLowerCase().includes(searchValue.toLowerCase())
+                      paymentOrder.customerEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      paymentOrder.humanId?.includes(searchValue.toLowerCase())
                   );
               })
             : paymentOrders;

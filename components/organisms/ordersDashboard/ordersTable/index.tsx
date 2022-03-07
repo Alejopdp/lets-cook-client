@@ -51,6 +51,7 @@ enum PaymentOrderOrderByOptions {
     CUSTOMER_NAME = "customerName",
     AMOUNT = "amount",
     STATE = "state",
+    HUMAN_ID = "humanId",
 }
 
 const OrdersTable = (props) => {
@@ -67,18 +68,23 @@ const OrdersTable = (props) => {
         setOrderBy(property);
     };
 
-    function descendingComparator(a, b, orderBy) {
-        if (b[orderBy] < a[orderBy]) {
+    function descendingComparator(order1: string, order2: string, orderBy: PaymentOrderOrderByOptions) {
+        const val1 = orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order1[orderBy].split("/").reverse().join("/") : order1[orderBy];
+        const val2 = orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order2[orderBy].split("/").reverse().join("/") : order2[orderBy];
+
+        if (val2 < val1) {
             return -1;
         }
-        if (b[orderBy] > a[orderBy]) {
+        if (val2 > val1) {
             return 1;
         }
         return 0;
     }
 
-    const getComparator = (order, orderBy) => {
-        return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    const getComparator = (order: OrderType, orderBy: PaymentOrderOrderByOptions) => {
+        return order === "desc"
+            ? (val1, val2) => descendingComparator(val1, val2, orderBy)
+            : (val1, val2) => -descendingComparator(val1, val2, orderBy);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -98,15 +104,15 @@ const OrdersTable = (props) => {
                         <TableRow>
                             <TableCell
                                 className={idCell}
-                                // sortDirection={orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order : false}
+                                sortDirection={orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order : false}
                             >
-                                {/* <TableSortLabel
+                                <TableSortLabel
                                     active={orderBy === PaymentOrderOrderByOptions.BILLING_DATE}
                                     direction={orderBy === PaymentOrderOrderByOptions.BILLING_DATE ? order : OrderType.ASC}
                                     onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.BILLING_DATE)}
-                                > */}
-                                <Typography variant="subtitle1">Fecha de cobro</Typography>
-                                {/* </TableSortLabel> */}
+                                >
+                                    <Typography variant="subtitle1">Fecha de cobro</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell
@@ -123,7 +129,13 @@ const OrdersTable = (props) => {
                             </TableCell>
 
                             <TableCell className={cells}>
-                                <Typography variant="subtitle1">Payment Order ID</Typography>
+                                <TableSortLabel
+                                    active={orderBy === PaymentOrderOrderByOptions.HUMAN_ID}
+                                    direction={orderBy === PaymentOrderOrderByOptions.HUMAN_ID ? order : OrderType.ASC}
+                                    onClick={(e) => handleRequestSort(e, PaymentOrderOrderByOptions.HUMAN_ID)}
+                                >
+                                    <Typography variant="subtitle1">Payment Order ID</Typography>
+                                </TableSortLabel>
                             </TableCell>
 
                             <TableCell className={cells}>
