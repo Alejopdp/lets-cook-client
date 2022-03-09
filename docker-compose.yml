@@ -1,0 +1,13 @@
+version: "3"
+services:
+    admin:
+        build:
+            context: ./
+        ports:
+            - "3010:3010"
+        container_name: lets-cook-admin
+        stdin_open: true
+        volumes:
+            - ./:/usr/src/lets-cook-admin
+            - /usr/src/lets-cook-admin/node_modules
+            - /user/src/lets-cook-admin/.next
