@@ -11,6 +11,7 @@ import PersonalData from "./personalData";
 import DeliveryAddress from "./deliveryAddress";
 import BillingData from "./billingData";
 import PaymentMethods from "./paymentMethod";
+import OtherInfo from "./otherInfo";
 
 const CustomerInfo = (props: CustomerInfoProps) => {
     return (
@@ -34,6 +35,9 @@ const CustomerInfo = (props: CustomerInfoProps) => {
                     paymentMethods={props.customer.personalData.paymentMethods}
                     customerId={props.customer.personalData.id}
                 />
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <OtherInfo friendCode={props.customer.friendCode} />
             </Grid>
         </>
     );

@@ -66,6 +66,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         paymentOrders: props.data.paymentOrders,
         // Events table
         events: props.logs,
+        friendCode: props.data.friendCode,
     });
 
     const handleUpdatePersonalData = async (formData: Personaldata) => {

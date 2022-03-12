@@ -70,6 +70,7 @@ export interface CustomerInformation {
     subscriptions: Subscription[];
     orders: Order[];
     paymentOrders: PaymentOrder[];
+    friendCode: string;
 }
 
 export interface CustomerProfileProps {
