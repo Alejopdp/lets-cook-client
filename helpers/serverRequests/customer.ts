@@ -254,3 +254,19 @@ export const exportCustomerActions = async (customerId: string) => {
         return error.response;
     }
 };
+
+export const exportAllCustomersActions = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export-actions`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Acciones de clientes.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};

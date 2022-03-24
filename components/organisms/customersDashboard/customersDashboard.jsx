@@ -1,8 +1,8 @@
 // Utils & Config
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import { exportCustomers, getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
+import { exportAllCustomersActions, exportCustomers, getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
 import PropTypes from "prop-types";
 
 // External components
@@ -15,6 +15,7 @@ import CustomersTable from "./customersTable/customersTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
 import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
+import DashboardTitleWithButtonAndManyCSV from "components/layout/dashboardTitleWithButtonAndManyCSV";
 
 const CustomersDashboard = (props) => {
     const router = useRouter();
@@ -24,7 +25,30 @@ const CustomersDashboard = (props) => {
     const [selectedCustomer, setSelectedCustomer] = useState({});
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const handleClickExport = async () => {
+        const res = await exportCustomers();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
+    };
+
+    const handleClickExportActions = async () => {
+        const res = await exportAllCustomersActions();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
+        }
+    };
+
+    const exportOptions = useMemo(() => {
+        return [
+            { title: "Exportar clientes", handler: handleClickExport },
+            { title: "Exportar acciones", handler: handleClickExportActions },
+        ];
+    }, []);
 
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear");
@@ -80,22 +104,16 @@ const CustomersDashboard = (props) => {
         );
     });
 
-    const handleClickExport = async () => {
-        const res = await exportCustomers();
-
-        if (!!!res || res.status !== 200) {
-            enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
-        }
-    };
-
     return (
         <>
-            <DashboardTitleWithButtonAndCSV
-                title="Clientes"
-                export
-                handleClickExport={handleClickExport}
-                handleClick={handleCreateCustomer}
+            <DashboardTitleWithButtonAndManyCSV
                 buttonText="CREAR CLIENTE"
+                exports={exportOptions}
+                handleClick={handleCreateCustomer}
+                title="Clientes"
+                import={false}
+                handleClickImport={() => ""}
+                importFile={undefined}
             />
 
             <Grid item xs={12}>
