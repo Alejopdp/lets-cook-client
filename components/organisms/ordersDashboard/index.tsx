@@ -37,6 +37,7 @@ const OrdersDashboard = (props) => {
         billingDates: FilterOption[];
         customers: FilterOption[];
     }>({ weeks: [], shippingDates: [], billingDates: [], customers: [] });
+    const [isExportSubmitting, setIsExportSubmitting] = useState(false);
     const [isExportModalOpen, setisExportModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportModalOpen] = useState(false);
     const [importErrorData, setImportErrorData] = useState<{
@@ -84,7 +85,8 @@ const OrdersDashboard = (props) => {
             ? paymentOrders.filter((paymentOrder) => {
                   return (
                       paymentOrder.customerName.toLowerCase().includes(searchValue.toLowerCase()) ||
-                      paymentOrder.customerEmail.toLowerCase().includes(searchValue.toLowerCase())
+                      paymentOrder.customerEmail.toLowerCase().includes(searchValue.toLowerCase()) ||
+                      paymentOrder.humanId?.includes(searchValue.toLowerCase())
                   );
               })
             : paymentOrders;
@@ -120,6 +122,7 @@ const OrdersDashboard = (props) => {
         setImportFile("");
     };
     const handleClickExport = async (filters: { value: string; label: string }[], selectedFilter: ExportOrdersFilterOptions) => {
+        setIsExportSubmitting(true);
         var weeks: string[] = [];
         var shippingDates: string[] = [];
         var billingDates: string[] = [];
@@ -145,6 +148,7 @@ const OrdersDashboard = (props) => {
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
+        setIsExportSubmitting(false);
     };
 
     return (
@@ -177,6 +181,7 @@ const OrdersDashboard = (props) => {
                 billingDateOptions={filterOptions.billingDates}
                 customerOptions={filterOptions.customers}
                 title="Exportar pedidos"
+                isSubmitting={isExportSubmitting}
             />
 
             <ImportErrorModal

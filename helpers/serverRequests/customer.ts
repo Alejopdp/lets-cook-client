@@ -16,7 +16,6 @@ export const getCustomerList = async () => {
 
         return res;
     } catch (error) {
-        console.log(error);
         return error.response;
     }
 };
@@ -29,7 +28,6 @@ export const searchCustomers = async (customerName) => {
 
         return res;
     } catch (error) {
-        console.log(error);
         return error.response;
     }
 };
@@ -237,6 +235,38 @@ export const addNewPaymentMethod = async (customerId: string, stripePaymentMetho
 
         return res;
     } catch (error) {
+        return error.response;
+    }
+};
+
+export const exportCustomerActions = async (customerId: string) => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export-actions/${customerId}`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Acciones de cliente.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
+        return error.response;
+    }
+};
+
+export const exportAllCustomersActions = async () => {
+    try {
+        const res = await Axios({
+            method: "GET",
+            url: `${apiUrl}/export-actions`,
+            responseType: "blob",
+        });
+
+        FileDownload(res.data, "Acciones de clientes.xlsx");
+        return res;
+    } catch (error) {
+        error.response.data = JSON.parse(await error.response.data.text());
         return error.response;
     }
 };
