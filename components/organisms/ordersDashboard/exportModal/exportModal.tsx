@@ -28,6 +28,7 @@ interface ExportModalProps {
     handleCancelButton: () => void;
     open: boolean;
     handleClose: () => void;
+    isSubmitting: boolean;
 }
 
 const ExportModal = ({
@@ -42,6 +43,7 @@ const ExportModal = ({
     handleCancelButton = () => {},
     open,
     handleClose = () => {},
+    isSubmitting,
 }: ExportModalProps) => {
     const [searchValue, setSearchValue] = useState("");
     const [_optionsSelected, setOptionsSelected] = useState([]);
@@ -205,7 +207,7 @@ const ExportModal = ({
                 <Button onClick={handleCancelButton} color="default" autoFocus>
                     {cancelButtonText}
                 </Button>
-                <Button onClick={() => handleConfirmButton(_optionsSelected, options[tabValue])} color="primary">
+                <Button onClick={() => handleConfirmButton(_optionsSelected, options[tabValue])} color="primary" disabled={isSubmitting}>
                     {confirmButtonText}
                 </Button>
             </DialogActions>
