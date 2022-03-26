@@ -40,14 +40,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
-    const theme = useTheme();
-    const classes = useStyles();
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
-
-    const [lang, setLang] = useState(languages[0]);
     const [ingredientsVariants, setIngredientsVariants] = useState([]); // {ingredients: [], sku: "", restrictions: []}
-    const [imageTags, setimageTags] = useState([]);
+    const [imageTags, setimageTags] = useState<string[]>([]);
     const [selectedRecipeVariant, setSelectedRecipeVariant] = useState(null);
     const [tags, settags] = useState([]);
     const [weeks, setweeks] = useState([]);
@@ -67,7 +63,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [difficultyLevel, setdifficultyLevel] = useState("");
     const [orderPriority, setOrderPriority] = useState("");
     const [plans, setplans] = useState([]);
-    const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string }[]>([]);
+    const [nutritionalInformation, setnutritionalInformation] = useState<{ key: string; value: string; id: string }[]>([]);
     const [isSubmitting, setisSubmitting] = useState(false);
     const _handleAddVariant = ($event) => {
         const newVariant = {
@@ -158,16 +154,17 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
 
     const handleAddImageTag = (e) => {
         const newTag = e.target.value;
+
         if (!!!newTag) {
             setimageTags(imageTags.slice(0, -1));
             return;
         }
-        if (imageTags.some((tag) => tag.toLowerCase() === newTag.toLowerCase())) return;
+        if (imageTags.some((tag: string) => tag.toLowerCase() === newTag.toLowerCase())) return;
         setimageTags([...imageTags, newTag]);
     };
 
-    const handleRemoveImageTag = (imageTagToRemove) => {
-        setimageTags(imageTags.filter((tag) => tag !== imageTagToRemove));
+    const handleRemoveImageTag = (imageTagToRemove: string) => {
+        setimageTags(imageTags.filter((tag: string) => tag.toLowerCase() !== imageTagToRemove.toLowerCase()));
     };
 
     // const handleDropFile = (files) => {
@@ -514,7 +511,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 values={weeks}
                                 onChange={handleAddWeek}
                                 handleRemoveValue={handleRemoveWeek}
-                                name="imageTags"
+                                name="weeks"
                             />
                         </PaperWithTitleContainer>
                     </Grid>
