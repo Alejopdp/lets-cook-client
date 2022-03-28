@@ -1,5 +1,5 @@
 // Utils & Config
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // External components
 import { useRouter } from "next/router";

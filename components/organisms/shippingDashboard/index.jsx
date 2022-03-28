@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { toggleZoneState, deleteZone } from "../../../helpers/serverRequests/shipping";
