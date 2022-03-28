@@ -1,3 +1,4 @@
+import { Permission } from "helpers/types/permission";
 import create from "zustand";
 
 export const useAuthStore = create((set) => ({
@@ -5,7 +6,18 @@ export const useAuthStore = create((set) => ({
     setIsAuthenticated: (isAuthenticated) => set((state) => ({ isAuthenticated })),
 }));
 
-export const useUserInfoStore = create((set) => ({
+export interface IUserInfoStore {
+    userInfo: {
+        fullName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        roleTitle: string;
+        permissions: Permission[];
+    };
+}
+
+export const useUserInfoStore: IUserInfoStore = create((set) => ({
     userInfo: {
         fullName: "",
         firstName: "",

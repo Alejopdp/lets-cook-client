@@ -1,8 +1,6 @@
 // Utils & Config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { toggleWeekState } from "../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
@@ -23,12 +21,11 @@ import { Typography } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import { skipOrReactivateOrder } from "helpers/serverRequests/order";
-import { OrderState } from "helpers/types/order";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
-    tableContainer: {
-        // marginTop: theme.spacing(2)
-    },
+    tableContainer: {},
     table: {
         minWidth: 500,
     },
@@ -48,7 +45,10 @@ const CustomerCalendarTable = (props) => {
     const [orders, setOrders] = useState([...props.orders] || []);
     const [selectedOrder, setSelectedOrder] = useState({});
     const [isToggleStateModalOpen, setToggleStateModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(() => Array.isArray(userInfo.permissons) && userInfo.permissons.includes(Permission.UPDATE_ORDER), [userInfo]);
 
     const handleOpenModal = (order) => {
         setSelectedOrder(order);
@@ -137,11 +137,11 @@ const CustomerCalendarTable = (props) => {
                                             cursor: order.isSkippable || order.isReanudable ? "pointer" : "default",
                                         }}
                                     >
-                                        {order.isSkippable ? (
+                                        {canEdit && order.isSkippable ? (
                                             <Typography onClick={() => handleOpenModal(order)} variant="subtitle1" color="primary">
                                                 Saltar semana
                                             </Typography>
-                                        ) : order.isReanudable ? (
+                                        ) : canEdit && order.isReanudable ? (
                                             <Typography
                                                 onClick={() => handleOpenModal(order)}
                                                 variant="subtitle1"

@@ -1,6 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useMemo } from "react";
 import { updateBillingData, updateCustomer } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 import { BillingDataProps } from "../interface";
@@ -13,10 +12,12 @@ import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/
 import BillingDataModal from "./customerInfoModals/billingDataModal";
 import ComplexModal from "../../../molecules/complexModal/complexModal";
 import { getGeometry } from "helpers/geocode/geocode";
+import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const BillingData = (props: BillingDataProps) => {
     const [isBillingDataModalOpen, setBillingDataModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [formData, setFormData] = useState({
         addressName: props.customer.personalData.billingData?.addressName || "",
@@ -26,6 +27,9 @@ const BillingData = (props: BillingDataProps) => {
         latitude: props.customer.personalData.billingData?.latitude,
         longitude: props.customer.personalData.billingData?.longitude,
     });
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
 
     const handleChange = (e) => {
         setFormData({
@@ -84,14 +88,16 @@ const BillingData = (props: BillingDataProps) => {
                     {props.customer.personalData.billingData?.identification || "Sin indicar"}
                 </Typography>
 
-                <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
-                    onClick={() => setBillingDataModalOpen(true)}
-                >
-                    Modificar datos de facturación
-                </Typography>
+                {canEdit && (
+                    <Typography
+                        variant="subtitle2"
+                        color="primary"
+                        style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
+                        onClick={() => setBillingDataModalOpen(true)}
+                    >
+                        Modificar datos de facturación
+                    </Typography>
+                )}
             </PaperWithTitleContainer>
 
             {isBillingDataModalOpen && (

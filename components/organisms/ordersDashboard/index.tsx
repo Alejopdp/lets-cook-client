@@ -17,6 +17,9 @@ import { exportOrdersWithRecipesSelection, getExportOrdersWithRecipesSelectionFi
 import ExportModal, { ExportOrdersFilterOptions } from "./exportModal/exportModal";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import ImportErrorModal from "./importErrorModal/importErrorModal";
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 interface FilterOption {
     value: string | number;
@@ -45,10 +48,29 @@ const OrdersDashboard = (props) => {
         notOwnerOfOrderCustomerEmails: string[];
     }>({ inconsistentCustomerEmails: [], notOwnerOfOrderCustomerEmails: [] });
     const [importFile, setImportFile] = useState("");
+    const { getFromLocalStorage } = useLocalStorage();
+    const { userInfo } = useUserInfoStore();
+    const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_ORDERS)) router.back();
+
+        setIsValidatingPermission(false);
+    }, [userInfo]);
+
+    const canExport = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_RECIPE_SELECTION),
+        [userInfo]
+    );
+    const canImport = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.IMPORT_RECIPE_SELECTION),
+        [userInfo]
+    );
 
     useEffect(() => {
         const getPaymentOrdersList = async () => {
-            const res = await getPaymentOrders(router.locale);
+            const res = await getPaymentOrders(getFromLocalStorage("token"), router.locale);
 
             if (res.status === 200) {
                 setnextOrdersRows(res.data.activeOrders);
@@ -60,7 +82,7 @@ const OrdersDashboard = (props) => {
         };
 
         const getFilterOptions = async () => {
-            const res = await getExportOrdersWithRecipesSelectionFilters();
+            const res = await getExportOrdersWithRecipesSelectionFilters(getFromLocalStorage("token"));
 
             if (res && res.status === 200) {
                 setfilterOptions({
@@ -151,14 +173,16 @@ const OrdersDashboard = (props) => {
         setIsExportSubmitting(false);
     };
 
+    if (isValidatingPermission) return <></>;
+
     return (
         <>
             <DashboardTitleWithCSV
                 title="Ordenes"
-                import
+                import={canImport}
                 importFile={importFile}
                 importText="Importar selección de recetas"
-                export
+                export={canExport}
                 handleClickImport={handleClickImport}
                 handleClickExport={() => setisExportModalOpen(true)}
             />

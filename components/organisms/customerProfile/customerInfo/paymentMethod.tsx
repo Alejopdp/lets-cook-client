@@ -12,11 +12,16 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import { PaymentMethod, PaymentMethodProps } from "../interface";
 import { changeDefaultPaymentMethod } from "helpers/serverRequests/customer";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const PaymentMethods = (props: PaymentMethodProps) => {
     const [isPaymentMethodModalOpen, setPaymentMethodModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const [selectedPaymentMethodId, setselectedPaymentMethodId] = useState(null);
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
 
     const defaultPaymentMethod: PaymentMethod | undefined = useMemo<PaymentMethod | undefined>((): PaymentMethod | undefined => {
         const defaultPaymentMethod: PaymentMethod | undefined = props.paymentMethods.find((paymentMethod) => paymentMethod.isDefault);
@@ -68,14 +73,16 @@ const PaymentMethods = (props: PaymentMethodProps) => {
                             {defaultPaymentMethod.expirationDate}
                         </Typography>
 
-                        <Typography
-                            variant="subtitle2"
-                            color="primary"
-                            style={{ textTransform: "uppercase", cursor: "pointer" }}
-                            onClick={() => setPaymentMethodModalOpen(true)}
-                        >
-                            Modificar método de pago
-                        </Typography>
+                        {canEdit && (
+                            <Typography
+                                variant="subtitle2"
+                                color="primary"
+                                style={{ textTransform: "uppercase", cursor: "pointer" }}
+                                onClick={() => setPaymentMethodModalOpen(true)}
+                            >
+                                Modificar método de pago
+                            </Typography>
+                        )}
                     </PaperWithTitleContainer>
                     {isPaymentMethodModalOpen && (
                         <ComplexModal

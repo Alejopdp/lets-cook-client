@@ -1,6 +1,8 @@
 // Utils & Config
-import React, { useState, useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useMemo } from "react";
+import { useTheme } from "@material-ui/core/styles";
+import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 // External Components
 import Typography from "@material-ui/core/Typography";
@@ -8,7 +10,12 @@ import Button from "@material-ui/core/Button";
 
 const ActualWeekRecipesDetail = (props) => {
     const theme = useTheme();
+    const { userInfo } = useUserInfoStore();
 
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_ORDER),
+        [userInfo]
+    );
     return (
         <>
             <Typography variant="subtitle2" color="textSecondary" style={{ fontSize: "14px", marginBottom: theme.spacing(1) }}>
@@ -21,9 +28,11 @@ const ActualWeekRecipesDetail = (props) => {
                     </Typography>
                 ))}
             </div>
-            <Button size="medium" color="textSecondary" onClick={props.handleClick}>
-                MODIFICAR RECETAS
-            </Button>
+            {canEdit && (
+                <Button size="medium" color="textSecondary" onClick={props.handleClick}>
+                    MODIFICAR RECETAS
+                </Button>
+            )}
         </>
     );
 };

@@ -1,8 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { updateCustomer } from "../../../../helpers/serverRequests/customer";
-import { useSnackbar } from "notistack";
+import React, { useState, useMemo } from "react";
 
 // External components
 import { Typography } from "@material-ui/core";
@@ -11,11 +8,11 @@ import { Typography } from "@material-ui/core";
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import ComplexModal from "../../../molecules/complexModal/complexModal";
 import PersonalDataModal from "./customerInfoModals/personalDataModal";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const PersonalData = (props) => {
     const [isPersonalDataModalOpen, setPersonalDataModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
     const [formData, setFormData] = useState({
         name: props.personalData.name || "",
         lastName: props.personalData.lastName || "",
@@ -25,6 +22,9 @@ const PersonalData = (props) => {
         bornDate: props.personalData.bornDate || "",
         preferredLanguage: props.personalData.preferredLanguage || "",
     });
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
 
     const handleChange = (e) => {
         setFormData({
@@ -44,40 +44,36 @@ const PersonalData = (props) => {
                 <Typography variant="body1" paragraph>
                     {props.personalData.name} {props.personalData.lastName}
                 </Typography>
-
                 <Typography variant="subtitle2">Teléfono (1)</Typography>
                 <Typography variant="body1" paragraph>
                     {props.personalData.phone1}
                 </Typography>
-
                 <Typography variant="subtitle2">Teléfono (2)</Typography>
                 <Typography variant="body1" paragraph>
                     {props.personalData.phone2 || "Sin indicar"}
                 </Typography>
-
                 <Typography variant="subtitle2">Fecha de nacimiento</Typography>
                 <Typography variant="body1" paragraph>
                     {props.personalData.bornDate || "Sin indicar"}
                 </Typography>
-
                 <Typography variant="subtitle2">Idioma de preferencia</Typography>
                 <Typography variant="body1" paragraph>
                     {props.personalData.preferredLanguage}
                 </Typography>
-
                 <Typography variant="subtitle2">Email</Typography>
                 <Typography variant="body1" paragraph>
                     {props.personalData.email}
                 </Typography>
-
-                <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    style={{ textTransform: "uppercase", cursor: "pointer" }}
-                    onClick={() => setPersonalDataModalOpen(true)}
-                >
-                    Modificar datos personales
-                </Typography>
+                {canEdit && (
+                    <Typography
+                        variant="subtitle2"
+                        color="primary"
+                        style={{ textTransform: "uppercase", cursor: "pointer" }}
+                        onClick={() => setPersonalDataModalOpen(true)}
+                    >
+                        Modificar datos personales
+                    </Typography>
+                )}{" "}
             </PaperWithTitleContainer>
 
             {isPersonalDataModalOpen && (

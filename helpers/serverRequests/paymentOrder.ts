@@ -1,12 +1,16 @@
 import axios from "axios";
 import { PaymentOrderState } from "helpers/types/paymentOrderState";
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
+
+const { getFromLocalStorage } = useLocalStorage();
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/payment-order`;
 
-export const getPaymentOrders = async (locale: string = "es") => {
+export const getPaymentOrders = async (token: string, locale: string = "es") => {
     try {
         const res = await axios({
             method: "GET",
             url: `${apiUrl}`,
+            headers: { authorization: token },
             params: {
                 locale,
             },
@@ -19,11 +23,12 @@ export const getPaymentOrders = async (locale: string = "es") => {
     }
 };
 
-export const getPaymentOrder = async (paymentOrderId: string, locale: string = "es") => {
+export const getPaymentOrder = async (token: string, paymentOrderId: string, locale: string = "es") => {
     try {
         const res = await axios({
             method: "GET",
             url: `${apiUrl}/${paymentOrderId}`,
+            headers: { authorization: token },
             params: {
                 locale,
             },
@@ -41,6 +46,7 @@ export const updatePaymentOrderState = async (paymentOrderId: string, state: Pay
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/update-state/${paymentOrderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
             data: {
                 state,
             },
@@ -58,6 +64,7 @@ export const chargeOnePaymentOrder = async (paymentOrderId: string) => {
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/charge/${paymentOrderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -72,6 +79,7 @@ export const refundPaymentOrder = async (paymentOrderId: string, amount: number)
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/refund/${paymentOrderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
             data: { amount },
         });
 
@@ -87,6 +95,7 @@ export const retryPayment = async (paymentOrderId: string) => {
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/retry-payment/${paymentOrderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -101,6 +110,7 @@ export const cancelAPaymentOrder = async (orderId: string) => {
         const res = await axios({
             method: "PUT",
             url: `${apiUrl}/cancel/${orderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;

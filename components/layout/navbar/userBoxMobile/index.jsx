@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@material-ui/core";
-import { useUserInfoStore } from "../../../../stores/auth";
+import { useUserInfoStore } from "../../../../stores/auth.tsx";
 
 // External components
 import Box from "@material-ui/core/Box";
@@ -17,8 +17,8 @@ const UserBoxMobile = (props) => {
 
     return (
         <Box display="flex">
-            <Avatar sizes="sm">{userInfo.firstName.slice(0,2).toUpperCase()}</Avatar>
-            <UserDropdown/>
+            <Avatar sizes="sm">{userInfo.firstName.slice(0, 2).toUpperCase()}</Avatar>
+            <UserDropdown />
         </Box>
     );
 };
