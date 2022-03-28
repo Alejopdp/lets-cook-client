@@ -1,6 +1,5 @@
 // Utils & Config
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 
@@ -41,8 +40,14 @@ const ShippingTable = ({
     const router = useRouter();
     const { userInfo } = useUserInfoStore();
 
-    const canEdit = useMemo(() => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_SHIPPING_ZONE));
-    const canDelete = useMemo(() => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.DELETE_SHIPPING_ZONE));
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_SHIPPING_ZONE),
+        [userInfo]
+    );
+    const canDelete = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.DELETE_SHIPPING_ZONE),
+        [userInfo]
+    );
 
     return (
         <Grid item xs={12}>
@@ -103,7 +108,7 @@ const ShippingTable = ({
                                         <IconButton onClick={() => handleDeleteClick(zone)}>
                                             <DeleteIcon />
                                         </IconButton>
-                                    )}{" "}
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -44,6 +44,8 @@ const CustomersDashboard = (props) => {
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_CUSTOMER),
         [userInfo]
     );
+
+    console.log("CAN CREAT: ", canCreate);
     const canExportCustomers = useMemo(
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CUSTOMERS),
         [userInfo]
