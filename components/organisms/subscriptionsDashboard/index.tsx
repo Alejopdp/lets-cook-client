@@ -41,7 +41,7 @@ const SubscriptionsDashboard = (props) => {
     );
 
     const canExportCancellations = useMemo(
-        () => () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CANCELLATIONS),
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CANCELLATIONS),
         [userInfo]
     );
 
