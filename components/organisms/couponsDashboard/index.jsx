@@ -1,6 +1,5 @@
 // Utils & config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 
@@ -17,6 +16,7 @@ import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
 import { exportCoupons, importManyCoupons } from "helpers/serverRequests/coupon";
 import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const CouponsDashboard = (props) => {
     const router = useRouter();

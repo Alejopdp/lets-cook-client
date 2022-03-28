@@ -1,5 +1,5 @@
 // Utils & config
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
 // External components
@@ -17,6 +17,8 @@ import { CouponState } from "types/coupon/couponState";
 import { useSnackbar } from "notistack";
 import ActivateCouponModal from "./activateCouponModal";
 import { deleteCoupon, updateCouponState } from "helpers/serverRequests/coupon";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const CouponInformation = (props) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -24,6 +26,12 @@ const CouponInformation = (props) => {
     const [openDeactiveCouponModal, setOpenDeactiveCouponModal] = useState(false);
     const [openDeleteCouponModal, setOpenDeleteCouponModal] = useState(false);
     const [coupon, setCoupon] = useState({ ...props.coupon });
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo?.permissions) && userInfo.permissions.includes(Permission.UPDATE_COUPON),
+        [userInfo]
+    );
 
     // Deactive Coupon Modal Functions
 
@@ -114,12 +122,14 @@ const CouponInformation = (props) => {
                         quantityApplied={props.coupon.quantityApplied}
                         quantityOfCustomersWhoHaveApplied={props.coupon.quantityOfCustomersWhoHaveApplied}
                     />
-                    <CouponActions
-                        state={coupon.state}
-                        handleClickDeactivateCoupon={handleClickOpenDeactiveCouponModal}
-                        handleClickDeleteCoupon={handleClickOpenDeleteCouponModal}
-                        handleClickActivateCoupon={handleClickOpenActiveCouponModal}
-                    />
+                    {canEdit && (
+                        <CouponActions
+                            state={coupon.state}
+                            handleClickDeactivateCoupon={handleClickOpenDeactiveCouponModal}
+                            handleClickDeleteCoupon={handleClickOpenDeleteCouponModal}
+                            handleClickActivateCoupon={handleClickOpenActiveCouponModal}
+                        />
+                    )}
                 </Grid>
             </Grid>
             <ActivateCouponModal
