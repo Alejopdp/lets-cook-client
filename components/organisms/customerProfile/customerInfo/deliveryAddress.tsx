@@ -1,7 +1,6 @@
 // Utils & Config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { updateCustomer, updateShippingAddress } from "../../../../helpers/serverRequests/customer";
+import React, { useState, useMemo } from "react";
+import { updateShippingAddress } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -14,10 +13,12 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 import { DeliveryAddressProps } from "../interface";
 import { getGeometry } from "helpers/geocode/geocode";
 import { translateShippíngHour } from "helpers/i18n/i18n";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [formData, setFormData] = useState({
         name: props.shippingAddress.name || "",
@@ -26,6 +27,9 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
         latitude: props.shippingAddress.latitude,
         longitude: props.shippingAddress.longitude,
     });
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
 
     const handleChange = (e) => {
         setFormData({
@@ -79,14 +83,16 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
                     {translateShippíngHour(props.shippingAddress.preferredShippingHour) || "Sin indicar"}
                 </Typography>
 
-                <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
-                    onClick={() => setDeliveryAddressModalOpen(true)}
-                >
-                    Modificar dirección de entrega
-                </Typography>
+                {canEdit && (
+                    <Typography
+                        variant="subtitle2"
+                        color="primary"
+                        style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
+                        onClick={() => setDeliveryAddressModalOpen(true)}
+                    >
+                        Modificar dirección de entrega
+                    </Typography>
+                )}
             </PaperWithTitleContainer>
 
             {isDeliveryAddressModalOpen && (

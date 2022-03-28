@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Box, useTheme } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
@@ -31,6 +31,8 @@ import {
     swapPlan,
 } from "helpers/serverRequests/subscription";
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const SubscriptionGrid = (props) => {
     const router = useRouter();
@@ -49,6 +51,20 @@ const SubscriptionGrid = (props) => {
     const [swapPlanData, setSwapPlanData] = useState({});
     const [reloadCounter, setReloadCounter] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+    const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_SUBSCRIPTION)) router.back();
+
+        setIsValidatingPermission(false);
+    }, [userInfo]);
+
+    const canEditSubscription = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_SUBSCRIPTION),
+        [userInfo]
+    );
 
     useEffect(() => {
         const getInitialData = async () => {
@@ -227,6 +243,8 @@ const SubscriptionGrid = (props) => {
         setIsApplyingCoupon(false);
     };
 
+    if (isValidatingPermission) return <></>;
+
     return (
         <>
             {!isLoading && (
@@ -245,6 +263,7 @@ const SubscriptionGrid = (props) => {
                                 text={subscription.plan.planName}
                                 handleClick={handleClickOpenEditPlanModal}
                                 style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton={!canEditSubscription}
                             />
                             <DataDisplayEditable
                                 title="Variante"
@@ -258,22 +277,26 @@ const SubscriptionGrid = (props) => {
                                 text={translateFrequency(subscription.frequency)}
                                 handleClick={handleClickOpenEditFrequencyModal}
                                 style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton={!canEditSubscription}
                             />
                             <DataDisplayEditable
                                 title="Próximo cobro"
                                 text={subscription.nextBillingDate}
                                 handleClick={handleClickOpenEditNextChargeDateModal}
                                 style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton={!canEditSubscription}
                             />
                             <DataDisplay
                                 title="Método de pago"
                                 text={subscription.paymentMethod}
                                 style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton={!canEditSubscription}
                             />
                             <DataDisplay
                                 title="Dirección de entrega"
                                 text={subscription.shippingAddress}
                                 style={{ marginBottom: theme.spacing(3) }}
+                                hideEditButton={!canEditSubscription}
                             />
                         </PaperWithTitleContainer>
                     </Grid>
@@ -286,6 +309,7 @@ const SubscriptionGrid = (props) => {
                                         text={subscription.restriction.text}
                                         handleClick={handleClickOpenEditRestrictionsModal}
                                         style={{ marginBottom: theme.spacing(2) }}
+                                        hideEditButton={!canEditSubscription}
                                     />
                                     <DataDisplay title="Comentarios" text={subscription.restrictionComment} />
                                 </PaperWithTitleContainer>
@@ -314,41 +338,45 @@ const SubscriptionGrid = (props) => {
                                                 </Link>
                                             </Box>
                                         )}
-                                        <ApplyCoupon
-                                            handleChange={handleChangeCouponInput}
-                                            handleClick={handleClickApplyCoupon}
-                                            value={couponCode}
-                                            isSubmitting={isApplyingCoupon}
-                                        />
+                                        {canEditSubscription && (
+                                            <ApplyCoupon
+                                                handleChange={handleChangeCouponInput}
+                                                handleClick={handleClickApplyCoupon}
+                                                value={couponCode}
+                                                isSubmitting={isApplyingCoupon}
+                                            />
+                                        )}
                                     </PaperWithTitleContainer>
                                 </Grid>
                             )}
-                            <Grid item xs={12}>
-                                <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                                    {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
-                                        <div>
-                                            <Button
-                                                size="medium"
-                                                style={{ color: "#FC1919" }}
-                                                onClick={handleClickOpenCancelSubscriptionModal}
-                                            >
-                                                CANCELAR SUSCRIPCIÓN
-                                            </Button>
-                                        </div>
-                                    )}
-                                    {subscription.state === "SUBSCRIPTION_CANCELLED" && (
-                                        <div>
-                                            <Button
-                                                size="medium"
-                                                style={{ color: "#FC1919" }}
-                                                onClick={() => setOpenDeleteSubscriptionModal(true)}
-                                            >
-                                                ELIMINAR SUSCRIPCIÓN
-                                            </Button>
-                                        </div>
-                                    )}
-                                </PaperWithTitleContainer>
-                            </Grid>
+                            {canEditSubscription && (
+                                <Grid item xs={12}>
+                                    <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                        {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                                            <div>
+                                                <Button
+                                                    size="medium"
+                                                    style={{ color: "#FC1919" }}
+                                                    onClick={handleClickOpenCancelSubscriptionModal}
+                                                >
+                                                    CANCELAR SUSCRIPCIÓN
+                                                </Button>
+                                            </div>
+                                        )}
+                                        {subscription.state === "SUBSCRIPTION_CANCELLED" && (
+                                            <div>
+                                                <Button
+                                                    size="medium"
+                                                    style={{ color: "#FC1919" }}
+                                                    onClick={() => setOpenDeleteSubscriptionModal(true)}
+                                                >
+                                                    ELIMINAR SUSCRIPCIÓN
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </PaperWithTitleContainer>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
                     <CancelSubscriptionModal

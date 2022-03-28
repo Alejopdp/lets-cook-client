@@ -10,6 +10,7 @@ import PaymentOrderGrid from "./paymentOrderGrid";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { getPaymentOrder } from "../../../helpers/serverRequests/paymentOrder";
+import useLocalStorage from "hooks/useLocalStorage/localStorage";
 
 const PaymentOrderDetail = (props) => {
     const router = useRouter();
@@ -17,10 +18,11 @@ const PaymentOrderDetail = (props) => {
     const [isLoading, setisLoading] = useState(true);
     const [reloadCounter, setReloadCounter] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
+    const { getFromLocalStorage } = useLocalStorage();
 
     useEffect(() => {
         const getPaymentOrderById = async () => {
-            const res = await getPaymentOrder(router.query.paymentOrderId, router.locale);
+            const res = await getPaymentOrder(getFromLocalStorage("token"), router.query.paymentOrderId, router.locale);
 
             if (res.status === 200) {
                 setpaymentOrder(res.data);

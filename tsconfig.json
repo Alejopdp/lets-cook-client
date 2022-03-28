@@ -25,6 +25,6 @@
             "@hooks": ["hooks"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "stores/auth.ysx"],
     "exclude": ["node_modules"]
 }

@@ -15,7 +15,7 @@ const CreateDashboardTitle = (props) => {
         <Grid item xs={12}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h5">{props.dashboardTitle}</Typography>
-                <CreateButton onClick={props.handleCreateButton}>{props.createButtonText}</CreateButton>
+                {props.showCreateButton ? <CreateButton onClick={props.handleCreateButton}>{props.createButtonText}</CreateButton> : <></>}
             </Box>
         </Grid>
     );

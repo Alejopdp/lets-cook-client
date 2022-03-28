@@ -34,8 +34,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
-    console.log("Ingredientes: ", formData.ingredients);
-    const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();

@@ -11,6 +11,7 @@ import OrderGrid from "./orderGrid";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { getRecipesForOrder } from "../../../helpers/serverRequests/recipe";
+import useLocalStorage from "hooks/useLocalStorage/localStorage";
 
 const OrderDetail = (props) => {
     const router = useRouter();
@@ -18,10 +19,11 @@ const OrderDetail = (props) => {
     const [weekRecipes, setweekRecipes] = useState([]);
     const [isLoading, setisLoading] = useState(true);
     const { enqueueSnackbar } = useSnackbar();
+    const { getFromLocalStorage } = useLocalStorage();
 
     useEffect(() => {
         const getOrder = async () => {
-            const res = await getOrderById(router.query.id, router.locale);
+            const res = await getOrderById(router.query.id, getFromLocalStorage("token"), router.locale);
 
             if (res.status === 200) {
                 setorder(res.data);
@@ -31,7 +33,7 @@ const OrderDetail = (props) => {
                 return;
             }
 
-            const weekRes = await getRecipesForOrder(router.query.id);
+            const weekRes = await getRecipesForOrder(router.query.id, getFromLocalStorage("token"));
 
             if (weekRes.status === 200) {
                 setweekRecipes(weekRes.data.recipes);

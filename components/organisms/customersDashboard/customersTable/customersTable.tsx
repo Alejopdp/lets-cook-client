@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
@@ -28,6 +28,8 @@ import Popover from "@material-ui/core/Popover";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { exportCustomerActions } from "helpers/serverRequests/customer";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -66,6 +68,21 @@ const CustomersTable = (props) => {
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const { enqueueSnackbar } = useSnackbar();
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const { userInfo } = useUserInfoStore();
+
+    const canSeeCustomer = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.VIEW_CUSTOMER),
+        [userInfo]
+    );
+    const canExportCustomersActions = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CUSTOMER_ACTIONS),
+        [userInfo]
+    );
+
+    const canDeleteCustomer = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.DELETE_CUSTOMER),
+        [userInfo]
+    );
 
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -182,22 +199,28 @@ const CustomersTable = (props) => {
                                     </TableCell>
                                     <TableCell className={cells}>
                                         <Box display="flex">
-                                            <IconButton
-                                                onClick={() =>
-                                                    router.push({
-                                                        pathname: "/gestion-de-clientes/modificar",
-                                                        query: { customerId: customer.id },
-                                                    })
-                                                }
-                                            >
-                                                <VisibilityIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => handleExportCustomerActions(customer.id)}>
-                                                <GetAppIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
-                                                <DeleteIcon />
-                                            </IconButton>
+                                            {canSeeCustomer && (
+                                                <IconButton
+                                                    onClick={() =>
+                                                        router.push({
+                                                            pathname: "/gestion-de-clientes/modificar",
+                                                            query: { customerId: customer.id },
+                                                        })
+                                                    }
+                                                >
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                            )}
+                                            {canExportCustomersActions && (
+                                                <IconButton onClick={() => handleExportCustomerActions(customer.id)}>
+                                                    <GetAppIcon />
+                                                </IconButton>
+                                            )}
+                                            {canDeleteCustomer && (
+                                                <IconButton onClick={() => props.handleDeleteCustomer(customer)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            )}
                                         </Box>
                                     </TableCell>
                                 </TableRow>

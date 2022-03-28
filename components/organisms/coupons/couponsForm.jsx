@@ -21,6 +21,8 @@ import SimpleTileList from "../../molecules/simpleTileList/simpleTileList";
 import { createCoupon } from "../../../helpers/serverRequests/coupon";
 import AddProductsModal from "./addProductsModal";
 import { useSnackbar } from "notistack";
+import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
     <>
@@ -127,6 +129,15 @@ const CouponsForm = ({ lang, ...props }) => {
     const [showExpireDate, setShowExpireDate] = useState(false);
     const [isAddProductModalOpen, setisAddProductModalOpen] = useState(false);
     const [selectedPlans, setselectedPlans] = useState([]);
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.CREATE_COUPON)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
 
     const minimumRequirement = useMemo(
         () => [
@@ -220,6 +231,8 @@ const CouponsForm = ({ lang, ...props }) => {
         handleOnChange({ target: { name: "apply_to|value", value: newItems } });
         setisAddProductModalOpen(false);
     };
+
+    if (isLoading) return <></>;
 
     return (
         <Grid item xs={12}>

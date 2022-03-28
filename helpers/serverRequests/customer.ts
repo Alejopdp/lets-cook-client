@@ -7,11 +7,12 @@ const { getFromLocalStorage } = useLocalStorage();
 // const serverUrl = "http://localhost:3001/api/v1";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/customer`;
 
-export const getCustomerList = async () => {
+export const getCustomerList = async (token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}`,
+            headers: { authorization: token },
         });
 
         return res;
@@ -19,11 +20,12 @@ export const getCustomerList = async () => {
         return error.response;
     }
 };
-export const searchCustomers = async (customerName) => {
+export const searchCustomers = async (customerName: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/by-name/${customerName}`,
+            headers: { authorization: token },
         });
 
         return res;
@@ -32,11 +34,12 @@ export const searchCustomers = async (customerName) => {
     }
 };
 
-export const getCustomerById = async (id) => {
+export const getCustomerById = async (id: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/${id}`,
+            headers: { authorization: token },
         });
 
         return res;
@@ -46,7 +49,7 @@ export const getCustomerById = async (id) => {
     }
 };
 
-export const getCustomerInformation = async (id, locale) => {
+export const getCustomerInformation = async (id: string, locale: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
@@ -54,6 +57,7 @@ export const getCustomerInformation = async (id, locale) => {
                 locale,
             },
             url: `${apiUrl}/information-as-admin/${id}`,
+            headers: { authorization: token },
         });
 
         return res;
@@ -63,11 +67,12 @@ export const getCustomerInformation = async (id, locale) => {
     }
 };
 
-export const toggleWeekState = async (orderId) => {
+export const toggleWeekState = async (orderId: string) => {
     try {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/toggle-state/${orderId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -76,11 +81,12 @@ export const toggleWeekState = async (orderId) => {
     }
 };
 
-export const deleteCustomer = async (id) => {
+export const deleteCustomer = async (id: string) => {
     try {
         const res = await Axios({
             method: "DELETE",
             url: `${apiUrl}/${id}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -89,12 +95,13 @@ export const deleteCustomer = async (id) => {
     }
 };
 
-export const createCustomer = async (customer) => {
+export const createCustomer = async (customer: any) => {
     try {
         const res = await Axios({
             method: "POST",
             url: `${apiUrl}/create`,
             data: customer,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -104,12 +111,13 @@ export const createCustomer = async (customer) => {
     }
 };
 
-export const updateCustomer = async (customer, id) => {
+export const updateCustomer = async (customer: any, id: string) => {
     try {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/${id}`,
             data: customer,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -123,6 +131,7 @@ export const updateCustomerPersonalData = async (personalData: Personaldata) => 
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/update-info/${personalData.id}`,
+            headers: { authorization: getFromLocalStorage("token") },
             data: {
                 name: personalData.name,
                 lastName: personalData.lastName,
@@ -213,6 +222,7 @@ export const exportCustomers = async () => {
             method: "GET",
             url: `${apiUrl}/export`,
             responseType: "blob",
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         FileDownload(res.data, "Clientes.xlsx");
@@ -228,6 +238,7 @@ export const addNewPaymentMethod = async (customerId: string, stripePaymentMetho
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/add-payment-method/${customerId}`,
+            headers: { authorization: getFromLocalStorage("token") },
             data: {
                 stripePaymentMethodId,
             },
@@ -244,6 +255,7 @@ export const exportCustomerActions = async (customerId: string) => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export-actions/${customerId}`,
+            headers: { authorization: getFromLocalStorage("token") },
             responseType: "blob",
         });
 
@@ -260,6 +272,7 @@ export const exportAllCustomersActions = async () => {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export-actions`,
+            headers: { authorization: getFromLocalStorage("token") },
             responseType: "blob",
         });
 

@@ -16,6 +16,8 @@ import AttributesAndVariants from "./attributesAndVariants";
 import Others from "./others";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 import EnabledOrDisabledIconButton from "../../../atoms/enabledOrDisabledIconButton/enabledOrDisabledIconButton";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const CreatePlanForm = (props) => {
     const router = useRouter();
@@ -39,11 +41,19 @@ const CreatePlanForm = (props) => {
     });
     const [frequency, setfrequency] = useState([]);
     const [additionalPlans, setadditionalPlans] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { userInfo } = useUserInfoStore();
     const [isSubmitting, setisSubmitting] = useState(false);
 
     useEffect(() => {
         setGridRows();
     }, [attributes]);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo?.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.CREATE_PLAN)) router.back();
+        setIsLoading(false);
+    }, [userInfo]);
 
     const handleGeneralData = (e) => {
         e.preventDefault();
@@ -265,7 +275,7 @@ const CreatePlanForm = (props) => {
 
     const handleVariantsEdit = (params, e) => {
         // e.preventDefault();
-        console.log("Params: ", params)
+        console.log("Params: ", params);
         if (params.field === "isDefault") {
             handleDefaultVariantChange(params);
             return;
@@ -378,6 +388,8 @@ const CreatePlanForm = (props) => {
     const getVariantByRowId = (rowId) => {
         return variants.find((variant) => variant.id === rowId);
     };
+
+    if (isLoading) return <></>;
     return (
         <>
             <Grid item xs={12} md={8}>

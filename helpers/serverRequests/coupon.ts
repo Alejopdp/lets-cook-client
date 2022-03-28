@@ -1,13 +1,16 @@
 import Axios from "axios";
 import { CouponState } from "types/coupon/couponState";
 import FileDownload from "js-file-download";
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
 
+const { getFromLocalStorage } = useLocalStorage();
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/coupon`;
 
 export const createCoupon = async (couponData) => {
     try {
         const res = await Axios({
             method: "POST",
+            headers: { authorization: getFromLocalStorage("token") },
             url: apiUrl,
             data: couponData,
         });
@@ -19,11 +22,12 @@ export const createCoupon = async (couponData) => {
     }
 };
 
-export const getCouponList = async () => {
+export const getCouponList = async (token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: apiUrl,
+            headers: { authorization: token },
         });
 
         return res;
@@ -33,11 +37,12 @@ export const getCouponList = async () => {
     }
 };
 
-export const getCouponById = async (couponId) => {
+export const getCouponById = async (couponId: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/${couponId}`,
+            headers: { authorization: token },
         });
 
         return res;
@@ -53,6 +58,7 @@ export const exportCoupons = async () => {
             method: "POST",
             url: `${apiUrl}/export`,
             responseType: "blob",
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         FileDownload(res.data, "Cupones.xlsx");
@@ -69,6 +75,7 @@ export const updateCouponState = async (state: CouponState, couponId: string) =>
             method: "PUT",
             url: `${apiUrl}/${couponId}`,
             data: { state },
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -78,11 +85,12 @@ export const updateCouponState = async (state: CouponState, couponId: string) =>
     }
 };
 
-export const deleteCoupon = async (couponId) => {
+export const deleteCoupon = async (couponId: string) => {
     try {
         const res = await Axios({
             method: "DELETE",
             url: `${apiUrl}/${couponId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -91,13 +99,14 @@ export const deleteCoupon = async (couponId) => {
     }
 };
 
-export const importManyCoupons = async (data) => {
+export const importManyCoupons = async (data: any) => {
     try {
         const res = await Axios({
             method: "POST",
             url: `${apiUrl}/import`,
             headers: {
                 "Content-type": "multipart/form-data",
+                authorization: getFromLocalStorage("token"),
             },
             data,
         });
