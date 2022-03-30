@@ -66,12 +66,12 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
             <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex fullWidth>
                 <Typography variant="subtitle2">Dirección</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.shippingAddress.name}
+                    {props.shippingAddress.addressName}
                 </Typography>
 
                 <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.shippingAddress.details || "Sin indicar"}
+                    {props.shippingAddress.addressDetails || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Horario de preferencia</Typography>
