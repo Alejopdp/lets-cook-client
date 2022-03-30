@@ -26,8 +26,8 @@ const DeliveryAddressModal = (props: DeliveryAddressModalProps) => {
 
     return (
         <>
-            <LocationSearchInput disabled={false} name="name" handleChange={props.handleGoogleInput} value={props.formData.name} />
-            <Input name="details" label="Aclaraciones" value={props.formData.details} handleChange={props.handleChange} />
+            <LocationSearchInput disabled={false} name="name" handleChange={props.handleGoogleInput} value={props.formData.addressName} />
+            <Input name="details" label="Aclaraciones" value={props.formData.addressDetails} handleChange={props.handleChange} />
             <SelectInput
                 name="preferredShippingHour"
                 label="Horario de preferencia de entrega"
