@@ -150,9 +150,9 @@ export const updateShippingAddress = async (id: string, shippingAddress: Shippin
             data: {
                 lat: shippingAddress.latitude,
                 long: shippingAddress.longitude,
-                name: shippingAddress.name,
+                name: shippingAddress.addressName,
                 details: shippingAddress.details,
-                full_name: shippingAddress.name,
+                full_name: shippingAddress.addressName,
                 delivery_time: shippingAddress.preferredShippingHour,
             },
         });
