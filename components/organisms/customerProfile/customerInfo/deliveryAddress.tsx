@@ -21,8 +21,8 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
     const { enqueueSnackbar } = useSnackbar();
 
     const [formData, setFormData] = useState({
-        name: props.shippingAddress.name || "",
-        details: props.shippingAddress.details || "",
+        name: props.shippingAddress.addressName || "",
+        details: props.shippingAddress.addressDetails || "",
         preferredShippingHour: props.shippingAddress.preferredShippingHour || "",
         latitude: props.shippingAddress.latitude,
         longitude: props.shippingAddress.longitude,

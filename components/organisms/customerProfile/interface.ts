@@ -2,8 +2,8 @@ import { PlanFrequencyValue } from "helpers/types/frequency";
 import { Log } from "helpers/types/log";
 
 export interface ShippingAddress {
-    details: string;
-    name: string;
+    addressDetails: string;
+    addressName: string;
     preferredShippingHour: string;
     latitude: number;
     longitude: number;
