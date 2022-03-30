@@ -1,6 +1,7 @@
 // Utils & Config
 import React, { useState, useMemo } from "react";
-import { updateShippingAddress } from "../../../../helpers/serverRequests/customer";
+import PropTypes from "prop-types";
+import { updateCustomer, updateShippingAddress } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -13,23 +14,25 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 import { DeliveryAddressProps } from "../interface";
 import { getGeometry } from "helpers/geocode/geocode";
 import { translateShippíngHour } from "helpers/i18n/i18n";
-import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
-    const { enqueueSnackbar } = useSnackbar();
-
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
     const [formData, setFormData] = useState({
-        name: props.shippingAddress.name || "",
-        details: props.shippingAddress.details || "",
+        name: props.shippingAddress.addressName || "",
+        details: props.shippingAddress.addressDetails || "",
         preferredShippingHour: props.shippingAddress.preferredShippingHour || "",
         latitude: props.shippingAddress.latitude,
         longitude: props.shippingAddress.longitude,
     });
-    const { userInfo } = useUserInfoStore();
 
-    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
+    const canEdit = useMemo(
+        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        [userInfo]
+    );
 
     const handleChange = (e) => {
         setFormData({
@@ -70,12 +73,12 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
             <PaperWithTitleContainer title="Dirección de entrega" height={"479px"} flex fullWidth>
                 <Typography variant="subtitle2">Dirección</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.shippingAddress.name}
+                    {props.shippingAddress.addressName}
                 </Typography>
 
                 <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.shippingAddress.details || "Sin indicar"}
+                    {props.shippingAddress.addressDetails || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Horario de preferencia</Typography>
