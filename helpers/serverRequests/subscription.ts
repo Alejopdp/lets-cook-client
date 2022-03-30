@@ -215,3 +215,23 @@ export const swapPlan = async (subscriptionId: string, newPlanId: string, newPla
         return error.response;
     }
 };
+
+export const updateNextBillingDate = async (subscriptionId: string, newDate: Date) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            headers: { authorization: JSON.parse(window.localStorage.getItem("token")) },
+            url: `${apiUrl}/move-next-billing-date/${subscriptionId}`,
+            params: {
+                locale: "es",
+            },
+            data: {
+                nextBillingDate: newDate,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};

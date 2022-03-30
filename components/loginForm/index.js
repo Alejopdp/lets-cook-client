@@ -79,6 +79,7 @@ const LoginForm = (props) => {
         setisSubmitting(true);
 
         const res = await login(values.email, values.password);
+        console.log("A VER LA RES: ", res);
 
         if (res.status === 200) {
             saveInLocalStorage("token", res.data.token);
