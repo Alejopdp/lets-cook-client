@@ -29,7 +29,10 @@ const BillingData = (props: BillingDataProps) => {
     });
     const { userInfo } = useUserInfoStore();
 
-    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
+    const canEdit = useMemo(
+        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        [userInfo]
+    );
 
     const handleChange = (e) => {
         setFormData({

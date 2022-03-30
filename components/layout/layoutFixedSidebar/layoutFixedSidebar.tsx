@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { getAdminOptions } from "../../../assets/sidebarOptions/adminOptions";

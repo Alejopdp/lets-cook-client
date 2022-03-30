@@ -21,7 +21,10 @@ const PaymentMethods = (props: PaymentMethodProps) => {
     const [selectedPaymentMethodId, setselectedPaymentMethodId] = useState(null);
     const { userInfo } = useUserInfoStore();
 
-    const canEdit = useMemo(() => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER));
+    const canEdit = useMemo(
+        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        [userInfo]
+    );
 
     const defaultPaymentMethod: PaymentMethod | undefined = useMemo<PaymentMethod | undefined>((): PaymentMethod | undefined => {
         const defaultPaymentMethod: PaymentMethod | undefined = props.paymentMethods.find((paymentMethod) => paymentMethod.isDefault);
