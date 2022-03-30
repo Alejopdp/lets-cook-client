@@ -28,11 +28,11 @@ const DeliveryAddressModal = (props: DeliveryAddressModalProps) => {
         <>
             <LocationSearchInput
                 disabled={false}
-                name="addresName"
+                name="addressName"
                 handleChange={props.handleGoogleInput}
                 value={props.formData.addressName}
             />
-            <Input name="addresDetails" label="Aclaraciones" value={props.formData.addressDetails} handleChange={props.handleChange} />
+            <Input name="addressDetails" label="Aclaraciones" value={props.formData.addressDetails} handleChange={props.handleChange} />
             <SelectInput
                 name="preferredShippingHour"
                 label="Horario de preferencia de entrega"
