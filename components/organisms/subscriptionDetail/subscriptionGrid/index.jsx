@@ -16,11 +16,9 @@ import AmountDetails from "../../../molecules/amountDetails";
 import ApplyCoupon from "./applyCoupon";
 import CancelSubscriptionModal from "./cancelSubscriptionModal";
 import EditPlanModal from "./editPlanModal";
-import EditPlanVariantModal from "./editPlanVariantModal";
 import EditFrequencyModal from "./editFrequencyModal";
 import EditRestrictionsModal from "./editRestrictionsModal";
 import EditNextChargeDateModal from "./editNextChargeDateModal";
-import { PlanFrequencyValue } from "helpers/types/frequency";
 import { translateFrequency } from "helpers/i18n/i18n";
 import {
     applyCouponToSubscription,
@@ -29,6 +27,7 @@ import {
     getDataForSwappingAPlan,
     getSubscriptionById,
     swapPlan,
+    updateSubscriptionFrequency,
 } from "helpers/serverRequests/subscription";
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
 
@@ -170,9 +169,16 @@ const SubscriptionGrid = (props) => {
         setOpenEditFrequencyModal(false);
     };
 
-    const handleEditFrequency = (frequency) => {
-        alert(`new frequency: ${frequency}`);
-        setOpenEditFrequencyModal(false);
+    const handleEditFrequency = async (frequency) => {
+        const res = await updateSubscriptionFrequency(router.query.subscriptionId, frequency);
+
+        if (res && res.status === 200) {
+            setReloadCounter(reloadCounter + 1);
+            enqueueSnackbar("Frecuencia actualizada correctamente", { variant: "success" });
+            setOpenEditFrequencyModal(false);
+        } else {
+            enqueueSnackbar(res.data.message ?? "Ocurrió un error al actualizar la frecuencia", { variant: "error" });
+        }
     };
 
     // Edit Next Charge Date Modal Functions
@@ -380,6 +386,7 @@ const SubscriptionGrid = (props) => {
                         open={openEditFrequencyModal}
                         handleClose={handleCloseEditFrequencyModal}
                         handlePrimaryButtonClick={handleEditFrequency}
+                        frequency={subscription.frequency}
                     />
                     <EditRestrictionsModal
                         actualRestriction={subscription.restriction}
