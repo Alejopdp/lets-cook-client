@@ -56,6 +56,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const [generalData, setgeneralData] = useState({
         name: "",
         sku: "",
+        shortDescription: "",
         longDescription: "",
         cookDuration: "",
         weight: "",
@@ -134,6 +135,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                 name: recipeData.name,
                 cookDuration: recipeData.cookDurationNumberValue,
                 // image: [recipeData.imageUrl], // TO DO: Save the file
+                shortDescription: recipeData.shortDescription,
                 longDescription: recipeData.longDescription,
                 sku: recipeData.sku,
                 weight: recipeData.weightNumberValue,
@@ -225,6 +227,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
         formDataToCreate.append("longDescription", generalData.longDescription);
+        formDataToCreate.append("shortDescription", generalData.shortDescription);
         formDataToCreate.append("cookDuration", generalData.cookDuration);
         formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
@@ -377,6 +380,15 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                                 handleChange={handleGeneralDataChange}
                             />
                             <FormInput label="SKU" name="sku" value={generalData.sku} handleChange={handleGeneralDataChange} />
+
+                            <FormInput
+                                label="Descripción corta"
+                                name="shortDescription"
+                                rows={5}
+                                multiline={true}
+                                value={generalData.shortDescription}
+                                handleChange={handleGeneralDataChange}
+                            />
 
                             <FormInput
                                 label="Descripción larga"
@@ -578,6 +590,7 @@ RecipeForm.propTypes = {
         id: PropTypes.number,
         name: PropTypes.string,
         sku: PropTypes.string,
+        shortDescription: PropTypes.string,
         longDescription: PropTypes.string,
         cookDuration: PropTypes.string,
         difficultyLevel: PropTypes.string,
