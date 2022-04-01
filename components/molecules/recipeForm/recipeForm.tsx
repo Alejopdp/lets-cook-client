@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
+    const classes = useStyles();
     const theme = useTheme();
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -49,6 +50,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         name: "",
         sku: "",
         longDescription: "",
+        shortDescription: "",
         cookDuration: "",
         weight: "",
         image: [],
@@ -169,6 +171,7 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
         const formDataToCreate = new FormData();
         formDataToCreate.append("name", generalData.name);
         formDataToCreate.append("longDescription", generalData.longDescription);
+        formDataToCreate.append("shortDescription", generalData.shortDescription);
         formDataToCreate.append("cookDuration", generalData.cookDuration);
         formDataToCreate.append("difficultyLevel", difficultyLevel);
         formDataToCreate.append("sku", generalData.sku);
@@ -321,6 +324,14 @@ const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
                             />
                             <FormInput label="SKU" name="sku" value={recipeData && recipeData.sku} handleChange={handleGeneralDataChange} />
 
+                            <FormInput
+                                label="Descripción corta"
+                                name="shortDescription"
+                                rows={6}
+                                multiline={true}
+                                value={recipeData && recipeData.largeDescription}
+                                handleChange={handleGeneralDataChange}
+                            />
                             <FormInput
                                 label="Descripción larga"
                                 name="longDescription"
