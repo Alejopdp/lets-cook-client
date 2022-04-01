@@ -235,3 +235,24 @@ export const updateNextBillingDate = async (subscriptionId: string, newDate: Dat
         return error.response;
     }
 };
+
+export const updateSubscriptionFrequency = async (subscriptionId: string, frequency: string) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            headers: { authorization: JSON.parse(window.localStorage.getItem("token")) },
+            url: `${apiUrl}/change-frequency/${subscriptionId}`,
+            params: {
+                locale: "es",
+            },
+
+            data: {
+                frequency,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+};
