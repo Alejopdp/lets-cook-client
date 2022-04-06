@@ -14,7 +14,6 @@ import SearchInputField from "../../molecules/searchInputField/searchInputField"
 import CustomersTable from "./customersTable/customersTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
-import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
 import DashboardTitleWithButtonAndManyCSV from "components/layout/dashboardTitleWithButtonAndManyCSV";
 import useLocalStorage from "hooks/useLocalStorage/localStorage";
 import { useUserInfoStore } from "stores/auth";
@@ -45,7 +44,6 @@ const CustomersDashboard = (props) => {
         [userInfo]
     );
 
-    console.log("CAN CREAT: ", canCreate);
     const canExportCustomers = useMemo(
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CUSTOMERS),
         [userInfo]
