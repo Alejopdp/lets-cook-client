@@ -13,6 +13,7 @@ import LineChartWithPaper from "components/molecules/LineChartWithPaper";
 import DoughnutChartWithPaper from "components/molecules/doughnutChartWithPaper";
 import CounterChartWithPaper from "components/molecules/CounterChartWithPaper";
 import TableWithPaper from "components/molecules/tableWithPaper";
+import LineChartWithCounterAndPaper from "components/molecules/LineChartWithCounterAndPaper";
 
 const recipesChoiceSelection1 = [70, 25, 50, 15, 0];
 const recipesChoiceSelection2 = [30, 15, 10, 5, 20];
@@ -75,16 +76,39 @@ export const HomeDashboard = () => {
                     />
                 }
             />
-            <ThreeBoxesRow
+            <TwoBoxesRow
                 firstBox={<DoughnutChartWithPaper title="Doughnut chart" />}
-                secondBox={<LineChartWithPaper title="Line Chart" />}
-                thirdBox={<LineChartWithPaper title="Line Chart" />}
+                secondBox={
+                    <LineChartWithCounterAndPaper
+                        title="Ventas totales"
+                        totalCount={540420}
+                        type="money"
+                        subtitle="VENTAS A LO LARGO DEL TIEMPO"
+                        lineChartLabels={[
+                            "Enero",
+                            "Febrero",
+                            "Marzo",
+                            "Abril",
+                            "Mayo",
+                            "Junio",
+                            "Julio",
+                            "Agosto",
+                            "Septiembre",
+                            "Octubre",
+                            "Noviembre",
+                            "Diciembre",
+                        ]}
+                        lineChartData={[25000, 30000, 35000, 10000, 40000, 10000, 80000, 20000, 40000, 60000, 190420]}
+                        lineChartDataTitle="Ventas a lo largo del tiempo"
+                        linechartDataSetTitle="Ventas"
+                    />
+                }
+                // thirdBox={<LineChartWithPaper title="Line Chart" />}
             />
-            <FourBoxesRow
-                firstBox={<CounterChartWithPaper title={"Billed money"} count={5400000} />}
-                secondBox={<CounterChartWithPaper title={"Cancelled money"} count={110523} />}
-                thirdBox={<CounterChartWithPaper title={"Subscriptions count"} count={700} />}
-                fourthBox={<CounterChartWithPaper title={"Active customers"} count={100} />}
+            <ThreeBoxesRow
+                firstBox={<CounterChartWithPaper title={"Billed money"} count={257130} type={"money"} />}
+                secondBox={<CounterChartWithPaper title={"Subscriptions count"} count={700} type={"money"} />}
+                thirdBox={<CounterChartWithPaper title={"Active customers"} count={100} type={"money"} />}
             />
         </>
     );
