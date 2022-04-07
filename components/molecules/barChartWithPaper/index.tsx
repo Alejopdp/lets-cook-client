@@ -5,54 +5,50 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
+ChartJS.defaults.font.size = 16;
 export const options = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Subtitle",
+            position: "bottom" as const,
         },
     },
 };
-
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-const getData = () => {
-    let counter = 0;
-
-    return {
-        labels,
-        datasets: [
-            {
-                label: "Dataset 1",
-                data: labels.map((label, index) => {
-                    return counter + index;
-                }),
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-            },
-            {
-                label: "Dataset 2",
-                data: labels.map((label, index) => {
-                    return counter + index + 20;
-                }),
-
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
-            },
-        ],
-    };
-};
-
 interface BarChartWithPaperProps {
     title: string;
+    labels: string[];
+    firstData: number[];
+    secondData: number[];
 }
 
-const BarChartWithPaper = ({ title }: BarChartWithPaperProps) => {
+const BarChartWithPaper = ({ title, labels, firstData, secondData }: BarChartWithPaperProps) => {
+    const getData = () => {
+        let counter = 0;
+
+        return {
+            labels,
+            datasets: [
+                {
+                    label: "Ya eligió recetas",
+                    data: labels.map((label, index) => {
+                        return firstData[index];
+                    }),
+                    backgroundColor: "rgba(0, 165, 85, 0.5)",
+                },
+                {
+                    label: "No eligió recetas",
+                    data: labels.map((label, index) => {
+                        return secondData[index];
+                    }),
+
+                    backgroundColor: "rgba(0, 165, 85, 0.2)",
+                },
+            ],
+        };
+    };
+
     return (
-        <PaperWithTitleContainer flex={true} title={title} fullWidth fontSize={20}>
+        <PaperWithTitleContainer flex={true} title={title} fullWidth={true} fontSize={20}>
             <Bar options={options} data={getData()} />;
         </PaperWithTitleContainer>
     );
