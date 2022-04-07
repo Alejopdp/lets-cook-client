@@ -13,3 +13,14 @@ export const numberCompactFormatter = (num: number) => {
 
     return formatter.format(num);
 };
+
+export const numberMoneyFormatter = (num: number) => {
+    let formatter = new Intl.NumberFormat("en-EN", {
+        // notation: "compact",
+        style: "currency",
+        currency: "EUR",
+        useGrouping: true,
+    });
+
+    return formatter.format(num);
+};
