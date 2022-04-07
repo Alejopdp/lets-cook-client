@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
     displayFlex: {
         display: "flex",
-        flexDirection: "column"
-    }
+        flexDirection: "column",
+    },
 }));
 
 const PaperWithTitleContainer = (props) => {
@@ -35,7 +35,11 @@ const PaperWithTitleContainer = (props) => {
     return (
         <Box className={root} width={props.fullWidth ? "100%" : props.width || 384}>
             <Box className={props.flex ? clsx(paper, displayFlex) : paper} height={props.height} marginBottom={props.marginBottom}>
-                <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: theme.spacing(2) }}>
+                <Typography
+                    variant="subtitle1"
+                    color="textSecondary"
+                    style={{ marginBottom: theme.spacing(2), fontSize: props.fontSize || "deafult" }}
+                >
                     {props.title}
                 </Typography>
                 {props.children}
@@ -46,16 +50,11 @@ const PaperWithTitleContainer = (props) => {
 
 PaperWithTitleContainer.propTypes = {
     title: PropTypes.string.isRequired,
-    width: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
-    marginBottom: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    marginBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     fullWidth: PropTypes.bool,
     flex: PropTypes.bool,
+    fontSize: PropTypes.number,
 };
 
 export default PaperWithTitleContainer;

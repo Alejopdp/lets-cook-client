@@ -40,6 +40,7 @@ import SubscriptionDetail from "../../components/organisms/subscriptionDetail";
 import CustomersDashboard from "../../components/organisms/customersDashboard/customersDashboard";
 import CreateCustomer from "../../components/organisms/createCustomer/createCustomer";
 import CustomerProfile from "../../components/organisms/customerProfile/customerProfile";
+import HomeDashboard from "components/organisms/homeDashboard";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -92,7 +93,11 @@ const Index = ({ token, ...props }) => {
             );
         }
 
+        console.log("PATH: ", path);
+
         switch (path) {
+            case "dashboard":
+                return <HomeDashboard />;
             case "recetas":
                 return <RecipesDashboard filterList={props.filterList} recipesList={props.recipesList} hasError={props.hasError} />;
 
