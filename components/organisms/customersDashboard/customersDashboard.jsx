@@ -53,15 +53,6 @@ const CustomersDashboard = (props) => {
         [userInfo]
     );
 
-    const exportOptions = useMemo(() => {
-        const exportActions = [];
-
-        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport });
-        if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: handleClickExportActions });
-
-        return exportActions;
-    }, [canExportCustomers, canExportCustomersActions]);
-
     const handleClickExport = async () => {
         const res = await exportCustomers();
 
@@ -77,6 +68,14 @@ const CustomersDashboard = (props) => {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
     };
+    const exportOptions = useMemo(() => {
+        const exportActions = [];
+
+        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport });
+        if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: handleClickExportActions });
+
+        return exportActions;
+    }, [canExportCustomers, canExportCustomersActions]);
 
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear");
