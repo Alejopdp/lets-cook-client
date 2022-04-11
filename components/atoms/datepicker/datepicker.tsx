@@ -1,10 +1,15 @@
-import PropTypes from "prop-types";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
-
 import { useState } from "react";
 
-const DatePicker = ({ dateSelected = new Date(), label, handleDateChange = () => {} }) => {
+interface DatePickerProps {
+    dateSelected: Date;
+    label: string;
+    handleDateChange: (date: Date) => void;
+    disableFuture?: boolean;
+}
+
+const DatePicker = ({ dateSelected = new Date(), label = "", handleDateChange = () => {}, disableFuture }: DatePickerProps) => {
     const [selectedDate, setSelectedDate] = useState(new Date(dateSelected));
 
     const _handleDateChange = (date) => {
@@ -23,20 +28,10 @@ const DatePicker = ({ dateSelected = new Date(), label, handleDateChange = () =>
                 label={label}
                 value={selectedDate}
                 onChange={_handleDateChange}
+                disableFuture={disableFuture}
             />
         </MuiPickersUtilsProvider>
     );
-};
-
-DatePicker.propTypes = {
-    dateSelected: PropTypes.any,
-    label: PropTypes.string,
-    handleDateChange: PropTypes.func,
-};
-
-DatePicker.defaultValues = {
-    dateSelected: new Date(),
-    handleDateChange: () => {},
 };
 
 export default DatePicker;

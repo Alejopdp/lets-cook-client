@@ -267,12 +267,16 @@ export const exportCustomerActions = async (customerId: string) => {
     }
 };
 
-export const exportAllCustomersActions = async () => {
+export const exportAllCustomersActions = async (startDate: Date, endDate: Date) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export-actions`,
             headers: { authorization: getFromLocalStorage("token") },
+            params: {
+                startDate,
+                endDate,
+            },
             responseType: "blob",
         });
 
