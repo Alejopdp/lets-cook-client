@@ -15,7 +15,13 @@ const CreateDashboardTitle = (props) => {
         <Grid item xs={12}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h5">{props.dashboardTitle}</Typography>
-                {props.showCreateButton ? <CreateButton onClick={props.handleCreateButton}>{props.createButtonText}</CreateButton> : <></>}
+                {props.showCreateButton ? (
+                    <CreateButton onClick={props.handleCreateButton} disabled={props.isButtonDisabled}>
+                        {props.createButtonText}
+                    </CreateButton>
+                ) : (
+                    <></>
+                )}
             </Box>
         </Grid>
     );
@@ -26,6 +32,7 @@ CreateDashboardTitle.propTypes = {
     createButtonText: PropTypes.string.isRequired,
     dashboardTitle: PropTypes.string.isRequired,
     hideButton: PropTypes.bool,
+    isButtonDisabled: PropTypes.bool,
 };
 
 export default CreateDashboardTitle;

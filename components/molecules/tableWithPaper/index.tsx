@@ -15,6 +15,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { ArrowUpward, ArrowDownward, CallMade, ArrowForward } from "@material-ui/icons";
 import PaperWithTitleContainer from "../paperWithTitleContainer/paperWithTitleContainer";
+import { numberMoneyFormatter } from "helpers/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -35,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface TableCell {
-    value: string;
+    value: number | string;
     percentage?: boolean;
     indicator?: boolean;
+    isMoney?: boolean;
 }
 
 export type TableRow = TableCell[];
@@ -53,8 +55,9 @@ const TableWithPaper = ({ headers, rows, paperTitle, withTotal }: TableWithPaper
     const { table, cellStyle, totalRow } = useStyles();
 
     const getCellValue = (cell: TableCell): string => {
-        let finalString = cell.value;
+        if (cell.isMoney) return numberMoneyFormatter(cell.value as number);
 
+        let finalString = cell.value?.toString() ?? "";
         if (cell.percentage) finalString = `${finalString}%`;
 
         return finalString;
