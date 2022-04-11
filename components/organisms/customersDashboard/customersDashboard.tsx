@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import { exportAllCustomersActions, exportCustomers, getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
-import PropTypes from "prop-types";
+import { exportAllCustomersActions, exportCustomers, getCustomerList } from "../../../helpers/serverRequests/customer";
+import dynamic from "next/dynamic";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -12,12 +12,13 @@ import Box from "@material-ui/core/Box";
 // Internal components
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CustomersTable from "./customersTable/customersTable";
-import SimpleModal from "../../molecules/simpleModal/simpleModal";
-import EmptyImage from "../../molecules/emptyImage/emptyImage";
-import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
 import DashboardTitleWithButtonAndManyCSV from "components/layout/dashboardTitleWithButtonAndManyCSV";
 
-const CustomersDashboard = (props) => {
+const SimpleModal = dynamic(() => import("../../molecules/simpleModal/simpleModal"), { ssr: false });
+const EmptyImage = dynamic(() => import("../../molecules/emptyImage/emptyImage"), { ssr: false });
+const ExportModal = dynamic(() => import("./exportCustomerActionsModal"), { ssr: false });
+
+const CustomersDashboard = () => {
     const router = useRouter();
     const [isLoading, setisLoading] = useState(true);
     const [searchValue, setSearchValue] = useState("");
@@ -25,6 +26,8 @@ const CustomersDashboard = (props) => {
     const [selectedCustomer, setSelectedCustomer] = useState({});
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [isExportingActions, setIsExportingActions] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleClickExport = async () => {
@@ -35,8 +38,8 @@ const CustomersDashboard = (props) => {
         }
     };
 
-    const handleClickExportActions = async () => {
-        const res = await exportAllCustomersActions();
+    const handleClickExportActions = async (startDate: Date, endDate: Date) => {
+        const res = await exportAllCustomersActions(startDate, endDate);
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
@@ -46,7 +49,7 @@ const CustomersDashboard = (props) => {
     const exportOptions = useMemo(() => {
         return [
             { title: "Exportar clientes", handler: handleClickExport },
-            { title: "Exportar acciones", handler: handleClickExportActions },
+            { title: "Exportar acciones", handler: () => setIsExportModalOpen(true) },
         ];
     }, []);
 
@@ -128,6 +131,19 @@ const CustomersDashboard = (props) => {
                 <EmptyImage label="No se han encontrado usuarios que coincidan con los términos de búsqueda" />
             ) : (
                 <CustomersTable customers={filteredCustomers} handleDeleteCustomer={handleOpenDeleteModal} />
+            )}
+
+            {isExportModalOpen && (
+                <ExportModal
+                    isOpen={isExportModalOpen}
+                    cancelButtonText="CANCELAR"
+                    confirmButtonText="EXPORTAR"
+                    handleCancelButton={() => setIsExportModalOpen(false)}
+                    handleClose={() => setIsExportModalOpen(false)}
+                    handleConfirmButton={handleClickExportActions}
+                    title="Exportar acciones"
+                    isSubmitting={isExportingActions}
+                />
             )}
 
             {isDeleteModalOpen && (
