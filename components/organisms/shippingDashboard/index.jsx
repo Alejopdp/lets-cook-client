@@ -1,24 +1,22 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { toggleZoneState, deleteZone } from "../../../helpers/serverRequests/shipping";
 import { useSnackbar } from "notistack";
 
 // External components
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 
 // Internal components
-import DashboardWithButton from "../../layout/dashboardTitleWithButton/dashboardTitleWithButton";
 import ShippingTable from "./shippingTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
-import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
-import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV"
+import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
-
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const ShippingDashboard = (props) => {
     const router = useRouter();
@@ -33,7 +31,20 @@ const ShippingDashboard = (props) => {
     const [isStateModalOpen, setisStateModalOpen] = useState(false);
     const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const { userInfo } = useUserInfoStore();
 
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_SHIPPING_ZONE)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
+
+    const canCreate = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_SHIPPING_ZONE),
+        [userInfo]
+    );
 
     const handleClick = () => {
         router.push("/gestion-de-envios/crear");
@@ -110,12 +121,18 @@ const ShippingDashboard = (props) => {
     };
 
     const filteredShippingZone = shippingZones.filter((customer) => {
-        return customer.name.toLowerCase().includes(searchValue.toLowerCase())
+        return customer.name.toLowerCase().includes(searchValue.toLowerCase());
     });
 
+    if (isLoading) return <></>;
     return (
         <>
-            <DashboardTitleWithButtonAndCSV title="Zonas de envío" handleClick={handleClick} buttonText='CREAR ZONA DE ENVÍO' />
+            <DashboardTitleWithButtonAndCSV
+                title="Zonas de envío"
+                handleClick={handleClick}
+                buttonText="CREAR ZONA DE ENVÍO"
+                showCreateButton={canCreate}
+            />
 
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
@@ -123,11 +140,15 @@ const ShippingDashboard = (props) => {
                 </Box>
             </Grid>
 
-
-            {filteredShippingZone == 0
-                ? <EmptyImage label="No se han encontrado zonas de envío que coincidan con los términos de búsqueda" />
-                : <ShippingTable shippingZones={shippingZones} handleStateClick={handleOpenStateModal} handleDeleteClick={handleOpenDeleteModal} />
-            }
+            {filteredShippingZone == 0 ? (
+                <EmptyImage label="No se han encontrado zonas de envío que coincidan con los términos de búsqueda" />
+            ) : (
+                <ShippingTable
+                    shippingZones={shippingZones}
+                    handleStateClick={handleOpenStateModal}
+                    handleDeleteClick={handleOpenDeleteModal}
+                />
+            )}
 
             {isStateModalOpen && (
                 <SimpleModal
@@ -139,7 +160,7 @@ const ShippingDashboard = (props) => {
                     open={isStateModalOpen}
                     paragraphs={[
                         `¿Estás seguro de que quieres ${
-                        selectedShippingZone.state.toLowerCase() === "active" ? "desactivar" : "activar"
+                            selectedShippingZone.state.toLowerCase() === "active" ? "desactivar" : "activar"
                         } la zona de envío ${selectedShippingZone.reference}?`,
                     ]}
                     title={`${selectedShippingZone.state.toLowerCase() === "active" ? "Desactivar" : "Activar"} zona de envío`}

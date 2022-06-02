@@ -22,7 +22,7 @@ import Group from "@material-ui/icons/Group";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import useLocalStorage from "../../../../../hooks/useLocalStorage/localStorage";
 import usePersistToken from "../../../../../hooks/usePersistToken/usePersistToken";
-import { useUserInfoStore } from "../../../../../stores/auth";
+import { useUserInfoStore } from "../../../../../stores/auth.tsx";
 
 const useStyles = makeStyles((theme) => ({
     root: {

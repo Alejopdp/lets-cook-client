@@ -1,9 +1,8 @@
 // Utils & Config
-import React, { useContext } from "react";
-import clsx from "clsx";
+import React, { useMemo, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import sidebarOptions from "../../../assets/sidebarOptions/adminOptions";
+import { getAdminOptions } from "../../../assets/sidebarOptions/adminOptions";
 
 // External components
 import Hidden from "@material-ui/core/Hidden";
@@ -13,6 +12,7 @@ import Navbar from "../navbar/navbar";
 import FixedDrawer from "../drawers/fixedDrawer";
 import MobileDrawer from "../drawers/mobileDrawer";
 import DashboardContainer from "../dashboardContainer/dashboardContainer";
+import { useUserInfoStore } from "stores/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
 export default function LayoutFixedSidebar(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const { userInfo } = useUserInfoStore();
+
+    const sidebarOptions = useMemo(() => (Array.isArray(userInfo?.permissions) ? getAdminOptions(userInfo.permissions) : []), [userInfo]);
 
     const handleOpenDrawer = () => {
         setOpen(!open);

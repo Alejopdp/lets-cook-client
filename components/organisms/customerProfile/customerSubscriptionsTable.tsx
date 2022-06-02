@@ -28,11 +28,10 @@ import { translateFrequency } from "helpers/i18n/i18n";
 import { PlanType } from "types/plan/plan";
 import { createSubscription } from "helpers/serverRequests/subscription";
 import { PlanFrequencyValue } from "helpers/types/frequency";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
-    tableContainer: {
-        // marginTop: theme.spacing(2)
-    },
     table: {
         minWidth: 500,
     },
@@ -55,17 +54,21 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerSubscriptionsTable = (props) => {
     const router = useRouter();
-
-    const { tableContainer, table, cells, idCell, addRow } = useStyles();
-
+    const { table, cells, idCell, addRow } = useStyles();
     const [isAddPlanModalOpen, setAddPlanModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const [isAddPlanSubmitting, setIsAddPlanSubmitting] = useState(false);
     const [subscriptions, setSubscriptions] = useState([...props.subscriptions] || []);
     const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
     const [selectedVariation, setSelectedVariation] = useState({});
     const [selectedFrequency, setSelectedFrequency] = useState("");
     const [couponCode, setCouponCode] = useState("");
+    const { userInfo } = useUserInfoStore();
+
+    const canCreateSubscription = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_SUBSCRIPTION),
+        [userInfo]
+    );
 
     const handlePlanSelect = (e) => {
         setSelectedPlan(e.target.value);
@@ -119,7 +122,7 @@ const CustomerSubscriptionsTable = (props) => {
     return (
         <>
             <Grid item xs={12}>
-                <TableContainer component={Paper} className={tableContainer}>
+                <TableContainer component={Paper}>
                     <Table className={table} aria-label="custom pagination table">
                         <TableHead>
                             <TableRow>
@@ -186,13 +189,18 @@ const CustomerSubscriptionsTable = (props) => {
                                     </TableCell>
                                 </TableRow>
                             ))}
-
-                            <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
-                                <AddCircleIcon color="primary" />
-                                <Typography variant="subtitle1" color="primary" style={{ marginLeft: "8px", textTransform: "uppercase" }}>
-                                    Agregar Plan
-                                </Typography>
-                            </TableRow>
+                            {canCreateSubscription && (
+                                <TableRow className={addRow} onClick={() => setAddPlanModalOpen(true)}>
+                                    <AddCircleIcon color="primary" />
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="primary"
+                                        style={{ marginLeft: "8px", textTransform: "uppercase" }}
+                                    >
+                                        Agregar Plan
+                                    </Typography>
+                                </TableRow>
+                            )}{" "}
                         </TableBody>
                     </Table>
                 </TableContainer>

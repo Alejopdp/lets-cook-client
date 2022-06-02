@@ -1,22 +1,27 @@
 // Utils & config
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 const langs = require("../../../lang").updatePlan;
 
-// External components
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-
 // Internal compontents
 import DashboardTitleWithBackButtonAndLanguageSelector from "../../layout/dashboardTitleWithBackButtonAndLanguageSelector";
 import UpdatePlanForm from "../updatePlan/updatePlanForm/updateForm";
-import LanguageButton from "../../molecules/languageButton/languageButton";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const UpdatePlan = (props) => {
     const router = useRouter();
     const lang = langs[router.locale];
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.UPDATE_PLAN)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
 
     const handleChangeLanguage = (language) => {
         router.replace({ pathname: router.pathname, query: router.query }, router.asPath, { locale: language.value });
@@ -28,8 +33,12 @@ const UpdatePlan = (props) => {
 
     return (
         <>
-            <DashboardTitleWithBackButtonAndLanguageSelector title={lang.title} handleClick={goBackHandler} handleChangeLanguage={handleChangeLanguage} />
-            <UpdatePlanForm additionalPlans={props.additionalPlans} plan={props.plan} />
+            <DashboardTitleWithBackButtonAndLanguageSelector
+                title={lang.title}
+                handleClick={goBackHandler}
+                handleChangeLanguage={handleChangeLanguage}
+            />
+            {!isLoading && <UpdatePlanForm additionalPlans={props.additionalPlans} plan={props.plan} />}
         </>
     );
 };

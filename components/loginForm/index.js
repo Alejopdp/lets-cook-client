@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { login } from "../../helpers/serverRequests/user";
 import { useRouter } from "next/router";
-import { useUserInfoStore } from "../../stores/auth";
+import { useUserInfoStore } from "../../stores/auth.tsx";
 import { useStyles } from "./styles";
 import cookies from "js-cookie";
 import useRequest from "../../hooks/useRequest/useRequest";

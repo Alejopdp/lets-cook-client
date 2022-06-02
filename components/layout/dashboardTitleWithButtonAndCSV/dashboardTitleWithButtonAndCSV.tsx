@@ -27,6 +27,7 @@ interface DashboardTitleWithButtonAndCsv {
     handleClick: () => void;
     buttonText: string;
     importFile: any;
+    showCreateButton: boolean;
 }
 
 const DashboardTitleWithButtonAndCSV = (props: DashboardTitleWithButtonAndCsv) => {
@@ -62,9 +63,11 @@ const DashboardTitleWithButtonAndCSV = (props: DashboardTitleWithButtonAndCsv) =
                             Exportar CSV
                         </Button>
                     )}
-                    <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
-                        {props.buttonText}
-                    </CustomButton>
+                    {props.showCreateButton && (
+                        <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
+                            {props.buttonText}
+                        </CustomButton>
+                    )}
                 </div>
             </Box>
         </Grid>

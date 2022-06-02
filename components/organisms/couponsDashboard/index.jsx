@@ -1,6 +1,5 @@
 // Utils & config
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 
@@ -11,12 +10,13 @@ import Chip from "@material-ui/core/Chip";
 
 // Internal components
 import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
-import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import FilterByDropdown from "../../molecules/filterByDropdown/filterByDropdown";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CuoponsTable from "./couponsTable/couponsTable";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
 import { exportCoupons, importManyCoupons } from "helpers/serverRequests/coupon";
+import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const CouponsDashboard = (props) => {
     const router = useRouter();
@@ -24,7 +24,25 @@ const CouponsDashboard = (props) => {
     const [filtersBy, setfiltersBy] = useState([]);
     const [searchValue, setsearchValue] = useState("");
     const [importFile, setImportFile] = useState("");
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_COUPONS)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
+
+    const canCreate = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_COUPON),
+        [userInfo]
+    );
+    const canExportCoupons = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_COUPONS),
+        [userInfo]
+    );
 
     const handleApplyFilters = (filters = []) => {
         setfiltersBy(filters);
@@ -67,18 +85,21 @@ const CouponsDashboard = (props) => {
         }
     };
 
+    if (isLoading) return <></>;
+
     return (
         <>
             <DashboardTitleWithButtonAndCSV
                 title="Cupones"
-                import
-                export
+                import={canCreate}
+                export={canExportCoupons}
                 importFile={importFile}
                 handleClickImport={handleClickImport}
                 handleClickExport={handleClickExport}
                 handleClick={() => router.push("/cupones/crear")}
                 buttonText="CREAR CUPÓN"
                 multipleImportFiles={false}
+                showCreateButton={canCreate}
             />
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>

@@ -1,11 +1,13 @@
 // Utils & config
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 
 // External components
 import { Card, CardActions, CardContent, CardMedia, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Create as EditIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import Switch from "@material-ui/core/Switch";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
     height140: {
@@ -16,8 +18,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const PlanCard = ({ item, handlerEdit = () => { }, handlerDelete = () => { }, handlerSwitch = () => { } }) => {
+const PlanCard = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, handlerSwitch = () => {} }) => {
     const classes = useStyles();
+    const { userInfo } = useUserInfoStore();
+    const canEditPlans = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_PLAN),
+        [userInfo]
+    );
 
     return (
         <Card className={classes.width220} elevation={2}>
@@ -37,27 +44,33 @@ const PlanCard = ({ item, handlerEdit = () => { }, handlerDelete = () => { }, ha
                     Plan {item.type}
                 </Typography>
             </CardContent>
-            <CardActions>
-                <Grid container spacing={1}>
-                    <Grid item>
-                        <IconButton color="default" component="span" onClick={handlerEdit}>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton
-                            color="default"
-                            component="span"
-                            onClick={() => {
-                                handlerDelete(item);
-                            }}
+            {canEditPlans && (
+                <CardActions>
+                    <Grid container spacing={1}>
+                        <Grid item>
+                            <IconButton color="default" component="span" onClick={handlerEdit}>
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton
+                                color="default"
+                                component="span"
+                                onClick={() => {
+                                    handlerDelete(item);
+                                }}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid
+                            xs
+                            item
+                            style={{ alignItems: "flex-end", display: "flex", flexDirection: "column", justifyContent: "center" }}
                         >
-                            <DeleteIcon />
-                        </IconButton>
+                            <Switch checked={item.isActive} onChange={handlerSwitch} color="primary" />
+                        </Grid>
                     </Grid>
-                    <Grid xs item style={{ alignItems: "flex-end", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        <Switch checked={item.isActive} onChange={handlerSwitch} color="primary" />
-                    </Grid>
-                </Grid>
-            </CardActions>
+                </CardActions>
+            )}
         </Card>
     );
 };

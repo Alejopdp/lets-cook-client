@@ -1,13 +1,16 @@
 import Axios from "axios";
+import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
 
+const { getFromLocalStorage } = useLocalStorage();
 // const serverUrl = "http://localhost:3001/api/v1";
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/plan`;
 
-export const getPlanList = async (locale) => {
+export const getPlanList = async (locale: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}`,
+            headers: { authorization: token },
             params: {
                 locale,
             },
@@ -20,11 +23,12 @@ export const getPlanList = async (locale) => {
     }
 };
 
-export const getPlanById = async (planId, locale) => {
+export const getPlanById = async (planId: string, locale: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/${planId}`,
+            headers: { authorization: token },
             params: {
                 locale,
             },
@@ -42,6 +46,7 @@ export const togglePlanState = async (planId) => {
         const res = await Axios({
             method: "PUT",
             url: `${apiUrl}/toggle-state/${planId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -55,6 +60,7 @@ export const deletePlan = async (planId) => {
         const res = await Axios({
             method: "DELETE",
             url: `${apiUrl}/${planId}`,
+            headers: { authorization: getFromLocalStorage("token") },
         });
 
         return res;
@@ -66,7 +72,7 @@ export const deletePlan = async (planId) => {
 export const createPlan = async (plan) => {
     try {
         const res = await Axios({
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { "Content-Type": "multipart/form-data", authorization: getFromLocalStorage("token") },
             method: "POST",
             url: `${apiUrl}`,
             data: plan,
@@ -79,11 +85,12 @@ export const createPlan = async (plan) => {
     }
 };
 
-export const getAdditionalPlans = async (locale) => {
+export const getAdditionalPlans = async (locale: string, token: string) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/additionals`,
+            headers: { authorization: token },
             params: {
                 locale,
             },
@@ -101,6 +108,7 @@ export const updatePlan = async (plan, planId, locale) => {
             method: "PUT",
             url: `${apiUrl}/${planId}`,
             data: plan,
+            headers: { authorization: getFromLocalStorage("token") },
             params: {
                 locale,
             },

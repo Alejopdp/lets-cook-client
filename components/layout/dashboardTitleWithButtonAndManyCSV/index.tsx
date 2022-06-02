@@ -32,6 +32,7 @@ interface DashboardTitleWithButtonAndManyCSVProps {
     importFile: any;
     buttonText: string;
     handleClick: () => void;
+    showCreateButton: boolean;
 }
 
 const DashboardTitleWithButtonAndManyCSV = (props: DashboardTitleWithButtonAndManyCSVProps) => {
@@ -63,9 +64,11 @@ const DashboardTitleWithButtonAndManyCSV = (props: DashboardTitleWithButtonAndMa
                                 {option.title || "Exportar CSV"}
                             </Button>
                         ))}
-                        <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
-                            {props.buttonText}
-                        </CustomButton>
+                        {props.showCreateButton && (
+                            <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
+                                {props.buttonText}
+                            </CustomButton>
+                        )}
                     </Box>
                 </div>
             </Box>

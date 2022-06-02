@@ -18,15 +18,8 @@ import RefreshButton from "../../atoms/refresh-button/refreshButton";
 import RecipesGrid from "./recipesGrid";
 import RecipeFiltersAndSort from "./recipeFiltersAndSort";
 import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
-
-const useStyles = makeStyles((theme) => ({
-    height100: {
-        minHeight: "100%",
-    },
-    paddingBottom2: {
-        paddingBottom: theme.spacing(2),
-    },
-}));
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filterList = [], hasError: hasRequestError, token }) => {
     const _sortOptions = [
@@ -74,7 +67,6 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
 
     const defaultRecipeState = { item: null, index: -1 };
 
-    const classes = useStyles();
     const router = useRouter();
     const useSort = useSortBy();
 
@@ -85,7 +77,16 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     const [recipeSelected, selectRecipe] = useState(defaultRecipeState);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openSchedulerDialog, setOpenSchedulerDialog] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_RECIPES)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
 
     const _handleCreateReceipe = () => {
         router.push("/recetas/crear");
@@ -290,10 +291,17 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
         setRecipesList(responseRecipesList);
     }, [hasRequestError, responseRecipesList]);
 
+    if (isLoading) return <></>;
+
     return (
         <>
             {/* RECIPES TITLE */}
-            <CreateDashboardTitle createButtonText="CREAR RECETA" dashboardTitle="Recetas" handleCreateButton={_handleCreateReceipe} />
+            <CreateDashboardTitle
+                createButtonText="CREAR RECETA"
+                dashboardTitle="Recetas"
+                handleCreateButton={_handleCreateReceipe}
+                showCreateButton={userInfo.permissions.includes(Permission.CREATE_RECIPE)}
+            />
 
             {/* RECIPE FILTERS AND SORT */}
             <RecipeFiltersAndSort

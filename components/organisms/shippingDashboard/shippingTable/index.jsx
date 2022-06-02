@@ -1,6 +1,5 @@
 // Utils & Config
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 
@@ -20,6 +19,8 @@ import Grid from "@material-ui/core/Grid";
 // Icons & Images
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -37,10 +38,19 @@ const ShippingTable = ({
 }) => {
     const { table, cells } = useStyles();
     const router = useRouter();
+    const { userInfo } = useUserInfoStore();
+
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_SHIPPING_ZONE),
+        [userInfo]
+    );
+    const canDelete = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.DELETE_SHIPPING_ZONE),
+        [userInfo]
+    );
 
     return (
         <Grid item xs={12}>
-
             <TableContainer component={Paper}>
                 <Table className={table} aria-label="custom pagination table">
                     <TableHead>
@@ -53,7 +63,9 @@ const ShippingTable = ({
                                 <Typography variant="subtitle1">Referencia</Typography>
                             </TableCell>
                             <TableCell className={cells}>
-                                <Typography variant="subtitle1" style={{ textAlign: "right" }}>Coste de envío</Typography>
+                                <Typography variant="subtitle1" style={{ textAlign: "right" }}>
+                                    Coste de envío
+                                </Typography>
                             </TableCell>
                             <TableCell />
                         </TableRow>
@@ -75,18 +87,28 @@ const ShippingTable = ({
                                     </Typography>
                                 </TableCell>
                                 <TableCell className={cells}>
-                                    <Switch
-                                        name="checkedB"
-                                        color="primary"
-                                        checked={zone.state.toLowerCase() === "active"}
-                                        onClick={() => handleStateClick(zone)}
-                                    />
-                                    <IconButton onClick={() => router.push({ pathname: "/gestion-de-envios/modificar", query: { id: zone.id } })} >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDeleteClick(zone)}>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    {canEdit && (
+                                        <Switch
+                                            name="checkedB"
+                                            color="primary"
+                                            checked={zone.state.toLowerCase() === "active"}
+                                            onClick={() => handleStateClick(zone)}
+                                        />
+                                    )}
+                                    {canEdit && (
+                                        <IconButton
+                                            onClick={() =>
+                                                router.push({ pathname: "/gestion-de-envios/modificar", query: { id: zone.id } })
+                                            }
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
+                                    {canDelete && (
+                                        <IconButton onClick={() => handleDeleteClick(zone)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -98,9 +120,3 @@ const ShippingTable = ({
 };
 
 export default ShippingTable;
-
-// CustomPaginationActionsTable.propTypes = {
-//     users: PropTypes.array.isRequired,
-//     handleOpenDeleteModal: PropTypes.func.isRequired,
-//     handleEdit: PropTypes.func.isRequired,
-// };

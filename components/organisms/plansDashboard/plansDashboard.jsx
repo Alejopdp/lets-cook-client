@@ -1,5 +1,5 @@
 // Utils & config
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { togglePlanState, deletePlan } from "../../../helpers/serverRequests/plan";
 import { useSnackbar } from "notistack";
@@ -19,6 +19,8 @@ import SearchInputField from "../../molecules/searchInputField/searchInputField"
 import PlansGrid from "./plansGrid";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const PlansDashboard = (props) => {
     const router = useRouter();
@@ -29,7 +31,16 @@ const PlansDashboard = (props) => {
     const [selectedPlan, setselectedPlan] = useState({});
     const [isToggleStateModalOpen, setisToggleStateModalOpen] = useState(false);
     const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_PLANS)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
 
     const handleApplyFilters = (filters = []) => {
         setfiltersBy(filters);
@@ -91,14 +102,6 @@ const PlansDashboard = (props) => {
         );
     };
 
-    // const filterPlans = (plans) => {
-    //     const filteredPlans = plans.filter(plan => {
-    //         if (filtersBy.some(filterItem => filterItem.label === "Activo" || filterItem.label === "Desactivo")) {
-
-    //         }
-    //     })
-    // }
-
     const filteredPlans =
         filtersBy.length > 0
             ? filterPlansBySearchValue().filter((plan) =>
@@ -106,12 +109,15 @@ const PlansDashboard = (props) => {
               )
             : filterPlansBySearchValue();
 
+    if (isLoading) return <></>;
+
     return (
         <>
             <CreateDashboardTitle
                 createButtonText={lang.createButton}
                 dashboardTitle={lang.dashboardTitle}
                 handleCreateButton={() => router.push("/planes/crear")}
+                showCreateButton={userInfo.permissions.includes(Permission.CREATE_PLAN)}
             />
 
             <Grid item xs={12}>

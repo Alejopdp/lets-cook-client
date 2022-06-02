@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { updateCustomer, updateShippingAddress } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
@@ -14,11 +14,13 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 import { DeliveryAddressProps } from "../interface";
 import { getGeometry } from "helpers/geocode/geocode";
 import { translateShippíngHour } from "helpers/i18n/i18n";
+import { Permission } from "helpers/types/permission";
+import { useUserInfoStore } from "stores/auth";
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+    const { userInfo } = useUserInfoStore();
     const [formData, setFormData] = useState({
         addressName: props.shippingAddress.addressName || "",
         addressDetails: props.shippingAddress.addressDetails || "",
@@ -26,6 +28,11 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
         latitude: props.shippingAddress.latitude,
         longitude: props.shippingAddress.longitude,
     });
+
+    const canEdit = useMemo(
+        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        [userInfo]
+    );
 
     const handleChange = (e) => {
         setFormData({
@@ -79,14 +86,16 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
                     {translateShippíngHour(props.shippingAddress.preferredShippingHour) || "Sin indicar"}
                 </Typography>
 
-                <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
-                    onClick={() => setDeliveryAddressModalOpen(true)}
-                >
-                    Modificar dirección de entrega
-                </Typography>
+                {canEdit && (
+                    <Typography
+                        variant="subtitle2"
+                        color="primary"
+                        style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
+                        onClick={() => setDeliveryAddressModalOpen(true)}
+                    >
+                        Modificar dirección de entrega
+                    </Typography>
+                )}
             </PaperWithTitleContainer>
 
             {isDeliveryAddressModalOpen && (
@@ -100,6 +109,7 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
                     confirmButtonText="Modificar datos de entrega"
                     handleCancelButton={() => setDeliveryAddressModalOpen(false)}
                     handleConfirmButton={handleModifyDeliveryAddress}
+                    isConfirmButtonDisabled={undefined}
                 />
             )}
         </>

@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Typography, useTheme } from "@material-ui/core";
 
 // External components
@@ -18,12 +18,28 @@ import { chargeOnePaymentOrder, refundPaymentOrder, retryPayment } from "helpers
 import { PaymentOrderState } from "helpers/types/paymentOrderState";
 import { cancelAPaymentOrder } from "helpers/serverRequests/paymentOrder";
 import { useRouter } from "next/router";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const PaymentOrderGrid = (props) => {
     const router = useRouter();
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar();
     const [isSubmitting, setisSubmitting] = useState(false);
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_PAYMENT_ORDERS)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
+
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_PAYMENT_ORDER),
+        [userInfo]
+    );
 
     const columns = [
         { align: "left", text: "Número de pedido" },
@@ -105,6 +121,7 @@ const PaymentOrderGrid = (props) => {
         setisSubmitting(false);
     };
 
+    if (isLoading) return <></>;
     return (
         <>
             <Grid item xs={12} md={8}>
@@ -168,7 +185,7 @@ const PaymentOrderGrid = (props) => {
                             </PaperWithTitleContainer>
                         </Grid>
                     )}
-                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_ACTIVE && (
+                    {props.paymentOrder.state === PaymentOrderState.PAYMENT_ORDER_ACTIVE && canEdit && (
                         <Grid item xs={12}>
                             <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
                                 <div>

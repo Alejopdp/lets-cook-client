@@ -1,6 +1,7 @@
 // Utils & Config
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useTheme } from "@material-ui/core";
+import { useRouter } from "next/router";
 
 // External components
 import { Grid } from "@material-ui/core";
@@ -18,6 +19,8 @@ import { chooseRecipesForOrder, moveOrderShippingDate, skipOrReactivateOrder } f
 import { useSnackbar } from "notistack";
 import { presentNumberWithHashtagAndDotSeparator } from "helpers/utils/utils";
 import MoveShippingDateModal from "./moveShippingDateModal/moveShippingDateModal";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const columns = [
     { align: "left", text: "Subscription ID" },
@@ -28,6 +31,7 @@ const columns = [
     { align: "left", text: "" },
 ];
 const OrderGrid = (props) => {
+    const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
     const theme = useTheme();
     const [openEditRecipesModal, setOpenEditRecipesModal] = useState(false);
@@ -37,6 +41,15 @@ const OrderGrid = (props) => {
         []
     );
     const [openMoveOrderShippingDateModal, setOpenMoveOrderShippingDateModal] = useState(false);
+    const { userInfo } = useUserInfoStore();
+    const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_ORDERS)) router.back();
+
+        setIsValidatingPermission(false);
+    }, [userInfo]);
 
     useEffect(() => {
         const baseSelection = [];
@@ -53,6 +66,11 @@ const OrderGrid = (props) => {
 
         setRecipesSelection(baseSelection);
     }, []);
+
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_ORDER),
+        [userInfo]
+    );
 
     // Edit Recipes Modal Functions
 
@@ -147,6 +165,7 @@ const OrderGrid = (props) => {
             enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intenta nuevamente", { variant: "error" });
         }
     };
+    if (isValidatingPermission) return <></>;
 
     return (
         <>
@@ -191,35 +210,37 @@ const OrderGrid = (props) => {
                             />
                         </PaperWithTitleContainer>
                     </Grid>
-                    <Grid item xs={12}>
-                        <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                            {/* <div>
+                    {canEdit && (
+                        <Grid item xs={12}>
+                            <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
+                                {/* <div>
                                 <Button size="medium" style={{ color: "#FC1919" }} onClick={handleClickOpenCancelOrderModal}>
                                     CANCELAR ORDEN
                                 </Button>
                             </div> */}
-                            {props.order.isFirstOrderOfSubscription && (
+                                {props.order.isFirstOrderOfSubscription && (
+                                    <div>
+                                        <Button
+                                            size="medium"
+                                            style={{ color: theme.palette.secondary.main }}
+                                            onClick={() => setOpenMoveOrderShippingDateModal(true)}
+                                        >
+                                            ADELANTAR ORDEN
+                                        </Button>
+                                    </div>
+                                )}
                                 <div>
                                     <Button
                                         size="medium"
                                         style={{ color: theme.palette.secondary.main }}
-                                        onClick={() => setOpenMoveOrderShippingDateModal(true)}
+                                        onClick={handleClickOpenSkipWeekModal}
                                     >
-                                        ADELANTAR ORDEN
+                                        {props.order.isSkipped ? "REACTIVAR SEMANA" : "SALTAR SEMANA"}
                                     </Button>
                                 </div>
-                            )}
-                            <div>
-                                <Button
-                                    size="medium"
-                                    style={{ color: theme.palette.secondary.main }}
-                                    onClick={handleClickOpenSkipWeekModal}
-                                >
-                                    {props.order.isSkipped ? "REACTIVAR SEMANA" : "SALTAR SEMANA"}
-                                </Button>
-                            </div>
-                        </PaperWithTitleContainer>
-                    </Grid>
+                            </PaperWithTitleContainer>
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
             <CancelOrderModal

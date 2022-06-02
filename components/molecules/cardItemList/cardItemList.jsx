@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Card, CardActions, CardContent, CardMedia, Grid, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Create as EditIcon, Delete as DeleteIcon, AccessTime as TimeIcon } from "@material-ui/icons";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const useStyles = makeStyles((theme) => ({
     height140: {
@@ -26,6 +28,12 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
     const classes = useStyles();
     const defaultImage = "/static/images/placeholder-image.png";
     const image = Boolean(item.imageUrl) ? item.imageUrl : defaultImage;
+    const { userInfo } = useUserInfoStore();
+
+    const canEditRecipes = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_RECIPE),
+        [userInfo]
+    );
 
     const _getAvailableWeeksTag = () => {
         if (Boolean(item.availableWeeks)) {
@@ -55,41 +63,43 @@ const CardItemList = ({ item, handlerEdit = () => {}, handlerDelete = () => {}, 
                     </Typography>
                 </div>
             </CardContent>
-            <CardActions>
-                <Grid container spacing={1}>
-                    <Grid item>
-                        <IconButton
-                            color="default"
-                            component="span"
-                            onClick={() => {
-                                handlerEdit(item);
-                            }}
-                        >
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton
-                            color="default"
-                            component="span"
-                            onClick={() => {
-                                handlerDelete(item);
-                            }}
-                        >
-                            <DeleteIcon />
-                        </IconButton>
+            {canEditRecipes && (
+                <CardActions>
+                    <Grid container spacing={1}>
+                        <Grid item>
+                            <IconButton
+                                color="default"
+                                component="span"
+                                onClick={() => {
+                                    handlerEdit(item);
+                                }}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton
+                                color="default"
+                                component="span"
+                                onClick={() => {
+                                    handlerDelete(item);
+                                }}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid xs item style={{ textAlign: "end" }}>
+                            <IconButton
+                                color="default"
+                                component="span"
+                                onClick={() => {
+                                    handlerScheduler(item);
+                                }}
+                            >
+                                <TimeIcon />
+                            </IconButton>
+                        </Grid>
                     </Grid>
-                    <Grid xs item style={{ textAlign: "end" }}>
-                        <IconButton
-                            color="default"
-                            component="span"
-                            onClick={() => {
-                                handlerScheduler(item);
-                            }}
-                        >
-                            <TimeIcon />
-                        </IconButton>
-                    </Grid>
-                </Grid>
-            </CardActions>
+                </CardActions>
+            )}
         </Card>
     );
 };

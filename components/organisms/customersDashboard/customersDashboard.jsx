@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import { exportAllCustomersActions, exportCustomers, getCustomerList, searchCustomers } from "../../../helpers/serverRequests/customer";
+import { exportAllCustomersActions, exportCustomers, getCustomerList } from "../../../helpers/serverRequests/customer";
 import PropTypes from "prop-types";
 
 // External components
@@ -14,8 +14,10 @@ import SearchInputField from "../../molecules/searchInputField/searchInputField"
 import CustomersTable from "./customersTable/customersTable";
 import SimpleModal from "../../molecules/simpleModal/simpleModal";
 import EmptyImage from "../../molecules/emptyImage/emptyImage";
-import DashboardTitleWithButtonAndCSV from "../../layout/dashboardTitleWithButtonAndCSV/dashboardTitleWithButtonAndCSV";
 import DashboardTitleWithButtonAndManyCSV from "components/layout/dashboardTitleWithButtonAndManyCSV";
+import useLocalStorage from "hooks/useLocalStorage/localStorage";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const CustomersDashboard = (props) => {
     const router = useRouter();
@@ -26,6 +28,30 @@ const CustomersDashboard = (props) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
+    const { getFromLocalStorage } = useLocalStorage();
+    const { userInfo } = useUserInfoStore();
+    const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_CUSTOMER)) router.back();
+
+        setIsValidatingPermission(false);
+    }, [userInfo]);
+
+    const canCreate = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_CUSTOMER),
+        [userInfo]
+    );
+
+    const canExportCustomers = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CUSTOMERS),
+        [userInfo]
+    );
+    const canExportCustomersActions = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CUSTOMER_ACTIONS),
+        [userInfo]
+    );
 
     const handleClickExport = async () => {
         const res = await exportCustomers();
@@ -42,13 +68,14 @@ const CustomersDashboard = (props) => {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
     };
-
     const exportOptions = useMemo(() => {
-        return [
-            { title: "Exportar clientes", handler: handleClickExport },
-            { title: "Exportar acciones", handler: handleClickExportActions },
-        ];
-    }, []);
+        const exportActions = [];
+
+        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport });
+        if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: handleClickExportActions });
+
+        return exportActions;
+    }, [canExportCustomers, canExportCustomersActions]);
 
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear");
@@ -56,7 +83,7 @@ const CustomersDashboard = (props) => {
 
     useEffect(() => {
         const getCustomers = async () => {
-            const res = await getCustomerList();
+            const res = await getCustomerList(getFromLocalStorage("token"));
             console.log(res);
             if (res.status === 200) {
                 setCustomers(res.data);
@@ -104,6 +131,7 @@ const CustomersDashboard = (props) => {
         );
     });
 
+    if (isValidatingPermission) return <></>;
     return (
         <>
             <DashboardTitleWithButtonAndManyCSV
@@ -114,6 +142,7 @@ const CustomersDashboard = (props) => {
                 import={false}
                 handleClickImport={() => ""}
                 importFile={undefined}
+                showCreateButton={canCreate}
             />
 
             <Grid item xs={12}>

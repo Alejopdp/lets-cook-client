@@ -13,11 +13,46 @@ import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardT
 import SubscriptionTable from "./subscriptionTable";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import DashboardTitleWithManyCSV from "components/layout/dashboardTitleWithManyCSV/dashboardTitleWithManyCSV";
+import { useUserInfoStore } from "stores/auth";
+import { Permission } from "helpers/types/permission";
 
 const SubscriptionsDashboard = (props) => {
     const [subscriptions, setsubscriptions] = useState([]);
     const [searchValue, setSearchValue] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const { userInfo } = useUserInfoStore();
+    const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!Array.isArray(userInfo.permissions)) return;
+        if (!userInfo.permissions.includes(Permission.VIEW_SUBSCRIPTION)) router.back();
+
+        setIsLoading(false);
+    }, [userInfo]);
+
+    const canCreate = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_SUBSCRIPTION),
+        [userInfo]
+    );
+    const canExportSubscriptions = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_SUBSCRIPTIONS),
+        [userInfo]
+    );
+
+    const canExportCancellations = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CANCELLATIONS),
+        [userInfo]
+    );
+
+    const exportOptions = useMemo(() => {
+        const exportOptions = [];
+
+        if (canExportSubscriptions) exportOptions.push({ title: "Exportar suscripciones", handler: handleClickExport });
+        if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: handleClickCancellations });
+
+        return exportOptions;
+    }, [canExportCancellations, canExportSubscriptions]);
 
     useEffect(() => {
         const getSubscriptionList = async () => {
@@ -60,13 +95,7 @@ const SubscriptionsDashboard = (props) => {
         }
     };
 
-    const exportOptions = useMemo(() => {
-        return [
-            { title: "Exportar suscripciones", handler: handleClickExport },
-            { title: "Exportar cancelaciones", handler: handleClickCancellations },
-        ];
-    }, []);
-
+    if (isLoading) return <></>;
     return (
         <>
             <DashboardTitleWithManyCSV
