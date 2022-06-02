@@ -44,9 +44,26 @@ const SubscriptionsDashboard = (props) => {
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.EXPORT_CANCELLATIONS),
         [userInfo]
     );
+    const handleClickExport = async () => {
+        const res = await exportSubscriptions();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+    };
+
+    const handleClickCancellations = async () => {
+        const res = await exportCancellations();
+
+        if (!!!res || res.status !== 200) {
+            enqueueSnackbar(res.data.message, { variant: "error" });
+        }
+    };
 
     const exportOptions = useMemo(() => {
         const exportOptions = [];
+
+        console.log("Can export subscriptions: ", canExportSubscriptions);
 
         if (canExportSubscriptions) exportOptions.push({ title: "Exportar suscripciones", handler: handleClickExport });
         if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: handleClickCancellations });
@@ -68,14 +85,6 @@ const SubscriptionsDashboard = (props) => {
         getSubscriptionList();
     }, []);
 
-    const handleClickExport = async () => {
-        const res = await exportSubscriptions();
-
-        if (!!!res || res.status !== 200) {
-            enqueueSnackbar(res.data.message, { variant: "error" });
-        }
-    };
-
     const filterSubscriptions = (subscriptions) => {
         return !!searchValue
             ? subscriptions.filter((subscription) => {
@@ -85,14 +94,6 @@ const SubscriptionsDashboard = (props) => {
                   );
               })
             : subscriptions;
-    };
-
-    const handleClickCancellations = async () => {
-        const res = await exportCancellations();
-
-        if (!!!res || res.status !== 200) {
-            enqueueSnackbar(res.data.message, { variant: "error" });
-        }
     };
 
     if (isLoading) return <></>;

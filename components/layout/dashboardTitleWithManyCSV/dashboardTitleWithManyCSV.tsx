@@ -35,8 +35,6 @@ const DashboardTitleWithManyCSV = (props: DashboardTitleWithManyCSVProps) => {
     const theme = useTheme();
     // TODO: Usar este componente en usersDashboard.jsx
 
-    console.log("A ver las porps. ", props.exports);
-
     return (
         <Grid item xs={12}>
             <Box display="flex" alignItems="center" justifyContent="space-between" width="lg" marginBottom={4}>
@@ -58,7 +56,7 @@ const DashboardTitleWithManyCSV = (props: DashboardTitleWithManyCSVProps) => {
                     )}
                     <Box display="flex" alignItems="center">
                         {props.exports.map((option, index) => (
-                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={option.handler}>
+                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={() => option.handler()}>
                                 {option.title || "Exportar CSV"}
                             </Button>
                         ))}
