@@ -22,7 +22,7 @@ const PaymentMethods = (props: PaymentMethodProps) => {
     const { userInfo } = useUserInfoStore();
 
     const canEdit = useMemo(
-        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
         [userInfo]
     );
 

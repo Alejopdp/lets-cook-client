@@ -37,6 +37,7 @@ export interface Personaldata {
     shippingAddress: ShippingAddress;
     billingData: BillingData;
     paymentMethods: PaymentMethod[];
+    friendCode: string
 }
 
 export interface Subscription {
