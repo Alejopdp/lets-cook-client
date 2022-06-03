@@ -55,7 +55,20 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         paymentOrders: PaymentOrder[];
         events: Log[];
     }>({
-        personalData: props.data.personalData || { shippingAddress: {}, billingData: {}, paymentMethods: [] },
+        personalData: props.data.personalData || {
+            shippingAddress: {},
+            billingData: {},
+            paymentMethods: [],
+            id: "",
+            email: "",
+            lastName: "",
+            friendCode: "",
+            fullName: "",
+            name: "",
+            phone1: "",
+            phone2: "",
+            preferredLanguage: "",
+        },
         // Subscriptions table
         subscriptions: props.data.subscriptions,
 

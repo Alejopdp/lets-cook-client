@@ -56,7 +56,7 @@ const DashboardTitleWithManyCSV = (props: DashboardTitleWithManyCSVProps) => {
                     )}
                     <Box display="flex" alignItems="center">
                         {props.exports.map((option, index) => (
-                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={option.handler}>
+                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={() => option.handler()}>
                                 {option.title || "Exportar CSV"}
                             </Button>
                         ))}
