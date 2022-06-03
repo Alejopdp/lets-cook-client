@@ -23,7 +23,7 @@ const personsChoiceRows: TableRow[] = [
 ];
 
 export const HomeDashboard = () => {
-    const { metrics, refreshMetrics, isLoading, fetchError } = useMetrics();
+    const { metrics, refreshMetrics, isLoading } = useMetrics();
     const [isUpdateing, setIsUpdating] = useState(false);
 
     const metricsRows: TableRow[] = useMemo(() => {
@@ -185,6 +185,7 @@ export const HomeDashboard = () => {
                 dashboardTitle="Métricas"
                 handleCreateButton={updateMetrics}
                 isButtonDisabled={isUpdateing}
+                showCreateButton={true}
             />
             {isLoading ? (
                 <CircularProgress />
