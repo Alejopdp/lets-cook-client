@@ -1,6 +1,5 @@
 import { Permission } from "helpers/types/permission";
 
-// hola
 export const getAdminOptions = (permissions: Permission[]): { icon: string; text: string; path: string }[] => {
     const options: { icon: string; text: string; path: string }[] = [];
 
