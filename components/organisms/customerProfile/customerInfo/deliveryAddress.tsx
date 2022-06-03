@@ -30,7 +30,7 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
     });
 
     const canEdit = useMemo(
-        () => Array.isArray(Permission.UPDATE_CUSTOMER) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_CUSTOMER),
         [userInfo]
     );
 

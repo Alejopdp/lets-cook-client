@@ -48,7 +48,10 @@ const CustomerCalendarTable = (props) => {
     const { enqueueSnackbar } = useSnackbar();
     const { userInfo } = useUserInfoStore();
 
-    const canEdit = useMemo(() => Array.isArray(userInfo.permissons) && userInfo.permissons.includes(Permission.UPDATE_ORDER), [userInfo]);
+    const canEdit = useMemo(
+        () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_ORDER),
+        [userInfo]
+    );
 
     const handleOpenModal = (order) => {
         setSelectedOrder(order);

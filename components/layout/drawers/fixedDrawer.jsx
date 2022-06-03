@@ -1,5 +1,5 @@
 // Utils & Config
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -34,11 +34,10 @@ const useStyles = makeStyles((theme) => ({
 const FixedDrawer = (props) => {
     const classes = useStyles();
     const routes = useRouter();
-    const [selectedIndex, setselectedIndex] = useState(0);
 
     const handleOptionClick = (path) => {
-        // history.push(path);
-        routes.push(path);
+        if (path === "/blog") window.open("https://lets-cook-blog.herokuapp.com/admin", "_blank").focus();
+        else routes.push(path);
     };
 
     return (
