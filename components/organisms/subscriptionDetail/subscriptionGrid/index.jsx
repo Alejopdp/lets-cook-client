@@ -29,6 +29,7 @@ import {
     getDataForSwappingAPlan,
     getSubscriptionById,
     swapPlan,
+    updateNextBillingDate,
 } from "helpers/serverRequests/subscription";
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
 import { useUserInfoStore } from "stores/auth";
@@ -201,8 +202,16 @@ const SubscriptionGrid = (props) => {
         setOpenEditNextChargeDateModal(false);
     };
 
-    const handleChangeNextChargeDate = (date) => {
-        setOpenEditNextChargeDateModal(false);
+    const handleChangeNextChargeDate = async (date) => {
+        const res = await updateNextBillingDate(subscription.subscriptionId, date);
+
+        if (res && res.status === 200) {
+            setReloadCounter(reloadCounter + 1);
+            setOpenEditNextChargeDateModal(false);
+            enqueueSnackbar("Próxima fecha de cobro actualizada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message ?? "Ocurrió un error al modificar la fecha de próximo cobro", { variant: "error" });
+        }
     };
 
     // Edit Restrictions Modal Functions
@@ -417,6 +426,7 @@ const SubscriptionGrid = (props) => {
                         handlePrimaryButtonClick={handleEditRestrictions}
                     />
                     <EditNextChargeDateModal
+                        actualNextBillingDate={subscription.nextBillingDate}
                         open={openEditNextChargeDateModal}
                         handleClose={handleCloseEditNextChargeDateModal}
                         handlePrimaryButtonClick={handleChangeNextChargeDate}
