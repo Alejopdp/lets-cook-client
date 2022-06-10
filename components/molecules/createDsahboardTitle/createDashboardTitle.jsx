@@ -31,7 +31,7 @@ CreateDashboardTitle.propTypes = {
     handleCreateButton: PropTypes.func.isRequired,
     createButtonText: PropTypes.string.isRequired,
     dashboardTitle: PropTypes.string.isRequired,
-    hideButton: PropTypes.bool,
+    showCreateButton: PropTypes.bool,
     isButtonDisabled: PropTypes.bool,
 };
 

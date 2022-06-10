@@ -1,5 +1,5 @@
 // Utils & Config
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // External components
 import { Container } from "@material-ui/core";
@@ -9,10 +9,12 @@ import DashboardWithBackTitle from "../../../components/layout/dashboardTitleWit
 import ShippingZoneForm from "../shippingZoneForm";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import { useRouter } from "next/router";
 
 const UpdateShippingZone = (props) => {
     const { userInfo } = useUserInfoStore();
     const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         if (!Array.isArray(userInfo.permissions)) return;

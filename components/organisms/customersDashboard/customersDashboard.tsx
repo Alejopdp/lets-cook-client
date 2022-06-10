@@ -88,7 +88,6 @@ const CustomersDashboard = () => {
     useEffect(() => {
         const getCustomers = async () => {
             const res = await getCustomerList(getFromLocalStorage("token"));
-            console.log(res);
             if (res.status === 200) {
                 setCustomers(res.data);
             } else {
