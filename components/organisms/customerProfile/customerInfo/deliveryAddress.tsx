@@ -109,6 +109,7 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
                     confirmButtonText="Modificar datos de entrega"
                     handleCancelButton={() => setDeliveryAddressModalOpen(false)}
                     handleConfirmButton={handleModifyDeliveryAddress}
+                    isConfirmButtonDisabled={undefined}
                 />
             )}
         </>
