@@ -1,7 +1,6 @@
 // Utils & Config
 import React, { useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import { updateCustomer, updateShippingAddress } from "../../../../helpers/serverRequests/customer";
+import { updateShippingAddress } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -127,5 +126,3 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
 };
 
 export default DeliveryAddress;
-
-DeliveryAddress.propTypes = {};
