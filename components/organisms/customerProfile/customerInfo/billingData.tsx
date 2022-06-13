@@ -1,9 +1,9 @@
 // Utils & Config
 import React, { useState, useMemo } from "react";
-import { updateBillingData, updateCustomer } from "../../../../helpers/serverRequests/customer";
+import { updateBillingData } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 import { BillingDataProps } from "../interface";
-
+import { OtherAddressInformation, getFormattedAddressFromGoogle } from "helpers/utils/utils";
 // External components
 import { Typography } from "@material-ui/core";
 
@@ -26,6 +26,10 @@ const BillingData = (props: BillingDataProps) => {
         identification: props.customer.personalData.billingData?.identification || "",
         latitude: props.customer.personalData.billingData?.latitude,
         longitude: props.customer.personalData.billingData?.longitude,
+        city: props.customer.personalData.billingData?.city,
+        country: props.customer.personalData.billingData?.country,
+        postalCode: props.customer.personalData.billingData?.postalCode,
+        province: props.customer.personalData.billingData?.province,
     });
     const { userInfo } = useUserInfoStore();
 
@@ -58,13 +62,18 @@ const BillingData = (props: BillingDataProps) => {
     };
 
     const handleGoogleInput = async (address) => {
-        const geometry = await getGeometry(address.description);
+        const response = await getGeometry(address.description);
+        const moreAddresInformation: OtherAddressInformation = getFormattedAddressFromGoogle(response.results[0]?.address_components);
 
         setFormData({
             ...formData,
             addressName: address.description,
-            latitude: geometry.lat,
-            longitude: geometry.lng,
+            latitude: response.results[0].geometry.location.lat,
+            longitude: response.results[0].geometry.location.lng,
+            city: moreAddresInformation.city,
+            province: moreAddresInformation.province,
+            country: moreAddresInformation.country,
+            postalCode: moreAddresInformation.postalCode,
         });
     };
 

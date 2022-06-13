@@ -16,6 +16,7 @@ import AccountData from "./accountData";
 import DeliveryData from "./deliveryData";
 import BillingData from "./billingData";
 import BackAndCreateButtons from "../../molecules/backAndCreateButtons/backAndCreateButtons";
+import { getFormattedAddressFromGoogle, OtherAddressInformation } from "helpers/utils/utils";
 
 const CreateCustomerForm = (props) => {
     const router = useRouter();
@@ -40,6 +41,14 @@ const CreateCustomerForm = (props) => {
         billingClarifications: "",
         billingName: "",
         billingPersonalIdNumber: "",
+        shippingCity: "",
+        shippingCountry: "",
+        shippingProvince: "",
+        shippingPostalCode: "",
+        billingCity: "",
+        billingCountry: "",
+        billingProvince: "",
+        billingPostalCode: "",
     });
 
     const handleChange = (e) => {
@@ -50,30 +59,39 @@ const CreateCustomerForm = (props) => {
     };
 
     const handleGoogleDeliveryInput = async (address) => {
-        const geometry = await getGeometry(address.description);
+        const response = await getGeometry(address.description);
+        const moreAddresInformation: OtherAddressInformation = getFormattedAddressFromGoogle(response.results[0]?.address_components);
 
         setFormData({
             ...formData,
             deliveryAddress: address.description,
-            latShipping: geometry.lat,
-            longShipping: geometry.lng,
+            latShipping: response.results[0].geometry.location.lat,
+            longShipping: response.results[0].geometry.location.lng,
+            shippingCity: moreAddresInformation.city,
+            shippingProvince: moreAddresInformation.province,
+            shippingCountry: moreAddresInformation.country,
+            shippingPostalCode: moreAddresInformation.postalCode,
         });
     };
 
     const handleGoogleBillingInput = async (address) => {
-        const geometry = await getGeometry(address.description);
+        const response = await getGeometry(address.description);
+        const moreAddresInformation: OtherAddressInformation = getFormattedAddressFromGoogle(response.results[0]?.address_components);
 
         setFormData({
             ...formData,
             billingAddress: address.description,
-            latBilling: geometry.lat,
-            longBilling: geometry.lng,
+            latBilling: response.results[0].geometry.location.lat,
+            longBilling: response.results[0].geometry.location.lng,
+            billingCity: moreAddresInformation.city,
+            billingProvince: moreAddresInformation.province,
+            billingCountry: moreAddresInformation.country,
+            billingPostalCode: moreAddresInformation.postalCode,
         });
     };
 
-    console.log("formdata:", formData);
-
     const handleSubmit = async () => {
+        console.log("FOrm data: ", formData);
         const res = await createCustomer(formData);
         // const res = { status: 200 };
         console.log(res);
