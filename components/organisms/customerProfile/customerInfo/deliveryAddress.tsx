@@ -1,7 +1,6 @@
 // Utils & Config
 import React, { useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import { updateCustomer, updateShippingAddress } from "../../../../helpers/serverRequests/customer";
+import { updateShippingAddress } from "../../../../helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 
 // External components
@@ -16,6 +15,7 @@ import { getGeometry } from "helpers/geocode/geocode";
 import { translateShippíngHour } from "helpers/i18n/i18n";
 import { Permission } from "helpers/types/permission";
 import { useUserInfoStore } from "stores/auth";
+import { getFormattedAddressFromGoogle, OtherAddressInformation } from "helpers/utils/utils";
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
@@ -27,6 +27,10 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
         preferredShippingHour: props.shippingAddress.preferredShippingHour || "",
         latitude: props.shippingAddress.latitude,
         longitude: props.shippingAddress.longitude,
+        city: props.shippingAddress.city,
+        country: props.shippingAddress.country,
+        province: props.shippingAddress.province,
+        postalCode: props.shippingAddress.postalCode,
     });
 
     const canEdit = useMemo(
@@ -58,13 +62,18 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
     };
 
     const handleGoogleInput = async (address) => {
-        const geometry = await getGeometry(address.description);
+        const response = await getGeometry(address.description);
+        const moreAddresInformation: OtherAddressInformation = getFormattedAddressFromGoogle(response.results[0]?.address_components);
 
         setFormData({
             ...formData,
             addressName: address.description,
-            latitude: geometry.lat,
-            longitude: geometry.lng,
+            latitude: response.results[0].geometry.location.lat,
+            longitude: response.results[0].geometry.location.lng,
+            city: moreAddresInformation.city,
+            province: moreAddresInformation.province,
+            country: moreAddresInformation.country,
+            postalCode: moreAddresInformation.postalCode,
         });
     };
 
@@ -117,5 +126,3 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
 };
 
 export default DeliveryAddress;
-
-DeliveryAddress.propTypes = {};

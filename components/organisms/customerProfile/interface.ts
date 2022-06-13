@@ -7,6 +7,10 @@ export interface ShippingAddress {
     preferredShippingHour: string;
     latitude: number;
     longitude: number;
+    country: string;
+    postalCode: string;
+    province: string;
+    city: string;
 }
 
 export interface BillingData {
@@ -16,6 +20,10 @@ export interface BillingData {
     identification: string;
     latitude: number;
     longitude: number;
+    city: string;
+    province: string;
+    postalCode: string;
+    country: string;
 }
 
 export interface PaymentMethod {
