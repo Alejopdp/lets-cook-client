@@ -19,9 +19,9 @@ export const getGeometry = async (address) => {
     // Get latitude & longitude from address.
     try {
         const response = await Geocode.fromAddress(address);
-        const location = response.results[0].geometry.location;
+        // const location = response.results[0].geometry.location;
 
-        return location;
+        return response;
     } catch (error) {
         console.log(error);
         return undefined;

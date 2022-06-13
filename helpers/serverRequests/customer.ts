@@ -163,6 +163,10 @@ export const updateShippingAddress = async (id: string, shippingAddress: Shippin
                 details: shippingAddress.addressDetails,
                 full_name: shippingAddress.addressName,
                 delivery_time: shippingAddress.preferredShippingHour,
+                city: shippingAddress.city,
+                country: shippingAddress.country,
+                province: shippingAddress.province,
+                postalCode: shippingAddress.postalCode,
             },
         });
 
