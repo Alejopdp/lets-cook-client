@@ -23,6 +23,7 @@ const LanguageButton = ({
     options = [
         { value: "es", label: "Español" },
         { value: "en", label: "English" },
+        { value: "ca", label: "Catalán" },
     ],
     selected = { value: "es", label: "Español" },
     handleSelectOption = (option) => "",

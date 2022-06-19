@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
 import { deleteRecipeVariant, updateRecipe } from "../../../../helpers/serverRequests/recipe";
 
@@ -16,28 +15,15 @@ import { Flag as FlagIcon, ArrowBack, Add as AddIcon, Delete } from "@material-u
 import FormInput from "../../../atoms/input/input";
 import Autocomplete from "../../../atoms/autocomplete/autocomplete";
 import MultiChipInput from "../../../atoms/multipleChipInput/multipleChipInput";
-import FormPaperWithImageDropzone from "../../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import ButtonDropdownMenu from "../../../molecules/buttonDropdownMenu/ButtonDropdownMenu";
 import FormPaperWithEmptyState from "../../../molecules/formPaperWithEmptyState/formPaperWithEmptyState";
 import Checkbox from "../../../atoms/checkbox/checkbox";
 import BackAndCreateButtons from "../../../molecules/backAndCreateButtons/backAndCreateButtons";
 import NutritionalInformationGrid from "../../../molecules/nutritionalInformationGrid/nutritionalInformationGrid";
-import DashboardTitle from "../../../layout/dashboardTitleWithBackButton/index";
-import Dropzone from "../../../molecules/dropzone/dropzone";
 import FIleDraggable from "components/molecules/fileDraggableDropZone/fileDraggableDropZone";
 import { getImagesFilesFromUrl } from "helpers/utils/images";
 import RecipeVariantEditor from "components/molecules/recipeForm/recipeVariantEditor";
 import DeleteRecipeVariantModal from "./deleteRecipeVariantModal";
-
-const useStyles = makeStyles((theme) => ({
-    height100: {
-        minHeight: "100%",
-    },
-    space: {
-        height: theme.spacing(2),
-    },
-}));
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const router = useRouter();
@@ -623,18 +609,4 @@ const toolsOptions = [
     "Exprimidor",
     "Rallador",
     "Minipimer",
-];
-const languages = [
-    {
-        code: "es",
-        label: "Español",
-    },
-    {
-        code: "en",
-        label: "English",
-    },
-    {
-        code: "ca",
-        label: "Catalan",
-    },
 ];

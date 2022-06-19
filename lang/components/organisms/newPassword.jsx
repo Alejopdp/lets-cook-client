@@ -25,4 +25,17 @@ export const newPassword = {
             login: "Volver a Iniciar sesión",
         },
     },
+    ca: {
+        title: "Ingresar contraseña",
+        form: {
+            passwordPlaceholder: "Nueva contraseña",
+            button: "INGRESAR CONTRASEÑA",
+            passwordRules: "La contraseña deberá tener al menos 8 caracteres en total, una mayúscula y al menos 1 número.",
+        },
+        success: {
+            title: "Nueva contraseña generada correctamente",
+            // text: "Hemos enviado un email al correo electrónico ingresado para que puedas ingresar tu nueva contraseña.",
+            login: "Volver a Iniciar sesión",
+        },
+    },
 };
