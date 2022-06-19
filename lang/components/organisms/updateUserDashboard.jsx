@@ -7,4 +7,8 @@ export const updateUserDashboard = {
         dashboardTitle: "Modificar usuario",
         buttonText: "MODIFICAR USUARIO",
     },
+    ca: {
+        dashboardTitle: "Modificar usuario",
+        buttonText: "MODIFICAR USUARIO",
+    },
 };

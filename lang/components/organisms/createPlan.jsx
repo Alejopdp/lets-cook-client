@@ -5,4 +5,7 @@ export const createPlan = {
     es: {
         title: "Crear plan",
     },
+    ca: {
+        title: "Crear plan",
+    },
 };
