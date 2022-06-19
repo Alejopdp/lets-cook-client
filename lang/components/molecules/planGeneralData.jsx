@@ -13,4 +13,12 @@ export const planGeneralData = {
         planDescription: "Descripción",
         planSku: "SKU",
     },
+
+    ca: {
+        paperTitle: "Datos generales",
+        filesTitle: "Imagen",
+        planName: "Nombre del plan",
+        planDescription: "Descripción",
+        planSku: "SKU",
+    },
 };

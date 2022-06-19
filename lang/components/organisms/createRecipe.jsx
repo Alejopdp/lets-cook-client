@@ -5,4 +5,7 @@ export const createRecipe = {
     es: {
         title: "Crear receta",
     },
+    ca: {
+        title: "Crear receta",
+    },
 };

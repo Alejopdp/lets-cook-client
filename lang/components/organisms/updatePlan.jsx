@@ -5,4 +5,8 @@ export const updatePlan = {
     es: {
         title: "Modificar plan",
     },
+
+    ca: {
+        title: "Modificar plan",
+    },
 };

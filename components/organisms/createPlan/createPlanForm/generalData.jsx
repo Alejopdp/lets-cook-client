@@ -9,7 +9,6 @@ const langs = require("../../../../lang").planGeneralData;
 import Grid from "@material-ui/core/Grid";
 
 // Internal components
-import FormPaperWithDropzone from "../../../molecules/formPaperWithImageDropzone/formPaperWithImageDropzone";
 import FormInput from "../../../atoms/input/input";
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
 import Dropzone from "../../../molecules/dropzone/dropzone";
@@ -21,13 +20,18 @@ const GeneralData = (props) => {
 
     return (
         <Grid item xs={12}>
-            <PaperWithTitleContainer title={lang.paperTitle} fullWidth={true} >
+            <PaperWithTitleContainer title={lang.paperTitle} fullWidth={true}>
                 <FormInput label={lang.planName} name="name" value={props.data.name} handleChange={props.handleChange} />
                 <FormInput label="SKU" name="sku" value={props.data.sku} handleChange={props.handleChange} />
-                <FormInput label={lang.planDescription} name="description" value={props.data.description} handleChange={props.handleChange} />
-                <FormInput label='Slug' name="slug" value={props.data.slug} handleChange={props.handleChange} />
+                <FormInput
+                    label={lang.planDescription}
+                    name="description"
+                    value={props.data.description}
+                    handleChange={props.handleChange}
+                />
+                <FormInput label="Slug" name="slug" value={props.data.slug} handleChange={props.handleChange} />
                 <Dropzone
-                    title='Imagen de fondo'
+                    title="Imagen de fondo"
                     handleDropFile={props.handleDropFileImage}
                     maxFiles={1}
                     files={props.data.image}
@@ -36,7 +40,7 @@ const GeneralData = (props) => {
                 <Grid container spacing={2} style={{ marginTop: theme.spacing(2) }}>
                     <Grid item xs={6}>
                         <Dropzone
-                            title='Ícono en color'
+                            title="Ícono en color"
                             handleDropFile={props.handleDropFileIconColor}
                             maxFiles={1}
                             files={props.data.iconColor}
@@ -45,7 +49,7 @@ const GeneralData = (props) => {
                     </Grid>
                     <Grid item xs={6}>
                         <Dropzone
-                            title='Ícono en blanco y negro'
+                            title="Ícono en blanco y negro"
                             handleDropFile={props.handleDropFileIconByg}
                             maxFiles={1}
                             files={props.data.iconByg}

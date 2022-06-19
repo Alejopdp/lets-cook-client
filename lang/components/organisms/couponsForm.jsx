@@ -25,4 +25,17 @@ export const couponsForm = {
         appliyTo: "Aplica a",
         apply_to_type: ["Todos los productos", "Productos específicos"],
     },
+    ca: {
+        title: "Cupones",
+        discountCode: "Código de decuento",
+        discountType: "Tipo de descuento",
+        discount_type: ["Precio fijo", "Porcentaje", "Envío gratis"],
+        value: "Valor",
+        minimumRequirement: "Requerimientos mínimos",
+        minimum_requirement_type: ["Ninguno", "Monto minimo de compra"],
+        minimumRequirementMessage:
+            "Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero, y luego se validará el importe mínimo.",
+        appliyTo: "Aplica a",
+        apply_to_type: ["Todos los productos", "Productos específicos"],
+    },
 };

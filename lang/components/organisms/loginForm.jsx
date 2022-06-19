@@ -13,4 +13,11 @@ export const loginForm = {
         passwordPlaceholder: "Contraseña",
         forgotPassword: "Olvidé mi contraseña",
     },
+    ca: {
+        title: "Iniciar sesión",
+        button: "INGRESAR",
+        emailPlaceholder: "Correo electrónico",
+        passwordPlaceholder: "Contraseña",
+        forgotPassword: "Olvidé mi contraseña",
+    },
 };

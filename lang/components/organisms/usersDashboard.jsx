@@ -19,4 +19,14 @@ export const usersDashboard = {
             confirmButton: "ELIMINAR USUARIO",
         },
     },
+    ca: {
+        title: "Gestión de usuarios",
+        button: "CREAR USUARIO",
+        deleteModal: {
+            title: "Eliminar usuario",
+            text: "¿Estás seguro de que quieres eliminar este usuario?",
+            cancelButton: "VOLVER",
+            confirmButton: "ELIMINAR USUARIO",
+        },
+    },
 };
