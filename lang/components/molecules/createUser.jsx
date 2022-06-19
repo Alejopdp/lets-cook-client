@@ -17,4 +17,13 @@ export const createUser = {
         role: "Rol",
         buttonText: "CREAR USUARIO",
     },
+    ca: {
+        dashboardTitle: "Crear usuario",
+        title: "Datos del usuario",
+        firstNamePlaceholder: "Nombre",
+        lastNamePlaceholder: "Apellido",
+        emailPlaceholder: "Correo electrónico",
+        role: "Rol",
+        buttonText: "CREAR USUARIO",
+    },
 };

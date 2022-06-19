@@ -15,4 +15,12 @@ export const attributesAndVariants = {
         variantsEmptyText: "Las variaciones se generaran al agregarse atributos",
         option: "Opción",
     },
+    ca: {
+        attributesPaperTitle: "Atributos",
+        addAttributeButton: "AGREGAR ATRIBUTO",
+        attributesEmptyText: "Aún no se han agregado atributos",
+        variantsPaperTitle: "Variantes",
+        variantsEmptyText: "Las variaciones se generaran al agregarse atributos",
+        option: "Opción",
+    },
 };

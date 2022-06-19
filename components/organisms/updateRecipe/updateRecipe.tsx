@@ -1,14 +1,9 @@
 // Utils & config
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-
-// External components
-import Container from "@material-ui/core/Container";
 
 // Internal components
 import UpdateRecipeForm from "./updateRecipeForm/updateRecipeForm";
-import DashboardTitle from "../../layout/dashboardTitleWithBackButton";
 import DashboardTitleWithBackButtonAndLanguageSelector from "../../layout/dashboardTitleWithBackButtonAndLanguageSelector";
 import { getRecipeById, getRecipeFormData } from "helpers/serverRequests/recipe";
 import { useSnackbar } from "notistack";
@@ -65,7 +60,6 @@ const UpdateRecipe = (props) => {
     }, [router.locale]);
 
     const handleChangeLanguage = (language) => {
-        console.log("Changing to: ", language);
         router.replace({ pathname: router.pathname, query: router.query }, router.asPath, { locale: language.value });
     };
 

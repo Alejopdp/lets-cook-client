@@ -33,4 +33,21 @@ export const planDashboard = {
             text: "¿Estás seguro que quieres cambiar el estado de este plan?",
         },
     },
+    ca: {
+        dashboardTitle: "Planes",
+        createButton: "CREAR PLAN",
+        emptyText: "Aún no se crearon planes",
+        deleteModal: {
+            cancelButton: "VOLVER",
+            confirmButton: "ELIMINAR PLAN",
+            title: "Eliminar plan",
+            text: "¿Estás seguro que quieres eliminar este plan?",
+        },
+        toggleStateModal: {
+            cancelButton: "VOLVER",
+            confirmButton: "CAMBIAR ESTADO",
+            title: "Cambiar estado",
+            text: "¿Estás seguro que quieres cambiar el estado de este plan?",
+        },
+    },
 };

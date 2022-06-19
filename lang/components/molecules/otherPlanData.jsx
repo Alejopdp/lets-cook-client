@@ -17,4 +17,13 @@ export const otherPlanData = {
         hasRecipesText: "El plan tendrá recetas asociadas",
         additionaPlansEmpty: "Aún no se han creado planes adicionales",
     },
+    ca: {
+        stateTitle: "Estado",
+        typeTitle: "TIpo de plan",
+        frequencyTitle: "Frecuencia",
+        recipesTitle: "Recetas",
+        additionalPlansTitle: "Planes adicionales",
+        hasRecipesText: "El plan tendrá recetas asociadas",
+        additionaPlansEmpty: "Aún no se han creado planes adicionales",
+    },
 };

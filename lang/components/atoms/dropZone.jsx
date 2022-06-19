@@ -5,4 +5,7 @@ export const dropZone = {
     es: {
         label: "Arrastra una imagen aquí o clickea",
     },
+    ca: {
+        label: "Arrastra una imagen aquí o clickea",
+    },
 };
