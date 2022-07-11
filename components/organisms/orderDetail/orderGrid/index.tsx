@@ -37,12 +37,13 @@ const OrderGrid = (props) => {
     const [openEditRecipesModal, setOpenEditRecipesModal] = useState(false);
     const [openCancelOrderModal, setOpenCancelOrderModal] = useState(false);
     const [openSkipWeekModal, setOpenSkipWeekModal] = useState(false);
-    const [recipesSelection, setRecipesSelection] = useState<[{ recipeId: string; quantity: number; recipeVariant: string; name: string }]>(
+    const [recipesSelection, setRecipesSelection] = useState<{ recipeId: string; quantity: number; recipeVariant: string; name: string }[]>(
         []
     );
     const [openMoveOrderShippingDateModal, setOpenMoveOrderShippingDateModal] = useState(false);
     const { userInfo } = useUserInfoStore();
     const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+    const [isSkippingWeek, setIsSkippingWeek] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(userInfo.permissions)) return;
@@ -120,6 +121,7 @@ const OrderGrid = (props) => {
     };
 
     const handleSkipWeek = async () => {
+        setIsSkippingWeek(true);
         const res = await skipOrReactivateOrder(props.order);
 
         if (res.status === 200) {
@@ -134,6 +136,7 @@ const OrderGrid = (props) => {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
         setOpenSkipWeekModal(false);
+        setIsSkippingWeek(false);
     };
 
     // Cancel Order Modal Functions
@@ -253,6 +256,7 @@ const OrderGrid = (props) => {
                 handleClose={handleCloseSkipWeekModal}
                 handlePrimaryButtonClick={handleSkipWeek}
                 isOrderSkipped={props.order.isSkipped}
+                isSubmitting={isSkippingWeek}
             />
             <EditRecipesModal
                 open={openEditRecipesModal}

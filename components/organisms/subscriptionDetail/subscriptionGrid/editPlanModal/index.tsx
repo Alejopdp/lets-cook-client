@@ -10,12 +10,23 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import TextField from "@material-ui/core/TextField";
 import DataDisplay from "../../../../molecules/dataDisplay/dataDisplay";
+import { Plan, PlanVariant } from "types/plan/plan";
+import { Subscription } from "components/organisms/customerProfile/interface";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
         width: "100%",
     },
 }));
+
+interface EditPlanModalProps {
+    open: boolean
+    isSubmitting: boolean
+    subscription: Subscription
+    swapPlanData: {variants: PlanVariant[], plans: Plan[]}
+    handleClose: () => void
+    handlePrimaryButtonClick: (planId: string, planVariantId: string) => void
+}
 
 const EditPlanModal = (props) => {
     const theme = useTheme();
@@ -56,11 +67,7 @@ const EditPlanModal = (props) => {
     };
 
     const handleDisabled = () => {
-        if (planSelected.planVariantId == "") {
-            return true;
-        } else {
-            return false;
-        }
+        return !planSelected.planVariantId || props.isSubmitting
     };
 
     return (
@@ -70,7 +77,6 @@ const EditPlanModal = (props) => {
             handlePrimaryButtonClick={handleSubmitEditPlan}
             title="Modificar plan contratado"
             primaryButtonText="Modificar plan"
-            // primaryButtonColor='#FC1919'
             secondaryButtonText="cerrar"
             fullScreen
             disabled={handleDisabled()}
