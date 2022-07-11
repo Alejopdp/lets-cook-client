@@ -47,6 +47,7 @@ const CustomerCalendarTable = (props) => {
     const [isToggleStateModalOpen, setToggleStateModalOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { userInfo } = useUserInfoStore();
+    const [isSkippingWeek, setIsSkippingWeek] = useState(false);
 
     const canEdit = useMemo(
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.UPDATE_ORDER),
@@ -59,6 +60,7 @@ const CustomerCalendarTable = (props) => {
     };
 
     const handleSkipWeek = async () => {
+        setIsSkippingWeek(true);
         const res = await skipOrReactivateOrder(selectedOrder);
 
         if (res.status === 200) {
@@ -77,6 +79,7 @@ const CustomerCalendarTable = (props) => {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
         setToggleStateModalOpen(false);
+        setIsSkippingWeek(false);
     };
 
     return (
@@ -186,6 +189,7 @@ const CustomerCalendarTable = (props) => {
                     open={isToggleStateModalOpen}
                     handleCancelButton={() => setToggleStateModalOpen(false)}
                     handleConfirmButton={handleSkipWeek}
+                    isSubmitting={isSkippingWeek}
                 />
             )}
         </>

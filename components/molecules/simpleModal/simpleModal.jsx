@@ -1,13 +1,5 @@
-import PropTypes from 'prop-types';
-import {
-    Button,
-    makeStyles,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-} from "@material-ui/core";
+import PropTypes from "prop-types";
+import { Button, makeStyles, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     dangerColor: {
@@ -35,6 +27,7 @@ const SimpleModal = ({
     handleCancelButton = () => {},
     open,
     handleClose = () => {},
+    isSubmitting,
 }) => {
     const classes = useStyles();
 
@@ -43,22 +36,20 @@ const SimpleModal = ({
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 {paragraphs.map((paragraph, index) => (
-                    <DialogContentText key={index}>
-                        {paragraph}
-                    </DialogContentText>
+                    <DialogContentText key={index}>{paragraph}</DialogContentText>
                 ))}
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancelButton} color="default" autoFocus>
                     {cancelButtonText}
                 </Button>
-                <Button onClick={handleConfirmButton} className={classes.dangerColor}>
+                <Button onClick={handleConfirmButton} className={classes.dangerColor} disabled={!!isSubmitting}>
                     {confirmButtonText}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 SimpleModal.propTypes = {
     title: PropTypes.string,
@@ -69,6 +60,7 @@ SimpleModal.propTypes = {
     handleCancelButton: PropTypes.func,
     open: PropTypes.bool,
     handleClose: PropTypes.func,
+    isSubmitting: PropTypes.bool,
 };
 
 export default SimpleModal;

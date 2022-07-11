@@ -33,13 +33,14 @@ import {
 import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptionModal";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import { Subscription } from "components/organisms/customerProfile/interface";
 
 const SubscriptionGrid = (props) => {
     const router = useRouter();
     const theme = useTheme();
     const [isLoading, setIsLoading] = useState(true);
     const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-    const [subscription, setsubscription] = useState({});
+    const [subscription, setsubscription] = useState<any>();
     const [openDeleteSubscriptionModal, setOpenDeleteSubscriptionModal] = useState(false);
     const [openCancelSubscriptionModal, setOpenCancelSubscriptionModal] = useState(false);
     const [openEditPlanModal, setOpenEditPlanModal] = useState(false);
@@ -53,6 +54,7 @@ const SubscriptionGrid = (props) => {
     const { enqueueSnackbar } = useSnackbar();
     const { userInfo } = useUserInfoStore();
     const [isValidatingPermission, setIsValidatingPermission] = useState(true);
+    const [isSwappingPlan, setIsSwappingPlan] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(userInfo.permissions)) return;
@@ -149,6 +151,7 @@ const SubscriptionGrid = (props) => {
     };
 
     const handleEditPlan = async (newPlanId, newPlanVariantId) => {
+        setIsSwappingPlan(true);
         const res = await swapPlan(subscription.subscriptionId, newPlanId, newPlanVariantId);
 
         if (res && res.status === 200) {
@@ -159,6 +162,8 @@ const SubscriptionGrid = (props) => {
             setOpenEditPlanModal(false);
             enqueueSnackbar(res && res.data ? res.data.message : "Ocurrió un error inesperado, intenta nuevamente", { variant: "error" });
         }
+
+        setIsSwappingPlan(false);
     };
 
     // Edit Plan Variant Modal Functions
@@ -262,7 +267,7 @@ const SubscriptionGrid = (props) => {
 
     return (
         <>
-            {!isLoading && (
+            {!isLoading && subscription && (
                 <>
                     <Grid item xs={12} md={8}>
                         <PaperWithTitleContainer fullWidth={true} title="Información general">
@@ -411,6 +416,7 @@ const SubscriptionGrid = (props) => {
                             handlePrimaryButtonClick={handleEditPlan}
                             subscription={subscription}
                             swapPlanData={swapPlanData}
+                            isSubmitting={isSwappingPlan}
                         />
                     )}
                     {/* <EditPlanVariantModal
