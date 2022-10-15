@@ -453,7 +453,7 @@ const UpdatePlanForm = (props) => {
                                 type: "boolean",
                                 renderCell: (params) => (
                                     <EnabledOrDisabledIconButton
-                                        enabled={getVariantByRowId(params.id).isDeleted}
+                                        enabled={getVariantByRowId(params.id)?.isDeleted ?? false}
                                         onClick={(e) => handleVariantsEdit(params, e)}
                                     />
                                 ),
