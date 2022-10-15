@@ -1,7 +1,6 @@
 // Utils & Config
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
 
 // External components
 import Input from "../../../atoms/input/input";
@@ -12,7 +11,6 @@ import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import { Typography } from "@material-ui/core";
 import { translateFrequency } from "helpers/i18n/i18n";
-import { PlanType, PlanVariant } from "types/plan/plan";
 
 const useStyles = makeStyles((theme) => ({
     selectField: {
@@ -49,11 +47,10 @@ const AddPlanModal = (props) => {
             </FormControl>
 
             <FormControl className={selectField} variant="outlined">
-                {/* <InputLabel>Cupón</InputLabel> */}
                 <Input handleChange={props.handleCouponChange} helperText="" label="Cupón" name="coupon" value={props.coupon} />
             </FormControl>
 
-            {!!props.selectedPlan && !!props.selectedPlan.id && props.selectedPlan.type !== PlanType.Principal && (
+            {!!props.selectedPlan && !!props.selectedPlan.id && (
                 <FormControl className={selectField} variant="outlined">
                     <InputLabel>Frecuencia</InputLabel>
                     <Select value={props.selectedFrequency} onChange={props.handleChangeFrequency} label="Frecuencia">
