@@ -34,6 +34,7 @@ import DeleteSubscriptionModal from "./deleteSubscriptionModal/deleteSubscriptio
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
 import { Subscription } from "components/organisms/customerProfile/interface";
+import { SubscriptionState } from "helpers/types/subscriptionState";
 
 const SubscriptionGrid = (props) => {
     const router = useRouter();
@@ -127,7 +128,7 @@ const SubscriptionGrid = (props) => {
 
         if (res && res.status === 200) {
             enqueueSnackbar("Suscripción cancelada correctamente", { variant: "success" });
-            props.setsubscription({ ...subscription, state: "SUBSCRIPTION_CANCELLED" });
+            props.setsubscription({ ...subscription, state: SubscriptionState.SUBSCRIPTION_CANCELLED });
             setOpenCancelSubscriptionModal(false);
             setReloadCounter(reloadCounter + 1);
         } else {
@@ -339,7 +340,7 @@ const SubscriptionGrid = (props) => {
                                     <AmountDetails data={subscription.amountDetails} />
                                 </PaperWithTitleContainer>
                             </Grid>
-                            {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                            {subscription.state !== SubscriptionState.SUBSCRIPTION_CANCELLED && (
                                 <Grid item xs={12}>
                                     <PaperWithTitleContainer fullWidth={true} title="Cupón de descuento">
                                         {!!subscription.coupon?.id && (
@@ -372,7 +373,7 @@ const SubscriptionGrid = (props) => {
                             {canEditSubscription && (
                                 <Grid item xs={12}>
                                     <PaperWithTitleContainer fullWidth={true} title="Acciones generales">
-                                        {subscription.state !== "SUBSCRIPTION_CANCELLED" && (
+                                        {subscription.state !== SubscriptionState.SUBSCRIPTION_CANCELLED && (
                                             <div>
                                                 <Button
                                                     size="medium"
@@ -383,7 +384,7 @@ const SubscriptionGrid = (props) => {
                                                 </Button>
                                             </div>
                                         )}
-                                        {subscription.state === "SUBSCRIPTION_CANCELLED" && (
+                                        {subscription.state === SubscriptionState.SUBSCRIPTION_CANCELLED && (
                                             <div>
                                                 <Button
                                                     size="medium"
