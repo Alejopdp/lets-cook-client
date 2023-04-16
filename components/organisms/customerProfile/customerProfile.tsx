@@ -2,11 +2,9 @@
 import React, { useState } from "react";
 import useStyles from "./styles";
 import clsx from "clsx";
-import PropTypes from "prop-types";
 import { CustomerProfileProps, Subscription, Order, PaymentOrder, Personaldata } from "./interface";
 
 // External components
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -18,7 +16,7 @@ import CustomerCalendarTable from "./customerCalendarTable";
 import CustomerPurchaseHistoryTable from "./customerPurchaseHistoryTable";
 import CustomerInfo from "./customerInfo/customerInfo";
 import CustomerEvents from "./customerEvents";
-import { updateCustomer, updateCustomerPersonalData } from "helpers/serverRequests/customer";
+import {  updateCustomerPersonalData } from "helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
 import { Log } from "helpers/types/log";
 

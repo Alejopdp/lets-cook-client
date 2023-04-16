@@ -24,6 +24,7 @@ import FIleDraggable from "components/molecules/fileDraggableDropZone/fileDragga
 import { getImagesFilesFromUrl } from "helpers/utils/images";
 import RecipeVariantEditor from "components/molecules/recipeForm/recipeVariantEditor";
 import DeleteRecipeVariantModal from "./deleteRecipeVariantModal";
+import { toolsOptions } from "components/molecules/recipeForm/recipeForm";
 
 const RecipeForm = ({ formData, recipeData, handleClickGoBack }) => {
     const router = useRouter();
@@ -610,16 +611,4 @@ RecipeForm.propTypes = {
 export default RecipeForm;
 
 const difficultyLevelOptions = ["Facil", "Media", "Dificil"];
-const toolsOptions = [
-    "Cuchillo",
-    "Tabla de cortar",
-    "Olla",
-    "Sartén",
-    "Wok",
-    "Bol",
-    "Recipiente de horno",
-    "Bandeja de horno",
-    "Exprimidor",
-    "Rallador",
-    "Minipimer",
-];
+
