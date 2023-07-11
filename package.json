@@ -33,7 +33,7 @@
     "react-geocode": "^0.2.3",
     "react-sortable-hoc": "^2.0.0",
     "uuid": "^3.4.0",
-    "zustand": "^3.4.1"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",

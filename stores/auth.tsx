@@ -1,5 +1,5 @@
 import { Permission } from "helpers/types/permission";
-import create from "zustand";
+import {StoreApi, UseBoundStore, create} from "zustand";
 
 export const useAuthStore = create((set) => ({
     isAuthenticated: false,
@@ -17,7 +17,7 @@ export interface IUserInfoStore {
     };
 }
 
-export const useUserInfoStore: IUserInfoStore = create((set) => ({
+export const useUserInfoStore: UseBoundStore<StoreApi<IUserInfoStore>> = create((set) => ({
     userInfo: {
         fullName: "",
         firstName: "",
