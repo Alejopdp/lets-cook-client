@@ -1,6 +1,5 @@
 // Utils & Config
 import React, { useState, useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { exportSubscriptions, getSubscriptions, exportCancellations } from "../../../helpers/serverRequests/subscription";
 import { useSnackbar } from "notistack";
@@ -9,16 +8,17 @@ import { useSnackbar } from "notistack";
 import { Box, Grid } from "@material-ui/core";
 
 // Internal components
-import DashboardTitleWithCSV from "../../layout/dashboardTitleWithCSV/dashboardTitleWithCSV";
 import SubscriptionTable from "./subscriptionTable";
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
-import DashboardTitleWithManyCSV from "components/layout/dashboardTitleWithManyCSV/dashboardTitleWithManyCSV";
+import SubscriptionDashboardExports from "components/layout/SubscriptionDashboardExports";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
 
 const SubscriptionsDashboard = (props) => {
     const [subscriptions, setsubscriptions] = useState([]);
     const [searchValue, setSearchValue] = useState("");
+    const [isExportingSubscriptions, setIsExportingSubscriptions] = useState(false);
+    const [isExportingCancellations, setIsExportingCancellations] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { userInfo } = useUserInfoStore();
     const [isLoading, setIsLoading] = useState(true);
@@ -45,31 +45,33 @@ const SubscriptionsDashboard = (props) => {
         [userInfo]
     );
     const handleClickExport = async () => {
+        setIsExportingSubscriptions(true);
         const res = await exportSubscriptions();
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
+        setIsExportingSubscriptions(false);
     };
 
     const handleClickCancellations = async () => {
+        setIsExportingCancellations(true);
         const res = await exportCancellations();
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(res.data.message, { variant: "error" });
         }
+        setIsExportingCancellations(false);
     };
 
     const exportOptions = useMemo(() => {
         const exportOptions = [];
 
-        console.log("Can export subscriptions: ", canExportSubscriptions);
-
-        if (canExportSubscriptions) exportOptions.push({ title: "Exportar suscripciones", handler: handleClickExport });
-        if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: handleClickCancellations });
+        if (canExportSubscriptions) exportOptions.push({ title: "Exportar suscripciones", handler: handleClickExport, isSubmitting: isExportingSubscriptions });
+        if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: handleClickCancellations, isSubmitting: isExportingCancellations });
 
         return exportOptions;
-    }, [canExportCancellations, canExportSubscriptions]);
+    }, [canExportCancellations, canExportSubscriptions, isExportingCancellations, isExportingSubscriptions]);
 
     useEffect(() => {
         const getSubscriptionList = async () => {
@@ -99,7 +101,7 @@ const SubscriptionsDashboard = (props) => {
     if (isLoading) return <></>;
     return (
         <>
-            <DashboardTitleWithManyCSV
+            <SubscriptionDashboardExports
                 title="Suscripciones"
                 exports={exportOptions}
                 import={false}
@@ -120,5 +122,3 @@ const SubscriptionsDashboard = (props) => {
 };
 
 export default SubscriptionsDashboard;
-
-SubscriptionsDashboard.propTypes = {};

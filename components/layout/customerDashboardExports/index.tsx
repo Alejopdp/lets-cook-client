@@ -1,14 +1,12 @@
 // Utils & config
 import React from "react";
-import PropTypes from "prop-types";
-import { useTheme } from "@material-ui/core";
+import { CircularProgress, useTheme } from "@material-ui/core";
 
 // External components
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 
 // Internal components
 import CustomButton from "../../atoms/button/button";
@@ -21,23 +19,20 @@ import AddIcon from "@material-ui/icons/Add";
 interface ExportOption {
     title: string;
     handler: () => void;
+    isSubmitting: boolean;
 }
 
-interface DashboardTitleWithButtonAndManyCSVProps {
+interface CustomerDashboardExportsProps {
     title: string;
     import: boolean;
     exports: ExportOption[];
-    importText?: string;
-    handleClickImport: (e: any) => void;
-    importFile: any;
     buttonText: string;
     handleClick: () => void;
     showCreateButton: boolean;
 }
 
-const DashboardTitleWithButtonAndManyCSV = (props: DashboardTitleWithButtonAndManyCSVProps) => {
+const CustomerDashboardExports = (props: CustomerDashboardExportsProps) => {
     const theme = useTheme();
-    // TODO: Usar este componente en usersDashboard.jsx
 
     return (
         <Grid item xs={12}>
@@ -46,23 +41,12 @@ const DashboardTitleWithButtonAndManyCSV = (props: DashboardTitleWithButtonAndMa
                     {props.title}
                 </Typography>
                 <div>
-                    {props.import && (
-                        <Button
-                            size="large"
-                            startIcon={<PublishIcon />}
-                            // onClick={props.handleClickImport}
-                            style={{ marginRight: theme.spacing(2) }}
-                            component="label"
-                        >
-                            {props.importText || "Importar CSV"}
-                            <input type="file" hidden onChange={props.handleClickImport} value={props.importFile} />
-                        </Button>
-                    )}
                     <Box display="flex" alignItems="center">
                         {props.exports.map((option, index) => (
-                            <Button key={index} size="large" startIcon={<GetAppIcon />} onClick={option.handler}>
+                            <Box key={index} maxWidth={250} minWidth={220} display={"flex"} justifyContent={"center"} alignContent={"center"} marginX={1}> {option.isSubmitting ? <CircularProgress />:  <Button fullWidth size="large" startIcon={<GetAppIcon />} onClick={option.handler}>
                                 {option.title || "Exportar CSV"}
-                            </Button>
+                            </Button>}
+                            </Box>
                         ))}
                         {props.showCreateButton && (
                             <CustomButton onClick={props.handleClick} startIcon={<AddIcon />}>
@@ -76,4 +60,4 @@ const DashboardTitleWithButtonAndManyCSV = (props: DashboardTitleWithButtonAndMa
     );
 };
 
-export default DashboardTitleWithButtonAndManyCSV;
+export default CustomerDashboardExports;
