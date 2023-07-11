@@ -12,7 +12,7 @@ import Box from "@material-ui/core/Box";
 // Internal components
 import SearchInputField from "../../molecules/searchInputField/searchInputField";
 import CustomersTable from "./customersTable/customersTable";
-import DashboardTitleWithButtonAndManyCSV from "components/layout/dashboardTitleWithButtonAndManyCSV";
+import CustomerDashboardExports from "components/layout/customerDashboardExports";
 import useLocalStorage from "hooks/useLocalStorage/localStorage";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
@@ -31,6 +31,7 @@ const CustomersDashboard = () => {
     const [isErrorModalOpen, setErrorModalOpen] = useState(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [isExportingActions, setIsExportingActions] = useState(false);
+    const [isExportingCustomers, setIsExportingCustomers] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { getFromLocalStorage } = useLocalStorage();
     const { userInfo } = useUserInfoStore();
@@ -58,28 +59,32 @@ const CustomersDashboard = () => {
     );
 
     const handleClickExport = async () => {
+        setIsExportingCustomers(true);
         const res = await exportCustomers();
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
+        setIsExportingCustomers(false);
     };
 
     const handleClickExportActions = async (startDate: Date, endDate: Date) => {
+        setIsExportingActions(true)
         const res = await exportAllCustomersActions(startDate, endDate);
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
         }
+        setIsExportingActions(false)
     };
     const exportOptions = useMemo(() => {
         const exportActions = [];
 
-        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport });
-        if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: () => setIsExportModalOpen(true) });
+        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport, isSubmitting: isExportingCustomers });
+        if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: () => setIsExportModalOpen(true), isSubmitting: isExportingActions });
 
         return exportActions;
-    }, [canExportCustomers, canExportCustomersActions]);
+    }, [canExportCustomers, canExportCustomersActions, isExportingCustomers, isExportingActions]);
 
     const handleCreateCustomer = () => {
         router.push("/gestion-de-clientes/crear");
@@ -137,7 +142,7 @@ const CustomersDashboard = () => {
     if (isValidatingPermission) return <></>;
     return (
         <>
-            <DashboardTitleWithButtonAndManyCSV
+            <CustomerDashboardExports
                 buttonText="CREAR CLIENTE"
                 exports={exportOptions}
                 handleClick={handleCreateCustomer}
