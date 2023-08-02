@@ -617,7 +617,7 @@ RecipeForm.propTypes = {
 export default RecipeForm;
 
 const difficultyLevelOptions = ["Facil", "Media", "Dificil"];
-export const toolsOptions = ["Batidora",
+export const toolsOptions = ["Bandeja de horno", "Batidora",
 "Batidora (opcional)",
 "Batidora o minipimer",
 "Bol",
