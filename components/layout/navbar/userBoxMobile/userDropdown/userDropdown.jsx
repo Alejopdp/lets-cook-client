@@ -21,7 +21,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Group from "@material-ui/icons/Group";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import useLocalStorage from "../../../../../hooks/useLocalStorage/localStorage";
-import usePersistToken from "../../../../../hooks/usePersistToken/usePersistToken";
 import { useUserInfoStore } from "../../../../../stores/auth.tsx";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,12 +33,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserDropdown = (props) => {
-    const classes = useStyles();
     const [open, setOpen] = useState(false);
     const anchorRef = useRef(null);
     const router = useRouter();
     const { resetLocalStorage } = useLocalStorage();
-    const [persistToken] = usePersistToken();
     const userInfo = useUserInfoStore((state) => state.userInfo);
 
     // return focus to the button when we transitioned from !open -> open

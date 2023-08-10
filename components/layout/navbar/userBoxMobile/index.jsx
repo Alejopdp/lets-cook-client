@@ -1,7 +1,5 @@
 // Utils & config
 import React from "react";
-import PropTypes from "prop-types";
-import { useTheme } from "@material-ui/core";
 import { useUserInfoStore } from "../../../../stores/auth.tsx";
 
 // External components
@@ -11,8 +9,7 @@ import Avatar from "@material-ui/core/Avatar";
 // Internal components
 import UserDropdown from "./userDropdown/userDropdown";
 
-const UserBoxMobile = (props) => {
-    const theme = useTheme();
+const UserBoxMobile = () => {
     const userInfo = useUserInfoStore((state) => state.userInfo);
 
     return (
@@ -22,7 +19,5 @@ const UserBoxMobile = (props) => {
         </Box>
     );
 };
-
-UserBoxMobile.propTypes = {};
 
 export default UserBoxMobile;

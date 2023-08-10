@@ -20,6 +20,7 @@ import RecipeFiltersAndSort from "./recipeFiltersAndSort";
 import CreateDashboardTitle from "../../molecules/createDsahboardTitle/createDashboardTitle";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import CreateDashboardTitleWithExport from "./createDashboardTitleWithExport";
 
 export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filterList = [], hasError: hasRequestError, token }) => {
     const _sortOptions = [
@@ -296,7 +297,7 @@ export const RecipesDashboard = ({ recipesList: responseRecipesList = [], filter
     return (
         <>
             {/* RECIPES TITLE */}
-            <CreateDashboardTitle
+            <CreateDashboardTitleWithExport
                 createButtonText="CREAR RECETA"
                 dashboardTitle="Recetas"
                 handleCreateButton={_handleCreateReceipe}

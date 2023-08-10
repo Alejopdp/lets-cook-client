@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
+import FileDownload from "js-file-download";
 
 const { getFromLocalStorage } = useLocalStorage();
 
@@ -173,3 +174,20 @@ export const deleteRecipeVariant = async (recipeVariantSku) => {
         return error.response;
     }
 };
+
+export const exportRecipesRatings = async () => {
+    try {
+        const res = await axios({
+            method: "GET",
+            url: `${apiUrl}/export-ratings`,
+            headers: { authorization: getFromLocalStorage("token") },
+            responseType: "blob",
+        })
+
+        FileDownload(res.data, "Valoración de recetas.xlsx");
+        return res
+    } catch (error) {
+        console.log("Error: ", error)
+        return error.response
+    }
+}
