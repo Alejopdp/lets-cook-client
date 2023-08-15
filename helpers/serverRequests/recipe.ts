@@ -175,12 +175,15 @@ export const deleteRecipeVariant = async (recipeVariantSku) => {
     }
 };
 
-export const exportRecipesRatings = async () => {
+export const exportRecipesRatings = async (shippingDate: Date | undefined) => {
     try {
         const res = await axios({
             method: "GET",
             url: `${apiUrl}/export-ratings`,
             headers: { authorization: getFromLocalStorage("token") },
+            params: {
+                shippingDate: shippingDate ? shippingDate.toISOString() : undefined,
+            },
             responseType: "blob",
         })
 
