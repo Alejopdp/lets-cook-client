@@ -220,12 +220,15 @@ export const changeDefaultPaymentMethod = async (paymentMethodId: string, custom
     }
 };
 
-export const exportCustomers = async () => {
+export const exportCustomers = async (createdAt: Date | undefined) => {
     try {
         const res = await Axios({
             method: "GET",
             url: `${apiUrl}/export`,
             responseType: "blob",
+            params: {
+                createdAt,
+            },
             headers: { authorization: getFromLocalStorage("token") },
         });
 
