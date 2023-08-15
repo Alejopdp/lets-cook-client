@@ -16,6 +16,7 @@ import CustomerDashboardExports from "components/layout/customerDashboardExports
 import useLocalStorage from "hooks/useLocalStorage/localStorage";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import ExportCustomersModal from "./exportCustomersModal";
 
 const SimpleModal = dynamic(() => import("../../molecules/simpleModal/simpleModal"), { ssr: false });
 const EmptyImage = dynamic(() => import("../../molecules/emptyImage/emptyImage"), { ssr: false });
@@ -32,6 +33,7 @@ const CustomersDashboard = () => {
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [isExportingActions, setIsExportingActions] = useState(false);
     const [isExportingCustomers, setIsExportingCustomers] = useState(false);
+    const [isExportCustomersModalOpen, setIsExportCustomersModalOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const { getFromLocalStorage } = useLocalStorage();
     const { userInfo } = useUserInfoStore();
@@ -58,9 +60,9 @@ const CustomersDashboard = () => {
         [userInfo]
     );
 
-    const handleClickExport = async () => {
+    const handleClickExport = async (createdAt: Date | undefined) => {
         setIsExportingCustomers(true);
-        const res = await exportCustomers();
+        const res = await exportCustomers(createdAt);
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(!!!res ? "Ha ocurrido un error inesperado" : res.data.message, { variant: "error" });
@@ -80,7 +82,7 @@ const CustomersDashboard = () => {
     const exportOptions = useMemo(() => {
         const exportActions = [];
 
-        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: handleClickExport, isSubmitting: isExportingCustomers });
+        if (canExportCustomers) exportActions.push({ title: "Exportar clientes", handler: () => setIsExportCustomersModalOpen(true), isSubmitting: isExportingCustomers });
         if (canExportCustomersActions) exportActions.push({ title: "Exportar acciones", handler: () => setIsExportModalOpen(true), isSubmitting: isExportingActions });
 
         return exportActions;
@@ -148,7 +150,6 @@ const CustomersDashboard = () => {
                 handleClick={handleCreateCustomer}
                 title="Clientes"
                 import={false}
-                handleClickImport={() => ""}
                 importFile={undefined}
                 showCreateButton={canCreate}
             />
@@ -178,6 +179,10 @@ const CustomersDashboard = () => {
                     title="Exportar acciones"
                     isSubmitting={isExportingActions}
                 />
+            )}
+
+            {isExportCustomersModalOpen && (
+                <ExportCustomersModal handleCancelButton={() => setIsExportCustomersModalOpen(false)} handleConfirmButton={handleClickExport} isSubmitting={isExportingCustomers} open={isExportCustomersModalOpen} handleClose={() => setIsExportCustomersModalOpen(false)} />
             )}
 
             {isDeleteModalOpen && (
