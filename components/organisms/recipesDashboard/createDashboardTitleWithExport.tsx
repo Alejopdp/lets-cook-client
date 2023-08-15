@@ -12,13 +12,15 @@ import CreateButton from "../../atoms/createButton/createButton";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { Button } from "@material-ui/core";
 import { exportRecipesRatings } from "helpers/serverRequests/recipe";
+import ExportModal from "./exportModal";
 
 const CreateDashboardTitleWithExport = (props) => {
     const [isExporting, setIsExporting] = React.useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = React.useState(false);
 
-    const handleExport = async () => {
+    const handleExport = async (shippingDate: Date | undefined) => {
         setIsExporting(true);
-        await exportRecipesRatings()
+        await exportRecipesRatings(shippingDate)
         setIsExporting(false);
     }
 
@@ -26,7 +28,7 @@ const CreateDashboardTitleWithExport = (props) => {
         <Grid item xs={12}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h5">{props.dashboardTitle}</Typography>
-                <Box display={"flex"}><Button disabled={isExporting} style={{marginRight: 16}} size="large" startIcon={<GetAppIcon />} onClick={handleExport} >
+                <Box display={"flex"}><Button disabled={isExporting} style={{marginRight: 16}} size="large" startIcon={<GetAppIcon />} onClick={() => setIsExportModalOpen(true)} >
                                 {"Exportar Valoraciones"}
                             </Button>
                     <CreateButton onClick={props.handleCreateButton} disabled={props.isButtonDisabled}>
@@ -34,6 +36,7 @@ const CreateDashboardTitleWithExport = (props) => {
                     </CreateButton>
                     </Box>
             </Box>
+            <ExportModal handleConfirmButton={handleExport} handleCancelButton={() => setIsExportModalOpen(false)} open={isExportModalOpen} handleClose={() => setIsExportModalOpen(false)} isSubmitting={isExporting} />
         </Grid>
     );
 };
