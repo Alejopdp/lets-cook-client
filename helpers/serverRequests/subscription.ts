@@ -149,7 +149,7 @@ export const applyCouponToSubscription = async (subscriptionId: string, couponCo
     }
 };
 
-export const exportCancellations = async () => {
+export const exportCancellations = async (cancellationDate: Date | undefined) => {
     try {
         const res = await Axios({
             method: "GET",
@@ -158,6 +158,9 @@ export const exportCancellations = async () => {
                 Authorization: getFromLocalStorage("token"),
             },
             responseType: "blob",
+            params: {
+                cancellationDate,
+            },
         });
 
         FileDownload(res.data, "Cancelaciones.xlsx");
@@ -178,7 +181,7 @@ export const deleteSubscription = async (id: string) => {
         });
 
         return res;
-    } catch (error) {}
+    } catch (error) { }
 };
 
 export const getDataForSwappingAPlan = async (subscriptionId: string, locale?: string) => {
