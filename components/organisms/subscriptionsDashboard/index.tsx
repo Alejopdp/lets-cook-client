@@ -13,6 +13,7 @@ import SearchInputField from "../../molecules/searchInputField/searchInputField"
 import SubscriptionDashboardExports from "components/layout/SubscriptionDashboardExports";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import ExportCancellationsModal from "./exportCancellationsModal";
 
 const SubscriptionsDashboard = (props) => {
     const [subscriptions, setsubscriptions] = useState([]);
@@ -23,6 +24,7 @@ const SubscriptionsDashboard = (props) => {
     const { userInfo } = useUserInfoStore();
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const [isExportCancellationsModalOpen, setIsExportCancellationsModalOpen] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(userInfo.permissions)) return;
@@ -54,9 +56,9 @@ const SubscriptionsDashboard = (props) => {
         setIsExportingSubscriptions(false);
     };
 
-    const handleClickCancellations = async () => {
+    const handleExportCancellations = async (cancellationDate: Date | undefined) => {
         setIsExportingCancellations(true);
-        const res = await exportCancellations();
+        const res = await exportCancellations(cancellationDate);
 
         if (!!!res || res.status !== 200) {
             enqueueSnackbar(res.data.message, { variant: "error" });
@@ -68,7 +70,7 @@ const SubscriptionsDashboard = (props) => {
         const exportOptions = [];
 
         if (canExportSubscriptions) exportOptions.push({ title: "Exportar suscripciones", handler: handleClickExport, isSubmitting: isExportingSubscriptions });
-        if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: handleClickCancellations, isSubmitting: isExportingCancellations });
+        if (canExportCancellations) exportOptions.push({ title: "Exportar cancelaciones", handler: () => setIsExportCancellationsModalOpen(true), isSubmitting: isExportingCancellations });
 
         return exportOptions;
     }, [canExportCancellations, canExportSubscriptions, isExportingCancellations, isExportingSubscriptions]);
@@ -110,6 +112,9 @@ const SubscriptionsDashboard = (props) => {
                 }}
                 importFile={undefined}
             />
+                        {isExportCancellationsModalOpen && (
+                <ExportCancellationsModal handleCancelButton={() => setIsExportCancellationsModalOpen(false)} handleConfirmButton={handleExportCancellations} isSubmitting={isExportingCancellations} open={isExportCancellationsModalOpen} handleClose={() => setIsExportCancellationsModalOpen(false)} />
+            )}
             <Grid item xs={12}>
                 <Box display="flex" alignItems="center" marginY={2}>
                     <SearchInputField handlerOnChange={setSearchValue} placeholder="Buscar por nombre de cliente o correo..." />
