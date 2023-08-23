@@ -55,6 +55,8 @@ PaperWithTitleContainer.propTypes = {
     fullWidth: PropTypes.bool,
     flex: PropTypes.bool,
     fontSize: PropTypes.number,
+    children: PropTypes.node.isRequired,
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default PaperWithTitleContainer;

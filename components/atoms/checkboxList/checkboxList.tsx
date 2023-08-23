@@ -1,11 +1,23 @@
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { useState } from "react";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import CustomCheckbox from "../checkbox/checkbox";
 import useStyles from "./styles";
 
-const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }) => {
+type CheckboxListProps = {
+    items: {
+        label: any;
+        value: number;
+        name: string;
+        checked: boolean;
+        subtitle: string | undefined;
+        children: any | undefined;
+    }[];
+    handleOnChange: (item: any) => void;
+};
+
+const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }: CheckboxListProps) => {
     const classes = useStyles();
     const [selection, setSelection] = useState(Array(items.length).fill(false));
 
@@ -35,25 +47,6 @@ const CheckboxList = ({ items = [], handleOnChange = () => {}, ...props }) => {
             ))}
         </>
     );
-};
-
-CheckboxList.propTypes = {
-    items: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.any,
-            value: PropTypes.string,
-            name: PropTypes.string,
-            checked: PropTypes.bool,
-            subtitle: PropTypes.string,
-            children: PropTypes.element,
-        })
-    ),
-    handleOnChange: PropTypes.func,
-};
-
-CheckboxList.defaultValues = {
-    items: [],
-    handleOnChange: () => {},
 };
 
 export default CheckboxList;

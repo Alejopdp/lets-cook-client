@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import useStyles from "./styles";
 import clsx from "clsx";
-import { CustomerProfileProps, Subscription, Order, PaymentOrder, Personaldata } from "./interface";
+import { CustomerProfileProps, CustomerInformation } from "./interface";
 
 // External components
 import Grid from "@material-ui/core/Grid";
@@ -16,9 +16,10 @@ import CustomerCalendarTable from "./customerCalendarTable";
 import CustomerPurchaseHistoryTable from "./customerPurchaseHistoryTable";
 import CustomerInfo from "./customerInfo/customerInfo";
 import CustomerEvents from "./customerEvents";
-import {  updateCustomerPersonalData } from "helpers/serverRequests/customer";
+import { chargeMoneyToWallet, createWallet, updateCustomerPersonalData, updateWallet } from "helpers/serverRequests/customer";
 import { useSnackbar } from "notistack";
-import { Log } from "helpers/types/log";
+import { FormData } from "./customerInfo/personalData";
+import { Wallet } from "helpers/types/customer";
 
 const crumbs = [
     {
@@ -46,27 +47,8 @@ const crumbs = [
 const CustomerProfile = (props: CustomerProfileProps) => {
     const { enqueueSnackbar } = useSnackbar();
     const [breadcrumb, setBreadcrumb] = useState("subscriptions");
-    const [customer, setCustomer] = useState<{
-        personalData: Personaldata;
-        subscriptions: Subscription[];
-        orders: Order[];
-        paymentOrders: PaymentOrder[];
-        events: Log[];
-    }>({
-        personalData: props.data.personalData || {
-            shippingAddress: {},
-            billingData: {},
-            paymentMethods: [],
-            id: "",
-            email: "",
-            lastName: "",
-            friendCode: "",
-            fullName: "",
-            name: "",
-            phone1: "",
-            phone2: "",
-            preferredLanguage: "",
-        },
+    const [customer, setCustomer] = useState<CustomerInformation>({
+        ...props.data,
         // Subscriptions table
         subscriptions: props.data.subscriptions,
 
@@ -77,19 +59,15 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         paymentOrders: props.data.paymentOrders,
         // Events table
         events: props.logs,
-        friendCode: props.data.friendCode,
     });
 
-    const handleUpdatePersonalData = async (formData: Personaldata) => {
-        const res = await updateCustomerPersonalData({ ...formData, id: props.data.personalData.id });
+    const handleUpdatePersonalData = async (formData: FormData): Promise<void> => {
+        const res = await updateCustomerPersonalData({ ...formData, id: props.data.id });
 
         if (res.status === 200) {
             setCustomer({
                 ...customer,
-                personalData: {
-                    ...customer.personalData,
-                    ...formData,
-                },
+                ...formData,
             });
             enqueueSnackbar("Cliente modificado correctamente", { variant: "success" });
         } else {
@@ -97,39 +75,76 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         }
     };
 
+    const handleCreateWallet = async (walletData: Wallet) => {
+        const res = await createWallet(customer.id, walletData);
+
+        if (res.status === 200) {
+            setCustomer({
+                ...customer,
+                wallet: { ...walletData },
+            });
+            enqueueSnackbar("Billetera creada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message ?? "Ocurrió un error al crear la billetera", { variant: "error" });
+        }
+    };
+
+    const handleUpdateWallet = async (walletData: Wallet) => {
+        const res = await updateWallet(customer.id, walletData);
+
+        if (res.status === 200) {
+            setCustomer({
+                ...customer,
+                wallet: { ...walletData },
+            });
+            enqueueSnackbar("Billetera modificada correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message ?? "Ocurrió un error al modificar la billetera", { variant: "error" });
+        }
+    };
+
     const handleUpdateDeliveryAddress = (formData) => {
         setCustomer({
             ...customer,
-            personalData: {
-                ...customer.personalData,
-                shippingAddress: formData,
-            },
+            shippingAddress: formData,
         });
     };
 
     const handleUpdateBillingData = (formData) => {
         setCustomer({
             ...customer,
-            personalData: {
-                ...customer.personalData,
-                billingData: formData,
-            },
+            billingData: formData,
         });
     };
 
     const handleUpdatePaymentMethods = (newPaymentMethodId: string) => {
-        const newPaymentMethods = customer.personalData.paymentMethods.map((method) => ({
+        const newPaymentMethods = customer.paymentMethods.map((method) => ({
             ...method,
             isDefault: newPaymentMethodId === method.id,
         }));
 
         setCustomer({
             ...customer,
-            personalData: {
-                ...customer.personalData,
-                paymentMethods: newPaymentMethods,
-            },
+            paymentMethods: newPaymentMethods,
         });
+    };
+
+    const handleChargeMoney = async (amount: number) => {
+        const res = await chargeMoneyToWallet(customer.id, amount);
+
+        if (res.status === 200) {
+            setCustomer({
+                ...customer,
+                wallet: {
+                    ...customer.wallet,
+                    //@ts-ignore
+                    balance: parseFloat(customer.wallet.balance) + parseFloat(amount),
+                },
+            });
+            enqueueSnackbar("Dinero cargado correctamente", { variant: "success" });
+        } else {
+            enqueueSnackbar(res.data.message ?? "Ocurrió un error al cargar el dinero", { variant: "error" });
+        }
     };
 
     const { container, breadcrumbs, active } = useStyles();
@@ -139,11 +154,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
     switch (true) {
         case breadcrumb === "subscriptions":
             currentCustomerInfo = (
-                <CustomerSubscriptionsTable
-                    subscriptions={customer.subscriptions}
-                    plans={props.plans}
-                    customerId={customer.personalData.id}
-                />
+                <CustomerSubscriptionsTable subscriptions={customer.subscriptions} plans={props.plans} customerId={customer.id} />
             );
             break;
 
@@ -162,8 +173,11 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                     handleUpdateDeliveryAddress={handleUpdateDeliveryAddress}
                     handleUpdateBillingData={handleUpdateBillingData}
                     handleUpdatePaymentMethods={handleUpdatePaymentMethods}
+                    handleUpdateWallet={handleUpdateWallet}
+                    handleCreateWallet={handleCreateWallet}
                     customer={customer}
                     setCustomer={setCustomer}
+                    handleChargeMoney={handleChargeMoney}
                 />
             );
             break;
@@ -174,17 +188,13 @@ const CustomerProfile = (props: CustomerProfileProps) => {
 
         default:
             currentCustomerInfo = (
-                <CustomerSubscriptionsTable
-                    subscriptions={customer.subscriptions}
-                    plans={props.plans}
-                    customerId={customer.personalData.id}
-                />
+                <CustomerSubscriptionsTable subscriptions={customer.subscriptions} plans={props.plans} customerId={customer.id} />
             );
     }
 
     return (
         <>
-            <DashboardWithBackTitle title={`Perfil de ${customer.personalData.name} ${customer.personalData.lastName}`} />
+            <DashboardWithBackTitle title={`Perfil de ${customer.fullName}`} />
             <Grid item xs={12}>
                 <Box className={container}>
                     {crumbs.map((crumb, index) => (
@@ -205,5 +215,3 @@ const CustomerProfile = (props: CustomerProfileProps) => {
 };
 
 export default CustomerProfile;
-
-CustomerProfile.propTypes = {};

@@ -20,16 +20,16 @@ const BillingData = (props: BillingDataProps) => {
     const { enqueueSnackbar } = useSnackbar();
 
     const [formData, setFormData] = useState({
-        addressName: props.customer.personalData.billingData?.addressName || "",
-        details: props.customer.personalData.billingData?.details || "",
-        customerName: props.customer.personalData.billingData?.customerName || "",
-        identification: props.customer.personalData.billingData?.identification || "",
-        latitude: props.customer.personalData.billingData?.latitude,
-        longitude: props.customer.personalData.billingData?.longitude,
-        city: props.customer.personalData.billingData?.city,
-        country: props.customer.personalData.billingData?.country,
-        postalCode: props.customer.personalData.billingData?.postalCode,
-        province: props.customer.personalData.billingData?.province,
+        addressName: props.customer.billingData?.addressName || "",
+        details: props.customer.billingData?.details || "",
+        customerName: props.customer.billingData?.customerName || "",
+        identification: props.customer.billingData?.identification || "",
+        latitude: props.customer.billingData?.latitude,
+        longitude: props.customer.billingData?.longitude,
+        city: props.customer.billingData?.city,
+        country: props.customer.billingData?.country,
+        postalCode: props.customer.billingData?.postalCode,
+        province: props.customer.billingData?.province,
     });
     const { userInfo } = useUserInfoStore();
 
@@ -46,7 +46,7 @@ const BillingData = (props: BillingDataProps) => {
     };
 
     const handleModifyBillingData = async () => {
-        const res = await updateBillingData(props.customer.personalData.id, { ...formData });
+        const res = await updateBillingData(props.customer.id, { ...formData });
 
         if (res.status === 200) {
             props.handleUpdateBillingData(formData);
@@ -82,22 +82,22 @@ const BillingData = (props: BillingDataProps) => {
             <PaperWithTitleContainer title="Datos de facturación" height={"479px"} flex fullWidth>
                 <Typography variant="subtitle2">Dirección</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.personalData.billingData?.addressName}
+                    {props.customer.billingData?.addressName}
                 </Typography>
 
                 <Typography variant="subtitle2">Piso / Puerta / Aclaraciones</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.personalData.billingData?.details || "Sin indicar"}
+                    {props.customer.billingData?.details || "Sin indicar"}
                 </Typography>
 
                 <Typography variant="subtitle2">Nombre completo</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.personalData.billingData?.customerName}
+                    {props.customer.billingData?.customerName}
                 </Typography>
 
                 <Typography variant="subtitle2">DNI / NIE / CIF</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.customer.personalData.billingData?.identification || "Sin indicar"}
+                    {props.customer.billingData?.identification || "Sin indicar"}
                 </Typography>
 
                 {canEdit && (

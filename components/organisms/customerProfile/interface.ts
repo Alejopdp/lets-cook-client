@@ -1,52 +1,8 @@
 import { PlanFrequencyValue } from "helpers/types/frequency";
 import { Log } from "helpers/types/log";
-
-export interface ShippingAddress {
-    addressDetails: string;
-    addressName: string;
-    preferredShippingHour: string;
-    latitude: number;
-    longitude: number;
-    country: string;
-    postalCode: string;
-    province: string;
-    city: string;
-}
-
-export interface BillingData {
-    addressName: string;
-    details: string;
-    customerName: string;
-    identification: string;
-    latitude: number;
-    longitude: number;
-    city: string;
-    province: string;
-    postalCode: string;
-    country: string;
-}
-
-export interface PaymentMethod {
-    id: string;
-    card: string;
-    expirationDate: string;
-    isDefault: boolean;
-}
-
-export interface Personaldata {
-    id: string;
-    email: string;
-    name: string;
-    lastName: string;
-    fullName: string;
-    phone1: string;
-    phone2: string;
-    preferredLanguage: string;
-    shippingAddress: ShippingAddress;
-    billingData: BillingData;
-    paymentMethods: PaymentMethod[];
-    friendCode: string
-}
+import { BillingData, Customer, PaymentMethod, ShippingAddress, Wallet } from "helpers/types/customer";
+import { Plan } from "types/plan/plan";
+import { FormData } from "./customerInfo/personalData";
 
 export interface Subscription {
     id: string;
@@ -74,26 +30,29 @@ export interface PaymentOrder {
     status: string;
 }
 
-export interface CustomerInformation {
-    personalData: Personaldata;
+export type CustomerInformation = {
     subscriptions: Subscription[];
     orders: Order[];
     paymentOrders: PaymentOrder[];
-    friendCode: string;
-}
+    events: Log[];
+} & Customer
 
 export interface CustomerProfileProps {
     data: CustomerInformation;
     logs: Log[];
+    plans: Plan[]
 }
 
 export interface CustomerInfoProps {
     customer: CustomerInformation;
     setCustomer: (newCustomer: CustomerInformation) => void;
-    handleUpdatePersonalData: () => void;
+    handleCreateWallet: (wallet: Wallet) => Promise<void>;
+    handleUpdateWallet: (wallet: Wallet) => Promise<void>;
+    handleUpdatePersonalData: (formData: FormData) => Promise<void>;
     handleUpdateDeliveryAddress: (newShippingAddress: ShippingAddress) => void;
     handleUpdateBillingData: (newBillingData: BillingData) => void;
     handleUpdatePaymentMethods: (newPaymentMethodId: string) => void;
+    handleChargeMoney: (amountToCharge: number) => Promise<void>
 }
 
 export interface DeliveryAddressProps {
