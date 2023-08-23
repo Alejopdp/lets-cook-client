@@ -1,7 +1,7 @@
 import Axios from "axios";
-import { BillingData, Personaldata, ShippingAddress } from "components/organisms/customerProfile/interface";
 import FileDownload from "js-file-download";
 import { useLocalStorage } from "hooks/useLocalStorage/localStorage";
+import { BillingData, Customer, ShippingAddress, Wallet } from "helpers/types/customer";
 
 const { getFromLocalStorage } = useLocalStorage();
 // const serverUrl = "http://localhost:3001/api/v1";
@@ -126,19 +126,19 @@ export const updateCustomer = async (customer: any, id: string) => {
     }
 };
 
-export const updateCustomerPersonalData = async (personalData: Personaldata) => {
+export const updateCustomerPersonalData = async (customer: Partial<Customer>) => {
     try {
         const res = await Axios({
             method: "PUT",
-            url: `${apiUrl}/update-info/${personalData.id}`,
+            url: `${apiUrl}/update-info/${customer.id}`,
             headers: { authorization: getFromLocalStorage("token") },
             data: {
-                name: personalData.name,
-                lastName: personalData.lastName,
-                phone1: personalData.phone1,
-                phone2: personalData.phone2,
+                name: customer.name,
+                lastName: customer.lastName,
+                phone1: customer.phone1,
+                phone2: customer.phone2,
                 // birthDate: personalData.birthDate,
-                preferredLanguage: personalData.preferredLanguage,
+                preferredLanguage: customer.preferredLanguage,
             },
         });
 
@@ -294,3 +294,54 @@ export const exportAllCustomersActions = async (startDate: Date, endDate: Date) 
         return error.response;
     }
 };
+
+export const createWallet = async (customerId: string, wallet: Wallet) => {
+    try {
+        const res = await Axios({
+            method: "POST",
+            url: `${apiUrl}/wallet/${customerId}`,
+            headers: { authorization: getFromLocalStorage("token") },
+            data: {
+                ...wallet,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const updateWallet = async (customerId: string, wallet: Wallet) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/wallet/${customerId}`,
+            headers: { authorization: getFromLocalStorage("token") },
+            data: {
+                ...wallet,
+            },
+        });
+
+        return res
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const chargeMoneyToWallet = async (customerId: string, amountToCharge: number) => {
+    try {
+        const res = await Axios({
+            method: "PUT",
+            url: `${apiUrl}/wallet/charge/${customerId}`,
+            headers: { authorization: getFromLocalStorage("token") },
+            data: {
+                amountToCharge,
+            },
+        });
+
+        return res
+    } catch (error) {
+        return error.response;
+    }
+}

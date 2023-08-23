@@ -10,17 +10,32 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 import PersonalDataModal from "./customerInfoModals/personalDataModal";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import { Customer } from "helpers/types/customer";
 
-const PersonalData = (props) => {
+export type FormData = {
+    name: string;
+    lastName: string;
+    email: string;
+    phone1: string;
+    phone2: string;
+    bornDate: string;
+    preferredLanguage: string;
+};
+type PersonalDataProps = {
+    customer: Customer;
+    handleUpdatePersonalData: (formData: FormData) => Promise<void>;
+};
+
+const PersonalData = (props: PersonalDataProps) => {
     const [isPersonalDataModalOpen, setPersonalDataModalOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        name: props.personalData.name || "",
-        lastName: props.personalData.lastName || "",
-        email: props.personalData.email || "",
-        phone1: props.personalData.phone1 || "",
-        phone2: props.personalData.phone2 || "",
-        bornDate: props.personalData.bornDate || "",
-        preferredLanguage: props.personalData.preferredLanguage || "",
+    const [formData, setFormData] = useState<FormData>({
+        name: props.customer.name || "",
+        lastName: props.customer.lastName || "",
+        email: props.customer.email || "",
+        phone1: props.customer.phone1 || "",
+        phone2: props.customer.phone2 || "",
+        bornDate: props.customer.bornDate || "",
+        preferredLanguage: props.customer.preferredLanguage || "",
     });
     const { userInfo } = useUserInfoStore();
 
@@ -45,27 +60,27 @@ const PersonalData = (props) => {
             <PaperWithTitleContainer title="Datos personales" fullWidth>
                 <Typography variant="subtitle2">Nombre completo</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.name} {props.personalData.lastName}
+                    {props.customer.name} {props.customer.lastName}
                 </Typography>
                 <Typography variant="subtitle2">Teléfono (1)</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.phone1}
+                    {props.customer.phone1}
                 </Typography>
                 <Typography variant="subtitle2">Teléfono (2)</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.phone2 || "Sin indicar"}
+                    {props.customer.phone2 || "Sin indicar"}
                 </Typography>
                 <Typography variant="subtitle2">Fecha de nacimiento</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.bornDate || "Sin indicar"}
+                    {props.customer.bornDate || "Sin indicar"}
                 </Typography>
                 <Typography variant="subtitle2">Idioma de preferencia</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.preferredLanguage}
+                    {props.customer.preferredLanguage}
                 </Typography>
                 <Typography variant="subtitle2">Email</Typography>
                 <Typography variant="body1" paragraph>
-                    {props.personalData.email}
+                    {props.customer.email}
                 </Typography>
                 {canEdit && (
                     <Typography
@@ -88,6 +103,8 @@ const PersonalData = (props) => {
                     confirmButtonText="Modificar datos personales"
                     handleCancelButton={() => setPersonalDataModalOpen(false)}
                     handleConfirmButton={handleModifyPersonalData}
+                    handleClose={() => setPersonalDataModalOpen(false)}
+                    isConfirmButtonDisabled={false}
                 />
             )}
         </>
@@ -95,5 +112,3 @@ const PersonalData = (props) => {
 };
 
 export default PersonalData;
-
-PersonalData.propTypes = {};
