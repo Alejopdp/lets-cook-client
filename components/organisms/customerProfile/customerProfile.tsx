@@ -75,7 +75,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         }
     };
 
-    const handleCreateWallet = async (walletData: Wallet) => {
+    const handleCreateWallet = async (walletData: Wallet): Promise<boolean> => {
         const res = await createWallet(customer.id, walletData);
 
         if (res.status === 200) {
@@ -84,12 +84,14 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                 wallet: { ...walletData },
             });
             enqueueSnackbar("Billetera creada correctamente", { variant: "success" });
+            return true;
         } else {
             enqueueSnackbar(res.data.message ?? "Ocurrió un error al crear la billetera", { variant: "error" });
+            return false;
         }
     };
 
-    const handleUpdateWallet = async (walletData: Wallet) => {
+    const handleUpdateWallet = async (walletData: Wallet): Promise<boolean> => {
         const res = await updateWallet(customer.id, walletData);
 
         if (res.status === 200) {
@@ -98,8 +100,10 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                 wallet: { ...walletData },
             });
             enqueueSnackbar("Billetera modificada correctamente", { variant: "success" });
+            return true;
         } else {
             enqueueSnackbar(res.data.message ?? "Ocurrió un error al modificar la billetera", { variant: "error" });
+            return false;
         }
     };
 
@@ -129,7 +133,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         });
     };
 
-    const handleChargeMoney = async (amount: number) => {
+    const handleChargeMoney = async (amount: number): Promise<boolean> => {
         const res = await chargeMoneyToWallet(customer.id, amount);
 
         if (res.status === 200) {
@@ -138,12 +142,14 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                 wallet: {
                     ...customer.wallet,
                     //@ts-ignore
-                    balance: parseFloat(customer.wallet.balance) + parseFloat(amount),
+                    balance: parseFloat(customer.wallet.balance ?? "0") + parseFloat(amount),
                 },
             });
             enqueueSnackbar("Dinero cargado correctamente", { variant: "success" });
+            return true;
         } else {
             enqueueSnackbar(res.data.message ?? "Ocurrió un error al cargar el dinero", { variant: "error" });
+            return false;
         }
     };
 

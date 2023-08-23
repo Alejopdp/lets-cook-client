@@ -46,13 +46,13 @@ export interface CustomerProfileProps {
 export interface CustomerInfoProps {
     customer: CustomerInformation;
     setCustomer: (newCustomer: CustomerInformation) => void;
-    handleCreateWallet: (wallet: Wallet) => Promise<void>;
-    handleUpdateWallet: (wallet: Wallet) => Promise<void>;
+    handleCreateWallet: (wallet: Wallet) => Promise<boolean>;
+    handleUpdateWallet: (wallet: Wallet) => Promise<boolean>;
     handleUpdatePersonalData: (formData: FormData) => Promise<void>;
     handleUpdateDeliveryAddress: (newShippingAddress: ShippingAddress) => void;
     handleUpdateBillingData: (newBillingData: BillingData) => void;
     handleUpdatePaymentMethods: (newPaymentMethodId: string) => void;
-    handleChargeMoney: (amountToCharge: number) => Promise<void>
+    handleChargeMoney: (amountToCharge: number) => Promise<boolean>
 }
 
 export interface DeliveryAddressProps {

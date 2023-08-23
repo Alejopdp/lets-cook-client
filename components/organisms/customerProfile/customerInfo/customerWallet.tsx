@@ -10,9 +10,9 @@ import ChargeMoneyToWalletModal from "./customerInfoModals/chargeMoneyToWalletMo
 type CustomerWalletProps = {
     wallet: Wallet | undefined;
     customerPaymentMethods: PaymentMethod[];
-    handleCreateWallet: (wallet: Wallet) => Promise<void>;
-    handleUpdateWallet: (wallet: Wallet) => Promise<void>;
-    handleChargeMoney: (amountToCharge: number) => Promise<void>;
+    handleCreateWallet: (wallet: Wallet) => Promise<boolean>;
+    handleUpdateWallet: (wallet: Wallet) => Promise<boolean>;
+    handleChargeMoney: (amountToCharge: number) => Promise<boolean>;
 };
 
 export type DayItem = {
@@ -89,7 +89,7 @@ const CustomerWallet = (props: CustomerWalletProps) => {
 
     const handleCreateWalletSubmit = async () => {
         setIsSubmittingCreation(true);
-        await props.handleCreateWallet({
+        const succeeded = await props.handleCreateWallet({
             ...wallet,
             amountToCharge: parseInt(wallet.amountToCharge as unknown as string),
             datesOfCharge: days
@@ -104,11 +104,12 @@ const CustomerWallet = (props: CustomerWalletProps) => {
             last4Numbers: "",
         });
         setIsSubmittingCreation(false);
+        if (succeeded) setIsCreateModalOpened(false);
     };
 
     const handleUpdateWalletSubmit = async () => {
         setIsSubmittingUpdate(true);
-        await props.handleUpdateWallet({
+        const succeeded = await props.handleUpdateWallet({
             ...wallet,
             amountToCharge: parseInt(wallet.amountToCharge as unknown as string),
             datesOfCharge: days
@@ -123,12 +124,14 @@ const CustomerWallet = (props: CustomerWalletProps) => {
             last4Numbers: "",
         });
         setIsSubmittingUpdate(false);
+        if (succeeded) setIsUpdateModalOpened(false);
     };
 
     const handleChargeMoneySubmit = async () => {
         setIsSubmittingMoneyCharge(true);
-        await props.handleChargeMoney(amountToCharge);
+        const succeeded = await props.handleChargeMoney(amountToCharge);
         setIsSubmittingMoneyCharge(false);
+        if (succeeded) setIsChargeMoneyModalOpened(false);
     };
 
     return (
