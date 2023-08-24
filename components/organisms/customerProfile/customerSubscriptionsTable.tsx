@@ -59,11 +59,12 @@ const CustomerSubscriptionsTable = (props) => {
     const { enqueueSnackbar } = useSnackbar();
     const [isAddPlanSubmitting, setIsAddPlanSubmitting] = useState(false);
     const [subscriptions, setSubscriptions] = useState([...props.subscriptions] || []);
-    const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [] });
-    const [selectedVariation, setSelectedVariation] = useState({});
+    const [selectedPlan, setSelectedPlan] = useState({ variants: [], availablePlanFrecuencies: [], id: "", name: "", price: "", type: "" });
+    const [selectedVariation, setSelectedVariation] = useState({ id: "", name: "", price: "" });
     const [selectedFrequency, setSelectedFrequency] = useState("");
     const [couponCode, setCouponCode] = useState("");
     const { userInfo } = useUserInfoStore();
+    const [useWalletAsPaymentMethod, setUseWalletAsPaymentMethod] = useState(false);
 
     const canCreateSubscription = useMemo(
         () => Array.isArray(userInfo.permissions) && userInfo.permissions.includes(Permission.CREATE_SUBSCRIPTION),
@@ -101,6 +102,7 @@ const CustomerSubscriptionsTable = (props) => {
             planVariantId: selectedVariation.id,
             planFrequency: selectedPlan.type === PlanType.Principal ? PlanFrequencyValue.WEEKLY : selectedFrequency,
             couponCode,
+            useWalletAsPaymentMethod
         };
         const res = await createSubscription(data);
 
@@ -210,6 +212,8 @@ const CustomerSubscriptionsTable = (props) => {
                     title="Agregar Plan"
                     component={
                         <AddPlanModal
+                            setUseWalletAsPaymentMethod={setUseWalletAsPaymentMethod}
+                            useWalletAsPaymentMethod={useWalletAsPaymentMethod}
                             plans={props.plans}
                             handlePlanSelect={handlePlanSelect}
                             handleVariationSelect={handleVariationSelect}
