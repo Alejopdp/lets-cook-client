@@ -9,7 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
-import { Typography } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Typography } from "@material-ui/core";
 import { translateFrequency } from "helpers/i18n/i18n";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ const AddPlanModal = (props) => {
                 </Select>
             </FormControl>
 
-            <FormControl className={selectField} variant="outlined">
+            <FormControl className={selectField} variant="outlined" style={{ marginBottom: 0 }}>
                 <Input handleChange={props.handleCouponChange} helperText="" label="Cupón" name="coupon" value={props.coupon} />
             </FormControl>
 
@@ -63,11 +63,23 @@ const AddPlanModal = (props) => {
                 </FormControl>
             )}
 
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        onChange={() => props.setUseWalletAsPaymentMethod(!props.useWalletAsPaymentMethod)}
+                        name="useWalletAsPaymentMethod"
+                        value={props.useWalletAsPaymentMethod}
+                        checked={props.useWalletAsPaymentMethod}
+                        color="primary"
+                    />
+                }
+                label="Usar monedero como método de pago"
+                style={{ marginBottom: 8 }}
+            />
+
             {props.selectedPlan.description && <Typography variant="body1">{props.selectedPlan.description}</Typography>}
         </Box>
     );
 };
 
 export default AddPlanModal;
-
-AddPlanModal.propTypes = {};
