@@ -81,10 +81,6 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         if (res.status === 200) {
             setCustomer({
                 ...customer,
-                wallet: { ...walletData },
-            });
-            setCustomer({
-                ...customer,
                 paymentMethods: [
                     ...customer.paymentMethods,
                     {
@@ -94,6 +90,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                         isDefault: false,
                     },
                 ],
+                wallet: { ...walletData },
             });
             enqueueSnackbar("Billetera creada correctamente", { variant: "success" });
             return true;
