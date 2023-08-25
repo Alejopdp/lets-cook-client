@@ -83,6 +83,18 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                 ...customer,
                 wallet: { ...walletData },
             });
+            setCustomer({
+                ...customer,
+                paymentMethods: [
+                    ...customer.paymentMethods,
+                    {
+                        id: "wallet",
+                        card: "",
+                        expirationDate: "",
+                        isDefault: false,
+                    },
+                ],
+            });
             enqueueSnackbar("Billetera creada correctamente", { variant: "success" });
             return true;
         } else {
