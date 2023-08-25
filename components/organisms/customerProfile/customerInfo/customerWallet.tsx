@@ -151,7 +151,7 @@ const CustomerWallet = (props: CustomerWalletProps) => {
                     ) : (
                         <Box>
                             <Typography variant="body1" paragraph>
-                                {`Saldo actual: ${props.wallet.balance ?? 0} ${!props.wallet?.isEnabled ? "(Recarga deshabilitada)" : ""}`}
+                                {`Saldo actual: €${props.wallet.balance ?? 0} ${!props.wallet?.isEnabled ? "(Recarga deshabilitada)" : ""}`}
                             </Typography>
                             <Box display={"flex"} flexWrap={"wrap"}>
                                 <Typography
