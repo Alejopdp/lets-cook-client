@@ -10,10 +10,11 @@ import ComplexModal from "../../../molecules/complexModal/complexModal";
 
 // Internal components
 import PaperWithTitleContainer from "../../../molecules/paperWithTitleContainer/paperWithTitleContainer";
-import { PaymentMethod, PaymentMethodProps } from "../interface";
+import { PaymentMethodProps } from "../interface";
 import { changeDefaultPaymentMethod } from "helpers/serverRequests/customer";
 import { useUserInfoStore } from "stores/auth";
 import { Permission } from "helpers/types/permission";
+import { PaymentMethod } from "helpers/types/customer";
 
 const PaymentMethods = (props: PaymentMethodProps) => {
     const [isPaymentMethodModalOpen, setPaymentMethodModalOpen] = useState(false);
@@ -66,15 +67,22 @@ const PaymentMethods = (props: PaymentMethodProps) => {
             {!!defaultPaymentMethod && (
                 <>
                     <PaperWithTitleContainer title="Método de pago" fullWidth>
-                        <Typography variant="subtitle2">Tarjeta</Typography>
-                        <Typography variant="body1" paragraph>
-                            {defaultPaymentMethod.card}
-                        </Typography>
-
-                        <Typography variant="subtitle2">Vencimiento</Typography>
-                        <Typography variant="body1" paragraph>
-                            {defaultPaymentMethod.expirationDate}
-                        </Typography>
+                        {defaultPaymentMethod.id !== "wallet" ? (
+                            <>
+                                <Typography variant="subtitle2">Tarjeta</Typography>
+                                <Typography variant="body1" paragraph>
+                                    {defaultPaymentMethod.card}
+                                </Typography>
+                                <Typography variant="subtitle2">Vencimiento</Typography>
+                                <Typography variant="body1" paragraph>
+                                    {defaultPaymentMethod.expirationDate}
+                                </Typography>
+                            </>
+                        ) : (
+                            <Typography variant="subtitle2" style={{ marginBottom: 16 }}>
+                                Utilizando monedero
+                            </Typography>
+                        )}
 
                         {canEdit && (
                             <Typography

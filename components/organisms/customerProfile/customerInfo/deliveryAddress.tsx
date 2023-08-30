@@ -19,7 +19,7 @@ import { getFormattedAddressFromGoogle, OtherAddressInformation } from "helpers/
 
 const DeliveryAddress = (props: DeliveryAddressProps) => {
     const [isDeliveryAddressModalOpen, setDeliveryAddressModalOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const { userInfo } = useUserInfoStore();
     const [formData, setFormData] = useState({
         addressName: props.shippingAddress.addressName || "",
@@ -46,10 +46,10 @@ const DeliveryAddress = (props: DeliveryAddressProps) => {
     };
 
     const handleModifyDeliveryAddress = async () => {
-        const res = await updateShippingAddress(props.customer.personalData.id, formData);
+        const res = await updateShippingAddress(props.customer.id, formData);
 
         if (res.status === 200) {
-            props.setCustomer({ ...props.customer, personalData: { ...props.customer.personalData, shippingAddress: { ...formData } } });
+            props.setCustomer({ ...props.customer, shippingAddress: { ...formData } });
             enqueueSnackbar("Datos de entrega modificados", {
                 variant: "success",
             });

@@ -1,7 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import PaperWithTitleContainer from "components/molecules/paperWithTitleContainer/paperWithTitleContainer";
 import { Typography } from "@material-ui/core";
+
+type OtherInfoProps = {
+    friendCode: string;
+};
 
 const OtherInfo = (props) => {
     return (
@@ -13,7 +16,5 @@ const OtherInfo = (props) => {
         </PaperWithTitleContainer>
     );
 };
-
-OtherInfo.propTypes = {};
 
 export default OtherInfo;

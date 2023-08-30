@@ -18,6 +18,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+type CompleModalProps = {
+    title: string;
+    component: React.ReactNode;
+    cancelButtonText: string;
+    confirmButtonText: string;
+    handleConfirmButton: () => void;
+    handleCancelButton: () => void;
+    open: boolean;
+    handleClose: () => void;
+    isConfirmButtonDisabled: boolean;
+    maxWidth: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
+    fullWidth: boolean | undefined;
+};
+
 const ComplexModal = ({
     title,
     component,
@@ -28,11 +42,13 @@ const ComplexModal = ({
     open,
     handleClose = () => {},
     isConfirmButtonDisabled,
-}) => {
+    maxWidth,
+    fullWidth,
+}: CompleModalProps) => {
     const classes = useStyles();
 
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} maxWidth={maxWidth} fullWidth={fullWidth}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>{component}</DialogContent>
             <DialogActions>
@@ -45,17 +61,6 @@ const ComplexModal = ({
             </DialogActions>
         </Dialog>
     );
-};
-
-ComplexModal.propTypes = {
-    title: PropTypes.string,
-    component: PropTypes.element,
-    cancelButtonText: PropTypes.string,
-    confirmButtonText: PropTypes.string,
-    handleConfirmButton: PropTypes.func,
-    handleCancelButton: PropTypes.func,
-    open: PropTypes.bool,
-    handleClose: PropTypes.func,
 };
 
 export default ComplexModal;
