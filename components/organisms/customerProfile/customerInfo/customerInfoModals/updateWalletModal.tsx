@@ -82,7 +82,9 @@ const UpdateWalletModal = (props: UpdateWalletModalProps) => {
                         handleChange={(event) => {
                             props.setPaymentMethod(props.customerPaymentMethods.find((pm) => pm.id === event.target.value));
                         }}
-                        options={props.customerPaymentMethods.map((pm) => ({ label: pm.card, value: pm.id }))}
+                        options={props.customerPaymentMethods
+                            .filter((pm) => pm.id !== "wallet")
+                            .map((pm) => ({ label: pm.card, value: pm.id }))}
                     />
                 </Box>
             </Box>

@@ -6,6 +6,7 @@ import ComplexModal from "components/molecules/complexModal/complexModal";
 import CreateWalletModal from "./customerInfoModals/createWalletModal";
 import UpdateWalletModal from "./customerInfoModals/updateWalletModal";
 import ChargeMoneyToWalletModal from "./customerInfoModals/chargeMoneyToWalletModal";
+import WalletMovementsModal from "./customerInfoModals/walletMovementsModal";
 
 type CustomerWalletProps = {
     wallet: Wallet | undefined;
@@ -38,6 +39,7 @@ const CustomerWallet = (props: CustomerWalletProps) => {
     const [isCreateWalletModalOpened, setIsCreateModalOpened] = useState(false);
     const [isUpdateWalletModalOpened, setIsUpdateModalOpened] = useState(false);
     const [isChargeMoneyModalOpened, setIsChargeMoneyModalOpened] = useState(false);
+    const [isMovementsModalOpened, setIsMovementsModalOpened] = useState(false);
     const [wallet, setWallet] = useState<Wallet | undefined>(undefined);
     const [days, setDays] = useState<DayItem[]>([]);
     const [hour, setHour] = useState<number | null>(null);
@@ -170,6 +172,14 @@ const CustomerWallet = (props: CustomerWalletProps) => {
                                 >
                                     Cargar saldo
                                 </Typography>
+                                <Typography
+                                    variant="subtitle2"
+                                    color="textSecondary"
+                                    style={{ textTransform: "uppercase", cursor: "pointer", marginTop: "auto" }}
+                                    onClick={() => setIsMovementsModalOpened(true)}
+                                >
+                                    Ver movimientos
+                                </Typography>
                             </Box>
                         </Box>
                     )}
@@ -243,6 +253,16 @@ const CustomerWallet = (props: CustomerWalletProps) => {
                     handleConfirmButton={handleChargeMoneySubmit}
                     handleClose={() => setIsChargeMoneyModalOpened(false)}
                     isConfirmButtonDisabled={isSubmittingMoneyCharge}
+                    maxWidth={false}
+                    fullWidth={false}
+                />
+            )}
+
+            {isMovementsModalOpened && (
+                <WalletMovementsModal
+                    movements={props.wallet.walletMovementsLogs ?? []}
+                    isOpen={isMovementsModalOpened}
+                    handleClose={() => setIsMovementsModalOpened(false)}
                 />
             )}
         </>

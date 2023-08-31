@@ -90,7 +90,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
                         isDefault: false,
                     },
                 ],
-                wallet: { ...walletData },
+                wallet: { ...res.data },
             });
             enqueueSnackbar("Billetera creada correctamente", { variant: "success" });
             return true;
@@ -106,7 +106,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
         if (res.status === 200) {
             setCustomer({
                 ...customer,
-                wallet: { ...walletData },
+                wallet: { ...res.data },
             });
             enqueueSnackbar("Billetera modificada correctamente", { variant: "success" });
             return true;
@@ -149,9 +149,7 @@ const CustomerProfile = (props: CustomerProfileProps) => {
             setCustomer({
                 ...customer,
                 wallet: {
-                    ...customer.wallet,
-                    //@ts-ignore
-                    balance: parseFloat(customer.wallet.balance ?? "0") + parseFloat(amount),
+                    ...res.data,
                 },
             });
             enqueueSnackbar("Dinero cargado correctamente", { variant: "success" });

@@ -22,6 +22,14 @@ export type Wallet = {
     last4Numbers: string;
     isEnabled: boolean;
     datesOfCharge: { dayNumber: number, hour: string, minute: string }[]
+    walletMovementsLogs: WalletMovement[];
+}
+
+export type WalletMovement = {
+    type: string;
+    title: string;
+    description: string;
+    createdAt: string;
 }
 
 export type ShippingAddress = {
