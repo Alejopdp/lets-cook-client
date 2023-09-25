@@ -30,6 +30,7 @@ export type WalletMovement = {
     title: string;
     description: string;
     createdAt: string;
+    amount: number;
 }
 
 export type ShippingAddress = {
