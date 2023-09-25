@@ -22,7 +22,7 @@ const WalletMovementsModal = (props: WalletMovementsModalProps) => {
                         return (
                             <Box display="flex" flexDirection="row" justifyContent={"space-between"} marginBottom={2}>
                                 <Typography variant="body2" color="initial">
-                                    {movement.type}
+                                    {movement.title}
                                 </Typography>
                                 <Typography variant="body2" color="initial">
                                     {formattedDate}
