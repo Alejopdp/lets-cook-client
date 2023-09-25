@@ -20,11 +20,11 @@ const WalletMovementsModal = (props: WalletMovementsModalProps) => {
                     {props.movements.map((movement) => {
                         const formattedDate = format(new Date(movement.createdAt), "dd/MM/yyyy HH:mm:ss");
                         return (
-                            <Box display="flex" flexDirection="row" justifyContent={"space-between"} marginBottom={2}>
-                                <Typography variant="body2" color="initial">
-                                    {movement.type}
+                            <Box display="flex" flexDirection="row" justifyContent={"space-between"} marginBottom={4}>
+                                <Typography variant="subtitle2" color="initial">
+                                    {movement.title} {movement.amount ? `(€${movement.amount})` : ""}
                                 </Typography>
-                                <Typography variant="body2" color="initial">
+                                <Typography variant="subtitle2" color="initial">
                                     {formattedDate}
                                 </Typography>
                             </Box>

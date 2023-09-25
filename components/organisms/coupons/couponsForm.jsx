@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Box, Grid, InputAdornment, Typography, IconButton, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Box, Grid, InputAdornment, Typography, FormControlLabel, Checkbox } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { Add, Delete } from "@material-ui/icons";
 
 import HeaderTitleWithBackButton from "../../layout/dashboardTitleWithBackButton";
 import CardContainerWithTitle from "../../molecules/paperWithTitleContainer/paperWithTitleContainer";
@@ -12,7 +11,6 @@ import SimpleSelect from "../../atoms/simpleSelect/SimpleSelect";
 import RadioButtons from "../../atoms/radioButtons/radioButtons";
 import DatePicker from "../../atoms/datepicker/datepicker";
 import CheckboxList from "../../atoms/checkboxList/checkboxList";
-import CustomCheckbox from "../../atoms/checkbox/checkbox";
 
 import { useStyles } from "./styles";
 import useCouponsForm from "./useCouponsForm";
@@ -23,30 +21,6 @@ import AddProductsModal from "./addProductsModal";
 import { useSnackbar } from "notistack";
 import { Permission } from "helpers/types/permission";
 import { useUserInfoStore } from "stores/auth";
-
-const buildMinimumBuyComponent = ({ handleOnChangeInputMinimiunRequirement = () => {} }) => (
-    <>
-        <Grid container>
-            <Grid item xs={12} md={6}>
-                <Input
-                    label="Valor"
-                    name="minimumBuy"
-                    type="number"
-                    customProps={{
-                        InputProps: {
-                            endAdornment: <InputAdornment position="end">EUR</InputAdornment>,
-                        },
-                    }}
-                    handleChange={(e) => handleOnChangeInputMinimiunRequirement(e.target.value)}
-                />
-            </Grid>
-        </Grid>
-        <Alert severity="info" color="success">
-            Esta restricción aplicaría solo a un cargo por cliente. Si el cupón tiene otras restricciones, estas se deberán cumplir primero,
-            y luego se validará el importe mínimo.
-        </Alert>
-    </>
-);
 
 const buildLimitApplicationHowManyTimeComponent = ({ value = 0, handleChange = () => "Not implemented yet" }) => (
     <Grid container direction="column" spacing={1}>
