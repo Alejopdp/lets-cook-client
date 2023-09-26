@@ -67,7 +67,10 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
     const fetch = React.useMemo(
         () =>
             throttle((request, callback) => {
-                autocompleteService.current.getPlacePredictions({ ...request, componentRestrictions: { country: "es" } }, callback);
+                autocompleteService.current.getPlacePredictions(
+                    { ...request, componentRestrictions: { country: process.env.NODE_ENV !== "production" ? ["es", "pt"] : "es" } },
+                    callback
+                );
             }, 200),
         []
     );
