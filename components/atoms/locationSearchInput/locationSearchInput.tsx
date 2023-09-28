@@ -67,7 +67,15 @@ const LocationSearchInput = (props: LocationSearchInputProps) => {
     const fetch = React.useMemo(
         () =>
             throttle((request, callback) => {
-                autocompleteService.current.getPlacePredictions({ ...request, componentRestrictions: { country: "es" } }, callback);
+                autocompleteService.current.getPlacePredictions(
+                    {
+                        ...request,
+                        componentRestrictions: {
+                            country: process.env.NEXT_PUBLIC_API_URL !== "https://api.letscooknow.es/api/v1" ? ["es", "pt"] : "es",
+                        },
+                    },
+                    callback
+                );
             }, 200),
         []
     );

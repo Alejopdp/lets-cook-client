@@ -141,7 +141,9 @@ const PaymentOrderGrid = (props) => {
                     <DataDisplayPaymentOrderTable
                         title="Ordenes relacionadas"
                         columns={columns}
-                        rows={props.paymentOrder.orders.filter((order) => order.state !== "ORDER_CANCELLED")}
+                        rows={props.paymentOrder.orders.filter(
+                            (order) => order.state !== "ORDER_CANCELLED" && order.state !== "ORDER_SKIPPED"
+                        )}
                     />
                 </PaperWithTitleContainer>
             </Grid>
