@@ -1,17 +1,17 @@
 // Utils & Config
-import React from "react";
+import React, { useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 
 // External Components
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { Typography } from "@material-ui/core";
 
 // Internal components
 
 const Refund = (props) => {
     const theme = useTheme();
+    const submitButtonRef = useRef(null);
 
     const handleDisableButton = () => {
         if (props.value === 0 || props.value == "" || props.value > props.totalAmount) {
@@ -33,8 +33,14 @@ const Refund = (props) => {
                         label="Monto a reembolsar"
                         variant="outlined"
                         style={{ width: "100%" }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !handleDisableButton()) {
+                                props.handleClick;
+                            }
+                        }}
                     />
                     <Button
+                        ref={submitButtonRef}
                         disabled={handleDisableButton()}
                         size="small"
                         color="primary"
